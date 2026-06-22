@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import logo from '../assets/strivo logo.png';
 import logo2 from '../assets/strivo logo 2.png';
@@ -45,7 +46,7 @@ const Footer = () => {
         {/* Column 4: Legal */}
         <div className="flex flex-col gap-4">
           <h3 className="text-white font-semibold text-base mb-1">Legal</h3>
-          <a href="#" className="text-gray-400 hover:text-white transition-colors text-sm">Contact Us</a>
+          <Link to="/contact" className="text-gray-400 hover:text-white transition-colors text-sm">Contact Us</Link>
           <a href="#" className="text-gray-400 hover:text-white transition-colors text-sm">Privacy Policy</a>
           <a href="#" className="text-gray-400 hover:text-white transition-colors text-sm">Terms of Service</a>
         </div>
