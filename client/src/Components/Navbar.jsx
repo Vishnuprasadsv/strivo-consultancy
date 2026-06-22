@@ -5,11 +5,11 @@ import logo from '../assets/strivo logo.png';
 import logo2 from '../assets/strivo logo 2.png';
 
 const navLinks = [
-  { name: 'Home', href: '#' },
-  { name: 'About', href: '#' },
-  { name: 'Services', href: '#' },
-  { name: 'Case Studies', href: '#' },
-  { name: 'Insights', href: '#' },
+  { name: 'Home', path: '/' },
+  { name: 'About', path: '#' },
+  { name: 'Services', path: '#' },
+  { name: 'Case Studies', path: '#' },
+  { name: 'Insights', path: '/insights' },
 ];
 
 const containerVariants = {
@@ -53,17 +53,28 @@ const Navbar = () => {
           <ul className="flex items-center gap-6">
             {navLinks.map((link) => (
               <motion.li variants={itemVariants} key={link.name} className="relative">
-                <a
-                  href={link.href}
-                  onClick={(e) => {
-                    e.preventDefault();
-                    setActiveTab(link.name);
-                  }}
-                  className={`px-3 py-2 block transition-all duration-150 ease-in-out font-medium ${activeTab === link.name ? 'text-blue-600' : 'text-white hover:text-gray-300'
-                    }`}
-                >
-                  {link.name}
-                </a>
+                {link.path !== '#' ? (
+                  <Link
+                    to={link.path}
+                    onClick={() => setActiveTab(link.name)}
+                    className={`px-3 py-2 block transition-all duration-150 ease-in-out font-medium ${activeTab === link.name ? 'text-blue-600' : 'text-white hover:text-gray-300'
+                      }`}
+                  >
+                    {link.name}
+                  </Link>
+                ) : (
+                  <a
+                    href={link.path}
+                    onClick={(e) => {
+                      e.preventDefault();
+                      setActiveTab(link.name);
+                    }}
+                    className={`px-3 py-2 block transition-all duration-150 ease-in-out font-medium ${activeTab === link.name ? 'text-blue-600' : 'text-white hover:text-gray-300'
+                      }`}
+                  >
+                    {link.name}
+                  </a>
+                )}
                 {activeTab === link.name && (
                   <motion.div
                     layoutId="active-underline"
@@ -124,18 +135,32 @@ const Navbar = () => {
             <ul className="flex flex-col p-4 gap-2">
               {navLinks.map((link) => (
                 <li key={link.name}>
-                  <a
-                    href={link.href}
-                    onClick={(e) => {
-                      e.preventDefault();
-                      setActiveTab(link.name);
-                      setIsMobileMenuOpen(false);
-                    }}
-                    className={`block px-4 py-3 rounded-lg transition-colors font-medium ${activeTab === link.name ? 'bg-gray-900 text-blue-600' : 'text-white hover:bg-gray-900 hover:text-gray-300'
-                      }`}
-                  >
-                    {link.name}
-                  </a>
+                  {link.path !== '#' ? (
+                    <Link
+                      to={link.path}
+                      onClick={() => {
+                        setActiveTab(link.name);
+                        setIsMobileMenuOpen(false);
+                      }}
+                      className={`block px-4 py-3 rounded-lg transition-colors font-medium ${activeTab === link.name ? 'bg-gray-900 text-blue-600' : 'text-white hover:bg-gray-900 hover:text-gray-300'
+                        }`}
+                    >
+                      {link.name}
+                    </Link>
+                  ) : (
+                    <a
+                      href={link.path}
+                      onClick={(e) => {
+                        e.preventDefault();
+                        setActiveTab(link.name);
+                        setIsMobileMenuOpen(false);
+                      }}
+                      className={`block px-4 py-3 rounded-lg transition-colors font-medium ${activeTab === link.name ? 'bg-gray-900 text-blue-600' : 'text-white hover:bg-gray-900 hover:text-gray-300'
+                        }`}
+                    >
+                      {link.name}
+                    </a>
+                  )}
                 </li>
               ))}
               <div className=" border-t border-gray-800 mt-2 pt-4 flex flex-col gap-3">
