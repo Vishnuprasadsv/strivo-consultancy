@@ -13,7 +13,7 @@ const Digital = () => {
   }, []);
 
   return (
-    <div className="bg-black text-white min-h-screen pt-20 pb-24 font-sans selection:bg-blue-600 selection:text-white">
+    <div className="bg-transparent text-white min-h-screen pt-20 pb-24 font-sans selection:bg-blue-600 selection:text-white">
       
       {/* Section 1: Hero */}
       <motion.section 

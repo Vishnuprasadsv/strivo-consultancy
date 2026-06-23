@@ -1,7 +1,5 @@
 import React from 'react'
 import { Box, Card, CardMedia, Container, Typography } from "@mui/material";
-import AOS from "aos";
-import "aos/dist/aos.css";
 import { useEffect } from "react";
 import Grid from "@mui/material/Grid";
 
@@ -53,13 +51,7 @@ function Aboutus() {
   },
 ];
 
- useEffect(() => {
-    AOS.init({
-      duration: 2000,
-      once: true,
-      easing: "ease-out-cubic",
-    });
-  }, []);
+  // Animations are now fully handled by framer-motion for smooth 60fps performance
 
 
 const featureData = [
@@ -169,7 +161,7 @@ const itemVariants = {
     </Box> */}
     <Box
   sx={{
-    backgroundColor: "#000",
+    backgroundColor: "transparent",
     color: "#fff",
     minHeight: "80vh",
     display: "flex",
@@ -240,7 +232,7 @@ const itemVariants = {
     {/* second section  */}
      <Box
   sx={{
-    backgroundColor: "#000",
+    backgroundColor: "transparent",
     py: { xs: 8, md: 12 },
   }}
 >
@@ -256,10 +248,13 @@ const itemVariants = {
     >
       {/* Left Image */}
       <Box
-        component="img"
+        component={motion.img}
+        initial={{ opacity: 0, scale: 0.85 }}
+        whileInView={{ opacity: 1, scale: 1 }}
+        viewport={{ once: true, amount: 0.3 }}
+        transition={{ duration: 0.8, ease: "easeOut" }}
         src={aboutus}
         alt="Corporate Boardroom"
-        data-aos="zoom-in"
         sx={{
           width: {
             xs: "100%",
@@ -283,8 +278,11 @@ const itemVariants = {
 
       {/* Right Content */}
       <Box
-        data-aos="fade-up"
-        data-aos-delay="200"
+        component={motion.div}
+        initial={{ opacity: 0, y: 40 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true, amount: 0.3 }}
+        transition={{ duration: 0.8, delay: 0.2, ease: "easeOut" }}
         sx={{
           width: {
             xs: "100%",
@@ -376,7 +374,7 @@ const itemVariants = {
       sx={{
         width: "100%",
         background:
-          "linear-gradient(135deg,#202020 0%,#181818 50%,#111111 100%)",
+          "transparent",
         py: { xs: 6, md: 10 },
         
       }}
@@ -594,7 +592,7 @@ const itemVariants = {
     {/* fourth section */}
       <Box
       sx={{
-        backgroundColor: "#000",
+        backgroundColor: "transparent",
         py: { xs: 8, md: 12 },
       }}
     >
