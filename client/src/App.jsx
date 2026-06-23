@@ -5,6 +5,10 @@ import Footer from './Components/Footer'
 import Contact from './pages/Contact'
 import Insight from './pages/Insight'
 import Article from './pages/Article'
+import Strategic from './pages/Strategic'
+import Operations from './pages/Operations'
+import Change from './pages/Change'
+import Digital from './pages/Digital'
 
 
 const App = () => {
@@ -19,6 +23,10 @@ const App = () => {
             <Route path="/contact" element={<Contact />} />
             <Route path="/insights" element={<Insight />} />
             <Route path="/article/:id" element={<Article />} />
+            <Route path="/strategic" element={<Strategic />} />
+            <Route path="/operations" element={<Operations />} />
+            <Route path="/change" element={<Change />} />
+            <Route path="/digital" element={<Digital />} />
           </Routes>
         </main>
         <Footer/>

@@ -25,30 +25,29 @@ const Footer = () => {
           </p>
         </div>
 
-        {/* Column 2: Services */}
-        <div className="flex flex-col gap-4">
-          <h3 className="text-white font-semibold text-base mb-1">Services</h3>
-          <a href="#" className="text-gray-400 hover:text-white transition-colors text-sm">Strategy</a>
-          <a href="#" className="text-gray-400 hover:text-white transition-colors text-sm">Operations</a>
-          <a href="#" className="text-gray-400 hover:text-white transition-colors text-sm">Digital Transformation</a>
-          <a href="#" className="text-gray-400 hover:text-white transition-colors text-sm">Market Analysis</a>
-        </div>
-
-        {/* Column 3: Company */}
+        {/* Column 2: Company */}
         <div className="flex flex-col gap-4">
           <h3 className="text-white font-semibold text-base mb-1">Company</h3>
-          <a href="#" className="text-gray-400 hover:text-white transition-colors text-sm">Home</a>
-          <a href="#" className="text-gray-400 hover:text-white transition-colors text-sm">About Us</a>
-          <a href="#" className="text-gray-400 hover:text-white transition-colors text-sm">Careers</a>
-          <a href="#" className="text-gray-400 hover:text-white transition-colors text-sm">Case Studies</a>
+          <a href="#" className="text-gray-300 hover:text-blue-400 transition-colors text-sm">About Us</a>
+          <a href="#" className="text-gray-300 hover:text-blue-400 transition-colors text-sm">Case Studies</a>
+          <a href="#" className="text-gray-300 hover:text-blue-400 transition-colors text-sm">Careers</a>
+          <Link to="/insights" className="text-gray-300 hover:text-blue-400 transition-colors text-sm">Insights</Link>
         </div>
 
-        {/* Column 4: Legal */}
+        {/* Column 3: Services */}
         <div className="flex flex-col gap-4">
-          <h3 className="text-white font-semibold text-base mb-1">Legal</h3>
-          <Link to="/contact" className="text-gray-400 hover:text-white transition-colors text-sm">Contact Us</Link>
-          <a href="#" className="text-gray-400 hover:text-white transition-colors text-sm">Privacy Policy</a>
-          <a href="#" className="text-gray-400 hover:text-white transition-colors text-sm">Terms of Service</a>
+          <h3 className="text-white font-semibold text-base mb-1">Services</h3>
+          <Link to="/strategic" className="text-gray-300 hover:text-blue-400 transition-colors text-sm">Strategic Planning</Link>
+          <Link to="/operations" className="text-gray-300 hover:text-blue-400 transition-colors text-sm">Operations Optimizations</Link>
+          <Link to="/digital" className="text-gray-300 hover:text-blue-400 transition-colors text-sm">Digital Transformation</Link>
+          <Link to="/change" className="text-gray-300 hover:text-blue-400 transition-colors text-sm">Change Management</Link>
+        </div>
+
+        {/* Column 4: Get in Touch */}
+        <div className="flex flex-col gap-4">
+          <h3 className="text-white font-semibold text-base mb-1">Get in Touch</h3>
+          <Link to="/contact" className="text-gray-300 hover:text-blue-400 transition-colors text-sm">Contact Us</Link>
+          <a href="#" className="text-gray-300 hover:text-blue-400 transition-colors text-sm">Add Review</a>
         </div>
       </div>
     </motion.footer>
