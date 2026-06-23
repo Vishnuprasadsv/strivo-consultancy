@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import logo from '../assets/strivo logo.png';
@@ -34,6 +34,16 @@ const Navbar = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const location = useLocation();
   const isContactPage = location.pathname === '/contact';
+
+  useEffect(() => {
+    if (location.pathname === '/contact') {
+      setActiveTab(null);
+    } else if (location.pathname === '/') {
+      setActiveTab('Home');
+    } else if (location.pathname.startsWith('/insights') || location.pathname.startsWith('/article')) {
+      setActiveTab('Insights');
+    }
+  }, [location.pathname]);
 
   return (
     <>
@@ -91,6 +101,7 @@ const Navbar = () => {
           <motion.div variants={itemVariants} className="flex items-center gap-4">
             <Link 
               to="/contact" 
+              onClick={() => setActiveTab(null)}
               className={`cursor-pointer px-5 py-2 rounded-full transition-colors text-sm font-medium shadow-[0_0_15px_rgba(37,99,235,0.3)] hover:shadow-[0_0_20px_rgba(37,99,235,0.5)] ${
                 isContactPage ? 'bg-blue-600 text-white' : 'bg-black border border-blue-600 text-white hover:bg-blue-900/30'
               }`}
@@ -166,7 +177,10 @@ const Navbar = () => {
               <div className=" border-t border-gray-800 mt-2 pt-4 flex flex-col gap-3">
                 <Link 
                   to="/contact" 
-                  onClick={() => setIsMobileMenuOpen(false)}
+                  onClick={() => {
+                    setActiveTab(null);
+                    setIsMobileMenuOpen(false);
+                  }}
                   className={`cursor-pointer w-full text-center px-4 py-3 rounded-full shadow-[0_0_15px_rgba(37,99,235,0.3)] text-sm font-medium block ${
                     isContactPage ? 'bg-blue-600 text-white' : 'bg-black border border-blue-600 text-white'
                   }`}
