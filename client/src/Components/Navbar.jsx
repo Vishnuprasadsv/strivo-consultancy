@@ -7,8 +7,8 @@ import logo2 from '../assets/strivo logo 2.png';
 const navLinks = [
   { name: 'Home', path: '/' },
   { name: 'About', path: '#' },
-  { name: 'Services', path: '#' },
-  { name: 'Case Studies', path: '#' },
+  { name: 'Services', path: '/services' },
+  { name: 'Case Studies', path: '/casestudies' },
   { name: 'Insights', path: '/insights' },
 ];
 
