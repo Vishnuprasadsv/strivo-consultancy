@@ -21,7 +21,7 @@ const Article = () => {
 
   if (!article) {
     return (
-      <div className="bg-black text-white min-h-screen pt-32 text-center">
+      <div className="bg-transparent text-white min-h-screen pt-32 text-center">
         <h1 className="text-3xl font-bold mb-6">Article not found</h1>
         <Link to="/insights" className="text-blue-500 hover:text-white transition-colors">
           Return to Insights
@@ -44,7 +44,7 @@ const Article = () => {
   };
 
   return (
-    <div className="bg-black text-white min-h-screen pt-24 pb-24 font-sans">
+    <div className="bg-transparent text-white min-h-screen pt-24 pb-24 font-sans">
       <div className="max-w-7xl mx-auto px-6 md:px-12">
         {/* Header Navigation */}
         <motion.div 

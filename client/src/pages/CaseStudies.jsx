@@ -73,7 +73,7 @@ const CaseStudies = () => {
       );
 
   return (
-    <div className="bg-black text-white min-h-screen">
+    <div className="bg-transparent text-white min-h-screen">
       {/* Hero Section */}
       <motion.section
         initial="hidden"

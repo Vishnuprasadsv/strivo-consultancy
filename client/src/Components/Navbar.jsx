@@ -1,12 +1,12 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import logo from '../assets/strivo logo.png';
 import logo2 from '../assets/strivo logo 2.png';
 
 const navLinks = [
-  { name: 'Home', path: '/' },
-  { name: 'About', path: '#' },
+  { name: 'Home', path: '/home' },
+  { name: 'About', path: '/about' },
   { name: 'Services', path: '/services' },
   { name: 'Case Studies', path: '/casestudies' },
   { name: 'Insights', path: '/insights' },
@@ -30,20 +30,22 @@ const itemVariants = {
 };
 
 const Navbar = () => {
-  const [activeTab, setActiveTab] = useState('Home');
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const location = useLocation();
   const isContactPage = location.pathname === '/contact';
 
-  useEffect(() => {
-    if (['/contact', '/strategic', '/operations', '/change', '/digital'].includes(location.pathname)) {
-      setActiveTab(null);
-    } else if (location.pathname === '/') {
-      setActiveTab('Home');
-    } else if (location.pathname.startsWith('/insights') || location.pathname.startsWith('/article')) {
-      setActiveTab('Insights');
-    }
-  }, [location.pathname]);
+  const getActiveTab = () => {
+    const path = location.pathname;
+    if (['/contact', '/strategic', '/operations', '/change', '/digital'].includes(path)) return null;
+    if (path === '/' || path === '/home') return 'Home';
+    if (path.startsWith('/insights') || path.startsWith('/article')) return 'Insights';
+    if (path === '/about') return 'About';
+    if (path === '/services') return 'Services';
+    if (path === '/casestudies') return 'Case Studies';
+    return null;
+  };
+
+  const activeTab = getActiveTab();
 
   return (
     <>
@@ -66,7 +68,6 @@ const Navbar = () => {
                 {link.path !== '#' ? (
                   <Link
                     to={link.path}
-                    onClick={() => setActiveTab(link.name)}
                     className={`px-3 py-2 block transition-all duration-150 ease-in-out font-medium ${activeTab === link.name ? 'text-blue-600' : 'text-white hover:text-gray-300'
                       }`}
                   >
@@ -77,7 +78,6 @@ const Navbar = () => {
                     href={link.path}
                     onClick={(e) => {
                       e.preventDefault();
-                      setActiveTab(link.name);
                     }}
                     className={`px-3 py-2 block transition-all duration-150 ease-in-out font-medium ${activeTab === link.name ? 'text-blue-600' : 'text-white hover:text-gray-300'
                       }`}
@@ -89,9 +89,8 @@ const Navbar = () => {
                   <motion.div
                     layoutId="active-underline"
                     className="absolute left-1 right-1 bottom-0 h-[10px] border-b-[3px] border-blue-600 rounded-[12px]"
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    exit={{ opacity: 0 }}
+                    transition={{ type: 'spring', stiffness: 350, damping: 30 }}
+                    initial={false}
                   />
                 )}
               </motion.li>
@@ -101,7 +100,6 @@ const Navbar = () => {
           <motion.div variants={itemVariants} className="flex items-center gap-4">
             <Link 
               to="/contact" 
-              onClick={() => setActiveTab(null)}
               className={`cursor-pointer px-5 py-2 rounded-full transition-colors text-sm font-medium shadow-[0_0_15px_rgba(37,99,235,0.3)] hover:shadow-[0_0_20px_rgba(37,99,235,0.5)] ${
                 isContactPage ? 'bg-blue-600 text-white' : 'bg-black border border-blue-600 text-white hover:bg-blue-900/30'
               }`}
@@ -150,7 +148,6 @@ const Navbar = () => {
                     <Link
                       to={link.path}
                       onClick={() => {
-                        setActiveTab(link.name);
                         setIsMobileMenuOpen(false);
                       }}
                       className={`block px-4 py-3 rounded-lg transition-colors font-medium ${activeTab === link.name ? 'bg-gray-900 text-blue-600' : 'text-white hover:bg-gray-900 hover:text-gray-300'
@@ -163,7 +160,6 @@ const Navbar = () => {
                       href={link.path}
                       onClick={(e) => {
                         e.preventDefault();
-                        setActiveTab(link.name);
                         setIsMobileMenuOpen(false);
                       }}
                       className={`block px-4 py-3 rounded-lg transition-colors font-medium ${activeTab === link.name ? 'bg-gray-900 text-blue-600' : 'text-white hover:bg-gray-900 hover:text-gray-300'
@@ -178,7 +174,6 @@ const Navbar = () => {
                 <Link 
                   to="/contact" 
                   onClick={() => {
-                    setActiveTab(null);
                     setIsMobileMenuOpen(false);
                   }}
                   className={`cursor-pointer w-full text-center px-4 py-3 rounded-full shadow-[0_0_15px_rgba(37,99,235,0.3)] text-sm font-medium block ${

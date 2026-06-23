@@ -1,5 +1,5 @@
 import React, { useRef } from "react";
-
+import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import heroImage from "../assets/services-hero.jpg";
 
@@ -27,29 +27,33 @@ const Services = () => {
       title: "Strategic Planning",
       description:
         "Develop comprehensive business strategies that align with your vision and market opportunities.",
+      link: "/strategic",
     },
     {
       icon: "⚙️",
       title: "Operations Optimization",
       description:
         "Streamline processes and improve efficiency across your organization.",
+      link: "/operations",
     },
     {
       icon: "💻",
       title: "Digital Transformation",
       description:
         "Navigate the complexities of digital adoption and technology integration.",
+      link: "/digital",
     },
     {
       icon: "🚀",
       title: "Change Management",
       description:
         "Lead organizational change with confidence and minimize resistance.",
+      link: "/change",
     },
   ];
 
   return (
-    <div className="bg-black text-white min-h-screen">
+    <div className="bg-transparent text-white min-h-screen">
 
       {/* Hero Section */}
       <motion.section
@@ -171,12 +175,12 @@ const Services = () => {
                 <li>✔ Measurable KPIs and success metrics</li>
               </ul>
 
-              <button
-                
-                className="mt-6 px-4 py-2 border border-blue-500 text-blue-500 rounded-md hover:bg-blue-500 hover:text-white transition duration-300"
+              <Link
+                to={service.link}
+                className="inline-block mt-6 px-4 py-2 border border-blue-500 text-blue-500 rounded-md hover:bg-blue-500 hover:text-white transition duration-300"
               >
                 Learn More
-              </button>
+              </Link>
             </div>
 
             <div className="bg-white rounded-xl flex flex-col items-center justify-center h-[280px]">

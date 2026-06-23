@@ -22,7 +22,7 @@ const fadeUpVariants = {
 
 const Contact = () => {
   return (
-    <div className="bg-black text-white min-h-screen pt-12 pb-24 font-sans overflow-hidden">
+    <div className="bg-transparent text-white min-h-screen pt-12 pb-24 font-sans overflow-hidden">
       <div className="max-w-7xl mx-auto px-6 md:px-12 space-y-32">
         
         {/* Section 1: Hero */}

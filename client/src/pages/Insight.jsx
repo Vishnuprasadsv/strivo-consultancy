@@ -41,8 +41,19 @@ export const articlesData = [
 const categories = ['All', 'Technology', 'Development', 'UI/UX', 'Business', 'SaaS'];
 
 const fadeUpVariants = {
-  hidden: { opacity: 0, y: 30 },
-  visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: 'easeOut' } }
+  hidden: { opacity: 0, y: 80 },
+  visible: { opacity: 1, y: 0, transition: { duration: 1.2 } }
+};
+
+const cardVariants = {
+  hidden: { opacity: 0, y: 60, scale: 0.9 },
+  visible: { opacity: 1, y: 0, scale: 1, transition: { duration: 0.8 } },
+  exit: { opacity: 0, scale: 0.9, transition: { duration: 0.3 } }
+};
+
+const containerVariants = {
+  hidden: {},
+  visible: { transition: { staggerChildren: 0.25 } }
 };
 
 const Insight = () => {
@@ -53,7 +64,7 @@ const Insight = () => {
     : articlesData.filter(article => article.category === selectedCategory);
 
   return (
-    <div className="bg-black text-white min-h-screen pt-12 pb-24 font-sans">
+    <div className="bg-transparent text-white min-h-screen pt-12 pb-24 font-sans">
       <div className="max-w-7xl mx-auto px-6 md:px-12 space-y-24">
         
         {/* Section 1: Hero */}
@@ -130,26 +141,39 @@ const Insight = () => {
           {filteredArticles.length === 0 ? (
             <div className="text-gray-500 py-12 text-center">No articles found in this category.</div>
           ) : (
-            <motion.div layout className="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <motion.div 
+              layout 
+              variants={containerVariants}
+              initial="hidden"
+              animate="visible"
+              className="grid grid-cols-1 md:grid-cols-2 gap-8"
+            >
               <AnimatePresence mode='popLayout'>
                 {filteredArticles.map((article) => (
                   <motion.article 
                     layout
-                    initial={{ opacity: 0, scale: 0.9 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    exit={{ opacity: 0, scale: 0.9 }}
-                    transition={{ duration: 0.3 }}
+                    variants={cardVariants}
+                    initial="hidden"
+                    animate="visible"
+                    exit="exit"
+                    whileHover={{ y: -15, scale: 1.03 }}
                     key={article.id}
-                    className="bg-[#111827] border border-[#374151] rounded-lg overflow-hidden group hover:border-[#4b5563] transition-colors flex flex-col h-full cursor-pointer"
+                    className="relative bg-gradient-to-br from-[#081224] to-[#0f172a] border border-blue-500/10 rounded-2xl overflow-hidden group transition-colors transition-shadow duration-300 ease-out hover:border-blue-500/40 hover:shadow-[0_20px_50px_rgba(37,99,235,0.18)] flex flex-col h-full cursor-pointer"
                   >
-                    <div className="h-48 w-full relative overflow-hidden">
+                    {/* Top gradient line */}
+                    <div className="absolute top-0 left-0 w-full h-[2px] bg-gradient-to-r from-blue-600 to-transparent z-10"></div>
+                    
+                    {/* Glow effect */}
+                    <div className="absolute -top-[70px] -right-[70px] w-[180px] h-[180px] bg-[radial-gradient(circle,rgba(37,99,235,0.18),transparent)] pointer-events-none z-10"></div>
+
+                    <div className="h-48 w-full relative overflow-hidden z-20">
                       <img 
                         src={article.imageUrl} 
                         alt={article.title} 
-                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" 
+                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300 ease-out" 
                       />
                     </div>
-                    <div className="p-6 flex flex-col flex-grow">
+                    <div className="p-6 flex flex-col flex-grow relative z-20 bg-gradient-to-br from-[#081224]/50 to-[#0f172a]/50">
                       <span className="text-blue-500 text-xs font-semibold mb-2 uppercase">{article.category}</span>
                       <h3 className="text-xl font-bold text-white mb-3">{article.title}</h3>
                       <p className="text-gray-400 mb-6 flex-grow">{article.description}</p>

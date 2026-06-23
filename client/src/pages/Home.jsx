@@ -8,6 +8,7 @@ import {
   Rating,
 } from '@mui/material';
 import { motion } from 'framer-motion';
+import SEO from '../Components/SEO';
 import homeHero from "../assets/herohome1.jpg";
 import leader1 from "../assets/leader1.jpg";
 import leader2 from "../assets/leader2.jpg";
@@ -169,6 +170,10 @@ const stats = [
   
   return (
     <div>
+      <SEO 
+        title="Home" 
+        description="We partner with ambitious leaders to solve complex challenges, optimize operations, and drive sustainable growth in an ever-evolving global landscape." 
+      />
    <Box
   sx={{
     position: "relative",
@@ -437,7 +442,7 @@ const stats = [
 {/* second section */}
    <Box
   sx={{
-    backgroundColor: "#000",
+    backgroundColor: "transparent",
     py: { xs: 8, md: 12 },
   }}
 >
@@ -621,7 +626,7 @@ const stats = [
     {/*  third section */}
     <Box
   sx={{
-    backgroundColor: "#000",
+    backgroundColor: "transparent",
     py: { xs: 10, md: 14 },
   }}
 >
