@@ -4,9 +4,13 @@ import Navbar from './Components/Navbar'
 import Footer from './Components/Footer'
 import Contact from './pages/Contact'
 import Insight from './pages/Insight'
-import CaseStudies from './pages/CaseStudies'
-import Services from './pages/Services'
-import CaseStudyDetails from "./pages/CaseStudyDetails";
+import Article from './pages/Article'
+import Strategic from './pages/Strategic'
+import Operations from './pages/Operations'
+import Change from './pages/Change'
+import Digital from './pages/Digital'
+import Home from './pages/Home'
+
 
 const App = () => {
   return (
@@ -16,6 +20,7 @@ const App = () => {
         {/* Main content will go here, using flex-grow to push footer down */}
         <main className="flex-grow">
           <Routes>
+            <Route path="/home" element={<Home/>}/>
             <Route path="/" element={<div className="h-[50vh] flex items-center justify-center text-gray-500"><p>Click 'Get Started' to open the Contact Page.</p></div>} />
             <Route path="/contact" element={<Contact />} />
             <Route path="/insights" element={<Insight />} />
