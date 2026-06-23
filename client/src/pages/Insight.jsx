@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { Link } from 'react-router-dom';
 
 // Mock data array for future Admin Panel integration
-const articlesData = [
+export const articlesData = [
   {
     id: 1,
     category: 'Development',
@@ -84,10 +85,10 @@ const Insight = () => {
             </p>
             <div className="flex items-center justify-between mt-auto">
               <span className="text-gray-500 text-sm">October 24, 2024</span>
-              <a href="#" className="text-blue-500 font-medium flex items-center hover:text-white transition-colors group">
+              <Link to={`/article/${articlesData[0].id}`} className="text-blue-500 font-medium flex items-center hover:text-white transition-colors group">
                 Read Article 
                 <span className="ml-1 group-hover:translate-x-1 transition-transform">→</span>
-              </a>
+              </Link>
             </div>
           </div>
           <div className="h-64 lg:h-full min-h-[400px] relative w-full overflow-hidden order-1 lg:order-2">
@@ -152,9 +153,9 @@ const Insight = () => {
                       <span className="text-blue-500 text-xs font-semibold mb-2 uppercase">{article.category}</span>
                       <h3 className="text-xl font-bold text-white mb-3">{article.title}</h3>
                       <p className="text-gray-400 mb-6 flex-grow">{article.description}</p>
-                      <a href={article.link} className="text-blue-500 font-medium flex items-center hover:text-white transition-colors w-max group">
+                      <Link to={`/article/${article.id}`} className="text-blue-500 font-medium flex items-center hover:text-white transition-colors w-max group">
                         Read Article <span className="ml-1 group-hover:translate-x-1 transition-transform">→</span>
-                      </a>
+                      </Link>
                     </div>
                   </motion.article>
                 ))}
