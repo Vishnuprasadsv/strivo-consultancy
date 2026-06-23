@@ -10,6 +10,7 @@ import Operations from './pages/Operations'
 import Change from './pages/Change'
 import Digital from './pages/Digital'
 import Home from './pages/Home'
+import Aboutus from './pages/About'
 
 
 const App = () => {
@@ -20,6 +21,7 @@ const App = () => {
         {/* Main content will go here, using flex-grow to push footer down */}
         <main className="flex-grow">
           <Routes>
+            <Route path='/about' element={<Aboutus/>}/>
             <Route path="/home" element={<Home/>}/>
             <Route path="/" element={<div className="h-[50vh] flex items-center justify-center text-gray-500"><p>Click 'Get Started' to open the Contact Page.</p></div>} />
             <Route path="/contact" element={<Contact />} />
