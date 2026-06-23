@@ -36,7 +36,7 @@ const Navbar = () => {
   const isContactPage = location.pathname === '/contact';
 
   useEffect(() => {
-    if (location.pathname === '/contact') {
+    if (['/contact', '/strategic', '/operations', '/change', '/digital'].includes(location.pathname)) {
       setActiveTab(null);
     } else if (location.pathname === '/') {
       setActiveTab('Home');
