@@ -32,6 +32,39 @@ export const loginAdmin = async (req, res) => {
   }
 };
 
+// @desc    Register a new admin
+// @route   POST /api/admin/register
+// @access  Public (or Private depending on your security needs)
+export const registerAdmin = async (req, res) => {
+  const { username, password } = req.body;
+
+  try {
+    const adminExists = await Admin.findOne({ username });
+
+    if (adminExists) {
+      return res.status(400).json({ message: 'Admin already exists' });
+    }
+
+    const admin = await Admin.create({
+      username,
+      password,
+    });
+
+    if (admin) {
+      res.status(201).json({
+        _id: admin._id,
+        username: admin.username,
+        token: generateToken(admin._id),
+        message: 'Admin created successfully'
+      });
+    } else {
+      res.status(400).json({ message: 'Invalid admin data' });
+    }
+  } catch (error) {
+    res.status(500).json({ message: 'Server error', error: error.message });
+  }
+};
+
 // @desc    Forgot password (Mocked for testing)
 // @route   POST /api/admin/forgot-password
 // @access  Public

@@ -23,6 +23,7 @@ const Change = lazy(() => import('./pages/Change'));
 const Login = lazy(() => import('./Admin/Login'));
 const ForgotPassword = lazy(() => import('./Admin/ForgotPassword'));
 const ResetPassword = lazy(() => import('./Admin/ResetPassword'));
+const Dashboard = lazy(() => import('./Admin/Dashboard'));
 
 // ScrollToTop component ensures navigating to a new route scrolls to the top smoothly
 const ScrollToTop = () => {
@@ -31,6 +32,20 @@ const ScrollToTop = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }, [pathname]);
   return null;
+};
+
+// Conditionally render Navbar based on route
+const ConditionalNavbar = () => {
+  const { pathname } = useLocation();
+  if (pathname.startsWith('/admin')) return null;
+  return <Navbar />;
+};
+
+// Conditionally render Footer based on route
+const ConditionalFooter = () => {
+  const { pathname } = useLocation();
+  if (pathname.startsWith('/admin')) return null;
+  return <Footer />;
 };
 
 // A premium loading fallback for Suspense
@@ -67,7 +82,7 @@ const App = () => {
           <div className="absolute inset-0 backdrop-blur-[6px] bg-black/40 pointer-events-none" />
         </div>
         
-        <Navbar />
+        <ConditionalNavbar />
         
         {/* Main content area */}
         <main className="flex-grow relative z-10">
@@ -93,11 +108,12 @@ const App = () => {
               <Route path="/admin/login" element={<Login />} />
               <Route path="/admin/forgot-password" element={<ForgotPassword />} />
               <Route path="/admin/reset-password" element={<ResetPassword />} />
+              <Route path="/admin/dashboard" element={<Dashboard />} />
             </Routes>
           </Suspense>
         </main>
         
-        <Footer />
+        <ConditionalFooter />
       </div>
     </BrowserRouter>
   );
