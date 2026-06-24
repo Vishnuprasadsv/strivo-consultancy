@@ -4,33 +4,36 @@ import { useNavigate, Link } from 'react-router-dom';
 import { toast } from 'sonner';
 import axios from 'axios';
 
-const Login = () => {
+const ForgotPassword = () => {
   const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
 
-  const handleLogin = async (e) => {
+  const handleRequestReset = async (e) => {
     e.preventDefault();
-    if (!username || !password) {
-      toast.error('Please enter both username and password.');
+    if (!username) {
+      toast.error('Please enter your username.');
       return;
     }
 
     setIsLoading(true);
     try {
-      const response = await axios.post('http://localhost:5000/api/admin/login', {
+      const response = await axios.post('http://localhost:5000/api/admin/forgot-password', {
         username,
-        password,
       });
       
-      localStorage.setItem('adminToken', response.data.token);
-      localStorage.setItem('adminUser', JSON.stringify(response.data));
+      // In a real app, this sends an email. Here we show the mock token for testing.
+      toast.success('Reset link requested successfully!');
       
-      toast.success('Login successful!');
-      navigate('/admin/dashboard'); // Or wherever you want them to go
+      // For testing purposes, we navigate directly to reset password with the token
+      // In a real scenario, the user would click a link in their email
+      if (response.data.resetToken) {
+        toast.info(`Mock Token received: ${response.data.resetToken.substring(0, 10)}...`, { duration: 5000 });
+        navigate(`/admin/reset-password?token=${response.data.resetToken}`);
+      }
+      
     } catch (error) {
-      toast.error(error.response?.data?.message || 'Login failed. Please try again.');
+      toast.error(error.response?.data?.message || 'Failed to request reset. Please try again.');
     } finally {
       setIsLoading(false);
     }
@@ -44,22 +47,21 @@ const Login = () => {
         transition={{ duration: 0.6, ease: "easeOut" }}
         className="w-full max-w-md bg-white/5 backdrop-blur-xl border border-white/10 rounded-3xl p-8 shadow-2xl relative overflow-hidden"
       >
-        {/* Glow effect */}
         <div className="absolute top-0 left-1/2 -translate-x-1/2 w-3/4 h-32 bg-blue-600/30 blur-[60px] -z-10 rounded-full pointer-events-none"></div>
 
-        <div className="text-center mb-10">
+        <div className="text-center mb-8">
           <motion.h2 
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 0.3 }}
-            className="text-3xl font-bold text-white mb-2"
+            className="text-2xl font-bold text-white mb-2"
           >
-            Admin Portal
+            Reset Password
           </motion.h2>
-          <p className="text-white/60 text-sm">Secure access to Strivo management</p>
+          <p className="text-white/60 text-sm">Enter your username to receive a reset link</p>
         </div>
 
-        <form onSubmit={handleLogin} className="space-y-6">
+        <form onSubmit={handleRequestReset} className="space-y-6">
           <div className="space-y-2">
             <label className="text-sm font-medium text-white/80 ml-1">Username</label>
             <div className="relative">
@@ -73,41 +75,29 @@ const Login = () => {
             </div>
           </div>
 
-          <div className="space-y-2">
-            <div className="flex justify-between items-center ml-1">
-              <label className="text-sm font-medium text-white/80">Password</label>
-              <Link to="/admin/forgot-password" className="text-xs text-blue-400 hover:text-blue-300 transition-colors">
-                Forgot Password?
-              </Link>
-            </div>
-            <div className="relative">
-              <input 
-                type="password" 
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                placeholder="••••••••"
-                className="w-full bg-black/40 border border-white/10 rounded-xl px-4 py-3 text-white placeholder:text-white/30 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-transparent transition-all"
-              />
-            </div>
-          </div>
-
           <motion.button
             whileHover={{ scale: 1.02 }}
             whileTap={{ scale: 0.98 }}
             disabled={isLoading}
             type="submit"
-            className="w-full bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white font-medium py-3.5 rounded-xl shadow-lg shadow-blue-900/20 transition-all flex items-center justify-center gap-2"
+            className="w-full bg-white/10 hover:bg-white/20 border border-white/10 text-white font-medium py-3.5 rounded-xl transition-all flex items-center justify-center gap-2"
           >
             {isLoading ? (
               <span className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin"></span>
             ) : (
-              'Sign In'
+              'Send Reset Link'
             )}
           </motion.button>
+
+          <div className="text-center mt-4">
+            <Link to="/admin/login" className="text-sm text-blue-400 hover:text-blue-300 transition-colors">
+              Back to Login
+            </Link>
+          </div>
         </form>
       </motion.div>
     </div>
   );
 };
 
-export default Login;
+export default ForgotPassword;
