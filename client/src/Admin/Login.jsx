@@ -3,6 +3,8 @@ import { motion } from 'framer-motion';
 import { useNavigate, Link } from 'react-router-dom';
 import { toast } from 'sonner';
 import axios from 'axios';
+import logo1 from '../assets/strivo logo.png';
+import logo2 from '../assets/strivo logo 2.png';
 
 const Login = () => {
   const [username, setUsername] = useState('');
@@ -47,6 +49,11 @@ const Login = () => {
         {/* Glow effect */}
         <div className="absolute top-0 left-1/2 -translate-x-1/2 w-3/4 h-32 bg-blue-600/30 blur-[60px] -z-10 rounded-full pointer-events-none"></div>
 
+        <div className="flex flex-col items-center gap-4 mb-8">
+          <img src={logo1} alt="Strivo Logo 1" className="h-10 object-contain" />
+          <img src={logo2} alt="Strivo Logo 2" className="h-10 object-contain" />
+        </div>
+
         <div className="text-center mb-10">
           <motion.h2 
             initial={{ opacity: 0 }}
@@ -74,12 +81,7 @@ const Login = () => {
           </div>
 
           <div className="space-y-2">
-            <div className="flex justify-between items-center ml-1">
-              <label className="text-sm font-medium text-white/80">Password</label>
-              <Link to="/admin/forgot-password" className="text-xs text-blue-400 hover:text-blue-300 transition-colors">
-                Forgot Password?
-              </Link>
-            </div>
+            <label className="text-sm font-medium text-white/80 ml-1">Password</label>
             <div className="relative">
               <input 
                 type="password" 
@@ -88,6 +90,11 @@ const Login = () => {
                 placeholder="••••••••"
                 className="w-full bg-black/40 border border-white/10 rounded-xl px-4 py-3 text-white placeholder:text-white/30 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-transparent transition-all"
               />
+            </div>
+            <div className="flex justify-end pt-1">
+              <Link to="/admin/forgot-password" className="text-xs text-blue-400 hover:text-blue-300 transition-colors">
+                Forgot Password?
+              </Link>
             </div>
           </div>
 
