@@ -28,9 +28,9 @@ const Footer = () => {
         {/* Column 2: Company */}
         <div className="flex flex-col gap-4">
           <h3 className="text-white font-semibold text-base mb-1">Company</h3>
-          <a href="#" className="text-gray-300 hover:text-blue-400 transition-colors text-sm">About Us</a>
-          <a href="#" className="text-gray-300 hover:text-blue-400 transition-colors text-sm">Case Studies</a>
-          <a href="#" className="text-gray-300 hover:text-blue-400 transition-colors text-sm">Careers</a>
+          <Link to="/about" className="text-gray-300 hover:text-blue-400 transition-colors text-sm">About Us</Link>
+          <Link to="/casestudies" className="text-gray-300 hover:text-blue-400 transition-colors text-sm">Case Studies</Link>
+          <Link to="/careerstrivo" className="text-gray-300 hover:text-blue-400 transition-colors text-sm">Careers</Link>
           <Link to="/insights" className="text-gray-300 hover:text-blue-400 transition-colors text-sm">Insights</Link>
         </div>
 
@@ -47,7 +47,7 @@ const Footer = () => {
         <div className="flex flex-col gap-4">
           <h3 className="text-white font-semibold text-base mb-1">Get in Touch</h3>
           <Link to="/contact" className="text-gray-300 hover:text-blue-400 transition-colors text-sm">Contact Us</Link>
-          <a href="#" className="text-gray-300 hover:text-blue-400 transition-colors text-sm">Add Review</a>
+          <Link to="/review" className="text-gray-300 hover:text-blue-400 transition-colors text-sm">Add Review</Link>
         </div>
       </div>
     </motion.footer>

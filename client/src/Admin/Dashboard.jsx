@@ -73,7 +73,8 @@ const Dashboard = () => {
       fetchStories(); // Refetch after adding
     } catch (error) {
       console.error(error);
-      toast.error('Failed to add success story');
+      const errorMessage = error.response?.data?.message || 'Failed to add success story';
+      toast.error(errorMessage);
     } finally {
       setIsSubmitting(false);
     }

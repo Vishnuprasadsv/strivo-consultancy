@@ -1,4 +1,5 @@
 import SuccessStory from '../models/SuccessStory.js';
+import { v2 as cloudinary } from 'cloudinary';
 
 export const createStory = async (req, res) => {
   try {
@@ -8,14 +9,16 @@ export const createStory = async (req, res) => {
       return res.status(400).json({ message: 'Image is required' });
     }
 
-    // Since we are using local storage, construct the URL based on the filename
-    const imageUrl = `http://localhost:5000/uploads/success_stories/${req.file.filename}`;
+    // With multer-storage-cloudinary, req.file.path contains the Cloudinary URL.
+    const imageUrl = req.file.path;
+    const imageId = req.file.filename; // public_id
 
     const newStory = new SuccessStory({
       name,
       position,
       clientStories,
-      imageUrl
+      imageUrl,
+      imageId
     });
 
     await newStory.save();
@@ -39,11 +42,34 @@ export const getStories = async (req, res) => {
 export const deleteStory = async (req, res) => {
   try {
     const { id } = req.params;
-    const deletedStory = await SuccessStory.findByIdAndDelete(id);
     
-    if (!deletedStory) {
+    const story = await SuccessStory.findById(id);
+    if (!story) {
       return res.status(404).json({ message: 'Story not found' });
     }
+
+    // Delete image from Cloudinary
+    if (story.imageId) {
+      try {
+        await cloudinary.uploader.destroy(story.imageId);
+      } catch (cloudinaryError) {
+        console.error('Error deleting image from Cloudinary:', cloudinaryError);
+      }
+    } else if (story.imageUrl && story.imageUrl.includes('cloudinary.com')) {
+      // Fallback extraction for old Cloudinary URLs without imageId
+      const urlParts = story.imageUrl.split('/');
+      const filenameAndExtension = urlParts[urlParts.length - 1];
+      const filename = filenameAndExtension.split('.')[0];
+      const folderName = urlParts[urlParts.length - 2];
+      const publicId = `${folderName}/${filename}`;
+      try {
+        await cloudinary.uploader.destroy(publicId);
+      } catch (cloudinaryError) {
+        console.error('Error deleting image from Cloudinary fallback:', cloudinaryError);
+      }
+    }
+
+    await SuccessStory.findByIdAndDelete(id);
     
     res.status(200).json({ message: 'Story deleted successfully' });
   } catch (error) {

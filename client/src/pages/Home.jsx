@@ -1313,7 +1313,7 @@ const stats = [
 
               {/* Client Info */}
 
-              <Box textAlign="center">
+              <Box sx={{ textAlign: "center" }}>
                 <Typography
                   sx={{
                     color: "#fff",
