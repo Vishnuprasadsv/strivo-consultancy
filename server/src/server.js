@@ -3,6 +3,7 @@ import dotenv from 'dotenv';
 import cors from 'cors';
 import connectDB from './config/db.js';
 import adminRoutes from './routes/adminRoutes.js';
+import successStoryRoutes from './routes/successStoryRoutes.js';
 
 // Load env vars
 dotenv.config(); // Adjusted for project structure if .env is in server root
@@ -12,12 +13,19 @@ connectDB();
 
 const app = express();
 
+import path from 'path';
+
 // Middleware
 app.use(cors());
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+
+// Serve uploads directory statically
+app.use('/uploads', express.static(path.join(process.cwd(), 'uploads')));
 
 // Routes
 app.use('/api/admin', adminRoutes);
+app.use('/api/success-stories', successStoryRoutes);
 
 app.get('/', (req, res) => {
   res.send('Strivo Consultancy API is running...');

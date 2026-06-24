@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   Box,
   Typography,
@@ -168,6 +168,36 @@ const stats = [
 ];
 
   
+  const [successStories, setSuccessStories] = useState([]);
+  const [loadingStories, setLoadingStories] = useState(true);
+
+  useEffect(() => {
+    const fetchStories = async () => {
+      try {
+        const response = await fetch('http://localhost:5000/api/success-stories');
+        const data = await response.json();
+        if (data && data.length > 0) {
+          // Map backend data to frontend expected format
+          const formattedData = data.map(story => ({
+            name: story.name,
+            role: story.position,
+            image: story.imageUrl,
+            review: story.clientStories
+          }));
+          setSuccessStories(formattedData);
+        } else {
+          setSuccessStories(testimonials); // Fallback
+        }
+      } catch (error) {
+        console.error('Error fetching success stories:', error);
+        setSuccessStories(testimonials); // Fallback
+      } finally {
+        setLoadingStories(false);
+      }
+    };
+    fetchStories();
+  }, []);
+
   return (
     <div>
       <SEO 
@@ -1146,7 +1176,11 @@ const stats = [
         paddingBottom: "70px",
       }}
     >
-      {testimonials.map((item, index) => (
+      {loadingStories ? (
+        <Box sx={{ display: 'flex', justifyContent: 'center', py: 10 }}>
+          <div className="w-10 h-10 border-4 border-blue-600 border-t-transparent rounded-full animate-spin"></div>
+        </Box>
+      ) : successStories.map((item, index) => (
         <SwiperSlide key={index}>
           <motion.div
             initial={{
