@@ -4,6 +4,7 @@ import { Toaster } from 'sonner';
 import Navbar from './Components/Navbar';
 import Footer from './Components/Footer';
 import Ferrofluid from './Components/Ferrofluid';
+import Career from './pages/Careerstrivo';
 
 // Lazy load all pages for code splitting and performance optimization
 const Home = lazy(() => import('./pages/Home'));
@@ -88,6 +89,7 @@ const App = () => {
               <Route path="/operations" element={<Operations />} />
               <Route path="/digital" element={<Digital />} />
               <Route path="/change" element={<Change />} />
+          <Route path="/careerstrivo" element={<Career/>}/>
               
               {/* Admin Routes */}
               <Route path="/admin/login" element={<Login />} />
