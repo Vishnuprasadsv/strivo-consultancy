@@ -1,5 +1,6 @@
 import React, { Suspense, lazy, useEffect } from 'react';
 import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom';
+import { Toaster } from 'sonner';
 import Navbar from './Components/Navbar';
 import Footer from './Components/Footer';
 import Ferrofluid from './Components/Ferrofluid';
@@ -17,6 +18,11 @@ const Strategic = lazy(() => import('./pages/Strategic'));
 const Operations = lazy(() => import('./pages/Operations'));
 const Digital = lazy(() => import('./pages/Digital'));
 const Change = lazy(() => import('./pages/Change'));
+
+// Admin Pages
+const Login = lazy(() => import('./Admin/Login'));
+const ForgotPassword = lazy(() => import('./Admin/ForgotPassword'));
+const ResetPassword = lazy(() => import('./Admin/ResetPassword'));
 
 // ScrollToTop component ensures navigating to a new route scrolls to the top smoothly
 const ScrollToTop = () => {
@@ -38,6 +44,7 @@ const App = () => {
   return (
     <BrowserRouter>
       <ScrollToTop />
+      <Toaster position="top-right" theme="dark" />
       <div className="min-h-screen bg-transparent text-white flex flex-col relative z-0">
         {/* Global Ferrofluid Background */}
         <div className="fixed inset-0 z-[-1] bg-black">
@@ -81,6 +88,11 @@ const App = () => {
               <Route path="/operations" element={<Operations />} />
               <Route path="/digital" element={<Digital />} />
               <Route path="/change" element={<Change />} />
+              
+              {/* Admin Routes */}
+              <Route path="/admin/login" element={<Login />} />
+              <Route path="/admin/forgot-password" element={<ForgotPassword />} />
+              <Route path="/admin/reset-password" element={<ResetPassword />} />
             </Routes>
           </Suspense>
         </main>
