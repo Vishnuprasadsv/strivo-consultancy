@@ -4,6 +4,7 @@ import cors from 'cors';
 import connectDB from './config/db.js';
 import adminRoutes from './routes/adminRoutes.js';
 import successStoryRoutes from './routes/successStoryRoutes.js';
+import inquiryRoutes from './routes/inquiryRoutes.js';
 
 // Load env vars
 dotenv.config(); // Adjusted for project structure if .env is in server root
@@ -26,7 +27,7 @@ app.use('/uploads', express.static(path.join(process.cwd(), 'uploads')));
 // Routes
 app.use('/api/admin', adminRoutes);
 app.use('/api/success-stories', successStoryRoutes);
-
+app.use('/api/inquiries', inquiryRoutes);
 app.get('/', (req, res) => {
   res.send('Strivo Consultancy API is running...');
 });
