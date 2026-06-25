@@ -25,6 +25,7 @@ const ForgotPassword = lazy(() => import('./Admin/ForgotPassword'));
 const ResetPassword = lazy(() => import('./Admin/ResetPassword'));
 const Dashboard = lazy(() => import('./Admin/Dashboard'));
 
+
 // ScrollToTop component ensures navigating to a new route scrolls to the top smoothly
 const ScrollToTop = () => {
   const { pathname } = useLocation();
@@ -109,6 +110,7 @@ const App = () => {
               <Route path="/admin/forgot-password" element={<ForgotPassword />} />
               <Route path="/admin/reset-password" element={<ResetPassword />} />
               <Route path="/admin/dashboard" element={<Dashboard />} />
+              
             </Routes>
           </Suspense>
         </main>
