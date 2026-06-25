@@ -32,6 +32,15 @@ app.get('/', (req, res) => {
   res.send('Strivo Consultancy API is running...');
 });
 
+// Global error handler
+app.use((err, req, res, next) => {
+  console.error('Global error:', err);
+  res.status(err.status || 500).json({
+    message: err.message || 'Internal Server Error',
+    error: err
+  });
+});
+
 const PORT = process.env.PORT || 5000;
 
 app.listen(PORT, () => {

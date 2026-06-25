@@ -22,6 +22,9 @@ export const loginAdmin = async (req, res) => {
       res.json({
         _id: admin._id,
         username: admin.username,
+        email: admin.email,
+        role: admin.role,
+        profileImage: admin.profileImage,
         token: generateToken(admin._id),
       });
     } else {
@@ -36,7 +39,7 @@ export const loginAdmin = async (req, res) => {
 // @route   POST /api/admin/register
 // @access  Public (or Private depending on your security needs)
 export const registerAdmin = async (req, res) => {
-  const { username, password } = req.body;
+  const { username, email, role, password } = req.body;
 
   try {
     const adminExists = await Admin.findOne({ username });
@@ -47,6 +50,8 @@ export const registerAdmin = async (req, res) => {
 
     const admin = await Admin.create({
       username,
+      email,
+      role,
       password,
     });
 
@@ -54,6 +59,9 @@ export const registerAdmin = async (req, res) => {
       res.status(201).json({
         _id: admin._id,
         username: admin.username,
+        email: admin.email,
+        role: admin.role,
+        profileImage: admin.profileImage,
         token: generateToken(admin._id),
         message: 'Admin created successfully'
       });
@@ -116,5 +124,55 @@ export const resetPassword = async (req, res) => {
     res.json({ message: 'Password updated successfully' });
   } catch (error) {
     res.status(400).json({ message: 'Invalid or expired token', error: error.message });
+  }
+};
+
+// @desc    Change password
+// @route   PUT /api/admin/change-password
+// @access  Public (should ideally be private, but matching current style)
+export const changePassword = async (req, res) => {
+  const { username, currentPassword, newPassword } = req.body;
+
+  try {
+    const admin = await Admin.findOne({ username });
+
+    if (admin && (await admin.matchPassword(currentPassword))) {
+      admin.password = newPassword;
+      await admin.save();
+      res.json({ message: 'Password updated successfully' });
+    } else {
+      res.status(401).json({ message: 'Invalid current password' });
+    }
+  } catch (error) {
+    res.status(500).json({ message: 'Server error', error: error.message });
+  }
+};
+
+// @desc    Upload profile image
+// @route   PUT /api/admin/profile-image
+// @access  Public (should ideally be private)
+export const uploadProfileImage = async (req, res) => {
+  const { username } = req.body;
+  
+  if (!req.file) {
+    return res.status(400).json({ message: 'No image uploaded' });
+  }
+
+  try {
+    const admin = await Admin.findOne({ username });
+    
+    if (!admin) {
+      return res.status(404).json({ message: 'Admin not found' });
+    }
+
+    admin.profileImage = req.file.path;
+    await admin.save();
+
+    res.json({ 
+      message: 'Profile image updated successfully',
+      profileImage: admin.profileImage
+    });
+  } catch (error) {
+    res.status(500).json({ message: 'Server error', error: error.message });
   }
 };
