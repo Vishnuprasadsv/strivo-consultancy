@@ -77,8 +77,8 @@ const AdminNavbar = () => {
           
           <div className="flex items-center gap-3 cursor-pointer pl-4 border-l border-white/10">
             <div className="text-right hidden md:block">
-              <p className="text-sm font-medium text-white">{adminUser?.username || 'Admin User'}</p>
-              <p className="text-xs text-white/50">Administrator</p>
+              {adminUser?.username && <p className="text-sm font-medium text-white">{adminUser.username}</p>}
+              {adminUser?.role && <p className="text-xs text-white/50">{adminUser.role}</p>}
             </div>
             {adminUser?.profileImage ? (
               <img src={adminUser.profileImage} alt="Profile" className="w-10 h-10 rounded-full object-cover border-2 border-blue-500/30" />
@@ -133,15 +133,15 @@ const AdminNavbar = () => {
           })}
         </div>
 
-        {/* Bottom Settings and Logout */}
+        {/* Bottom Profile and Logout */}
         <div className="p-4 mt-auto mb-4 flex flex-col gap-2">
           <Link
-            to="/admin/settings"
+            to="/admin/profile"
             className={`relative flex items-center gap-4 px-4 py-3 rounded-xl transition-colors duration-300 group cursor-pointer ${
-              location.pathname === '/admin/settings' ? 'text-blue-500 font-medium' : 'text-white/70 hover:text-white hover:bg-white/5'
+              location.pathname === '/admin/profile' ? 'text-blue-500 font-medium' : 'text-white/70 hover:text-white hover:bg-white/5'
             }`}
           >
-            {location.pathname === '/admin/settings' && (
+            {location.pathname === '/admin/profile' && (
               <motion.div
                 layoutId="active-admin-nav-bg"
                 className="absolute inset-0 bg-blue-600/10 rounded-xl border-r-[3px] border-blue-400"
@@ -150,9 +150,9 @@ const AdminNavbar = () => {
               />
             )}
             <span className="relative z-10 flex items-center justify-center">
-              <SettingsIcon />
+              <AccountCircleIcon />
             </span>
-            <span className="relative z-10">Settings</span>
+            <span className="relative z-10">Profile</span>
           </Link>
           
           <button
