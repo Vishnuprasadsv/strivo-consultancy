@@ -8,6 +8,8 @@ import Ferrofluid from './Components/Ferrofluid';
 
 import Review from './pages/Review';
 import Career from './pages/Career';
+import CareerAdmin from './Admin/Admincareers';
+
 
 // Lazy load all pages for code splitting and performance optimization
 const Home = lazy(() => import('./pages/Home'));
@@ -28,7 +30,7 @@ const Login = lazy(() => import('./Admin/Login'));
 const ForgotPassword = lazy(() => import('./Admin/ForgotPassword'));
 const ResetPassword = lazy(() => import('./Admin/ResetPassword'));
 const Dashboard = lazy(() => import('./Admin/Dashboard'));
-const Profile = lazy(() => import('./Admin/Profile'));
+const Inquiries = lazy(() => import('./Admin/Inquiries'));
 
 // ScrollToTop component ensures navigating to a new route scrolls to the top smoothly
 const ScrollToTop = () => {
@@ -118,7 +120,8 @@ const App = () => {
               <Route path="/admin/forgot-password" element={<ForgotPassword />} />
               <Route path="/admin/reset-password" element={<ResetPassword />} />
               <Route path="/admin/dashboard" element={<Dashboard />} />
-              <Route path="/admin/profile" element={<Profile />} />
+              <Route path="/admin/inquiries" element={<Inquiries />} />
+              <Route path='/admin/career' element={<CareerAdmin />} />
             </Routes>
           </Suspense>
         </main>

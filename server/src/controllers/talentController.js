@@ -1,3 +1,7 @@
+
+// by namitha
+
+
 import { v2 as cloudinary } from 'cloudinary';
 import streamifier from 'streamifier';
 import nodemailer from 'nodemailer';
@@ -9,14 +13,19 @@ import TalentSubmission from '../models/TalentSubmission.js';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-// Configure Cloudinary
+
+
+
+
 cloudinary.config({
   cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
   api_key: process.env.CLOUDINARY_API_KEY,
   api_secret: process.env.CLOUDINARY_API_SECRET,
 });
 
-// Setup Nodemailer transporter
+
+
+
 const transporter = nodemailer.createTransport({
   service: "gmail",
   auth: {
@@ -56,9 +65,11 @@ const streamUpload = (file) => {
   });
 };
 
-// @desc    Submit resume to talent network
-// @route   POST /api/talent/submit
-// @access  Public
+
+
+
+
+
 export const submitTalent = async (req, res) => {
   try {
     const { fullName, email, mobile, category } = req.body;
@@ -67,7 +78,10 @@ export const submitTalent = async (req, res) => {
       return res.status(400).json({ success: false, message: "Missing required fields" });
     }
 
-    // Check if the candidate's resume/profile is already submitted
+
+
+
+
     const existingSubmission = await TalentSubmission.findOne({ email });
     if (existingSubmission) {
       return res.status(400).json({
@@ -80,7 +94,10 @@ export const submitTalent = async (req, res) => {
       return res.status(400).json({ success: false, message: "Please upload your resume" });
     }
 
-    // 1. Upload to Cloudinary with local fallback
+    
+
+
+
     let resumeUrl;
     try {
       const result = await streamUpload(req.file);
@@ -100,7 +117,9 @@ export const submitTalent = async (req, res) => {
       resumeUrl = `${req.protocol}://${req.get("host")}/uploads/${filename}`;
     }
 
-    // 2. Save to MongoDB
+  
+
+
     const submission = new TalentSubmission({
       fullName,
       email,
@@ -110,7 +129,12 @@ export const submitTalent = async (req, res) => {
     });
     await submission.save();
 
-    // 3. Send Acknowledgment Email
+   
+
+
+
+
+
     await sendAckEmail(email, fullName);
 
     return res.status(201).json({
@@ -120,6 +144,22 @@ export const submitTalent = async (req, res) => {
     });
   } catch (error) {
     console.error("Error in submitTalent controller:", error);
+    return res.status(500).json({ success: false, message: "Internal server error" });
+  }
+};
+
+
+
+
+
+
+
+export const getTalentSubmissions = async (req, res) => {
+  try {
+    const submissions = await TalentSubmission.find().sort({ createdAt: -1 });
+    return res.status(200).json({ success: true, data: submissions });
+  } catch (error) {
+    console.error("Error in getTalentSubmissions:", error);
     return res.status(500).json({ success: false, message: "Internal server error" });
   }
 };

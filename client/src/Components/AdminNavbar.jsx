@@ -11,6 +11,7 @@ import LogoutIcon from '@mui/icons-material/Logout';
 import SearchIcon from '@mui/icons-material/Search';
 import NotificationsIcon from '@mui/icons-material/Notifications';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
+import { getAdminStatsAPI, getAdminApplicationsAPI } from '../services/allApi';
 
 import logo from '../assets/strivo logo.png';
 import logo2 from '../assets/strivo logo 2.png';
@@ -27,6 +28,36 @@ const AdminNavbar = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const [adminUser, setAdminUser] = useState(null);
+  const [notificationCount, setNotificationCount] = useState(0);
+  const [notifications, setNotifications] = useState([]);
+  const [showDropdown, setShowDropdown] = useState(false);
+
+  // Fetch count of pending actions and list of top 5 new applications
+  const fetchNotifications = async () => {
+    try {
+      const [statsRes, appsRes] = await Promise.all([
+        getAdminStatsAPI(),
+        getAdminApplicationsAPI()
+      ]);
+
+      if (statsRes.status === 200 && statsRes.data?.success) {
+        setNotificationCount(statsRes.data.data.pendingActions || 0);
+      }
+
+      if (appsRes.status === 200 && appsRes.data?.success) {
+        // Only get pending applications for notifications
+        const pendingApps = appsRes.data.data.filter(app => app.status === 'pending');
+        
+        setNotifications(pendingApps.slice(0, 5).map(app => ({
+          id: app._id,
+          text: `New application: ${app.fullName} for ${app.appliedPosition}`,
+          time: new Date(app.createdAt)
+        })));
+      }
+    } catch (err) {
+      console.error("Failed to fetch notifications in navbar:", err);
+    }
+  };
 
   const handleLogout = () => {
     localStorage.removeItem('adminToken');
@@ -44,6 +75,21 @@ const AdminNavbar = () => {
       if (user) {
         setAdminUser(JSON.parse(user));
       }
+      
+      // Initial load of notifications
+      fetchNotifications();
+
+      // Listen to event emitted by CareerAdmin when an action is taken or data loaded
+      const handleUpdate = () => fetchNotifications();
+      window.addEventListener('notificationUpdate', handleUpdate);
+
+      // Periodically refresh notifications in backend (every 15 seconds)
+      const interval = setInterval(fetchNotifications, 15000);
+
+      return () => {
+        window.removeEventListener('notificationUpdate', handleUpdate);
+        clearInterval(interval);
+      };
     }
   }, [location.pathname, isAdminRoute, isAuthPage]);
 
@@ -70,10 +116,52 @@ const AdminNavbar = () => {
 
         {/* Right Icons */}
         <div className="flex items-center gap-4 md:gap-6">
-          <button className="relative text-white/70 hover:text-white transition-colors cursor-pointer">
-            <NotificationsIcon />
-            <span className="absolute top-0 right-0 w-2 h-2 bg-blue-500 rounded-full animate-pulse"></span>
-          </button>
+          <div className="relative">
+            <button 
+              onClick={() => setShowDropdown(!showDropdown)}
+              className="relative text-white/70 hover:text-white transition-colors cursor-pointer border-none bg-transparent"
+              title="Notifications"
+            >
+              <NotificationsIcon />
+              {notificationCount > 0 && (
+                <span className="absolute -top-1.5 -right-1.5 min-w-[18px] h-[18px] px-1 bg-blue-600 text-white rounded-full flex items-center justify-center text-[10px] font-bold border border-black">
+                  {notificationCount}
+                </span>
+              )}
+            </button>
+            
+            {showDropdown && (
+              <div className="absolute right-0 mt-3 w-80 bg-black border border-white/10 rounded-2xl p-4 shadow-2xl z-50 text-white flex flex-col gap-3">
+                <div className="flex justify-between items-center pb-2 border-b border-white/10">
+                  <span className="text-sm font-bold">Recent Notifications</span>
+                  <span className="text-xxs text-blue-400 font-semibold">{notificationCount} Pending</span>
+                </div>
+                <div className="flex flex-col gap-2 max-h-60 overflow-y-auto">
+                  {notifications.length === 0 ? (
+                    <p className="text-xs text-white/40 text-center py-4">No new notifications</p>
+                  ) : (
+                    notifications.map((n) => (
+                      <div 
+                        key={n.id} 
+                        className="p-2 hover:bg-white/5 rounded-lg transition-colors cursor-pointer" 
+                        onClick={() => { 
+                          navigate('/admin/career'); 
+                          setShowDropdown(false); 
+                        }}
+                      >
+                        <p className="text-xs text-white/80 leading-snug">{n.text}</p>
+                        <span className="text-[9px] text-white/40 block mt-1">
+                          {Math.floor((new Date() - n.time) / 60000) < 60 
+                            ? `${Math.max(0, Math.floor((new Date() - n.time) / 60000))}m ago` 
+                            : n.time.toLocaleDateString()}
+                        </span>
+                      </div>
+                    ))
+                  )}
+                </div>
+              </div>
+            )}
+          </div>
           
           <div className="flex items-center gap-3 cursor-pointer pl-4 border-l border-white/10">
             <div className="text-right hidden md:block">

@@ -1,10 +1,10 @@
 import express from 'express';
 import multer from 'multer';
-import { submitTalent } from '../controllers/talentController.js';
+import { submitTalent, getTalentSubmissions } from '../controllers/talentController.js';
 
 const router = express.Router();
 
-// Configure Multer with memory storage
+
 const storage = multer.memoryStorage();
 const upload = multer({
   storage,
@@ -13,5 +13,8 @@ const upload = multer({
 
 
 router.post("/submit", upload.single("resume"), submitTalent);
+
+
+router.get("/submissions", getTalentSubmissions);
 
 export default router;

@@ -4,6 +4,7 @@ import cors from 'cors';
 import connectDB from './config/db.js';
 import adminRoutes from './routes/adminRoutes.js';
 import successStoryRoutes from './routes/successStoryRoutes.js';
+import inquiryRoutes from './routes/inquiryRoutes.js';
 
 import careerRoutes from './routes/careerRoutes.js';
 import talentRoutes from './routes/talentRoutes.js';
@@ -34,6 +35,7 @@ app.use('/api/success-stories', successStoryRoutes);
 app.use('/api/career', careerRoutes);
 app.use('/api/talent', talentRoutes);
 
+app.use('/api/inquiries', inquiryRoutes);
 app.get('/', (req, res) => {
   res.send('Strivo Consultancy API is running...');
 });

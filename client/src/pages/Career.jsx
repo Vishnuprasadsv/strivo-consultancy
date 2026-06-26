@@ -24,7 +24,7 @@ import { useState } from "react";
 import CloudUploadOutlinedIcon from "@mui/icons-material/CloudUploadOutlined";
 import careerVideo from "../assets/career.mp4";
 import { toast } from "sonner";
-import { applyJobAPI, submitTalentAPI } from "../services/allApi";
+import { applyJobAPI, submitTalentAPI, getJobsAPI } from "../services/allApi";
 import Ferrofluid from "../Components/Ferrofluid";
 import {
 
@@ -58,10 +58,40 @@ function Career() {
   const [applyLoading, setApplyLoading] = useState(false);
   const [talentLoading, setTalentLoading] = useState(false);
 
+  // Dynamic jobs states
+  const [dynamicJobs, setDynamicJobs] = useState([]);
+  const [currentPage, setCurrentPage] = useState(1);
+  const jobsPerPage = 1;
+
+  const fetchDynamicJobs = async () => {
+    try {
+      const response = await getJobsAPI();
+      if (response.status === 200 && response.data?.success) {
+        const activeJobs = response.data.data.filter(job => job.status === "Active" || !job.status);
+        setDynamicJobs(activeJobs);
+      }
+    } catch (error) {
+      console.error("Failed to load dynamic jobs:", error);
+    }
+  };
+
+  React.useEffect(() => {
+    fetchDynamicJobs();
+  }, []);
+
   const scrollToSection = (id) => {
     const element = document.getElementById(id);
     if (element) {
-      element.scrollIntoView({ behavior: "smooth" });
+      const offset = 80; // Offset for sticky navbar
+      const bodyRect = document.body.getBoundingClientRect().top;
+      const elementRect = element.getBoundingClientRect().top;
+      const elementPosition = elementRect - bodyRect;
+      const offsetPosition = elementPosition - offset;
+
+      window.scrollTo({
+        top: offsetPosition,
+        behavior: "smooth"
+      });
     }
   };
 
@@ -190,7 +220,7 @@ function Career() {
       },
     },
 
-    // Ensure typed text is fully white and visible
+
     "& .MuiInputBase-input": {
       color: "#ffffff !important",
     },
@@ -252,7 +282,7 @@ function Career() {
   ];
   return (
     <div>
-      {/* HERO SECTION */}
+
       <Box
         sx={{
           minHeight: "100vh",
@@ -289,7 +319,7 @@ function Career() {
           }}
         />
 
-        {/* Floating Card */}
+
         <MotionBox
           animate={{
             y: [0, -25, 0],
@@ -336,7 +366,7 @@ function Career() {
             },
           }}
         >
-          {/* Top Row: Icon + Pulsing Badge */}
+
           <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", width: "100%" }}>
             <Box
               sx={{
@@ -376,7 +406,6 @@ function Career() {
             </Box>
           </Box>
 
-          {/* Middle/Bottom Text Content */}
           <Box>
             <Typography sx={{ color: "#ffffff", fontWeight: 700, fontSize: "1.15rem", mb: 0.5 }}>
               Join Our Team
@@ -384,8 +413,7 @@ function Career() {
             <Typography sx={{ color: "#94A3B8", fontSize: "0.78rem", lineHeight: 1.4, mb: 1.5 }}>
               We are looking for passionate innovators to build the future.
             </Typography>
-            
-            {/* Tag/Link */}
+
             <Typography
               sx={{
                 color: "#60A5FA",
@@ -397,20 +425,15 @@ function Career() {
                 cursor: "pointer",
                 "&:hover": { color: "#93C5FD" }
               }}
-              
               onClick={() => scrollToSection('open-positions')}
             >
-
-              <Button  
-              onClick={() => scrollToSection('open-positions')}>   View Openings &rarr;</Button>
-            
+              View Openings &rarr;
             </Typography>
-          
           </Box>
         </MotionBox>
 
 
-        {/* Left Orb */}
+
         <MotionBox
           animate={{
             y: [0, 40, 0],
@@ -556,14 +579,14 @@ function Career() {
                     Life At Strivo
                   </Button>
                 </Stack>
-                {/* buttons */}
+
               </Stack>
             </Box>
 
           </MotionBox>
         </Container>
 
-        {/* Scroll Indicator */}
+
         <MotionBox
           animate={{ y: [0, 12, 0] }}
           transition={{
@@ -584,9 +607,7 @@ function Career() {
         </MotionBox>
       </Box>
 
-      {/* why choose us  */}
-      {/* WHY JOIN US */}
-      {/* WHY JOIN US SECTION */}
+
       <Box
         id="why-join-us"
         sx={{
@@ -611,7 +632,6 @@ function Career() {
               },
             }}
           >
-            {/* LEFT IMAGE */}
             <Box
               sx={{
                 flex: 1,
@@ -625,7 +645,7 @@ function Career() {
                 transition={{ duration: 0.8 }}
                 viewport={{ once: true }}
               >
-                {/* Glow Effect */}
+
                 <Box
                   sx={{
                     position: "absolute",
@@ -668,7 +688,7 @@ function Career() {
               </MotionBox>
             </Box>
 
-            {/* RIGHT CONTENT */}
+
             <Box
               sx={{
                 flex: 1,
@@ -849,7 +869,7 @@ function Career() {
             </Typography>
           </Box>
 
-          {/* Video */}
+
 
           <Box
             sx={{
@@ -887,7 +907,7 @@ function Career() {
               />
             </video>
 
-            {/* Overlay */}
+
 
             <Box
               sx={{
@@ -998,7 +1018,6 @@ function Career() {
             </Typography>
           </Box>
 
-          {/* Job Card 1 */}
           <MotionBox whileHover={{ y: -5 }} sx={{ mb: 3 }}>
             <Box
               sx={{
@@ -1091,7 +1110,7 @@ function Career() {
             </Box>
           </MotionBox>
 
-          {/* Job Card 2 */}
+         
           <MotionBox whileHover={{ y: -5 }} sx={{ mb: 3 }}>
             <Box
               sx={{
@@ -1183,7 +1202,7 @@ function Career() {
             </Box>
           </MotionBox>
 
-          {/* Job Card 3 */}
+          
           <MotionBox whileHover={{ y: -5 }}>
             <Box
               sx={{
@@ -1275,9 +1294,146 @@ function Career() {
               </Button>
             </Box>
           </MotionBox>
+
+        
+          {dynamicJobs.length > 0 && (
+            <Box sx={{ mt: 3 }}>
+
+              {dynamicJobs.slice((currentPage - 1) * jobsPerPage, currentPage * jobsPerPage).map((job) => (
+                <MotionBox key={job._id} whileHover={{ y: -5 }} sx={{ mb: 3 }}>
+                  <Box
+                    sx={{
+                      minHeight: 250,
+                      p: 4,
+                      borderRadius: "24px",
+                      background: "rgba(255,255,255,0.04)",
+                      border: "1px solid rgba(255,255,255,0.08)",
+                      backdropFilter: "blur(20px)",
+                      transition: "all .3s ease",
+
+                      "&:hover": {
+                        border: "1px solid rgba(37,99,235,.4)",
+                        boxShadow: "0 0 40px rgba(37,99,235,.15)",
+                      },
+
+                      display: "flex",
+                      flexDirection: {
+                        xs: "column",
+                        md: "row",
+                      },
+                      justifyContent: "space-between",
+                      alignItems: {
+                        xs: "flex-start",
+                        md: "center",
+                      },
+                      gap: 3,
+                    }}
+                  >
+                    <Box maxWidth="750px">
+                      <Typography
+                        sx={{
+                          color: "#fff",
+                          fontSize: "1.35rem",
+                          fontWeight: 700,
+                          mb: 1,
+                        }}
+                      >
+                        {job.title}
+                      </Typography>
+
+                      <Typography
+                        sx={{
+                          color: "#94A3B8",
+                          lineHeight: 1.8,
+                          mb: 2.5,
+                        }}
+                      >
+                        {job.description}
+                      </Typography>
+
+                      <Stack sx={{
+                        "& .MuiChip-root": {
+                          color: "#fff",
+                          background: "rgba(37,99,235,0.15)",
+                          border: "1px solid rgba(37,99,235,0.3)",
+                          fontWeight: 500,
+                        }
+                      }} direction="row" spacing={2} flexWrap="wrap" useFlexGap>
+                        <Chip label={job.department} />
+                        <Chip label={job.location} />
+                        <Chip label={job.jobType || "Full Time"} />
+                      </Stack>
+                    </Box>
+
+                    <Button
+                      onClick={() =>
+                        handleApplyClick(
+                          job.title,
+                          job.description
+                        )
+                      }
+                      variant="contained"
+                      sx={{
+                        background: "#2563EB",
+                        borderRadius: "14px",
+                        px: 4,
+                        minWidth: 150,
+                        height: 50,
+                        textTransform: "none",
+                        fontWeight: 600,
+                      }}
+                    >
+                      Apply Now
+                    </Button>
+                  </Box>
+                </MotionBox>
+              ))}
+
+             
+              {dynamicJobs.length > jobsPerPage && (
+                <Box sx={{ display: "flex", justifyContent: "center", alignItems: "center", gap: 2, mt: 5 }}>
+                  <Button
+                    disabled={currentPage === 1}
+                    onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
+                    variant="outlined"
+                    sx={{
+                      color: "#fff",
+                      borderColor: "rgba(255, 255, 255, 0.15)",
+                      borderRadius: "10px",
+                      textTransform: "none",
+                      px: 3,
+                      "&:hover": { borderColor: "#2563EB", background: "rgba(37, 99, 235, 0.1)" },
+                      "&.Mui-disabled": { color: "rgba(255, 255, 255, 0.2)", borderColor: "rgba(255, 255, 255, 0.05)" }
+                    }}
+                  >
+                    Previous
+                  </Button>
+                  <Typography sx={{ color: "rgba(255, 255, 255, 0.5)", fontSize: "0.9rem" }}>
+                    Page {currentPage} of {Math.ceil(dynamicJobs.length / jobsPerPage)}
+                  </Typography>
+                  <Button
+                    disabled={currentPage === Math.ceil(dynamicJobs.length / jobsPerPage)}
+                    onClick={() => setCurrentPage(prev => Math.min(prev + 1, Math.ceil(dynamicJobs.length / jobsPerPage)))}
+                    variant="outlined"
+                    sx={{
+                      color: "#fff",
+                      borderColor: "rgba(255, 255, 255, 0.15)",
+                      borderRadius: "10px",
+                      textTransform: "none",
+                      px: 3,
+                      "&:hover": { borderColor: "#2563EB", background: "rgba(37, 99, 235, 0.1)" },
+                      "&.Mui-disabled": { color: "rgba(255, 255, 255, 0.2)", borderColor: "rgba(255, 255, 255, 0.05)" }
+                    }}
+                  >
+                    Next
+                  </Button>
+                </Box>
+              )}
+            </Box>
+          )}
         </Container>
       </Box>
-      {/* DON'T SEE A PERFECT FIT */}
+   
       <Box
         sx={{
           py: { xs: 8, md: 12 },
@@ -1353,7 +1509,7 @@ function Career() {
         </Container>
       </Box>
 
-      {/* APPLY MODAL */}
+    
       <Dialog
         open={openApplyModal}
         onClose={() => setOpenApplyModal(false)}
@@ -1372,8 +1528,8 @@ function Career() {
             position: "relative",
             border: "1px solid rgba(255,255,255,0.1)",
             boxShadow: "0 0 80px rgba(37,99,235,.22)",
-            mx: { xs: 2, sm: "auto" },
-            width: { xs: "calc(100% - 32px)", sm: "100%" },
+            margin: { xs: "16px", sm: "32px" },
+            width: "100%",
             "&::before": {
               content: '""',
               position: "absolute",
@@ -1384,16 +1540,16 @@ function Career() {
           }
         }}
       >
-        <DialogTitle component="div" sx={{ textAlign: "center", pt: 3.5, pb: 1 }}>
-          <Typography variant="h5" fontWeight={700} sx={{ mb: 0.5 }}>
+        <DialogTitle component="div" sx={{ textAlign: "center", pt: 3.5, pb: 1, px: { xs: 2.5, sm: 4 } }}>
+          <Typography fontWeight={700} sx={{ mb: 0.5, fontSize: { xs: "1.25rem", sm: "1.5rem" } }}>
             Apply for {selectedJob.title || "Job"}
           </Typography>
-          <Typography sx={{ color: "#94A3B8", maxWidth: "440px", mx: "auto", fontSize: "0.85rem", lineHeight: 1.5 }}>
+          <Typography sx={{ color: "#94A3B8", maxWidth: "440px", mx: "auto", fontSize: { xs: "0.75rem", sm: "0.85rem" }, lineHeight: 1.5 }}>
             Submit your details and resume below.
           </Typography>
         </DialogTitle>
 
-        <DialogContent sx={{ px: 4, pb: 1.5, pt: 0.5 }}>
+        <DialogContent sx={{ px: { xs: 2.5, sm: 4 }, pb: 1.5, pt: 0.5 }}>
           {selectedJob.description && (
             <Box
               sx={{
@@ -1472,7 +1628,17 @@ function Career() {
           </Stack>
         </DialogContent>
 
-        <DialogActions sx={{ px: 4, pb: 2.5, pt: 1, justifyContent: "space-between" }}>
+        <DialogActions sx={{
+          px: { xs: 2.5, sm: 4 },
+          pb: { xs: 3.5, sm: 4 },
+          pt: 1,
+          flexDirection: { xs: "column-reverse", sm: "row" },
+          gap: { xs: 1.5, sm: 2 },
+          "& .MuiButton-root": {
+            width: { xs: "100%", sm: "auto" },
+            margin: "0 !important"
+          }
+        }}>
           <Button onClick={() => setOpenApplyModal(false)} sx={{ color: "#94A3B8", textTransform: "none" }}>Cancel</Button>
           <Button
             variant="contained"
@@ -1495,7 +1661,7 @@ function Career() {
         </DialogActions>
       </Dialog>
 
-      {/* RESUME MODAL */}
+    
       <Dialog
         open={openResumeModal}
         onClose={() => setOpenResumeModal(false)}
@@ -1514,8 +1680,8 @@ function Career() {
             position: "relative",
             border: "1px solid rgba(255,255,255,0.1)",
             boxShadow: "0 0 80px rgba(37,99,235,.22)",
-            mx: { xs: 2, sm: "auto" },
-            width: { xs: "calc(100% - 32px)", sm: "100%" },
+            margin: { xs: "16px", sm: "32px" },
+            width: "100%",
             "&::before": {
               content: '""',
               position: "absolute",
@@ -1526,17 +1692,17 @@ function Career() {
           }
         }}
       >
-        <DialogTitle component="div" sx={{ textAlign: "center", pt: 3.5, pb: 1 }}>
+        <DialogTitle component="div" sx={{ textAlign: "center", pt: 3.5, pb: 1, px: { xs: 2.5, sm: 4 } }}>
           <Box sx={{ width: 50, height: 50, mx: "auto", mb: 1.5, borderRadius: "16px", background: "rgba(37,99,235,.12)", display: "flex", alignItems: "center", justifyContent: "center" }}>
             <CloudUploadOutlinedIcon sx={{ fontSize: 26, color: "#2563EB" }} />
           </Box>
-          <Typography variant="h5" fontWeight={700} sx={{ mb: 0.5 }}>Join Our Talent Network</Typography>
-          <Typography sx={{ color: "#94A3B8", maxWidth: "440px", mx: "auto", fontSize: "0.85rem", lineHeight: 1.5 }}>
+          <Typography fontWeight={700} sx={{ mb: 0.5, fontSize: { xs: "1.25rem", sm: "1.5rem" } }}>Join Our Talent Network</Typography>
+          <Typography sx={{ color: "#94A3B8", maxWidth: "440px", mx: "auto", fontSize: { xs: "0.75rem", sm: "0.85rem" }, lineHeight: 1.5 }}>
             Submit your profile and we'll reach out when a suitable opportunity becomes available.
           </Typography>
         </DialogTitle>
 
-        <DialogContent sx={{ px: 4, pb: 1.5, pt: 0.5 }}>
+        <DialogContent sx={{ px: { xs: 2.5, sm: 4 }, pb: 1.5, pt: 0.5 }}>
           <Stack spacing={1.5}>
             <TextField
               fullWidth size="small" label="Full Name" name="fullName"
@@ -1593,7 +1759,17 @@ function Career() {
           </Stack>
         </DialogContent>
 
-        <DialogActions sx={{ px: 4, pb: 2.5, pt: 1, justifyContent: "space-between" }}>
+        <DialogActions sx={{
+          px: { xs: 2.5, sm: 4 },
+          pb: { xs: 3.5, sm: 4 },
+          pt: 1,
+          flexDirection: { xs: "column-reverse", sm: "row" },
+          gap: { xs: 1.5, sm: 2 },
+          "& .MuiButton-root": {
+            width: { xs: "100%", sm: "auto" },
+            margin: "0 !important"
+          }
+        }}>
           <Button onClick={() => setOpenResumeModal(false)} sx={{ color: "#94A3B8", textTransform: "none" }}>Cancel</Button>
           <Button
             variant="contained"

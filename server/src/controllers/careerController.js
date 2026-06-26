@@ -1,3 +1,6 @@
+
+// by namitha
+
 import { v2 as cloudinary } from 'cloudinary';
 import streamifier from 'streamifier';
 import nodemailer from 'nodemailer';
@@ -5,20 +8,24 @@ import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import CareerApplication from '../models/CareerApplication.js';
+import Job from '../models/Job.js';
+import TalentSubmission from '../models/TalentSubmission.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-// Configure Cloudinary
+
 cloudinary.config({
   cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
   api_key: process.env.CLOUDINARY_API_KEY,
   api_secret: process.env.CLOUDINARY_API_SECRET,
 });
-console.log(process.env.CLOUDINARY_CLOUD_NAME);
-console.log(process.env.CLOUDINARY_API_KEY);
-console.log(process.env.CLOUDINARY_API_SECRET);
-// Setup Nodemailer transporter
+
+
+
+
+
+
 const transporter = nodemailer.createTransport({
   service: "gmail",
   auth: {
@@ -26,6 +33,8 @@ const transporter = nodemailer.createTransport({
     pass: process.env.EMAIL_PASS,
   },
 });
+
+
 
 const sendAckEmail = async (toEmail, name, position) => {
   try {
@@ -45,6 +54,9 @@ const sendAckEmail = async (toEmail, name, position) => {
   }
 };
 
+
+
+
 const streamUpload = (file) => {
   return new Promise((resolve, reject) => {
     const stream = cloudinary.uploader.upload_stream(
@@ -58,9 +70,10 @@ const streamUpload = (file) => {
   });
 };
 
-// @desc    Submit a job application (with resume)
-// @route   POST /api/career/apply
-// @access  Public
+
+
+
+
 export const applyJob = async (req, res) => {
   try {
     const { fullName, email, mobile, appliedPosition, roleDescription } = req.body;
@@ -69,7 +82,7 @@ export const applyJob = async (req, res) => {
       return res.status(400).json({ success: false, message: "Missing required fields" });
     }
 
-    // Check if the candidate has already applied for this position
+   
     const existingApplication = await CareerApplication.findOne({ email, appliedPosition });
     if (existingApplication) {
       return res.status(400).json({
@@ -82,7 +95,6 @@ export const applyJob = async (req, res) => {
       return res.status(400).json({ success: false, message: "Please upload your resume" });
     }
 
-    // 1. Upload to Cloudinary with local fallback
     let resumeUrl;
     try {
       const result = await streamUpload(req.file);
@@ -102,7 +114,10 @@ export const applyJob = async (req, res) => {
       resumeUrl = `${req.protocol}://${req.get("host")}/uploads/${filename}`;
     }
 
-    // 2. Save to MongoDB
+   
+
+
+
     const application = new CareerApplication({
       fullName,
       email,
@@ -113,7 +128,7 @@ export const applyJob = async (req, res) => {
     });
     await application.save();
 
-    // 3. Send Acknowledgment Email
+   
     await sendAckEmail(email, fullName, appliedPosition);
 
     return res.status(201).json({
@@ -123,6 +138,208 @@ export const applyJob = async (req, res) => {
     });
   } catch (error) {
     console.error("Error in applyJob controller:", error);
+    return res.status(500).json({ success: false, message: "Internal server error" });
+  }
+};
+
+
+
+
+
+export const getApplications = async (req, res) => {
+  try {
+    const applications = await CareerApplication.find().sort({ createdAt: -1 });
+    return res.status(200).json({ success: true, data: applications });
+  } catch (error) {
+    console.error("Error in getApplications:", error);
+    return res.status(500).json({ success: false, message: "Internal server error" });
+  }
+};
+
+
+
+
+const sendReferralEmail = async (application) => {
+  try {
+    const hrEmail = process.env.NOTIFY_EMAIL || 'hr@strivoConsultancy.com';
+    if (!process.env.EMAIL_USER || !process.env.EMAIL_PASS) {
+      console.log("Email credentials not set. Skipping referral email.");
+      return;
+    }
+    const mailOptions = {
+      from: process.env.EMAIL_USER,
+      to: hrEmail,
+      subject: `[Candidate Referral] ${application.fullName} - ${application.appliedPosition}`,
+      text: `Dear HR Team,\n\nWe have referred a candidate for the position of ${application.appliedPosition}.\n\nCandidate Details:\n- Full Name: ${application.fullName}\n- Email: ${application.email}\n- Mobile: ${application.mobile}\n- Position: ${application.appliedPosition}\n\nView Resume: ${application.resumeUrl}\n\nPlease review their application and take necessary actions.\n\nBest regards,\nStrivo Admin Portal`,
+    };
+    await transporter.sendMail(mailOptions);
+    console.log(`Referral email sent successfully to ${hrEmail}`);
+  } catch (error) {
+    console.error("Failed to send referral email:", error.message);
+  }
+};
+
+
+
+
+export const updateApplicationStatus = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { status } = req.body; // pending, reviewed, accepted, rejected, referred
+    
+    const application = await CareerApplication.findByIdAndUpdate(
+      id,
+      { status },
+      { new: true }
+    );
+    
+    if (!application) {
+      return res.status(404).json({ success: false, message: "Application not found" });
+    }
+
+ 
+
+
+    if (status === 'referred') {
+      await sendReferralEmail(application);
+    }
+    
+    return res.status(200).json({ success: true, message: "Status updated successfully", data: application });
+  } catch (error) {
+    console.error("Error in updateApplicationStatus:", error);
+    return res.status(500).json({ success: false, message: "Internal server error" });
+  }
+};
+
+
+
+
+export const referApplication = async (req, res) => {
+  try {
+    const { id } = req.params;
+    
+    const application = await CareerApplication.findByIdAndUpdate(
+      id,
+      { status: 'referred' },
+      { new: true }
+    );
+    
+    if (!application) {
+      return res.status(404).json({ success: false, message: "Application not found" });
+    }
+
+    await sendReferralEmail(application);
+    
+    return res.status(200).json({ success: true, message: "Application successfully referred to HR", data: application });
+  } catch (error) {
+    console.error("Error in referApplication:", error);
+    return res.status(500).json({ success: false, message: "Internal server error" });
+  }
+};
+
+
+
+
+
+export const getJobs = async (req, res) => {
+  try {
+    const jobs = await Job.find().sort({ createdAt: -1 });
+    return res.status(200).json({ success: true, data: jobs });
+  } catch (error) {
+    console.error("Error in getJobs:", error);
+    return res.status(500).json({ success: false, message: "Internal server error" });
+  }
+};
+
+
+
+
+export const createJob = async (req, res) => {
+  try {
+    const { title, description, department, location, jobType, status } = req.body;
+    
+    if (!title || !description || !department || !location || !jobType) {
+      return res.status(400).json({ success: false, message: "Missing required fields" });
+    }
+    
+    const job = new Job({ title, description, department, location, jobType, status });
+    await job.save();
+    
+    return res.status(201).json({ success: true, message: "Job created successfully", data: job });
+  } catch (error) {
+    console.error("Error in createJob:", error);
+    return res.status(500).json({ success: false, message: "Internal server error" });
+  }
+};
+
+
+
+
+export const updateJob = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { title, description, department, location, jobType, status } = req.body;
+    
+    const job = await Job.findByIdAndUpdate(
+      id,
+      { title, description, department, location, jobType, status },
+      { new: true }
+    );
+    
+    if (!job) {
+      return res.status(404).json({ success: false, message: "Job not found" });
+    }
+    
+    return res.status(200).json({ success: true, message: "Job updated successfully", data: job });
+  } catch (error) {
+    console.error("Error in updateJob:", error);
+    return res.status(500).json({ success: false, message: "Internal server error" });
+  }
+};
+
+
+
+
+
+export const deleteJob = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const job = await Job.findByIdAndDelete(id);
+    
+    if (!job) {
+      return res.status(404).json({ success: false, message: "Job not found" });
+    }
+    
+    return res.status(200).json({ success: true, message: "Job deleted successfully" });
+  } catch (error) {
+    console.error("Error in deleteJob:", error);
+    return res.status(500).json({ success: false, message: "Internal server error" });
+  }
+};
+
+
+
+
+export const getDashboardStats = async (req, res) => {
+  try {
+    const totalJobs = await Job.countDocuments();
+    const activeJobs = await Job.countDocuments({ status: "Active" });
+    const totalApplications = await CareerApplication.countDocuments();
+    const talentSubmissions = await TalentSubmission.countDocuments();
+    const pendingActions = await CareerApplication.countDocuments({ status: "pending" });
+    
+    return res.status(200).json({
+      success: true,
+      data: {
+        totalJobs,
+        activeJobs,
+        totalApplications,
+        talentSubmissions,
+        pendingActions
+      }
+    });
+  } catch (error) {
+    console.error("Error in getDashboardStats:", error);
     return res.status(500).json({ success: false, message: "Internal server error" });
   }
 };
