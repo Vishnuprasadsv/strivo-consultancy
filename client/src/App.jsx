@@ -5,8 +5,9 @@ import Navbar from './Components/Navbar';
 import AdminNavbar from './Components/AdminNavbar';
 import Footer from './Components/Footer';
 import Ferrofluid from './Components/Ferrofluid';
-import Career from './pages/Careerstrivo';
+
 import Review from './pages/Review';
+import Career from './pages/Career';
 
 // Lazy load all pages for code splitting and performance optimization
 const Home = lazy(() => import('./pages/Home'));
@@ -108,7 +109,7 @@ const App = () => {
               <Route path="/operations" element={<Operations />} />
               <Route path="/digital" element={<Digital />} />
               <Route path="/change" element={<Change />} />
-          <Route path="/careerstrivo" element={<Career/>}/>
+          <Route path='/careers' element={<Career/>}/>
 
           <Route path="/review" element={<Review/>}/>
               

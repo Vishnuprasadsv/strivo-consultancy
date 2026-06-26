@@ -5,6 +5,9 @@ import connectDB from './config/db.js';
 import adminRoutes from './routes/adminRoutes.js';
 import successStoryRoutes from './routes/successStoryRoutes.js';
 
+import careerRoutes from './routes/careerRoutes.js';
+import talentRoutes from './routes/talentRoutes.js';
+
 // Load env vars
 dotenv.config(); // Adjusted for project structure if .env is in server root
 
@@ -26,6 +29,10 @@ app.use('/uploads', express.static(path.join(process.cwd(), 'uploads')));
 // Routes
 app.use('/api/admin', adminRoutes);
 app.use('/api/success-stories', successStoryRoutes);
+// career
+
+app.use('/api/career', careerRoutes);
+app.use('/api/talent', talentRoutes);
 
 app.get('/', (req, res) => {
   res.send('Strivo Consultancy API is running...');

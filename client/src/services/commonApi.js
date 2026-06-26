@@ -1,26 +1,20 @@
 import axios from "axios";
 
-/**
- * Reusable Axios wrapper for API requests.
- * @param {string} httpMethod - HTTP Verb (GET, POST, PUT, DELETE, PATCH)
- * @param {string} url - Target Endpoint URL
- * @param {any} reqBody - Request payload (body data)
- * @param {object} [reqHeader] - Optional request headers
- * @returns {Promise<any>} Axios promise resolving to response or catching error
- */
-export const commonAPI = async (httpMethod, url, reqBody, reqHeader) => {
+export const commonAPI = async (httpRequest, url, reqBody, reqHeader) => {
+  // If request body is FormData, leave content-type empty so Axios handles boundary automatically.
+  const defaultHeaders = (reqBody instanceof FormData) ? {} : { "Content-Type": "application/json" };
+
   const reqConfig = {
-    method: httpMethod,
+    method: httpRequest,
     url,
     data: reqBody,
-    headers: reqHeader ? reqHeader : { "Content-Type": "application/json" },
+    headers: reqHeader ? reqHeader : defaultHeaders
   };
-
-  return await axios(reqConfig)
-    .then((response) => {
-      return response;
-    })
-    .catch((error) => {
-      return error;
-    });
+  
+  try {
+    const result = await axios(reqConfig);
+    return result;
+  } catch (err) {
+    return err;
+  }
 };
