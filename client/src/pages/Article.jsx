@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { articlesData } from './Insight';
-import { getArticlesAPI, subscribeEmailAPI } from '../services/allapis';
+import { getArticlesAPI, subscribeEmailAPI } from '../services/allApi';
 import { toast } from 'sonner';
 
 const fadeUpVariants = {

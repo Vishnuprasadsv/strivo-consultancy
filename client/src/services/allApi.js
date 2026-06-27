@@ -1,9 +1,5 @@
 // by namitha
 
-
-
-
-
 import { commonAPI } from "./commonApi";
 import { SERVER_URL } from "./serverUrl";
 //  ente api calls by namitha
