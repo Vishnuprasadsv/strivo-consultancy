@@ -10,6 +10,12 @@ import {
   Grid,
 } from "@mui/material";
 
+
+import { submitReviewAPI } from "../services/allApi";
+import { toast } from "sonner";
+
+
+
 import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 import StarIcon from "@mui/icons-material/Star";
 import StarBorderIcon from "@mui/icons-material/StarBorder";
@@ -20,6 +26,8 @@ import CheckCircleOutlineIcon from "@mui/icons-material/CheckCircleOutlineOutlin
 
 
 import Ferrofluid from "../Components/Ferrofluid";
+
+
 
 const StarRating = ({ value, onChange }) => {
   const [hovered, setHovered] = useState(0);
@@ -38,11 +46,11 @@ const StarRating = ({ value, onChange }) => {
               onClick={() => onChange(star)}
               onMouseEnter={() => setHovered(star)}
               onMouseLeave={() => setHovered(0)}
-              sx={{ 
-                cursor: "pointer", 
+              sx={{
+                cursor: "pointer",
                 lineHeight: 0,
                 transition: "transform 0.15s ease",
-                "&:hover": { transform: "scale(1.2)" } 
+                "&:hover": { transform: "scale(1.2)" }
               }}
             >
               {isHighlighted ? (
@@ -138,11 +146,11 @@ const SuccessScreen = ({ onReset }) => {
       </Box>
 
       <Typography sx={{ color: "#fff", fontWeight: 800, fontSize: "1.6rem", mb: 1.5 }}>
-        Thank You! 
+        Thank You!
       </Typography>
 
       <Typography sx={{ color: "#94A3B8", lineHeight: 1.6, mb: 4, maxWidth: 400, mx: "auto", fontSize: "0.88rem" }}>
-        Your success story has been submitted. We truly appreciate your feedback — it helps us serve enterprises better.
+        We truly appreciate your feedback — it helps us serve enterprises better.
       </Typography>
 
       <Button
@@ -157,8 +165,8 @@ const SuccessScreen = ({ onReset }) => {
           textTransform: "none",
           fontWeight: 600,
           transition: "all 0.2s ease",
-          "&:hover": { 
-            borderColor: "#2563EB", 
+          "&:hover": {
+            borderColor: "#2563EB",
             background: "rgba(37,99,235,0.08)",
             transform: "translateY(-1px)"
           },
@@ -188,15 +196,15 @@ export default function Review() {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setForm((prev) => ({ 
-      ...prev, 
-      [name]: value 
+    setForm((prev) => ({
+      ...prev,
+      [name]: value
     }));
-    
+
     if (errors[name]) {
-      setErrors((prev) => ({ 
-        ...prev, 
-        [name]: "" 
+      setErrors((prev) => ({
+        ...prev,
+        [name]: ""
       }));
     }
   };
@@ -215,7 +223,7 @@ export default function Review() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
+
     const errs = validateForm();
     if (Object.keys(errs).length > 0) {
       setErrors(errs);
@@ -223,18 +231,37 @@ export default function Review() {
     }
 
     setLoading(true);
-    await new Promise((resolve) => setTimeout(resolve, 1600));
-    setLoading(false);
-    setSubmitted(true);
+    try {
+
+      const response = await submitReviewAPI(form);
+
+
+      if (response.status === 201 || response.status === 200) {
+        if (response.data?.success) {
+          toast.success("Review submitted successfully!");
+          setSubmitted(true);
+        } else {
+          toast.error(response.data?.message || "Failed to submit review.");
+        }
+      } else {
+        toast.error(response.data?.message || "Server error. Please try again.");
+      }
+    } catch (err) {
+      console.error("API error during review submission:", err);
+      toast.error("Something went wrong. Please check your connection.");
+    } finally {
+      setLoading(false);
+    }
   };
 
+
   const handleReset = () => {
-    setForm({ 
-      fullName: "", 
-      company: "", 
-      rating: 0, 
-      title: "", 
-      review: "" 
+    setForm({
+      fullName: "",
+      company: "",
+      rating: 0,
+      title: "",
+      review: ""
     });
     setErrors({});
     setSubmitted(false);
@@ -250,7 +277,7 @@ export default function Review() {
         py: { xs: 6, md: 10 },
       }}
     >
-     
+
       <Box sx={{ position: "absolute", inset: 0, zIndex: 0 }}>
         <Ferrofluid
           colors={['#4F46E5', '#06B6D4', '#E0F2FE']}
@@ -261,7 +288,7 @@ export default function Review() {
         />
       </Box>
 
-      
+
       <Box
         sx={{
           position: "absolute",
@@ -279,15 +306,15 @@ export default function Review() {
       />
 
       <Container maxWidth="xl" sx={{ position: "relative", zIndex: 1 }}>
-        
-      
+
+        {/* Header Section */}
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.7 }}
         >
           <Box sx={{ mb: { xs: 4, md: 6 } }}>
-           
+            {/* Top Badge */}
             <Box
               sx={{
                 display: "inline-flex",
@@ -315,7 +342,7 @@ export default function Review() {
               </Typography>
             </Box>
 
-           
+
             <Typography
               sx={{
                 color: "#fff",
@@ -338,6 +365,7 @@ export default function Review() {
               </Box>
             </Typography>
 
+
             <Typography
               sx={{
                 color: "#94A3B8",
@@ -352,7 +380,7 @@ export default function Review() {
           </Box>
         </motion.div>
 
-        
+
         <AnimatePresence mode="wait">
           {submitted ? (
             <motion.div
@@ -381,8 +409,8 @@ export default function Review() {
               transition={{ duration: 0.5 }}
             >
               <Grid container spacing={3} alignItems="flex-start">
-                
-               
+
+
                 <Grid item xs={12} md={7}>
                   <Box
                     component="form"
@@ -406,7 +434,7 @@ export default function Review() {
                       },
                     }}
                   >
-             
+
                     <Box
                       sx={{
                         position: "absolute",
@@ -418,7 +446,8 @@ export default function Review() {
                     </Box>
 
                     <Stack spacing={2} sx={{ position: "relative", zIndex: 1 }}>
-                 
+
+                      {/* Name & Company Input Fields */}
                       <Grid container spacing={2}>
                         <Grid item xs={12} sm={6}>
                           <TextField
@@ -452,7 +481,7 @@ export default function Review() {
                         </Grid>
                       </Grid>
 
-                     
+
                       <Box
                         sx={{
                           p: 2,
@@ -480,6 +509,7 @@ export default function Review() {
                         )}
                       </Box>
 
+
                       <TextField
                         fullWidth
                         size="small"
@@ -493,6 +523,7 @@ export default function Review() {
                         sx={fieldSx}
                         FormHelperTextProps={{ sx: { color: "#EF4444" } }}
                       />
+
 
                       <TextField
                         fullWidth
@@ -516,6 +547,7 @@ export default function Review() {
                           },
                         }}
                       />
+
 
                       <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
                         <Button
@@ -545,7 +577,7 @@ export default function Review() {
                   </Box>
                 </Grid>
 
-              
+
                 <Grid item xs={12} md={5}>
                   <Box
                     sx={{
@@ -558,7 +590,6 @@ export default function Review() {
                       top: { md: 100 },
                     }}
                   >
-                  
                     <Stack direction="row" spacing={1.5} alignItems="center" mb={2.5}>
                       <Box
                         sx={{
@@ -574,6 +605,7 @@ export default function Review() {
                         Review Guidelines
                       </Typography>
                     </Stack>
+
 
                     <Stack spacing={1.5}>
                       {guidelines.map((g, i) => (
@@ -612,7 +644,7 @@ export default function Review() {
                       ))}
                     </Stack>
 
-                   
+                    
                     <Box
                       sx={{
                         mt: 2.5, p: 1.5,
