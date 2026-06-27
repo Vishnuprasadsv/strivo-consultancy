@@ -1,9 +1,7 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import axios from "axios";
+import { useParams } from "react-router-dom";
 import { motion } from "framer-motion";
-import { useLocation } from "react-router-dom";
-import heroImage from "../assets/case-study-hero.jpg";
-import chartImage from "../assets/chart-placeholder.jpg";
-import authorImage from "../assets/author.jpg";
 
 const fadeUp = {
     hidden: { opacity: 0, y: 40 },
@@ -18,16 +16,15 @@ const fadeUp = {
 };
 
 const CaseStudyDetails = () => {
-    const location = useLocation();
-    const study = location.state || {
-        title: "Case Study",
-        image: heroImage,
-        description:
-            "Case study details are not available.",
-        result: "N/A",
-        label: "METRIC",
-    };
-    const [openFaq, setOpenFaq] = useState(null);
+    const { id } = useParams();
+
+const [study, setStudy] = useState(null);
+
+const [loading, setLoading] = useState(true);
+
+const [openFaq, setOpenFaq] = useState(null);
+   
+    
 
     const faqs = [
         {
@@ -69,6 +66,67 @@ const CaseStudyDetails = () => {
             },
         },
     };
+    
+useEffect(() => {
+
+   fetchStudy();
+
+}, [id]);
+
+const fetchStudy = async () => {
+
+   try {
+
+      const res = await axios.get(
+
+         `http://localhost:5000/api/case-studies/${id}`
+
+      );
+
+      setStudy(res.data);
+
+   }
+
+   catch(err){
+
+      console.log(err);
+
+   }
+
+   finally{
+
+      setLoading(false);
+
+   }
+
+};
+if(loading){
+
+return(
+
+<div className="h-screen flex items-center justify-center">
+
+Loading...
+
+</div>
+
+)
+
+}
+
+if(!study){
+
+return(
+
+<div className="h-screen flex items-center justify-center">
+
+Case Study Not Found
+
+</div>
+
+)
+
+}
     return (
         <div className="bg-transparent text-white min-h-screen">
 
@@ -96,10 +154,33 @@ const CaseStudyDetails = () => {
                     transition={{ duration: 0.8, delay: 0.2 }}
                     className="flex flex-wrap gap-6 text-gray-400 border-b border-slate-800 pb-8"
                 >
-                    <span>Sarah Mitchell</span>
-                    <span>May 14, 2025</span>
-                    <span>Senior Strategy Consultant</span>
-                    <span>8 min read</span>
+                    <span>{study.author}</span>
+
+<span>
+
+{study.publicationDate ?
+
+new Date(
+
+study.publicationDate
+
+).toLocaleDateString()
+
+: "-"}
+
+</span>
+
+<span>
+
+{study.authorRole}
+
+</span>
+
+<span>
+
+{study.duration}
+
+</span>
                 </motion.div>
             </motion.section>
 
@@ -112,7 +193,7 @@ const CaseStudyDetails = () => {
                 className="max-w-6xl mx-auto px-6 py-12"
             >
                 <motion.img
-                    src={study.image}
+                    src={study.coverImage}
                     alt={study.title}
                     initial={{ opacity: 0, y: 60 }}
                     whileInView={{ opacity: 1, y: 0 }}
@@ -134,7 +215,11 @@ const CaseStudyDetails = () => {
                     Executive Summary
                 </h2>
 
-                <p>{study.description}</p>
+               <p>
+
+{study.summary}
+
+</p>
             </motion.section>
 
             {/* BUSINESS CHALLENGE */}
@@ -150,9 +235,7 @@ const CaseStudyDetails = () => {
                 </h2>
 
                 <p className="text-gray-300 leading-8 mb-6">
-                    Prior to engagement, the client experienced several
-                    critical operational and strategic challenges that
-                    hindered growth and efficiency.
+                   {study.challenges}
                 </p>
 
 
@@ -162,29 +245,8 @@ const CaseStudyDetails = () => {
                     animate="visible"
                     className="grid md:grid-cols-2 gap-6"
                 >
-                    <div>{study.result}</div>
-
-                    <div>{study.label}</div>
-
-                    <div className="bg-slate-900 border border-slate-800 rounded-xl p-6">
-                        <h3 className="font-semibold mb-3">
-                            Customer Experience Gaps
-                        </h3>
-                        <p className="text-gray-400">
-                            Inconsistent customer journeys impacted retention
-                            and satisfaction.
-                        </p>
-                    </div>
-
-                    <div className="bg-slate-900 border border-slate-800 rounded-xl p-6">
-                        <h3 className="font-semibold mb-3">
-                            Operational Costs
-                        </h3>
-                        <p className="text-gray-400">
-                            High manual effort increased operational expenses
-                            and slowed decision-making.
-                        </p>
-                    </div>
+                    
+                    
                 </motion.div>
 
             </motion.section>
@@ -197,15 +259,7 @@ const CaseStudyDetails = () => {
                 variants={fadeUp}
                 className="max-w-6xl mx-auto px-6 py-10"
             >
-                <h2 className="text-4xl font-bold mb-6">
-                    Strategy & Solution
-                </h2>
-
-                <p className="text-gray-300 leading-8 mb-8">
-                    Our consultants developed a phased transformation
-                    roadmap focused on technology modernization, operational
-                    excellence, and customer-centric innovation.
-                </p>
+                
 <motion.div
   variants={staggerContainer}
   initial="hidden"
@@ -243,11 +297,11 @@ const CaseStudyDetails = () => {
                     Results & Impact
                 </h2>
 
-                <p className="text-gray-300 mb-10 leading-8">
-                    The transformation initiative delivered measurable
-                    business outcomes across operational efficiency,
-                    customer satisfaction, and revenue growth.
-                </p>
+               <p className="text-gray-300 mb-10 leading-8">
+
+{study.results}
+
+</p>
 <motion.div
   variants={staggerContainer}
   initial="hidden"
@@ -321,7 +375,7 @@ const CaseStudyDetails = () => {
                 
                     <div className="flex justify-center">
                         <img
-                            src={authorImage}
+                            src={study.authorImage}
                             alt="Author"
                             className="w-40 h-40 rounded-full object-cover border-4 border-blue-500"
                         />
@@ -329,23 +383,20 @@ const CaseStudyDetails = () => {
 
                     <div>
                         <a
-                            href="https://example.com"
+                            href={study.authorWebsite}
                             target="_blank"
                             rel="noopener noreferrer"
                             className="text-3xl font-bold hover:text-blue-500 transition"
                         >
-                            Sarah Mitchell
+                           {study.author}
                         </a>
 
                         <p className="text-blue-500 mt-2">
-                            www.sarahmitchell.com
+                            {study.authorWebsite}
                         </p>
 
                         <p className="text-gray-400 mt-4 leading-7">
-                            Senior Strategy Consultant with over 15 years of
-                            experience helping enterprises navigate complex
-                            transformations, accelerate growth, and build
-                            resilient business models.
+                            {study.authorRole}
                         </p>
 
                         <div className="flex flex-wrap gap-3 mt-6">
