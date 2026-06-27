@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 
@@ -21,57 +22,81 @@ const CaseStudies = () => {
   const navigate = useNavigate();
   const [selectedCategory, setSelectedCategory] = useState("All");
 
-  const caseStudies = [
-    {
-      
-      category: "Finance",
-      title: "Global Bank Digital Transformation",
-      description:
-        "Modernized core banking infrastructure, enabling faster transaction processing and improved customer experience.",
-      result: "+40%",
-      label: "REVENUE GROWTH",
-      image:
-        "https://images.unsplash.com/photo-1556740749-887f6717d7e4?w=1200",
-    },
-    {
-      
-      category: "Healthcare",
-      title: "Healthcare Supply Chain Optimization",
-      description:
-        "Streamlined procurement and logistics for a national hospital network, reducing waste and ensuring critical supply availability.",
-      result: "-25%",
-      label: "OPERATIONAL COSTS",
-      image:
-        "https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?w=1200",
-    },
-    {
-      
-      category: "Tech",
-      title: "SaaS Platform Scalability",
-      description:
-        "Architected a resilient cloud infrastructure allowing a hyper-growth startup to scale seamlessly across global markets.",
-      result: "3x",
-      label: "USER CAPACITY",
-      image:
-        "https://images.unsplash.com/photo-1518770660439-4636190af475?w=1200",
-    },
-  ];
-
+  const [caseStudies, setCaseStudies] = useState([]);
+  const [loading, setLoading] = useState(true);
   const categories = [
-    "All",
-    "Finance",
-    "Healthcare",
-    "Tech",
-    "Retail",
-  ];
 
+    "All",
+
+    "Finance",
+
+    "Healthcare",
+
+    "Technology",
+
+    "Retail"
+
+  ];
+  useEffect(() => {
+
+    fetchCaseStudies();
+
+  }, []);
+
+  const fetchCaseStudies = async () => {
+
+    try {
+
+      const res = await axios.get(
+
+        "http://localhost:5000/api/case-studies"
+
+      );
+
+      setCaseStudies(
+
+        res.data.filter(
+
+          item => item.status === "Published"
+
+        )
+
+      );
+
+    }
+
+    catch (err) {
+
+      console.log(err);
+
+    }
+
+    finally {
+
+      setLoading(false);
+
+    }
+
+  }
   const filteredStudies =
     selectedCategory === "All"
       ? caseStudies
       : caseStudies.filter(
         (study) => study.category === selectedCategory
       );
+  if(loading){
 
+return(
+
+<div className="flex justify-center items-center h-screen">
+
+Loading...
+
+</div>
+
+)
+
+}
   return (
     <div className="bg-transparent text-white min-h-screen">
       {/* Hero Section */}
@@ -140,11 +165,10 @@ const CaseStudies = () => {
             >
               <div className="relative">
                 <img
-                  src={study.image}
+                  src={study.coverImage}
                   alt={study.title}
                   className="w-full h-56 object-cover"
                 />
-
                 <span className="absolute top-4 left-4 bg-blue-600 text-xs px-3 py-1 rounded">
                   {study.category}
                 </span>
@@ -156,16 +180,16 @@ const CaseStudies = () => {
                 </h3>
 
                 <p className="text-gray-400 mb-6">
-                  {study.description}
+                  {study.summary}
                 </p>
 
                 <div className="bg-slate-800 rounded-lg p-5 mb-6">
                   <div className="text-4xl font-bold text-blue-500">
-                    {study.result}
+                    {study.author}
                   </div>
 
                   <div className="text-xs text-gray-400 mt-1">
-                    {study.label}
+                    Author
                   </div>
                 </div>
 
@@ -174,10 +198,11 @@ const CaseStudies = () => {
                              hover:text-white hover:translate-x-2
                              transition-all duration-300"
                   onClick={() => {
-                    navigate("/case-study-details", {
-                      state: study,
-                    });
+                   navigate(
 
+`/case-study-details/${study._id}`
+
+);
                     window.scrollTo(0, 0);
                   }}
                 >

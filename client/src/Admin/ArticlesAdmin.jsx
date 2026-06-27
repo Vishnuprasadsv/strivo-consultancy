@@ -10,71 +10,58 @@ import {
   DialogActions,
   TextField,
   MenuItem,
-  Button,
-  FormControlLabel,
-  Switch
+  Button
 } from "@mui/material";
 
-// Icons
+
 import ArticleIcon from '@mui/icons-material/Article';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import AddIcon from '@mui/icons-material/Add';
 import DescriptionIcon from '@mui/icons-material/Description';
 
-// API Services
-import {
-  getArticlesAPI,
-  createArticleAPI,
-  updateArticleAPI,
-  deleteArticleAPI
-} from '../services/allApi';
-
-
 const ArticlesAdmin = () => {
-  // Articles data list
+  
   const [articlesList, setArticlesList] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  // Form modal visibility controls
+
   const [openFormModal, setOpenFormModal] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const [editingId, setEditingId] = useState(null);
 
-  // Form inputs state
   const [formState, setFormState] = useState({
     title: '',
     category: 'Development',
     imageUrl: '',
     description: '',
-    content: '',
-    showSubscription: true
+    content: ''
   });
 
-  // Load articles from MongoDB backend database
-  const loadArticles = async () => {
+  
+  const loadArticles = () => {
     setLoading(true);
-    try {
-      const response = await getArticlesAPI();
-      if (response.status === 200 && response.data?.success) {
-        setArticlesList(response.data.data);
-      } else {
-        toast.error("Failed to load articles from database.");
+    const stored = localStorage.getItem('strivo_articles');
+    if (stored) {
+      try {
+        const parsed = JSON.parse(stored);
+        setArticlesList(parsed);
+      } catch (error) {
+        console.error("Error loading articles from localStorage:", error);
       }
-    } catch (error) {
-      console.error("Error loading articles:", error);
-      toast.error("Failed to load articles. Please check your backend.");
-    } finally {
-      setLoading(false);
+    } else {
+      
+      localStorage.setItem('strivo_articles', JSON.stringify([]));
+      setArticlesList([]);
     }
+    setLoading(false);
   };
 
   useEffect(() => {
     loadArticles();
   }, []);
 
-
-  // Update inputs state as the user types
+ 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormState(prev => ({
@@ -83,15 +70,7 @@ const ArticlesAdmin = () => {
     }));
   };
 
-  const handleSwitchChange = (e) => {
-    const { name, checked } = e.target;
-    setFormState(prev => ({
-      ...prev,
-      [name]: checked
-    }));
-  };
 
-  // Open modal in "Create" mode
   const handleOpenAddModal = () => {
     setIsEditing(false);
     setEditingId(null);
@@ -100,33 +79,29 @@ const ArticlesAdmin = () => {
       category: 'Development',
       imageUrl: '',
       description: '',
-      content: '',
-      showSubscription: true
+      content: ''
     });
     setOpenFormModal(true);
   };
 
-  // Open modal in "Edit" mode with selected article details
+
   const handleOpenEditModal = (article) => {
     setIsEditing(true);
-    setEditingId(article._id); // Map to MongoDB key _id
+    setEditingId(article.id);
     setFormState({
       title: article.title,
       category: article.category,
       imageUrl: article.imageUrl || '',
       description: article.description,
-      content: article.content || '',
-      showSubscription: article.showSubscription !== false
+      content: article.content || ''
     });
     setOpenFormModal(true);
   };
 
-
-  // Handle Save (Create or Update article in database)
-  const handleSaveArticle = async (e) => {
+  const handleSaveArticle = (e) => {
     e.preventDefault();
 
-    // Simple validation checks
+  
     if (!formState.title.trim()) {
       toast.error("Please enter an article title.");
       return;
@@ -144,53 +119,57 @@ const ArticlesAdmin = () => {
       return;
     }
 
-    try {
-      if (isEditing) {
-        // Call backend PUT API to update the article
-        const response = await updateArticleAPI(editingId, formState);
-        if (response.status === 200 && response.data?.success) {
-          toast.success("Article updated successfully! 🎉");
-          setOpenFormModal(false);
-          loadArticles(); // Reload updated list from server
+    let updatedList = [];
+
+    if (isEditing) {
+      // Update existing article
+      updatedList = articlesList.map(art => {
+        if (art.id === editingId) {
+          return {
+            ...art,
+            title: formState.title,
+            category: formState.category,
+            imageUrl: formState.imageUrl,
+            description: formState.description,
+            content: formState.content,
+            updatedAt: new Date().toISOString()
+          };
         } else {
-          toast.error(response.data?.message || "Failed to update article.");
+          return art;
         }
-      } else {
-        // Call backend POST API to create a new article
-        const response = await createArticleAPI(formState);
-        if (response.status === 201 && response.data?.success) {
-          toast.success("New article published successfully! 🎉");
-          setOpenFormModal(false);
-          loadArticles(); // Reload new list from server
-        } else {
-          toast.error(response.data?.message || "Failed to publish article.");
-        }
-      }
-    } catch (error) {
-      console.error("Error saving article:", error);
-      toast.error("An error occurred while saving the article.");
+      });
+      toast.success("Article updated successfully!");
+    } else {
+      // Create new article
+      const newArticle = {
+        id: Date.now(), // Generate a unique numerical ID
+        title: formState.title,
+        category: formState.category,
+        imageUrl: formState.imageUrl,
+        description: formState.description,
+        content: formState.content,
+        createdAt: new Date().toISOString()
+      };
+      updatedList = [newArticle, ...articlesList];
+      toast.success("New article published successfully!");
     }
+
+    // Save back to state and localStorage
+    setArticlesList(updatedList);
+    localStorage.setItem('strivo_articles', JSON.stringify(updatedList));
+    setOpenFormModal(false);
   };
 
-  // Delete article by ID from MongoDB
-  const handleDeleteArticle = async (articleId) => {
+  // Delete article by ID
+  const handleDeleteArticle = (articleId) => {
     const confirmation = window.confirm("Are you sure you want to delete this article?");
     if (confirmation) {
-      try {
-        const response = await deleteArticleAPI(articleId);
-        if (response.status === 200 && response.data?.success) {
-          toast.success("Article deleted successfully. 🗑️");
-          loadArticles(); // Refresh list from server
-        } else {
-          toast.error(response.data?.message || "Failed to delete article.");
-        }
-      } catch (error) {
-        console.error("Error deleting article:", error);
-        toast.error("An error occurred while deleting the article.");
-      }
+      const updatedList = articlesList.filter(art => art.id !== articleId);
+      setArticlesList(updatedList);
+      localStorage.setItem('strivo_articles', JSON.stringify(updatedList));
+      toast.success("Article deleted successfully.");
     }
   };
-
 
   return (
     <div className="min-h-screen pt-28 pb-12 px-4 sm:px-8 relative z-10 md:ml-64 bg-black text-white">
@@ -245,7 +224,7 @@ const ArticlesAdmin = () => {
                 </thead>
                 <tbody className="divide-y divide-white/5 text-sm">
                   {articlesList.map((art) => (
-                    <tr key={art._id} className="hover:bg-white/2.5 transition-colors">
+                    <tr key={art.id} className="hover:bg-white/2.5 transition-colors">
                       {/* Image Thumbnail */}
                       <td className="py-4 pr-4">
                         <img
@@ -282,7 +261,7 @@ const ArticlesAdmin = () => {
                             <EditIcon fontSize="small" />
                           </button>
                           <button
-                            onClick={() => handleDeleteArticle(art._id)}
+                            onClick={() => handleDeleteArticle(art.id)}
                             className="p-2 bg-white/5 hover:bg-red-600/20 text-red-400 rounded-lg transition-colors border border-white/5 hover:border-red-500/30 cursor-pointer"
                             title="Delete Article"
                           >
@@ -292,7 +271,6 @@ const ArticlesAdmin = () => {
                       </td>
                     </tr>
                   ))}
-
                 </tbody>
               </table>
             </div>
@@ -473,20 +451,6 @@ const ArticlesAdmin = () => {
                 Note: Use double Enter (empty lines) between paragraphs and section headings to structure the article presentation correctly.
               </span>
             </div>
-
-            {/* Show Subscription Option */}
-            <FormControlLabel
-              control={
-                <Switch
-                  checked={formState.showSubscription}
-                  onChange={handleSwitchChange}
-                  name="showSubscription"
-                  color="primary"
-                />
-              }
-              label="Show Subscription Sidebar on Detail Page"
-              sx={{ color: "rgba(255,255,255,0.8)", ml: 0.5 }}
-            />
 
           </DialogContent>
 
