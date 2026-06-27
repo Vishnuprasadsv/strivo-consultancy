@@ -5,8 +5,11 @@ import Navbar from './Components/Navbar';
 import AdminNavbar from './Components/AdminNavbar';
 import Footer from './Components/Footer';
 import Ferrofluid from './Components/Ferrofluid';
-import Career from './pages/Careerstrivo';
+
 import Review from './pages/Review';
+import Career from './pages/Career';
+import CareerAdmin from './Admin/Admincareers';
+
 
 // Lazy load all pages for code splitting and performance optimization
 const Home = lazy(() => import('./pages/Home'));
