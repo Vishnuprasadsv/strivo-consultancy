@@ -1,29 +1,161 @@
-import React, { useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { articlesData } from './Insight';
+import { getArticlesAPI, subscribeEmailAPI } from '../services/allapis';
+import { toast } from 'sonner';
 
 const fadeUpVariants = {
   hidden: { opacity: 0, y: 30 },
   visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: 'easeOut' } }
 };
 
+const renderContent = (contentString) => {
+  if (!contentString) return null;
+
+  const blocks = contentString.split("\n\n");
+
+  return blocks.map((block, idx) => {
+    const trimmed = block.trim();
+    if (!trimmed) return null;
+
+    if (trimmed.startsWith("-") || trimmed.startsWith("*")) {
+      const listItems = trimmed.split("\n").map(item => item.replace(/^[-\*]\s*/, ""));
+      return (
+        <ul key={idx} className="space-y-3 mb-6 list-disc list-inside text-gray-400 ml-2">
+          {listItems.map((item, itemIdx) => (
+            <li key={itemIdx}>{item}</li>
+          ))}
+        </ul>
+      );
+    }
+
+    if (trimmed.toLowerCase().startsWith("<blockquote>") && trimmed.toLowerCase().endsWith("</blockquote>")) {
+      const insideText = trimmed.slice(12, -13);
+      return (
+        <blockquote key={idx} className="bg-[#1F2937] border-l-4 border-blue-500 italic p-6 rounded-r-lg text-lg text-gray-300 my-6">
+          {insideText}
+        </blockquote>
+      );
+    }
+
+    if (trimmed.startsWith(">")) {
+      return (
+        <blockquote key={idx} className="bg-[#1F2937] border-l-4 border-blue-500 italic p-6 rounded-r-lg text-lg text-gray-300 my-6">
+          {trimmed.replace(/^>\s*/, "")}
+        </blockquote>
+      );
+    }
+
+    if (trimmed.startsWith("###")) {
+      return (
+        <h4 key={idx} className="text-xl font-bold text-white mt-8 mb-4">
+          {trimmed.replace(/^###\s*/, "")}
+        </h4>
+      );
+    }
+    if (trimmed.startsWith("##")) {
+      return (
+        <h3 key={idx} className="text-2xl font-bold text-white mt-10 mb-6">
+          {trimmed.replace(/^##\s*/, "")}
+        </h3>
+      );
+    }
+    if (trimmed.startsWith("#")) {
+      return (
+        <h2 key={idx} className="text-3xl font-bold text-white mt-12 mb-8">
+          {trimmed.replace(/^#\s*/, "")}
+        </h2>
+      );
+    }
+
+    return (
+      <p key={idx} className="mb-6 text-gray-300 leading-relaxed">
+        {trimmed}
+      </p>
+    );
+  });
+};
+
 const Article = () => {
   const { id } = useParams();
-  const article = articlesData.find(a => a.id === parseInt(id));
-  
-  // Exclude current article for related articles, limit to 3
-  const relatedArticles = articlesData.filter(a => a.id !== parseInt(id)).slice(0, 3);
+  const [article, setArticle] = useState(null);
+  const [relatedArticles, setRelatedArticles] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  const [subscribeEmailVal, setSubscribeEmailVal] = useState("");
+  const [submittingSubscribe, setSubmittingSubscribe] = useState(false);
+
+  const handleSubscribe = async (e) => {
+    e.preventDefault();
+    if (!subscribeEmailVal.trim()) {
+      toast.error("Please enter your email address.");
+      return;
+    }
+
+    setSubmittingSubscribe(true);
+    try {
+      const response = await subscribeEmailAPI({ email: subscribeEmailVal });
+      if (response.status === 201 || response.status === 200) {
+        if (response.data?.success) {
+          toast.success("Subscribed successfully! Welcome to Nexus Insights Daily! 🎉");
+          setSubscribeEmailVal("");
+        } else {
+          toast.error(response.data?.message || "Failed to subscribe.");
+        }
+      } else {
+        toast.error(response.data?.message || "Failed to subscribe. Please try again.");
+      }
+    } catch (err) {
+      console.error("Article subscription error:", err);
+      toast.error("Something went wrong. Please check your connection.");
+    } finally {
+      setSubmittingSubscribe(false);
+    }
+  };
 
   useEffect(() => {
     window.scrollTo(0, 0);
+
+    const loadArticleDetails = async () => {
+      setLoading(true);
+      const defaultList = [...articlesData];
+      let combined = defaultList;
+
+      try {
+        const response = await getArticlesAPI();
+        if (response.status === 200 && response.data?.success) {
+          combined = [...response.data.data, ...defaultList];
+        }
+      } catch (error) {
+        console.error("Failed to fetch articles from database:", error);
+      }
+
+      const foundArticle = combined.find(a => a._id === id || a.id === parseInt(id));
+      const related = combined.filter(a => a._id !== id && a.id !== parseInt(id)).slice(0, 3);
+
+      setArticle(foundArticle || null);
+      setRelatedArticles(related);
+      setLoading(false);
+    };
+
+    loadArticleDetails();
   }, [id]);
+
+  if (loading) {
+    return (
+      <div className="bg-transparent text-white min-h-screen pt-32 text-center">
+        <div className="w-8 h-8 border-4 border-blue-500 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+        <p className="text-gray-400 text-sm">Loading article details...</p>
+      </div>
+    );
+  }
 
   if (!article) {
     return (
       <div className="bg-transparent text-white min-h-screen pt-32 text-center">
         <h1 className="text-3xl font-bold mb-6">Article not found</h1>
-        <Link to="/insights" className="text-blue-500 hover:text-white transition-colors">
+        <Link to="/insight" className="text-blue-500 hover:text-white transition-colors">
           Return to Insights
         </Link>
       </div>
@@ -31,27 +163,22 @@ const Article = () => {
   }
 
   const tags = ["AI", "Enterprise", "Innovation", "Cloud"];
-  
+
   const handleCopyLink = () => {
     navigator.clipboard.writeText(window.location.href)
       .then(() => alert('Link copied to clipboard!'))
       .catch(err => console.error('Failed to copy link: ', err));
   };
 
-  const handleSubscribe = (e) => {
-    e.preventDefault();
-    alert('Subscribed successfully to Nexus Insights Daily!');
-  };
-
   return (
     <div className="bg-transparent text-white min-h-screen pt-24 pb-24 font-sans">
       <div className="max-w-7xl mx-auto px-6 md:px-12">
-        {/* Header Navigation */}
+        
         <motion.div 
           initial="hidden" animate="visible" variants={fadeUpVariants}
           className="flex flex-col md:flex-row justify-between items-start md:items-center mb-12 gap-4"
         >
-          <Link to="/insights" className="text-blue-500 hover:text-white transition-colors flex items-center border border-blue-500/30 rounded-full px-5 py-2 text-sm font-medium hover:border-blue-500">
+          <Link to="/insight" className="text-blue-500 hover:text-white transition-colors flex items-center border border-blue-500/30 rounded-full px-5 py-2 text-sm font-medium hover:border-blue-500">
             ← Back to Insights
           </Link>
           <div className="text-gray-400 text-sm font-medium flex flex-wrap items-center gap-2">
@@ -59,13 +186,23 @@ const Article = () => {
           </div>
         </motion.div>
 
-        {/* Title Section */}
         <motion.div initial="hidden" animate="visible" variants={fadeUpVariants}>
           <div className="flex justify-between items-start flex-col lg:flex-row gap-8">
             <div className="max-w-4xl">
               <span className="inline-block px-3 py-1 border border-blue-500/30 text-blue-500 text-xs font-semibold uppercase tracking-wider rounded-full mb-6">{article.category}</span>
               <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold leading-tight mb-6">{article.title}</h1>
-              <p className="text-gray-400 text-lg md:text-xl leading-relaxed">{article.description}</p>
+              <p className="text-gray-400 text-lg md:text-xl leading-relaxed mb-6">{article.description}</p>
+              
+              <div className="flex items-center gap-6 text-sm text-gray-400 font-medium">
+                <div className="flex items-center gap-2">
+                  <svg className="w-4 h-4 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                  <span>{article.createdAt ? new Date(article.createdAt).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' }) : "October 24, 2024"}</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <svg className="w-4 h-4 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                  <span>12 min read</span>
+                </div>
+              </div>
             </div>
             <div className="flex flex-wrap gap-2 lg:justify-end items-start mt-4 lg:mt-0">
               {tags.map(t => (
@@ -77,96 +214,73 @@ const Article = () => {
           </div>
         </motion.div>
 
-        {/* Hero Image */}
         <motion.div 
           initial="hidden" animate="visible" variants={fadeUpVariants}
-          className="mt-12 w-full h-[300px] sm:h-[400px] md:h-[500px] lg:h-[600px] relative rounded-2xl overflow-hidden border border-[#374151]"
+          className="mt-12 w-full h-[200px] sm:h-[280px] md:h-[350px] lg:h-[400px] relative rounded-2xl overflow-hidden border border-[#374151]"
         >
-          <img src={article.imageUrl} alt={article.title} className="w-full h-full object-cover" />
+          <img src={article.imageUrl} alt={article.title} className="w-full h-full object-cover" onError={(e) => {
+            e.target.src = "https://images.unsplash.com/photo-1488590528505-98d2b5aba04b?q=80&w=1200";
+          }} />
         </motion.div>
 
-        {/* Main Content Area */}
         <div className="flex flex-col lg:flex-row gap-12 mt-16">
           
-          {/* Left Column: Author Info */}
           <motion.div 
             initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.1 }} variants={fadeUpVariants}
-            className="lg:w-1/4 xl:w-1/5 shrink-0"
+            className="lg:w-2/3 xl:w-3/4 text-gray-300 leading-relaxed space-y-10"
           >
-            <div className="bg-[#111827] border border-[#374151] rounded-xl p-6 flex flex-col items-center text-center sticky top-24">
-              <img src="https://lh3.googleusercontent.com/aida-public/AB6AXuAMsZ4v8T5-3Y-y1s145_7w94_vT8nK1sF_X5wzY1Y_0xT57Qz09pUv2q6X7w18q5-M5P8E0kH4v5jP3pP429sV2n4z706q0qJ15U3lR-w8H-4H_rT70uH_h9D4x0q58085Z19-H02DqP82gR4K8yP6t5qH-x5r5QG5WwU_sP_Hw0Zq8tU=s400" alt="Elena Rostova" className="w-20 h-20 rounded-full object-cover border-2 border-blue-500 mb-4" />
-              <h3 className="text-white font-bold text-lg">Elena Rostova</h3>
-              <p className="text-blue-500 text-sm font-medium mb-6">Principal Consultant</p>
-              
-              <div className="w-full border-t border-[#374151] pt-6 flex flex-col gap-3 text-sm text-gray-400">
-                <div className="flex items-center gap-3">
-                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
-                  <span>October 24, 2024</span>
-                </div>
-                <div className="flex items-center gap-3">
-                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-                  <span>12 min read</span>
-                </div>
+            {article.content ? (
+              <div className="article-body">
+                {renderContent(article.content)}
               </div>
-            </div>
+            ) : (
+              <>
+                <div className="bg-[#111827] border border-[#374151] border-l-4 border-l-blue-500 rounded-r-xl p-8">
+                  <h3 className="text-white font-bold text-lg mb-4 flex items-center gap-2">
+                    <svg className="w-5 h-5 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+                    Executive Summary
+                  </h3>
+                  <ul className="space-y-3 list-disc list-inside text-gray-400">
+                    <li>The integration of LLMs requires a fundamental shift from static cloud infrastructure to elastic, compute-heavy environments.</li>
+                    <li>Data governance and sovereignty remain the primary friction points for global enterprise adoption in 2024.</li>
+                    <li>Legacy systems are not an obstacle but a foundational data layer when abstracted correctly through API-first orchestration.</li>
+                  </ul>
+                </div>
+
+                <div>
+                  <h2 className="text-2xl font-bold text-white mb-6">The Paradigms of Modern Infrastructure</h2>
+                  <p className="mb-6">
+                    In the current fiscal landscape, the narrative has shifted from pure digital adoption to deep architectural transformation. Enterprises that once viewed Artificial Intelligence as a tangential luxury are now confronting a reality where compute-readiness defines their valuation. The friction between legacy stability and generative speed has never been more pronounced.
+                  </p>
+                </div>
+
+                <blockquote className="bg-[#1F2937] border-l-4 border-gray-500 italic p-6 rounded-r-lg text-lg text-gray-300">
+                  "Strategic adaptation is no longer an option—it is the baseline for enterprise survival."
+                  <footer className="text-blue-500 text-sm font-semibold mt-4 not-italic">— Maria Halstead, Nexus Insights Global</footer>
+                </blockquote>
+
+                <div>
+                  <h2 className="text-2xl font-bold text-white mb-6">Operationalizing Intelligence</h2>
+                  <p className="mb-6">
+                    To successfully integrate high-parameter models, an organization must audit its data hygiene with surgical precision. Most failures in AI implementation do not stem from model inadequacy, but from the inability of the infrastructure to feed the engine high-quality, contextual data in real-time.
+                  </p>
+                  <ul className="space-y-4 mb-6 list-disc list-inside ml-2">
+                    <li><strong className="text-white">Unified Data Fabric:</strong> Breaking down department-level silos to create a single source of truth.</li>
+                    <li><strong className="text-white">Edge Computing Synergy:</strong> Moving processing power closer to the data source to minimize latency in decision-making.</li>
+                    <li><strong className="text-white">Ethical Governance Frameworks:</strong> Implementing hard-coded guardrails that protect intellectual property while allowing for rapid iteration.</li>
+                  </ul>
+                  <p>
+                    We are seeing a trend towards "Small Language Models" (SLMs) trained on proprietary enterprise data, which offer higher security and lower operational costs than general-purpose giants. This shift allows for more tailored automation that understands the specific nuances of a global supply chain or a complex financial portfolio.
+                  </p>
+                </div>
+              </>
+            )}
           </motion.div>
 
-          {/* Middle Column: Article Content */}
           <motion.div 
             initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.1 }} variants={fadeUpVariants}
-            className="lg:w-2/4 xl:w-3/5 text-gray-300 leading-relaxed space-y-10"
+            className="lg:w-1/3 xl:w-1/4 shrink-0 flex flex-col gap-8"
           >
-            {/* Executive Summary */}
-            <div className="bg-[#111827] border border-[#374151] border-l-4 border-l-blue-500 rounded-r-xl p-8">
-              <h3 className="text-white font-bold text-lg mb-4 flex items-center gap-2">
-                <svg className="w-5 h-5 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
-                Executive Summary
-              </h3>
-              <ul className="space-y-3 list-disc list-inside text-gray-400">
-                <li>The integration of LLMs requires a fundamental shift from static cloud infrastructure to elastic, compute-heavy environments.</li>
-                <li>Data governance and sovereignty remain the primary friction points for global enterprise adoption in 2024.</li>
-                <li>Legacy systems are not an obstacle but a foundational data layer when abstracted correctly through API-first orchestration.</li>
-              </ul>
-            </div>
-
-            {/* Paragraphs */}
-            <div>
-              <h2 className="text-2xl font-bold text-white mb-6">The Paradigms of Modern Infrastructure</h2>
-              <p className="mb-6">
-                In the current fiscal landscape, the narrative has shifted from pure digital adoption to deep architectural transformation. Enterprises that once viewed Artificial Intelligence as a tangential luxury are now confronting a reality where compute-readiness defines their valuation. The friction between legacy stability and generative speed has never been more pronounced.
-              </p>
-            </div>
-
-            {/* Blockquote */}
-            <blockquote className="bg-[#1F2937] border-l-4 border-gray-500 italic p-6 rounded-r-lg text-lg text-gray-300">
-              "Strategic adaptation is no longer an option—it is the baseline for enterprise survival."
-              <footer className="text-blue-500 text-sm font-semibold mt-4 not-italic">— Maria Halstead, Nexus Insights Global</footer>
-            </blockquote>
-
-            {/* Section */}
-            <div>
-              <h2 className="text-2xl font-bold text-white mb-6">Operationalizing Intelligence</h2>
-              <p className="mb-6">
-                To successfully integrate high-parameter models, an organization must audit its data hygiene with surgical precision. Most failures in AI implementation do not stem from model inadequacy, but from the inability of the infrastructure to feed the engine high-quality, contextual data in real-time.
-              </p>
-              <ul className="space-y-4 mb-6 list-disc list-inside ml-2">
-                <li><strong className="text-white">Unified Data Fabric:</strong> Breaking down department-level silos to create a single source of truth.</li>
-                <li><strong className="text-white">Edge Computing Synergy:</strong> Moving processing power closer to the data source to minimize latency in decision-making.</li>
-                <li><strong className="text-white">Ethical Governance Frameworks:</strong> Implementing hard-coded guardrails that protect intellectual property while allowing for rapid iteration.</li>
-              </ul>
-              <p>
-                We are seeing a trend towards "Small Language Models" (SLMs) trained on proprietary enterprise data, which offer higher security and lower operational costs than general-purpose giants. This shift allows for more tailored automation that understands the specific nuances of a global supply chain or a complex financial portfolio.
-              </p>
-            </div>
-
-          </motion.div>
-
-          {/* Right Column: Share & Newsletter */}
-          <motion.div 
-            initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.1 }} variants={fadeUpVariants}
-            className="lg:w-1/4 xl:w-1/5 shrink-0 flex flex-col gap-8"
-          >
-            {/* Share Article */}
             <div className="bg-[#111827] border border-[#374151] rounded-xl p-6">
               <h3 className="text-white font-bold text-sm uppercase tracking-wider mb-4">Share Article</h3>
               <div className="flex flex-wrap gap-3">
@@ -185,22 +299,33 @@ const Article = () => {
               </div>
             </div>
 
-            {/* Newsletter */}
-            <div className="bg-[#111827] border border-[#374151] rounded-xl p-6">
-              <h3 className="text-white font-bold text-lg mb-2">Nexus Insights Daily</h3>
-              <p className="text-gray-400 text-sm mb-4">The latest strategic intelligence delivered to your inbox.</p>
-              <form onSubmit={handleSubscribe} className="flex flex-col gap-3">
-                <input type="email" required placeholder="Email address" className="bg-[#1F2937] border border-[#374151] text-white placeholder-gray-500 rounded-lg px-4 py-2 focus:outline-none focus:ring-1 focus:ring-blue-500 w-full" />
-                <button type="submit" className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-semibold transition-colors w-full cursor-pointer">
-                  Subscribe
-                </button>
-              </form>
-            </div>
+            {article.showSubscription !== false && (
+              <div className="bg-[#111827] border border-[#374151] rounded-xl p-6">
+                <h3 className="text-white font-bold text-lg mb-2">Nexus Insights Daily</h3>
+                <p className="text-gray-400 text-sm mb-4">The latest strategic intelligence delivered to your inbox.</p>
+                <form onSubmit={handleSubscribe} className="flex flex-col gap-3">
+                  <input 
+                    type="email" 
+                    required 
+                    value={subscribeEmailVal}
+                    onChange={(e) => setSubscribeEmailVal(e.target.value)}
+                    placeholder="Email address" 
+                    className="bg-[#1F2937] border border-[#374151] text-white placeholder-gray-500 rounded-lg px-4 py-2 focus:outline-none focus:ring-1 focus:ring-blue-500 w-full" 
+                  />
+                  <button 
+                    type="submit" 
+                    disabled={submittingSubscribe}
+                    className="bg-blue-600 hover:bg-blue-700 disabled:bg-blue-500/50 text-white px-4 py-2 rounded-lg font-semibold transition-colors w-full cursor-pointer"
+                  >
+                    {submittingSubscribe ? "Subscribing..." : "Subscribe"}
+                  </button>
+                </form>
+              </div>
+            )}
           </motion.div>
 
         </div>
 
-        {/* Want expert guidance? Section */}
         <motion.div 
           initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.2 }} variants={fadeUpVariants}
           className="mt-24 border border-[#374151] bg-[#111827] rounded-2xl p-8 md:p-12 text-center"
@@ -213,13 +338,12 @@ const Article = () => {
             <Link to="/contact" className="w-full sm:w-auto bg-blue-600 hover:bg-blue-700 text-white px-8 py-3 rounded-lg font-semibold transition-colors text-center cursor-pointer">
               Schedule Consultation
             </Link>
-            <Link to="/insights" className="w-full sm:w-auto bg-transparent border border-white hover:bg-white hover:text-black text-white px-8 py-3 rounded-lg font-semibold transition-colors text-center cursor-pointer">
+            <Link to="/insight" className="w-full sm:w-auto bg-transparent border border-white hover:bg-white hover:text-black text-white px-8 py-3 rounded-lg font-semibold transition-colors text-center cursor-pointer">
               Explore More Insights
             </Link>
           </div>
         </motion.div>
 
-        {/* Related Articles Section */}
         <motion.div 
           initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.1 }} variants={fadeUpVariants}
           className="mt-24"
@@ -228,11 +352,11 @@ const Article = () => {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {relatedArticles.map(relArticle => (
               <motion.article 
-                key={relArticle.id}
+                key={relArticle._id || relArticle.id}
                 whileHover={{ y: -5 }}
                 className="bg-[#111827] border border-[#374151] rounded-lg overflow-hidden group hover:border-[#4b5563] transition-colors flex flex-col h-full"
               >
-                <Link to={`/article/${relArticle.id}`} className="flex flex-col h-full">
+                <Link to={`/article/${relArticle._id || relArticle.id}`} className="flex flex-col h-full">
                   <div className="h-48 w-full relative overflow-hidden">
                     <img 
                       src={relArticle.imageUrl} 

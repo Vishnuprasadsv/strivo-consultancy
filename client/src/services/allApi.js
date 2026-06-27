@@ -1,83 +1,83 @@
+// by namitha
+
+
+
+
+
 import { commonAPI } from "./commonApi";
 import { SERVER_URL } from "./serverUrl";
-
-/**
- * Submit a client review
- * @param {object} reqBody - The review details { fullName, company, rating, title, review }
- * @returns {Promise<any>}
- */
-export const submitReviewAPI = async (reqBody) => {
-  return await commonAPI("POST", `${SERVER_URL}/api/reviews`, reqBody, "");
-};
-
-/**
- * Fetch all approved client reviews (public display)
- * @returns {Promise<any>}
- */
-export const getApprovedReviewsAPI = async () => {
-  return await commonAPI("GET", `${SERVER_URL}/api/reviews`, "", "");
-};
-
-/**
- * Submit a job application (with resume upload)
- * @param {FormData} formData - FormData containing fullName, email, mobile, appliedPosition, roleDescription, resume
- * @returns {Promise<any>}
- */
+//  ente api calls by namitha
+// careers
 export const applyJobAPI = async (formData) => {
-  return await commonAPI(
-    "POST",
-    `${SERVER_URL}/api/career/apply`,
-    formData,
-    { "Content-Type": "multipart/form-data" }
-  );
+  return await commonAPI("POST", `${SERVER_URL}/api/career/apply`, formData, {});
 };
 
-/**
- * Submit to talent network (with resume upload)
- * @param {FormData} formData - FormData containing fullName, email, mobile, category, resume
- * @returns {Promise<any>}
- */
 export const submitTalentAPI = async (formData) => {
-  return await commonAPI(
-    "POST",
-    `${SERVER_URL}/api/talent/submit`,
-    formData,
-    { "Content-Type": "multipart/form-data" }
-  );
+  return await commonAPI("POST", `${SERVER_URL}/api/talent/submit`, formData, {});
 };
 
-/**
- * Fetch all job applications (admin dashboard use)
- * @returns {Promise<any>}
- */
-export const getAllApplicantsAPI = async () => {
+export const getJobsAPI = async () => {
+  return await commonAPI("GET", `${SERVER_URL}/api/career/jobs`, "", "");
+};
+
+
+// admin
+export const getAdminStatsAPI = async () => {
+  return await commonAPI("GET", `${SERVER_URL}/api/career/stats`, "", "");
+};
+
+export const getAdminApplicationsAPI = async () => {
   return await commonAPI("GET", `${SERVER_URL}/api/career/applications`, "", "");
 };
 
-/**
- * Refer a candidate to HR
- * @param {string} id - The applicant's database ID
- * @returns {Promise<any>}
- */
-export const referApplicantAPI = async (id) => {
-  return await commonAPI(
-    "POST",
-    `${SERVER_URL}/api/career/applications/${id}/refer`,
-    {},
-    ""
-  );
+export const updateApplicationStatusAPI = async (id, status) => {
+  return await commonAPI("PUT", `${SERVER_URL}/api/career/applications/${id}/status`, { status }, "");
 };
 
-/**
- * Delete a job application (Not Eligible)
- * @param {string} id - The applicant's database ID
- * @returns {Promise<any>}
- */
-export const deleteApplicantAPI = async (id) => {
-  return await commonAPI(
-    "DELETE",
-    `${SERVER_URL}/api/career/applications/${id}`,
-    {},
-    ""
-  );
+export const referApplicationAPI = async (id) => {
+  return await commonAPI("PUT", `${SERVER_URL}/api/career/applications/${id}/refer`, {}, "");
+};
+
+export const createJobAPI = async (jobData) => {
+  return await commonAPI("POST", `${SERVER_URL}/api/career/jobs`, jobData, "");
+};
+
+export const updateJobAPI = async (id, jobData) => {
+  return await commonAPI("PUT", `${SERVER_URL}/api/career/jobs/${id}`, jobData, "");
+};
+
+export const deleteJobAPI = async (id) => {
+  return await commonAPI("DELETE", `${SERVER_URL}/api/career/jobs/${id}`, "", "");
+};
+
+export const getTalentSubmissionsAPI = async () => {
+  return await commonAPI("GET", `${SERVER_URL}/api/talent/submissions`, "", "");
+};
+
+
+
+// insights pinne article
+
+export const createArticleAPI = async (articleData) => {
+  return await commonAPI("POST", `${SERVER_URL}/api/articles`, articleData, "");
+};
+
+export const getArticlesAPI = async () => {
+  return await commonAPI("GET", `${SERVER_URL}/api/articles`, "", "");
+};
+
+export const getArticleByIdAPI = async (id) => {
+  return await commonAPI("GET", `${SERVER_URL}/api/articles/${id}`, "", "");
+};
+
+export const updateArticleAPI = async (id, articleData) => {
+  return await commonAPI("PUT", `${SERVER_URL}/api/articles/${id}`, articleData, "");
+};
+
+export const deleteArticleAPI = async (id) => {
+  return await commonAPI("DELETE", `${SERVER_URL}/api/articles/${id}`, "", "");
+};
+
+export const subscribeEmailAPI = async (emailData) => {
+  return await commonAPI("POST", `${SERVER_URL}/api/articles/subscribe`, emailData, "");
 };

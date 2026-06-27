@@ -29,6 +29,11 @@ app.use('/uploads', express.static(path.join(process.cwd(), 'uploads')));
 // Routes
 app.use('/api/admin', adminRoutes);
 app.use('/api/success-stories', successStoryRoutes);
+// career
+
+app.use('/api/career', careerRoutes);
+app.use('/api/talent', talentRoutes);
+
 app.use('/api/inquiries', inquiryRoutes);
 app.use('/api/reviews', reviewRoutes);
 
