@@ -6,6 +6,8 @@ import adminRoutes from './routes/adminRoutes.js';
 import successStoryRoutes from './routes/successStoryRoutes.js';
 import inquiryRoutes from './routes/inquiryRoutes.js';
 import caseStudyRoutes from "./routes/caseStudyRoutes.js";
+import careerRoutes from "./routes/careerRoutes.js";
+import talentRoutes from "./routes/talentRoutes.js";
 
 // Load env vars
 dotenv.config(); // Adjusted for project structure if .env is in server root
