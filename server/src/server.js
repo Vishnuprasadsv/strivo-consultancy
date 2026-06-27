@@ -8,7 +8,7 @@ import inquiryRoutes from './routes/inquiryRoutes.js';
 
 import careerRoutes from './routes/careerRoutes.js';
 import talentRoutes from './routes/talentRoutes.js';
-
+import articleRoutes from './routes/articleRoutes.js';
 // Load env vars
 dotenv.config(); // Adjusted for project structure if .env is in server root
 
@@ -34,6 +34,8 @@ app.use('/api/success-stories', successStoryRoutes);
 
 app.use('/api/career', careerRoutes);
 app.use('/api/talent', talentRoutes);
+
+app.use('/api/articles', articleRoutes);
 
 app.use('/api/inquiries', inquiryRoutes);
 app.get('/', (req, res) => {

@@ -10,6 +10,8 @@ import Review from './pages/Review';
 import Career from './pages/Career';
 import CareerAdmin from './Admin/Admincareers';
 
+import ArticlesAdmin from './Admin/ArticlesAdmin';
+
 
 // Lazy load all pages for code splitting and performance optimization
 const Home = lazy(() => import('./pages/Home'));
@@ -122,6 +124,7 @@ const App = () => {
               <Route path="/admin/dashboard" element={<Dashboard />} />
               <Route path="/admin/inquiries" element={<Inquiries />} />
               <Route path='/admin/career' element={<CareerAdmin />} />
+               <Route path='/admin/article' element={<ArticlesAdmin />} />
             </Routes>
           </Suspense>
         </main>
