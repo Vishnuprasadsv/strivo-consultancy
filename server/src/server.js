@@ -33,6 +33,8 @@ app.use('/api/success-stories', successStoryRoutes);
 app.use('/api/career', careerRoutes);
 app.use('/api/talent', talentRoutes);
 
+app.use('/api/articles', articleRoutes);
+
 app.use('/api/inquiries', inquiryRoutes);
 app.use("/api/case-studies", caseStudyRoutes);
 app.get('/', (req, res) => {

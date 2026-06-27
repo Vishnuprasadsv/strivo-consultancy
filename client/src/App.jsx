@@ -10,6 +10,8 @@ import Review from './pages/Review';
 import Career from './pages/Career';
 import CareerAdmin from './Admin/Admincareers';
 
+import ArticlesAdmin from './Admin/ArticlesAdmin';
+
 
 // Lazy load all pages for code splitting and performance optimization
 const Home = lazy(() => import('./pages/Home'));
