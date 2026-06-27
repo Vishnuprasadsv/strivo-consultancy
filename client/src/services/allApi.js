@@ -53,3 +53,31 @@ export const deleteJobAPI = async (id) => {
 export const getTalentSubmissionsAPI = async () => {
   return await commonAPI("GET", `${SERVER_URL}/api/talent/submissions`, "", "");
 };
+
+
+
+// insights pinne article
+
+export const createArticleAPI = async (articleData) => {
+  return await commonAPI("POST", `${SERVER_URL}/api/articles`, articleData, "");
+};
+
+export const getArticlesAPI = async () => {
+  return await commonAPI("GET", `${SERVER_URL}/api/articles`, "", "");
+};
+
+export const getArticleByIdAPI = async (id) => {
+  return await commonAPI("GET", `${SERVER_URL}/api/articles/${id}`, "", "");
+};
+
+export const updateArticleAPI = async (id, articleData) => {
+  return await commonAPI("PUT", `${SERVER_URL}/api/articles/${id}`, articleData, "");
+};
+
+export const deleteArticleAPI = async (id) => {
+  return await commonAPI("DELETE", `${SERVER_URL}/api/articles/${id}`, "", "");
+};
+
+export const subscribeEmailAPI = async (emailData) => {
+  return await commonAPI("POST", `${SERVER_URL}/api/articles/subscribe`, emailData, "");
+};
