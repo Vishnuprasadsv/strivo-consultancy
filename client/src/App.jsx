@@ -28,6 +28,9 @@ const ForgotPassword = lazy(() => import('./Admin/ForgotPassword'));
 const ResetPassword = lazy(() => import('./Admin/ResetPassword'));
 const Dashboard = lazy(() => import('./Admin/Dashboard'));
 const Inquiries = lazy(() => import('./Admin/Inquiries'));
+const CaseStudiesAdmin = lazy(() => import('./Admin/CaseStudies'));
+const CreateCaseStudy = lazy(() => import('./Admin/CreateCaseStudy'));
+const EditCaseStudy = lazy(() => import('./Admin/EditCaseStudy'));
 
 // ScrollToTop component ensures navigating to a new route scrolls to the top smoothly
 const ScrollToTop = () => {
@@ -68,7 +71,7 @@ const App = () => {
         {/* Global Ferrofluid Background */}
         <div className="fixed inset-0 z-[-1] bg-black">
           <Ferrofluid
-            colors={["#002c9b","#3673d6","#7ba0db"]}
+            colors={["#002c9b", "#3673d6", "#7ba0db"]}
             speed={0.1}
             scale={2.6}
             turbulence={0.65}
@@ -85,10 +88,10 @@ const App = () => {
           />
           <div className="absolute inset-0 backdrop-blur-[6px] bg-black/40 pointer-events-none" />
         </div>
-        
+
         <ConditionalNavbar />
         <AdminNavbar />
-        
+
         {/* Main content area */}
         <main className="flex-grow relative z-10">
           <Suspense fallback={<PageLoader />}>
@@ -96,32 +99,41 @@ const App = () => {
               {/* Fix: Root path now directly renders Home */}
               <Route path="/" element={<Home />} />
               <Route path="/home" element={<Home />} />
-              
+
               <Route path="/about" element={<Aboutus />} />
               <Route path="/contact" element={<Contact />} />
               <Route path="/insights" element={<Insight />} />
               <Route path="/casestudies" element={<CaseStudies />} />
-              <Route path="/case-study-details" element={<CaseStudyDetails />} />
+              <Route path="/case-study-details/:id" element={<CaseStudyDetails />} />
               <Route path="/services" element={<Services />} />
               <Route path="/article/:id" element={<Article />} />
               <Route path="/strategic" element={<Strategic />} />
               <Route path="/operations" element={<Operations />} />
               <Route path="/digital" element={<Digital />} />
               <Route path="/change" element={<Change />} />
-          <Route path="/careerstrivo" element={<Career/>}/>
+              <Route path="/careerstrivo" element={<Career />} />
 
-          <Route path="/review" element={<Review/>}/>
-              
+              <Route path="/review" element={<Review />} />
+
               {/* Admin Routes */}
               <Route path="/admin/login" element={<Login />} />
               <Route path="/admin/forgot-password" element={<ForgotPassword />} />
               <Route path="/admin/reset-password" element={<ResetPassword />} />
               <Route path="/admin/dashboard" element={<Dashboard />} />
               <Route path="/admin/inquiries" element={<Inquiries />} />
+              <Route path="/admin/casestudies" element={<CaseStudiesAdmin />} />
+              <Route
+                path="/admin/create-case-study"
+                element={<CreateCaseStudy />}
+              />
+              <Route
+                path="/admin/edit-case-study/:id"
+                element={<EditCaseStudy />}
+              />
             </Routes>
           </Suspense>
         </main>
-        
+
         <ConditionalFooter />
       </div>
     </BrowserRouter>
