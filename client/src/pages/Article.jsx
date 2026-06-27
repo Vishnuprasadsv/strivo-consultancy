@@ -1,96 +1,105 @@
 import React, { useState, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { Link, useNavigate } from 'react-router-dom';
-
-// Import API services
-import { getArticlesAPI, subscribeEmailAPI } from '../services/allApi';
+import { useParams, Link } from 'react-router-dom';
+import { motion } from 'framer-motion';
+import { articlesData } from './Insight';
+import { getArticlesAPI, subscribeEmailAPI } from '../services/allapis';
 import { toast } from 'sonner';
 
-
-
-// Mock data array for public articles
-export const articlesData = [
-  {
-    id: 1,
-    category: 'Development',
-    title: 'Microservices vs Monolith: A Definitive Guide',
-    description: 'Evaluate the architectural trade-offs between monolithic structures and microservices to determine the optimal approach for scaling your enterprise application.',
-    imageUrl: 'https://lh3.googleusercontent.com/aida-public/AB6AXuAB2MTG_TivWKGHqjJtewmcLq0ZN1jxanA8IjEKG5sLP0nw7NwcwSI7GdSvZSK-WqLUs4Mn-CeuBn1rG0INx6b_1NMyNtjlbIqQfpGRTtLV04KY9KU1hb1T4hJ4uxi1DR_6ZmAXs5x7dqB5Gt8uNZPj81v0ot0i84adLzGbaYp8FelA67a3Cqe-Y8BQ3P-cJQn25ahNuoWrR1iiiXU5AP49gaG-BlQYmBAovOgSO333k_FSIzJKvzwLZLWTCCEa1EXW4fejQm5MlA',
-    link: '#'
-  },
-  {
-    id: 2,
-    category: 'UI/UX',
-    title: 'Designing for Power Users in B2B Platforms',
-    description: 'Strategies for balancing complex functionality with intuitive navigation to satisfy demanding enterprise users without overwhelming novices.',
-    imageUrl: 'https://lh3.googleusercontent.com/aida-public/AB6AXuABD2SUuuJhfKj5hn8i2_QkUHVmCj4G7whXQZQ6xrJxQx18y3jUqOn8phFcqafMS4BDbribwYwcBEG8Fc-dDk8XO5_1F_oeZtLfyZOFD-FLm6pfU8_J9nHdmuOytE8jLNEu1zcaz275dVB6FWMhZ5DRxfH-uAz3opkgpzFnuLmPrKJac_rjHPsSy6X55NMcvH3rrQPblF-5ZuyEQsZEISNfPSRw3zUfOYopJ_Ki6fL5xefi_VufNgrn4jPJgfrQs3anFxs8ShVBEA',
-    link: '#'
-  },
-  {
-    id: 3,
-    category: 'Business',
-    title: 'Optimizing SaaS Pricing Models for Scale',
-    description: 'An analytical deep dive into tiered vs. usage-based pricing models and how to structure your tiers to maximize ARR and minimize churn.',
-    imageUrl: 'https://lh3.googleusercontent.com/aida-public/AB6AXuDYIBAQrXboKyuhQkBSYlEmrsc3OU0fe9wTG2QAvuLrAnyiV1949fPemFOiY9VWNjXTPf06t3DG81A8SwOC0ahNDGDZuZzR3YG0yzTlVfQMkfa_aL3gbgXaMPgrSyxzi87RODe9x0GEz6tRdsiJlUxqNkf2Yk55b2DMYz3mOKdZKrjopxtSjQiwAH75KLY1y8ViEKXb-dZfAn3heUYPAxF9cEnoOe74l5XYU_P60N8HgHkRoLS7bdc-3k3i-jHbMUu41jSbeHYiFA',
-    link: '#'
-  },
-  {
-    id: 4,
-    category: 'Technology',
-    title: 'Zero Trust Security in Cloud Infrastructures',
-    description: 'Implementing robust security protocols and identity management systems in distributed cloud environments to protect sensitive enterprise data.',
-    imageUrl: 'https://lh3.googleusercontent.com/aida-public/AB6AXuDBGSK4t5_4GBq09C97cC1GFK5U4qIXNrjq8phEFeAeYQo3Asry8nElF5llwC2T4tRJ_3uitd6nYxSEqZnyyz4bhzR6FTkcI-hQES3OlkERNPUDzthHRkBW8YDg91IBFqdyC5i8QdCZeMQ3adtITsD8XkL1SIMzmbkjYn0NuV1OgC3pnvT9-DyTZewDTGkL0gJr_ELTyEXPk-sgoenZKa2k2sTiQk-PiM-ec-FZ9GdlFmQnuxjhsRWJWkFGwxNOECfRJSCcjVPYoA',
-    link: '#'
-  }
-];
-
-const categories = ['All', 'Technology', 'Development', 'UI/UX', 'Business', 'SaaS'];
-
 const fadeUpVariants = {
-  hidden: { opacity: 0, y: 80 },
-  visible: { opacity: 1, y: 0, transition: { duration: 1.2 } }
+  hidden: { opacity: 0, y: 30 },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: 'easeOut' } }
 };
 
-const cardVariants = {
-  hidden: { opacity: 0, y: 60, scale: 0.9 },
-  visible: { opacity: 1, y: 0, scale: 1, transition: { duration: 0.8 } },
-  exit: { opacity: 0, scale: 0.9, transition: { duration: 0.3 } }
+const renderContent = (contentString) => {
+  if (!contentString) return null;
+
+  const blocks = contentString.split("\n\n");
+
+  return blocks.map((block, idx) => {
+    const trimmed = block.trim();
+    if (!trimmed) return null;
+
+    if (trimmed.startsWith("-") || trimmed.startsWith("*")) {
+      const listItems = trimmed.split("\n").map(item => item.replace(/^[-\*]\s*/, ""));
+      return (
+        <ul key={idx} className="space-y-3 mb-6 list-disc list-inside text-gray-400 ml-2">
+          {listItems.map((item, itemIdx) => (
+            <li key={itemIdx}>{item}</li>
+          ))}
+        </ul>
+      );
+    }
+
+    if (trimmed.toLowerCase().startsWith("<blockquote>") && trimmed.toLowerCase().endsWith("</blockquote>")) {
+      const insideText = trimmed.slice(12, -13);
+      return (
+        <blockquote key={idx} className="bg-[#1F2937] border-l-4 border-blue-500 italic p-6 rounded-r-lg text-lg text-gray-300 my-6">
+          {insideText}
+        </blockquote>
+      );
+    }
+
+    if (trimmed.startsWith(">")) {
+      return (
+        <blockquote key={idx} className="bg-[#1F2937] border-l-4 border-blue-500 italic p-6 rounded-r-lg text-lg text-gray-300 my-6">
+          {trimmed.replace(/^>\s*/, "")}
+        </blockquote>
+      );
+    }
+
+    if (trimmed.startsWith("###")) {
+      return (
+        <h4 key={idx} className="text-xl font-bold text-white mt-8 mb-4">
+          {trimmed.replace(/^###\s*/, "")}
+        </h4>
+      );
+    }
+    if (trimmed.startsWith("##")) {
+      return (
+        <h3 key={idx} className="text-2xl font-bold text-white mt-10 mb-6">
+          {trimmed.replace(/^##\s*/, "")}
+        </h3>
+      );
+    }
+    if (trimmed.startsWith("#")) {
+      return (
+        <h2 key={idx} className="text-3xl font-bold text-white mt-12 mb-8">
+          {trimmed.replace(/^#\s*/, "")}
+        </h2>
+      );
+    }
+
+    return (
+      <p key={idx} className="mb-6 text-gray-300 leading-relaxed">
+        {trimmed}
+      </p>
+    );
+  });
 };
 
-const containerVariants = {
-  hidden: {},
-  visible: { transition: { staggerChildren: 0.25 } }
-};
+const Article = () => {
+  const { id } = useParams();
+  const [article, setArticle] = useState(null);
+  const [relatedArticles, setRelatedArticles] = useState([]);
+  const [loading, setLoading] = useState(true);
 
-const Insight = () => {
-  const navigate = useNavigate();
+  const [subscribeEmailVal, setSubscribeEmailVal] = useState("");
+  const [submittingSubscribe, setSubmittingSubscribe] = useState(false);
 
-  // Merged array of default and custom admin articles
-  const [articles, setArticles] = useState([]);
-
-  // Filters and pagination states
-  const [selectedCategory, setSelectedCategory] = useState('All');
-  const [currentPage, setCurrentPage] = useState(1);
-  const articlesPerPage = 6; // Show 6 articles per page in a responsive 3-column grid
-
-  // Newsletter states
-  const [newsletterEmail, setNewsletterEmail] = useState('');
-  const [submittingNewsletter, setSubmittingNewsletter] = useState(false);
-
-  const handleNewsletterSubscribe = async (e) => {
+  const handleSubscribe = async (e) => {
     e.preventDefault();
-    if (!newsletterEmail.trim()) {
+    if (!subscribeEmailVal.trim()) {
       toast.error("Please enter your email address.");
       return;
     }
 
-    setSubmittingNewsletter(true);
+    setSubmittingSubscribe(true);
     try {
-      const response = await subscribeEmailAPI({ email: newsletterEmail });
+      const response = await subscribeEmailAPI({ email: subscribeEmailVal });
       if (response.status === 201 || response.status === 200) {
         if (response.data?.success) {
           toast.success("Subscribed successfully! Welcome to Nexus Insights Daily! 🎉");
-          setNewsletterEmail('');
+          setSubscribeEmailVal("");
         } else {
           toast.error(response.data?.message || "Failed to subscribe.");
         }
@@ -98,294 +107,280 @@ const Insight = () => {
         toast.error(response.data?.message || "Failed to subscribe. Please try again.");
       }
     } catch (err) {
-      console.error("Newsletter subscription error:", err);
+      console.error("Article subscription error:", err);
       toast.error("Something went wrong. Please check your connection.");
     } finally {
-      setSubmittingNewsletter(false);
+      setSubmittingSubscribe(false);
     }
   };
 
-
-  // Load articles from MongoDB backend database and combine them with static default articles
   useEffect(() => {
-    const loadArticlesData = async () => {
+    window.scrollTo(0, 0);
+
+    const loadArticleDetails = async () => {
+      setLoading(true);
       const defaultList = [...articlesData];
+      let combined = defaultList;
+
       try {
         const response = await getArticlesAPI();
         if (response.status === 200 && response.data?.success) {
-          const dbArticles = response.data.data;
-          // Combine dynamic articles at the top, static articles below
-          setArticles([...dbArticles, ...defaultList]);
-        } else {
-          setArticles(defaultList);
+          combined = [...response.data.data, ...defaultList];
         }
       } catch (error) {
-        console.error("Failed to load articles from backend database:", error);
-        setArticles(defaultList);
+        console.error("Failed to fetch articles from database:", error);
       }
+
+      const foundArticle = combined.find(a => a._id === id || a.id === parseInt(id));
+      const related = combined.filter(a => a._id !== id && a.id !== parseInt(id)).slice(0, 3);
+
+      setArticle(foundArticle || null);
+      setRelatedArticles(related);
+      setLoading(false);
     };
 
-    loadArticlesData();
-  }, []);
+    loadArticleDetails();
+  }, [id]);
 
+  if (loading) {
+    return (
+      <div className="bg-transparent text-white min-h-screen pt-32 text-center">
+        <div className="w-8 h-8 border-4 border-blue-500 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+        <p className="text-gray-400 text-sm">Loading article details...</p>
+      </div>
+    );
+  }
 
-  // Reset pagination to page 1 whenever category is switched
-  const handleCategoryChange = (categoryName) => {
-    setSelectedCategory(categoryName);
-    setCurrentPage(1);
+  if (!article) {
+    return (
+      <div className="bg-transparent text-white min-h-screen pt-32 text-center">
+        <h1 className="text-3xl font-bold mb-6">Article not found</h1>
+        <Link to="/insight" className="text-blue-500 hover:text-white transition-colors">
+          Return to Insights
+        </Link>
+      </div>
+    );
+  }
+
+  const tags = ["AI", "Enterprise", "Innovation", "Cloud"];
+
+  const handleCopyLink = () => {
+    navigator.clipboard.writeText(window.location.href)
+      .then(() => alert('Link copied to clipboard!'))
+      .catch(err => console.error('Failed to copy link: ', err));
   };
 
-  // Filter articles by category
-  const filteredArticles = selectedCategory === 'All' 
-    ? articles 
-    : articles.filter(article => article.category === selectedCategory);
-
-  // Slice list of articles for current page display
-  const indexOfLastArticle = currentPage * articlesPerPage;
-  const indexOfFirstArticle = indexOfLastArticle - articlesPerPage;
-  const currentArticles = filteredArticles.slice(indexOfFirstArticle, indexOfLastArticle);
-
-  // Calculate total pages for pagination
-  const totalPages = Math.ceil(filteredArticles.length / articlesPerPage);
-
-  // Identify featured article (fallback to first article in list if not found)
-  const featuredArticle = articles.length > 0 ? (articles.find(a => a.id === 1) || articles[0]) : null;
-
   return (
-    <div className="bg-transparent text-white min-h-screen pt-12 pb-24 font-sans">
-      <div className="max-w-7xl mx-auto px-6 md:px-12 space-y-24">
+    <div className="bg-transparent text-white min-h-screen pt-24 pb-24 font-sans">
+      <div className="max-w-7xl mx-auto px-6 md:px-12">
         
-        {/* Section 1: Hero */}
-        <motion.section 
-          initial="hidden" 
-          animate="visible" 
-          variants={fadeUpVariants}
-          className="max-w-3xl"
+        <motion.div 
+          initial="hidden" animate="visible" variants={fadeUpVariants}
+          className="flex flex-col md:flex-row justify-between items-start md:items-center mb-12 gap-4"
         >
-          <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold leading-tight mb-6">Insights & Resources</h1>
-          <p className="text-gray-400 text-lg leading-relaxed max-w-2xl">
-            Explore our curated collection of industry trends, strategic guides, and technical deep-dives to help you navigate the future of digital transformation and enterprise growth.
-          </p>
-        </motion.section>
+          <Link to="/insight" className="text-blue-500 hover:text-white transition-colors flex items-center border border-blue-500/30 rounded-full px-5 py-2 text-sm font-medium hover:border-blue-500">
+            ← Back to Insights
+          </Link>
+          <div className="text-gray-400 text-sm font-medium flex flex-wrap items-center gap-2">
+            Home <span className="text-gray-600">›</span> Insights <span className="text-gray-600">›</span> <span className="text-blue-500 whitespace-nowrap">{article.category}</span>
+          </div>
+        </motion.div>
 
-        {/* Section 2: Featured Article */}
-        {featuredArticle && (
-          <motion.section 
-            initial="hidden" 
-            whileInView="visible" 
-            viewport={{ once: true, amount: 0.2 }}
-            variants={fadeUpVariants}
-            className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center bg-[#111827] rounded-xl overflow-hidden border border-[#374151]"
-          >
-            <div className="p-10 flex flex-col justify-center h-full order-2 lg:order-1">
-              <span className="inline-block px-3 py-1 bg-[#1F2937] text-gray-300 text-xs font-semibold uppercase tracking-wider rounded-md mb-6 w-max">
-                Featured
-              </span>
-              <h2 className="text-3xl font-bold text-white mb-4">{featuredArticle.title}</h2>
-              <p className="text-gray-400 mb-6 line-clamp-3">
-                {featuredArticle.description}
-              </p>
-              <div className="flex items-center justify-between mt-auto">
-                <span className="text-gray-500 text-sm">
-                  {featuredArticle.createdAt ? new Date(featuredArticle.createdAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : "October 24, 2024"}
-                </span>
-                <Link
-                  to={`/article/${featuredArticle._id || featuredArticle.id}`}
-                  className="text-blue-500 font-medium flex items-center hover:text-white transition-colors group cursor-pointer"
-                >
-                  Read Article 
-                  <span className="ml-1 group-hover:translate-x-1 transition-transform">→</span>
-                </Link>
-
+        <motion.div initial="hidden" animate="visible" variants={fadeUpVariants}>
+          <div className="flex justify-between items-start flex-col lg:flex-row gap-8">
+            <div className="max-w-4xl">
+              <span className="inline-block px-3 py-1 border border-blue-500/30 text-blue-500 text-xs font-semibold uppercase tracking-wider rounded-full mb-6">{article.category}</span>
+              <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold leading-tight mb-6">{article.title}</h1>
+              <p className="text-gray-400 text-lg md:text-xl leading-relaxed mb-6">{article.description}</p>
+              
+              <div className="flex items-center gap-6 text-sm text-gray-400 font-medium">
+                <div className="flex items-center gap-2">
+                  <svg className="w-4 h-4 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                  <span>{article.createdAt ? new Date(article.createdAt).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' }) : "October 24, 2024"}</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <svg className="w-4 h-4 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                  <span>12 min read</span>
+                </div>
               </div>
             </div>
-            <div className="h-64 lg:h-full min-h-[400px] relative w-full overflow-hidden order-1 lg:order-2">
-              <img 
-                src={featuredArticle.imageUrl} 
-                alt={featuredArticle.title} 
-                className="absolute inset-0 w-full h-full object-cover" 
-                onError={(e) => {
-                  e.target.src = "https://images.unsplash.com/photo-1488590528505-98d2b5aba04b?q=80&w=600";
-                }}
-              />
-              <div className="absolute inset-0 bg-gradient-to-r from-[#111827] to-transparent lg:w-1/4"></div>
-            </div>
-          </motion.section>
-        )}
-
-        {/* Section 3: All Articles */}
-        <motion.section 
-          initial="hidden" 
-          whileInView="visible" 
-          viewport={{ once: true, amount: 0.1 }}
-          variants={fadeUpVariants}
-        >
-          <div className="flex flex-col md:flex-row md:items-end justify-between mb-8 gap-6">
-            <h2 className="text-2xl font-bold text-white">All Articles</h2>
-            <div className="flex flex-wrap gap-3">
-              {categories.map((cat) => (
-                <button 
-                  key={cat}
-                  onClick={() => handleCategoryChange(cat)}
-                  className={`px-4 py-1.5 rounded-full text-sm font-medium transition-colors cursor-pointer ${
-                    selectedCategory === cat 
-                      ? 'bg-blue-600 text-white border border-blue-600' 
-                      : 'bg-[#1F2937] text-gray-400 border border-transparent hover:text-white hover:bg-[#374151]'
-                  }`}
-                >
-                  {cat}
-                </button>
+            <div className="flex flex-wrap gap-2 lg:justify-end items-start mt-4 lg:mt-0">
+              {tags.map(t => (
+                <span key={t} className="bg-[#1F2937] text-gray-300 text-sm font-medium px-4 py-1.5 rounded-full border border-[#374151]">
+                  {t}
+                </span>
               ))}
             </div>
           </div>
+        </motion.div>
 
-          {currentArticles.length === 0 ? (
-            <div className="text-gray-500 py-12 text-center">No articles found in this category.</div>
-          ) : (
-            <div className="space-y-12">
-              <motion.div 
-                layout 
-                variants={containerVariants}
-                initial="hidden"
-                animate="visible"
-                className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
-              >
-                <AnimatePresence mode='popLayout'>
-                  {currentArticles.map((article) => (
-                    <motion.article 
-                      layout
-                      variants={cardVariants}
-                      initial="hidden"
-                      animate="visible"
-                      exit="exit"
-                      whileHover={{ y: -15, scale: 1.03 }}
-                      key={article._id || article.id}
-                      className="relative bg-gradient-to-br from-[#081224] to-[#0f172a] border border-blue-500/10 rounded-2xl overflow-hidden group transition-colors transition-shadow duration-300 ease-out hover:border-blue-500/40 hover:shadow-[0_20px_50px_rgba(37,99,235,0.18)] flex flex-col h-full cursor-pointer"
-                      onClick={() => navigate(`/article/${article._id || article.id}`)}
-                    >
-                      {/* Top gradient line */}
-                      <div className="absolute top-0 left-0 w-full h-[2px] bg-gradient-to-r from-blue-600 to-transparent z-10"></div>
-                      
-                      {/* Glow effect */}
-                      <div className="absolute -top-[70px] -right-[70px] w-[180px] h-[180px] bg-[radial-gradient(circle,rgba(37,99,235,0.18),transparent)] pointer-events-none z-10"></div>
-
-                      <div className="h-48 w-full relative overflow-hidden z-20">
-                        <img 
-                          src={article.imageUrl} 
-                          alt={article.title} 
-                          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300 ease-out"
-                          onError={(e) => {
-                            e.target.src = "https://images.unsplash.com/photo-1488590528505-98d2b5aba04b?q=80&w=400";
-                          }}
-                        />
-                      </div>
-                      <div className="p-6 flex flex-col flex-grow relative z-20 bg-gradient-to-br from-[#081224]/50 to-[#0f172a]/50">
-                        <span className="text-blue-500 text-xs font-semibold mb-2 uppercase">{article.category}</span>
-                        <h3 className="text-xl font-bold text-white mb-3">{article.title}</h3>
-                        <p className="text-gray-400 mb-6 flex-grow">{article.description}</p>
-                        
-                        <Link
-                          to={`/article/${article._id || article.id}`}
-                          onClick={(e) => {
-                            // Prevent card click navigation from colliding
-                            e.stopPropagation();
-                          }}
-                          className="text-blue-500 font-medium flex items-center hover:text-white transition-colors w-max group"
-                        >
-                          Read Article <span className="ml-1 group-hover:translate-x-1 transition-transform">→</span>
-                        </Link>
-                      </div>
-                    </motion.article>
-
-                  ))}
-                </AnimatePresence>
-              </motion.div>
-
-              {/* Responsive Pagination Controls */}
-              {totalPages > 1 && (
-                <div className="flex justify-center items-center gap-4 pt-6">
-                  <button
-                    disabled={currentPage === 1}
-                    onClick={() => setCurrentPage(prev => Math.max(1, prev - 1))}
-                    className={`px-4 py-2 rounded-xl text-sm font-semibold border transition-all cursor-pointer ${
-                      currentPage === 1
-                        ? 'border-white/10 text-white/30 bg-white/5 cursor-not-allowed'
-                        : 'border-white/20 text-white hover:bg-white/10 hover:border-white/30'
-                    }`}
-                  >
-                    Previous
-                  </button>
-                  
-                  <div className="flex gap-2">
-                    {Array.from({ length: totalPages }, (_, index) => {
-                      const pageNum = index + 1;
-                      return (
-                        <button
-                          key={pageNum}
-                          onClick={() => setCurrentPage(pageNum)}
-                          className={`w-10 h-10 rounded-xl text-sm font-bold border transition-all cursor-pointer ${
-                            currentPage === pageNum
-                              ? 'bg-blue-600 border-blue-600 text-white shadow-lg shadow-blue-500/20'
-                              : 'border-white/10 bg-white/5 text-white/70 hover:bg-white/10 hover:text-white'
-                          }`}
-                        >
-                          {pageNum}
-                        </button>
-                      );
-                    })}
-                  </div>
-
-                  <button
-                    disabled={currentPage === totalPages}
-                    onClick={() => setCurrentPage(prev => Math.min(totalPages, prev + 1))}
-                    className={`px-4 py-2 rounded-xl text-sm font-semibold border transition-all cursor-pointer ${
-                      currentPage === totalPages
-                        ? 'border-white/10 text-white/30 bg-white/5 cursor-not-allowed'
-                        : 'border-white/20 text-white hover:bg-white/10 hover:border-white/30'
-                    }`}
-                  >
-                    Next
-                  </button>
-                </div>
-              )}
-            </div>
-          )}
-        </motion.section>
-
-        {/* Section 4: Newsletter Banner */}
-        <motion.section 
-          initial="hidden" 
-          whileInView="visible" 
-          viewport={{ once: true, amount: 0.2 }}
-          variants={fadeUpVariants}
-          className="bg-[#1F2937] rounded-xl p-8 md:p-12 flex flex-col lg:flex-row items-center justify-between gap-8 border border-[#374151]"
+        <motion.div 
+          initial="hidden" animate="visible" variants={fadeUpVariants}
+          className="mt-12 w-full h-[200px] sm:h-[280px] md:h-[350px] lg:h-[400px] relative rounded-2xl overflow-hidden border border-[#374151]"
         >
-          <div className="max-w-xl">
-            <h3 className="text-2xl font-bold text-white mb-2">Stay Updated With Our Latest Insights</h3>
-            <p className="text-gray-400">Get weekly deep-dives and strategic guides delivered straight to your inbox. No spam, just high-value signal.</p>
+          <img src={article.imageUrl} alt={article.title} className="w-full h-full object-cover" onError={(e) => {
+            e.target.src = "https://images.unsplash.com/photo-1488590528505-98d2b5aba04b?q=80&w=1200";
+          }} />
+        </motion.div>
+
+        <div className="flex flex-col lg:flex-row gap-12 mt-16">
+          
+          <motion.div 
+            initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.1 }} variants={fadeUpVariants}
+            className="lg:w-2/3 xl:w-3/4 text-gray-300 leading-relaxed space-y-10"
+          >
+            {article.content ? (
+              <div className="article-body">
+                {renderContent(article.content)}
+              </div>
+            ) : (
+              <>
+                <div className="bg-[#111827] border border-[#374151] border-l-4 border-l-blue-500 rounded-r-xl p-8">
+                  <h3 className="text-white font-bold text-lg mb-4 flex items-center gap-2">
+                    <svg className="w-5 h-5 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+                    Executive Summary
+                  </h3>
+                  <ul className="space-y-3 list-disc list-inside text-gray-400">
+                    <li>The integration of LLMs requires a fundamental shift from static cloud infrastructure to elastic, compute-heavy environments.</li>
+                    <li>Data governance and sovereignty remain the primary friction points for global enterprise adoption in 2024.</li>
+                    <li>Legacy systems are not an obstacle but a foundational data layer when abstracted correctly through API-first orchestration.</li>
+                  </ul>
+                </div>
+
+                <div>
+                  <h2 className="text-2xl font-bold text-white mb-6">The Paradigms of Modern Infrastructure</h2>
+                  <p className="mb-6">
+                    In the current fiscal landscape, the narrative has shifted from pure digital adoption to deep architectural transformation. Enterprises that once viewed Artificial Intelligence as a tangential luxury are now confronting a reality where compute-readiness defines their valuation. The friction between legacy stability and generative speed has never been more pronounced.
+                  </p>
+                </div>
+
+                <blockquote className="bg-[#1F2937] border-l-4 border-gray-500 italic p-6 rounded-r-lg text-lg text-gray-300">
+                  "Strategic adaptation is no longer an option—it is the baseline for enterprise survival."
+                  <footer className="text-blue-500 text-sm font-semibold mt-4 not-italic">— Maria Halstead, Nexus Insights Global</footer>
+                </blockquote>
+
+                <div>
+                  <h2 className="text-2xl font-bold text-white mb-6">Operationalizing Intelligence</h2>
+                  <p className="mb-6">
+                    To successfully integrate high-parameter models, an organization must audit its data hygiene with surgical precision. Most failures in AI implementation do not stem from model inadequacy, but from the inability of the infrastructure to feed the engine high-quality, contextual data in real-time.
+                  </p>
+                  <ul className="space-y-4 mb-6 list-disc list-inside ml-2">
+                    <li><strong className="text-white">Unified Data Fabric:</strong> Breaking down department-level silos to create a single source of truth.</li>
+                    <li><strong className="text-white">Edge Computing Synergy:</strong> Moving processing power closer to the data source to minimize latency in decision-making.</li>
+                    <li><strong className="text-white">Ethical Governance Frameworks:</strong> Implementing hard-coded guardrails that protect intellectual property while allowing for rapid iteration.</li>
+                  </ul>
+                  <p>
+                    We are seeing a trend towards "Small Language Models" (SLMs) trained on proprietary enterprise data, which offer higher security and lower operational costs than general-purpose giants. This shift allows for more tailored automation that understands the specific nuances of a global supply chain or a complex financial portfolio.
+                  </p>
+                </div>
+              </>
+            )}
+          </motion.div>
+
+          <motion.div 
+            initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.1 }} variants={fadeUpVariants}
+            className="lg:w-1/3 xl:w-1/4 shrink-0 flex flex-col gap-8"
+          >
+            <div className="bg-[#111827] border border-[#374151] rounded-xl p-6">
+              <h3 className="text-white font-bold text-sm uppercase tracking-wider mb-4">Share Article</h3>
+              <div className="flex flex-wrap gap-3">
+                <a href={`https://twitter.com/intent/tweet?url=${encodeURIComponent(window.location.href)}&text=${encodeURIComponent(article.title)}`} target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-full bg-[#1F2937] flex items-center justify-center text-gray-400 hover:text-white hover:bg-blue-600 transition-colors" aria-label="Share on Twitter">
+                  <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M24 4.557c-.883.392-1.832.656-2.828.775 1.017-.609 1.798-1.574 2.165-2.724-.951.564-2.005.974-3.127 1.195-.897-.957-2.178-1.555-3.594-1.555-3.179 0-5.515 2.966-4.797 6.045-4.091-.205-7.719-2.165-10.148-5.144-1.29 2.213-.669 5.108 1.523 6.574-.806-.026-1.566-.247-2.229-.616-.054 2.281 1.581 4.415 3.949 4.89-.693.188-1.452.232-2.224.084.626 1.956 2.444 3.379 4.6 3.419-2.07 1.623-4.678 2.348-7.29 2.04 2.179 1.397 4.768 2.212 7.548 2.212 9.142 0 14.307-7.721 13.995-14.646.962-.695 1.797-1.562 2.457-2.549z"/></svg>
+                </a>
+                <a href={`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(window.location.href)}`} target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-full bg-[#1F2937] flex items-center justify-center text-gray-400 hover:text-white hover:bg-[#0077b5] transition-colors" aria-label="Share on LinkedIn">
+                  <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/></svg>
+                </a>
+                <button onClick={handleCopyLink} className="w-10 h-10 rounded-full bg-[#1F2937] flex items-center justify-center text-gray-400 hover:text-white hover:bg-[#333] transition-colors" aria-label="Copy Link">
+                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"></path></svg>
+                </button>
+                <a href={`mailto:?subject=${encodeURIComponent(article.title)}&body=${encodeURIComponent(window.location.href)}`} className="w-10 h-10 rounded-full bg-[#1F2937] flex items-center justify-center text-gray-400 hover:text-white hover:bg-red-500 transition-colors" aria-label="Email Article">
+                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>
+                </a>
+              </div>
+            </div>
+
+            {article.showSubscription !== false && (
+              <div className="bg-[#111827] border border-[#374151] rounded-xl p-6">
+                <h3 className="text-white font-bold text-lg mb-2">Nexus Insights Daily</h3>
+                <p className="text-gray-400 text-sm mb-4">The latest strategic intelligence delivered to your inbox.</p>
+                <form onSubmit={handleSubscribe} className="flex flex-col gap-3">
+                  <input 
+                    type="email" 
+                    required 
+                    value={subscribeEmailVal}
+                    onChange={(e) => setSubscribeEmailVal(e.target.value)}
+                    placeholder="Email address" 
+                    className="bg-[#1F2937] border border-[#374151] text-white placeholder-gray-500 rounded-lg px-4 py-2 focus:outline-none focus:ring-1 focus:ring-blue-500 w-full" 
+                  />
+                  <button 
+                    type="submit" 
+                    disabled={submittingSubscribe}
+                    className="bg-blue-600 hover:bg-blue-700 disabled:bg-blue-500/50 text-white px-4 py-2 rounded-lg font-semibold transition-colors w-full cursor-pointer"
+                  >
+                    {submittingSubscribe ? "Subscribing..." : "Subscribe"}
+                  </button>
+                </form>
+              </div>
+            )}
+          </motion.div>
+
+        </div>
+
+        <motion.div 
+          initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.2 }} variants={fadeUpVariants}
+          className="mt-24 border border-[#374151] bg-[#111827] rounded-2xl p-8 md:p-12 text-center"
+        >
+          <h2 className="text-3xl font-bold text-white mb-4">Want expert guidance?</h2>
+          <p className="text-gray-400 max-w-2xl mx-auto mb-8">
+            Our global team of consultants helps organizations navigate technical complexity and unlock transformative value through tailored strategic frameworks.
+          </p>
+          <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
+            <Link to="/contact" className="w-full sm:w-auto bg-blue-600 hover:bg-blue-700 text-white px-8 py-3 rounded-lg font-semibold transition-colors text-center cursor-pointer">
+              Schedule Consultation
+            </Link>
+            <Link to="/insight" className="w-full sm:w-auto bg-transparent border border-white hover:bg-white hover:text-black text-white px-8 py-3 rounded-lg font-semibold transition-colors text-center cursor-pointer">
+              Explore More Insights
+            </Link>
           </div>
-          <form onSubmit={handleNewsletterSubscribe} className="flex w-full lg:w-auto gap-3">
-            <input 
-              type="email" 
-              required
-              value={newsletterEmail}
-              onChange={(e) => setNewsletterEmail(e.target.value)}
-              placeholder="Enter your work email" 
-              className="bg-[#374151] border border-[#4b5563] text-white placeholder-white/60 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500 w-full md:w-72"
-            />
-            <button 
-              type="submit" 
-              disabled={submittingNewsletter}
-              className="bg-blue-600 hover:bg-blue-700 disabled:bg-blue-500/50 text-white px-6 py-3 rounded-lg font-semibold whitespace-nowrap transition-colors cursor-pointer"
-            >
-              {submittingNewsletter ? "Subscribing..." : "Subscribe"}
-            </button>
-          </form>
-        </motion.section>
+        </motion.div>
+
+        <motion.div 
+          initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.1 }} variants={fadeUpVariants}
+          className="mt-24"
+        >
+          <h2 className="text-2xl font-bold text-white mb-8">Related Articles</h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {relatedArticles.map(relArticle => (
+              <motion.article 
+                key={relArticle._id || relArticle.id}
+                whileHover={{ y: -5 }}
+                className="bg-[#111827] border border-[#374151] rounded-lg overflow-hidden group hover:border-[#4b5563] transition-colors flex flex-col h-full"
+              >
+                <Link to={`/article/${relArticle._id || relArticle.id}`} className="flex flex-col h-full">
+                  <div className="h-48 w-full relative overflow-hidden">
+                    <img 
+                      src={relArticle.imageUrl} 
+                      alt={relArticle.title} 
+                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" 
+                    />
+                  </div>
+                  <div className="p-6 flex flex-col flex-grow">
+                    <span className="text-blue-500 text-xs font-semibold mb-2 uppercase">{relArticle.category}</span>
+                    <h3 className="text-xl font-bold text-white mb-3 line-clamp-2">{relArticle.title}</h3>
+                    <p className="text-gray-400 mb-6 flex-grow">{relArticle.description}</p>
+                    <div className="text-blue-500 font-medium flex items-center group-hover:text-white transition-colors w-max mt-auto">
+                      Read Article <span className="ml-1 group-hover:translate-x-1 transition-transform">→</span>
+                    </div>
+                  </div>
+                </Link>
+              </motion.article>
+            ))}
+          </div>
+        </motion.div>
 
       </div>
     </div>
   );
 };
 
-export default Insight;
+export default Article;
