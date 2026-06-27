@@ -4,7 +4,8 @@ import {
     createInquiry,
     getInquiries,
     updateInquiryStatus,
-    sendReply
+    sendReply,
+    getNewInquiries
 } from "../controllers/inquiryController.js";
 
 const router = express.Router();
@@ -12,6 +13,13 @@ const router = express.Router();
 router.post("/", createInquiry);
 
 router.get("/", getInquiries);
+
+router.get(
+
+"/notifications",
+
+getNewInquiries
+)
 
 router.put("/:id", updateInquiryStatus);
 

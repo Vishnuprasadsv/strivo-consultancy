@@ -64,3 +64,10 @@ export const getTalentSubmissionsAPI = async () => {
 export const submitReviewAPI = async (reviewData) => {
   return await commonAPI("POST", `${SERVER_URL}/api/reviews`, reviewData, "");
 };
+
+export const getAdminInquiriesAPI = async () => {
+  return await commonAPI(
+    "GET",
+    `${SERVER_URL}/api/inquiries/notifications`
+  );
+};

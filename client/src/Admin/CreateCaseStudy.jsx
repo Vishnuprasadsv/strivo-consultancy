@@ -95,9 +95,7 @@ const CreateCaseStudy = () => {
   // -------------------------
 
   const uploadImage = async (file) => {
-    console.log(import.meta.env);
-    console.log("Cloud Name:", import.meta.env.VITE_CLOUDINARY_CLOUD_NAME);
-    console.log("Upload Preset:", import.meta.env.VITE_CLOUDINARY_UPLOAD_PRESET);
+   
     if (!file) return "";
 
     const data = new FormData();

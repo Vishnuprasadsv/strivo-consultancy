@@ -57,6 +57,35 @@ export const getInquiries = async (req, res) => {
     res.json(inquiries);
 
 };
+export const getNewInquiries = async(req,res)=>{
+
+   try{
+
+      const inquiries = await Inquiry.find({
+
+         status:"New"
+
+      }).sort({
+
+         createdAt:-1
+
+      });
+
+      res.json(inquiries);
+
+   }
+
+   catch(err){
+
+      res.status(500).json({
+
+         message:err.message
+
+      });
+
+   }
+
+}
 export const updateInquiryStatus = async (req, res) => {
     try {
 

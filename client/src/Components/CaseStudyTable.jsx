@@ -1,21 +1,12 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
-import { FiTrash2 } from "react-icons/fi";
-import {
-  FiEdit2,
-  FiMoreVertical,
-} from "react-icons/fi";
+import { FiTrash2, FiEdit2 } from "react-icons/fi";
 
 const statusColor = {
-  Published:
-    "bg-green-500/10 text-green-400 border border-green-500/20",
-
-  Draft:
-    "bg-orange-500/10 text-orange-400 border border-orange-500/20",
-
-  Archived:
-    "bg-purple-500/10 text-purple-400 border border-purple-500/20",
+  Published: "bg-green-500/10 text-green-400 border border-green-500/20",
+  Draft: "bg-orange-500/10 text-orange-400 border border-orange-500/20",
+  Archived: "bg-purple-500/10 text-purple-400 border border-purple-500/20",
 };
 
 const categoryColor = {
@@ -25,224 +16,244 @@ const categoryColor = {
   Retail: "bg-orange-500",
 };
 
-const CaseStudyTable = ({ caseStudies }) => {
+// added onStatusChange as a prop in case you want to update status in-place
+const CaseStudyTable = ({ caseStudies, onStatusChange }) => {
   const navigate = useNavigate();
+
   const deleteCaseStudy = async (id) => {
-
-    if (!window.confirm("Delete this case study?"))
-      return;
-
+    if (!window.confirm("Delete this case study?")) return;
     try {
-
-      await axios.delete(
-        `http://localhost:5000/api/case-studies/${id}`
-      );
-
+      await axios.delete(`http://localhost:5000/api/case-studies/${id}`);
       window.location.reload();
-
     } catch (err) {
-
-      console.log(err);
-
+      console.error("Failed to delete case study:", err);
     }
-
   };
+
+  const handleStatusChange = async (id, newStatus) => {
+    try {
+      // API call to update status directly in-place
+      await axios.put(`http://localhost:5000/api/case-studies/${id}`, { status: newStatus });
+      if (onStatusChange) {
+        onStatusChange(id, newStatus);
+      } else {
+        window.location.reload();
+      }
+    } catch (err) {
+      console.error("Failed to update status:", err);
+    }
+  };
+
   return (
     <div
       className="
-        bg-white/5
+        bg-[#090f1c]/40
         backdrop-blur-xl
         border
-        border-white/10
+        border-slate-800/80
         rounded-2xl
         overflow-hidden
+        w-full
       "
     >
-      {/* Header */}
-
+      {/* Table Header */}
       <div
-
         className="
-    grid
-    grid-cols-[80px_3fr_2fr_1.5fr_1.2fr_140px_120px]
-    items-center
-    px-6
-    py-5
-    text-gray-400
-    text-sm
-    font-semibold
-    border-b
-    border-slate-700
-  "
-
+          grid
+          grid-cols-[90px_3fr_2fr_1.5fr_1.2fr_140px_110px]
+          items-center
+          px-6
+          py-4
+          text-gray-500
+          text-[11px]
+          font-bold
+          uppercase
+          tracking-wider
+          border-b
+          border-slate-800/60
+        "
       >
         <div>ID</div>
         <div>Case Study</div>
         <div>Author</div>
         <div>Category</div>
-        <div>Status</div>
-        <div>Published</div>
-        <div className="text-center">Actions</div>
+        <div className="text-center">Status</div>
+        <div className="text-center">Published</div>
+        <div className="text-right pr-4">Actions</div>
       </div>
 
-      {/* Rows */}
-
-      {caseStudies.map((study) => (
-        <div
-          key={study.id}
-          className="
-            grid
-             grid-cols-[80px_3fr_2fr_1.5fr_1.2fr_140px_120px]
-            items-center
-            px-6
-            py-4
-            border-b
-            border-slate-800
-            hover:bg-white/5
-            transition
-          "
-        >
-          {/* ID */}
-
-          <div className="font-medium">
-            {study._id.slice(-6).toUpperCase()}
-          </div>
-
-          {/* Title */}
-
-          <div className="flex items-center gap-3 min-w-0">
-
-            <img
-              src={study.coverImage || "https://via.placeholder.com/80"}
-              alt={study.title}
-              className="w-14 h-14 rounded-lg object-cover flex-shrink-0"
-            />
-
-            <div className="min-w-0">
-
-              <h3 className="font-semibold leading-6 ">
-                {study.title}
-              </h3>
-
-              <p className="text-xs text-gray-400 truncate">
-                {study.duration}
-              </p>
-
+      {/* Table Rows */}
+      <div className="divide-y divide-slate-800/40">
+        {caseStudies.map((study) => (
+          <div
+            key={study._id}
+            className="
+              grid
+              grid-cols-[90px_3fr_2fr_1.5fr_1.2fr_140px_110px]
+              items-center
+              px-6
+              py-4.5
+              hover:bg-white/[0.02]
+              transition-colors
+              duration-200
+            "
+          >
+            {/* ID */}
+            <div className="font-mono text-[11px] text-gray-500">
+              #{study._id.slice(-6).toUpperCase()}
             </div>
 
+            {/* Case Study Details */}
+            <div className="flex items-center gap-3.5 min-w-0 pr-4">
+              <img
+                src={study.coverImage || "https://via.placeholder.com/80"}
+                alt={study.title}
+                className="w-12 h-12 rounded-lg object-cover flex-shrink-0 border border-slate-800/80"
+              />
+              <div className="min-w-0">
+                <h3 
+                  onClick={() => navigate(`/admin/edit-case-study/${study._id}`)}
+                  className="font-semibold text-white text-sm truncate hover:text-blue-400 transition-colors cursor-pointer"
+                >
+                  {study.title}
+                </h3>
+                <p className="text-[11px] text-gray-500 mt-0.5">
+                  {study.duration}
+                </p>
+              </div>
+            </div>
+
+            {/* Author */}
+            <div className="min-w-0 pr-4">
+              <p className="font-medium text-sm text-gray-200 truncate">
+                {study.author}
+              </p>
+              <p className="text-xs text-gray-500 mt-0.5 truncate">
+                {study.authorRole}
+              </p>
+            </div>
+
+            {/* Category */}
+            <div className="flex items-center gap-2 text-sm text-gray-300">
+              <span
+                className={`w-2 h-2 rounded-full flex-shrink-0 ${
+                  categoryColor[study.category] || "bg-slate-500"
+                }`}
+              ></span>
+              <span className="truncate">{study.category}</span>
+            </div>
+
+            {/* Status (Interactive Select Dropdown) */}
+            <div className="flex justify-center items-center">
+              <div className="relative inline-block w-[110px]">
+                <select
+                  value={study.status}
+                  onChange={(e) => handleStatusChange(study._id, e.target.value)}
+                  className={`
+                    appearance-none 
+                    w-full 
+                    text-center
+                    font-bold 
+                    rounded-full 
+                    pl-3 
+                    pr-7 
+                    py-1 
+                    text-[10px] 
+                    uppercase 
+                    tracking-wider 
+                    border 
+                    cursor-pointer 
+                    focus:outline-none 
+                    transition-all 
+                    duration-200 
+                    ${statusColor[study.status] || "bg-slate-800 text-slate-400 border border-slate-700/50"}
+                  `}
+                >
+                  <option value="Published" className="bg-[#0f172a] text-green-400">Published</option>
+                  <option value="Draft" className="bg-[#0f172a] text-orange-400">Draft</option>
+                  <option value="Archived" className="bg-[#0f172a] text-purple-400">Archived</option>
+                </select>
+
+                {/* Arrow Icon aligned relative to the select pill */}
+                <div className="pointer-events-none absolute inset-y-0 right-2.5 flex items-center text-current opacity-70">
+                  <svg className="w-2.5 h-2.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M19 9l-7 7-7-7" />
+                  </svg>
+                </div>
+              </div>
+            </div>
+
+            {/* Publication Date */}
+            <div className="text-center text-sm text-gray-400">
+              {study.publicationDate
+                ? new Date(study.publicationDate).toLocaleDateString(undefined, {
+                    year: 'numeric',
+                    month: 'short',
+                    day: 'numeric'
+                  })
+                : "—"}
+            </div>
+
+            {/* Actions */}
+            <div className="flex justify-end gap-2 pr-2">
+              <button
+                title="Edit Case Study"
+                className="
+                  w-8
+                  h-8
+                  rounded-lg
+                  bg-slate-800/40
+                  hover:bg-blue-600/10
+                  text-slate-400
+                  hover:text-blue-400
+                  border
+                  border-slate-800/80
+                  hover:border-blue-500/30
+                  transition-all
+                  duration-200
+                  flex
+                  items-center
+                  justify-center
+                "
+                onClick={() => navigate(`/admin/edit-case-study/${study._id}`)}
+              >
+                <FiEdit2 size={13} />
+              </button>
+
+              <button
+                title="Delete Case Study"
+                onClick={() => deleteCaseStudy(study._id)}
+                className="
+                  w-8
+                  h-8
+                  rounded-lg
+                  bg-slate-800/40
+                  hover:bg-red-600/10
+                  text-slate-400
+                  hover:text-red-400
+                  border
+                  border-slate-800/80
+                  hover:border-red-500/30
+                  transition-all
+                  duration-200
+                  flex
+                  items-center
+                  justify-center
+                "
+              >
+                <FiTrash2 size={13} />
+              </button>
+            </div>
           </div>
-          <div>
-            <p className="font-medium text-sm">
-              {study.author}
-            </p>
-
-            <p className="text-xs text-gray-400">
-              {study.authorRole}
-            </p>
-          </div>
-
-          {/* Industry */}
-
-          <div className="flex items-center">
-
-            <span
-              className={`w-2.5 h-2.5 rounded-full
-  ${categoryColor[study.category]}`}
-            ></span>
-
-            {study.category}
-
-
-          </div>
-
-
-          {/* Status */}
-
-          <div className="flex justify-center items-center">
-
-            <span
-              className={`
-                px-2
-py-1
-                rounded-full
-                text-xs
-                font-medium
-                ${statusColor[study.status]}
-              `}
-            >
-              {study.status}
-            </span>
-
-          </div>
-
-          {/* Date */}
-
-          <div className="flex justify-center items-center text-sm text-gray-300">
-            {study.publicationDate
-              ? new Date(study.publicationDate).toLocaleDateString()
-              : "-"}
-          </div>
-          {/* Actions */}
-
-          <div className="flex justify-center gap-2">
-
-            <button
-              className="
-                w-8
-h-8
-                rounded-lg
-                bg-slate-800
-                hover:bg-blue-600
-                transition
-                flex
-                items-center
-                justify-center
-              "
-              onClick={() =>
-                navigate(`/admin/edit-case-study/${study._id}`)
-              }
-            >
-              <FiEdit2 />
-            </button>
-
-            <button
-              onClick={() => deleteCaseStudy(study._id)}
-              className="
-w-8
-h-8
-rounded-lg
-bg-red-600
-hover:bg-red-700
-flex
-items-center
-justify-center
-transition
-"
-            >
-              <FiTrash2 />
-            </button>
-          </div>
-        </div>
-      ))}
-
-      {/* Footer */}
-
-      <div
-        className="
-          flex
-          justify-between
-          items-center
-          px-6
-          py-5
-        "
-      >
-        <p className="text-gray-400 text-sm">
-          Showing {caseStudies.length} case studies
-        </p>
-
-
+        ))}
       </div>
 
+      {/* Footer */}
+      <div className="flex justify-between items-center px-6 py-4.5 border-t border-slate-800/60 bg-white/[0.01]">
+        <p className="text-gray-500 text-xs">
+          Showing <span className="text-gray-300 font-semibold">{caseStudies.length}</span> case studies
+        </p>
+      </div>
     </div>
   );
 };
