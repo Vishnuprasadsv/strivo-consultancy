@@ -36,7 +36,6 @@ const Inquiries = lazy(() => import('./Admin/Inquiries'));
 const CaseStudiesAdmin = lazy(() => import('./Admin/CaseStudies'));
 const CreateCaseStudy = lazy(() => import('./Admin/CreateCaseStudy'));
 const EditCaseStudy = lazy(() => import('./Admin/EditCaseStudy'));
-
 // ScrollToTop component ensures navigating to a new route scrolls to the top smoothly
 const ScrollToTop = () => {
   const { pathname } = useLocation();
