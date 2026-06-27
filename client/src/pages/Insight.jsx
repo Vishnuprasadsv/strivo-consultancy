@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Link, useNavigate } from 'react-router-dom';
 
 // Import API services
-import { getArticlesAPI, subscribeEmailAPI } from '../services/allApi';
+import { getArticlesAPI, subscribeEmailAPI } from '../services/allApi.js';
 import { toast } from 'sonner';
 
 
