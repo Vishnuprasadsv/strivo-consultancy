@@ -180,7 +180,7 @@ const CreateCaseStudy = () => {
 
       await axios.post(
 
-        "http://localhost:5000/api/case-studies",
+        `${import.meta.env.VITE_API_BASE_URL}/api/case-studies`,
 
         {
           title: formData.title,

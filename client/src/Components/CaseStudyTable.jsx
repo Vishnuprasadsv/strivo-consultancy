@@ -23,7 +23,7 @@ const CaseStudyTable = ({ caseStudies, onStatusChange }) => {
   const deleteCaseStudy = async (id) => {
     if (!window.confirm("Delete this case study?")) return;
     try {
-      await axios.delete(`http://localhost:5000/api/case-studies/${id}`);
+      await axios.delete(`${import.meta.env.VITE_API_BASE_URL}/api/case-studies/${id}`);
       window.location.reload();
     } catch (err) {
       console.error("Failed to delete case study:", err);
@@ -33,7 +33,7 @@ const CaseStudyTable = ({ caseStudies, onStatusChange }) => {
   const handleStatusChange = async (id, newStatus) => {
     try {
       // API call to update status directly in-place
-      await axios.put(`http://localhost:5000/api/case-studies/${id}`, { status: newStatus });
+      await axios.put(`${import.meta.env.VITE_API_BASE_URL}/api/case-studies/${id}`, { status: newStatus });
       if (onStatusChange) {
         onStatusChange(id, newStatus);
       } else {

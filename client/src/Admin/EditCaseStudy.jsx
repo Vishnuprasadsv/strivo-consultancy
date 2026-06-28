@@ -66,14 +66,14 @@ const EditCaseStudy = () => {
 
     const fetchStudy = async () => {
      console.log(
-`http://localhost:5000/api/case-studies/${id}`
+`${import.meta.env.VITE_API_BASE_URL}/api/case-studies/${id}`
 );
   
         try {
 
             const res = await axios.get(
 
-                `http://localhost:5000/api/case-studies/${id}`
+                `${import.meta.env.VITE_API_BASE_URL}/api/case-studies/${id}`
 
             );
              console.log(res.data);
@@ -210,7 +210,7 @@ const EditCaseStudy = () => {
 
     const res = await axios.put(
 
-      `http://localhost:5000/api/case-studies/${id}`,
+      `${import.meta.env.VITE_API_BASE_URL}/api/case-studies/${id}`,
 
       {
 

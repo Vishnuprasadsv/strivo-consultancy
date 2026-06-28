@@ -49,7 +49,7 @@ const ForgotPassword = () => {
 
     setIsLoading(true);
     try {
-      await axios.post('http://localhost:5000/api/admin/forgot-password', { email });
+      await axios.post(`${import.meta.env.VITE_API_BASE_URL}/api/admin/forgot-password`, { email });
       toast.success('OTP sent successfully to your email!');
       setStep(2);
       setTimer(300); // Reset timer
@@ -89,7 +89,7 @@ const ForgotPassword = () => {
 
     setIsLoading(true);
     try {
-      const response = await axios.post('http://localhost:5000/api/admin/verify-otp', {
+      const response = await axios.post(`${import.meta.env.VITE_API_BASE_URL}/api/admin/verify-otp`, {
         email,
         otp: otpValue,
       });
@@ -117,7 +117,7 @@ const ForgotPassword = () => {
 
     setIsLoading(true);
     try {
-      await axios.put('http://localhost:5000/api/admin/reset-password', {
+      await axios.put(`${import.meta.env.VITE_API_BASE_URL}/api/admin/reset-password`, {
         resetToken,
         newPassword,
       });

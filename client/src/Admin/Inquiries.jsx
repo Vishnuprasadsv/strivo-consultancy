@@ -68,7 +68,7 @@ const Inquiries = () => {
     }, []);
     const fetchInquiries = async () => {
         try {
-            const res = await axios.get("http://localhost:5000/api/inquiries");
+            const res = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/api/inquiries`);
 
             setInquiries(res.data);
 
@@ -86,7 +86,7 @@ const Inquiries = () => {
 try{
 
 await axios.put(
-`http://localhost:5000/api/inquiries/${id}`,
+`${import.meta.env.VITE_API_BASE_URL}/api/inquiries/${id}`,
 {status}
 );
 
@@ -117,7 +117,7 @@ console.log(err);
     const handleSendReply = async () => {
         try {
             const response = await axios.post(
-                "http://localhost:5000/api/inquiries/reply",
+                `${import.meta.env.VITE_API_BASE_URL}/api/inquiries/reply`,
                 {
                     email: selected.email,
                     subject: reply.subject,

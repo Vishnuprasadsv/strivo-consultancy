@@ -57,7 +57,7 @@ const Dashboard = () => {
 
   const fetchStories = async () => {
     try {
-      const response = await axios.get('http://localhost:5000/api/success-stories');
+      const response = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/api/success-stories`);
       setStories(response.data);
     } catch (error) {
       console.error('Error fetching stories:', error);
@@ -90,7 +90,7 @@ const Dashboard = () => {
       data.append('clientStories', formData.clientStories);
       data.append('image', formData.image);
 
-      await axios.post('http://localhost:5000/api/success-stories', data, {
+      await axios.post(`${import.meta.env.VITE_API_BASE_URL}/api/success-stories`, data, {
         headers: { 'Content-Type': 'multipart/form-data' }
       });
       
@@ -109,7 +109,7 @@ const Dashboard = () => {
 
   const handleDelete = async (id) => {
     try {
-      await axios.delete(`http://localhost:5000/api/success-stories/${id}`);
+      await axios.delete(`${import.meta.env.VITE_API_BASE_URL}/api/success-stories/${id}`);
       toast.success('Story deleted successfully');
       setStories(stories.filter(story => story._id !== id));
     } catch (error) {
