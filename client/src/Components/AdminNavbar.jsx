@@ -14,7 +14,8 @@ import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import {
   getAdminStatsAPI,
   getAdminApplicationsAPI,
-  getAdminInquiriesAPI
+  getAdminInquiriesAPI,
+  getReviewsAPI
 } from '../services/allApi';
 import logo from '../assets/strivo logo.png';
 import logo2 from '../assets/strivo logo 2.png';
@@ -34,16 +35,47 @@ const AdminNavbar = () => {
   const [notificationCount, setNotificationCount] = useState(0);
   const [notifications, setNotifications] = useState([]);
   const [showDropdown, setShowDropdown] = useState(false);
+  const dropdownRef = React.useRef(null);
+  const [lastViewed, setLastViewed] = useState(() => {
+    const saved = localStorage.getItem('adminNotificationsLastViewed');
+    return saved ? new Date(saved) : new Date(0);
+  });
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setShowDropdown(false);
+      }
+    };
+    if (showDropdown) {
+      document.addEventListener('mousedown', handleClickOutside);
+    }
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [showDropdown]);
+
+  const handleToggleDropdown = () => {
+    const nextShow = !showDropdown;
+    setShowDropdown(nextShow);
+    if (nextShow) {
+      const now = new Date();
+      setLastViewed(now);
+      localStorage.setItem('adminNotificationsLastViewed', now.toISOString());
+      setNotificationCount(0);
+    }
+  };
 
   // Fetch count of pending actions and list of top 5 new applications
   const fetchNotifications = async () => {
     try {
 
-      const [statsRes, appsRes, inquiryRes] =
+      const [statsRes, appsRes, inquiryRes, reviewsRes] =
         await Promise.all([
           getAdminStatsAPI(),
           getAdminApplicationsAPI(),
-          getAdminInquiriesAPI()
+          getAdminInquiriesAPI(),
+          getReviewsAPI()
         ]);
 
      
@@ -103,27 +135,33 @@ const AdminNavbar = () => {
 }
 
 
+      // Reviews
+      let reviewNotifications = [];
+      if (reviewsRes.status === 200 && reviewsRes.data?.success) {
+        const newReviews = reviewsRes.data.data.filter(
+          review => (new Date() - new Date(review.createdAt)) < 24 * 60 * 60 * 1000
+        );
+        reviewNotifications = newReviews.map(review => ({
+          id: review._id,
+          type: "review",
+          text: `New review from ${review.fullName}`,
+          time: new Date(review.createdAt)
+        }));
+      }
+
       // Combine notifications
-
       const allNotifications = [
-
         ...applicationNotifications,
-
-        ...inquiryNotifications
-
+        ...inquiryNotifications,
+        ...reviewNotifications
       ]
-
         .sort((a, b) => b.time - a.time)
-
         .slice(0, 5);
-
 
       setNotifications(allNotifications);
 
-
-      setNotificationCount(
-        allNotifications.length
-      );
+      const unreadCount = allNotifications.filter(n => n.time > lastViewed).length;
+      setNotificationCount(unreadCount);
 
     }
 
@@ -193,9 +231,9 @@ const AdminNavbar = () => {
 
         {/* Right Icons */}
         <div className="flex items-center gap-4 md:gap-6">
-          <div className="relative">
+          <div className="relative" ref={dropdownRef}>
             <button
-              onClick={() => setShowDropdown(!showDropdown)}
+              onClick={handleToggleDropdown}
               className="relative text-white/70 hover:text-white transition-colors cursor-pointer border-none bg-transparent"
               title="Notifications"
             >
@@ -222,21 +260,14 @@ const AdminNavbar = () => {
                         key={n.id}
                         className="p-2 hover:bg-white/5 rounded-lg transition-colors cursor-pointer"
                         onClick={() => {
-
                           if (n.type === "career") {
-
                             navigate("/admin/career");
-
-                          }
-
-                          else {
-
+                          } else if (n.type === "inquiry") {
                             navigate("/admin/inquiries");
-
+                          } else if (n.type === "review") {
+                            navigate("/admin/dashboard");
                           }
-
                           setShowDropdown(false);
-
                         }}
                       >
                         <p className="text-xs text-white/80 leading-snug">{n.text}</p>

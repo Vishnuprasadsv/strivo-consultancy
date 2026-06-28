@@ -5,6 +5,7 @@ import Navbar from './Components/Navbar';
 import AdminNavbar from './Components/AdminNavbar';
 import Footer from './Components/Footer';
 import Ferrofluid from './Components/Ferrofluid';
+import Ready from './Components/Ready';
 
 import Review from './pages/Review';
 import Career from './pages/Career';
@@ -57,7 +58,12 @@ const ConditionalNavbar = () => {
 const ConditionalFooter = () => {
   const { pathname } = useLocation();
   if (pathname.startsWith('/admin')) return null;
-  return <Footer />;
+  return (
+    <>
+      <Ready />
+      <Footer />
+    </>
+  );
 };
 
 // A premium loading fallback for Suspense

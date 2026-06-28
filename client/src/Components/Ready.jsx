@@ -1,4 +1,5 @@
 import React from 'react'
+import { useNavigate } from 'react-router-dom';
 
 import {
   Box,
@@ -6,8 +7,9 @@ import {
   Button,
 } from "@mui/material";
 function Ready() {
+  const navigate = useNavigate();
   return (
-    <div>
+    <div className="px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto w-full pb-12">
        <Box
       sx={{
         mt: 12,
@@ -70,6 +72,7 @@ function Ready() {
       </Typography>
 
       <Button
+        onClick={() => navigate('/contact')}
         variant="contained"
         sx={{
           px: 5,

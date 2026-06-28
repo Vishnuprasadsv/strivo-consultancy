@@ -25,18 +25,14 @@ import CloudUploadOutlinedIcon from "@mui/icons-material/CloudUploadOutlined";
 import careerVideo from "../assets/career.mp4";
 import { toast } from "sonner";
 import { applyJobAPI, submitTalentAPI, getJobsAPI } from "../services/allApi";
-import Ferrofluid from "../Components/Ferrofluid";
 import {
-
   Dialog,
   DialogTitle,
   DialogContent,
   DialogActions,
   TextField,
   MenuItem,
-
 } from "@mui/material";
-
 
 function Career() {
 
@@ -291,18 +287,9 @@ function Career() {
           alignItems: "center",
           justifyContent: "center",
           overflow: "hidden",
-          background: "#000000",
+          background: "transparent",
         }}
       >
-        <Box sx={{ position: "absolute", inset: 0, zIndex: 0 }}>
-          <Ferrofluid
-            colors={['#4F46E5', '#06B6D4', '#E0F2FE']}
-            speed={0.5}
-            scale={1.2}
-            opacity={0.6}
-            flowDirection="down"
-          />
-        </Box>
         {/* Main Glow */}
         <Box
           sx={{

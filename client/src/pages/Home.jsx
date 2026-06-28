@@ -10,6 +10,7 @@ import {
 import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import SEO from '../Components/SEO';
+import { SERVER_URL } from '../services/serverUrl';
 import homeHero from "../assets/herohome1.jpg";
 import leader1 from "../assets/leader1.jpg";
 import leader2 from "../assets/leader2.jpg";
@@ -176,7 +177,7 @@ const stats = [
   useEffect(() => {
     const fetchStories = async () => {
       try {
-        const response = await fetch('http://localhost:5000/api/success-stories');
+        const response = await fetch(`${SERVER_URL}/api/success-stories`);
         const data = await response.json();
         if (data && data.length > 0) {
           // Map backend data to frontend expected format
@@ -1184,19 +1185,7 @@ const stats = [
         </Box>
       ) : successStories.map((item, index) => (
         <SwiperSlide key={index}>
-          <motion.div
-            initial={{
-              opacity: 0,
-              y: 40,
-            }}
-            whileInView={{
-              opacity: 1,
-              y: 0,
-            }}
-            transition={{
-              duration: 0.8,
-            }}
-          >
+          <div>
             <Box
               sx={{
                 background:
@@ -1308,6 +1297,8 @@ const stats = [
                     xs: "1rem",
                     md: "1.4rem",
                   },
+                  wordBreak: "break-word",
+                  overflowWrap: "break-word",
                 }}
               >
                 "{item.review}"
@@ -1336,13 +1327,13 @@ const stats = [
                 </Typography>
               </Box>
             </Box>
-          </motion.div>
+          </div>
         </SwiperSlide>
       ))}
     </Swiper>
   </Container>
 </Box>
-<Ready/>
+
     </div>
   );
 }

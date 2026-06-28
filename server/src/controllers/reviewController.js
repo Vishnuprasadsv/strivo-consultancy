@@ -60,3 +60,23 @@ export const createReview = async (req, res) => {
     });
   }
 };
+
+// @desc    Get all reviews
+// @route   GET /api/reviews
+// @access  Public
+export const getAllReviews = async (req, res) => {
+  try {
+    const reviews = await Review.find().sort({ createdAt: -1 });
+    return res.status(200).json({
+      success: true,
+      data: reviews,
+    });
+  } catch (error) {
+    console.error("Error in getAllReviews controller:", error);
+    return res.status(500).json({
+      success: false,
+      message: "Internal server error. Failed to fetch reviews.",
+      error: error.message,
+    });
+  }
+};

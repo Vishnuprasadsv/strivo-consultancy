@@ -1,6 +1,11 @@
 import Article from "../models/Article.js";
 import Subscriber from "../models/Subscriber.js";
 import nodemailer from "nodemailer";
+import path from "path";
+import { fileURLToPath } from "url";
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 // Setup Nodemailer transporter using Gmail (same as talent HR email system)
 const transporter = nodemailer.createTransport({
@@ -89,6 +94,51 @@ export const subscribeEmail = async (req, res) => {
 
     const subscriber = new Subscriber({ email });
     await subscriber.save();
+
+    // Send Welcome Email
+    try {
+      const emailUser = process.env.EMAIL_USER || process.env.EMAIL;
+      const logo1Path = path.join(__dirname, "../../../client/src/assets/strivo logo.png");
+      const logo2Path = path.join(__dirname, "../../../client/src/assets/strivo logo 2.png");
+
+      const mailOptions = {
+        from: emailUser,
+        to: email,
+        subject: "Welcome! Your Strivo subscription is confirmed 🚀",
+        html: `
+          <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; color: #1e293b;">
+            <p>Hi there,</p>
+            <p>You are officially on the list! This email is to confirm that your subscription to our newsletter was successful.</p>
+            <p>As promised, you will now receive our latest insights, weekly deep-dives, and strategic guides delivered straight to your inbox. We respect your time and your inbox, which means we are sticking to our core rule: absolutely no spam, just high-value signal to help you stay ahead.</p>
+            <p>Keep an eye out for our next issue coming your way soon.</p>
+            <p>Best regards,</p>
+            <p>The Team at Strivo Private Limited</p>
+            <br/>
+            <div>
+              <img src="cid:strivologo" alt="Strivo Logo" style="width: 150px; margin-right: 15px;" />
+              <img src="cid:strivologo2" alt="Strivo Logo 2" style="width: 150px;" />
+            </div>
+          </div>
+        `,
+        attachments: [
+          {
+            filename: "strivo logo.png",
+            path: logo1Path,
+            cid: "strivologo"
+          },
+          {
+            filename: "strivo logo 2.png",
+            path: logo2Path,
+            cid: "strivologo2"
+          }
+        ]
+      };
+
+      await transporter.sendMail(mailOptions);
+      console.log(`✅ Welcome email dispatched to: ${email}`);
+    } catch (emailError) {
+      console.error("❌ Failed to send welcome email:", emailError.message);
+    }
 
     return res.status(201).json({
       success: true,

@@ -237,7 +237,7 @@ const ArticlesAdmin = () => {
 
 
   return (
-    <div className="min-h-screen pt-28 pb-12 px-4 sm:px-8 relative z-10 md:ml-64 bg-black text-white">
+    <div className="min-h-screen pt-28 pb-12 px-4 sm:px-8 relative z-10 md:ml-64 text-white">
       <div className="max-w-6xl mx-auto space-y-8">
         
         {/* Header Section */}
