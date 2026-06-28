@@ -2,6 +2,7 @@ import React from 'react'
 import { Box, Card, CardMedia, Container, Typography } from "@mui/material";
 import { useEffect } from "react";
 import Grid from "@mui/material/Grid";
+import { useNavigate } from "react-router-dom";
 
 import aboutus from "../assets/aboutus.jpg"
 import { motion } from "framer-motion";
@@ -19,6 +20,7 @@ import leader4 from "../assets/leader4.jpg";
 
 
 function Aboutus() {
+  const navigate = useNavigate();
 
   const leaders = [
   {
@@ -189,14 +191,14 @@ const itemVariants = {
           <Typography
             sx={{
               fontWeight: 700,
-              lineHeight: 1.1,
-              mb: 5,
-              letterSpacing: "-1px",
+              lineHeight: 1.15,
+              mb: 4,
+              letterSpacing: "-0.5px",
               fontSize: {
-                xs: "2.5rem",
-                sm: "3.5rem",
-                md: "5rem",
-                lg: "6rem",
+                xs: "2.2rem",
+                sm: "2.8rem",
+                md: "3.2rem",
+                lg: "3.8rem",
               },
             }}
           >
@@ -208,15 +210,14 @@ const itemVariants = {
         <motion.div variants={itemVariants}>
           <Typography
             sx={{
-              color: "#d1d5db",
-              maxWidth: "1000px",
+              color: "#cbd5e1",
+              maxWidth: "800px",
               mx: "auto",
-              lineHeight: 1.7,
+              lineHeight: 1.75,
               fontWeight: 400,
               fontSize: {
-                xs: "1.1rem",
-                sm: "1.3rem",
-                md: "1.8rem",
+                xs: "0.95rem",
+                md: "1.05rem",
               },
             }}
           >
@@ -300,10 +301,10 @@ const itemVariants = {
           sx={{
             color: "#4da3ff",
             fontWeight: 700,
-            letterSpacing: "2px",
+            letterSpacing: "3px",
             mb: 2,
             textTransform: "uppercase",
-            fontSize: "0.9rem",
+            fontSize: "0.75rem",
           }}
         >
           Our Story
@@ -316,9 +317,9 @@ const itemVariants = {
             mb: 4,
             lineHeight: 1.2,
             fontSize: {
-              xs: "2rem",
-              sm: "2.5rem",
-              md: "3rem",
+              xs: "1.8rem",
+              sm: "2.2rem",
+              md: "2.5rem",
             },
           }}
         >
@@ -327,12 +328,12 @@ const itemVariants = {
 
         <Typography
           sx={{
-            color: "#d1d5db",
+            color: "#cbd5e1",
             mb: 3,
-            lineHeight: 1.9,
+            lineHeight: 1.8,
             fontSize: {
-              xs: "1rem",
-              md: "1.1rem",
+              xs: "0.9rem",
+              md: "0.95rem",
             },
           }}
         >
@@ -344,11 +345,11 @@ const itemVariants = {
 
         <Typography
           sx={{
-            color: "#d1d5db",
-            lineHeight: 1.9,
+            color: "#cbd5e1",
+            lineHeight: 1.8,
             fontSize: {
-              xs: "1rem",
-              md: "1.1rem",
+              xs: "0.9rem",
+              md: "0.95rem",
             },
           }}
         >
@@ -390,6 +391,7 @@ const itemVariants = {
               whileInView={{ x: 0, opacity: 1 }}
               viewport={{ once: true }}
               transition={{ duration: 0.8 }}
+              onClick={() => navigate("/mission")}
               sx={{
                 bgcolor: "#000",
                 borderRadius: "18px",
@@ -397,6 +399,7 @@ const itemVariants = {
                 minHeight: 220,
                 height: "100%",
                 transition: "0.4s",
+                cursor: "pointer",
                 "&:hover": {
                   transform: "translateY(-8px)",
                   boxShadow: "0 25px 60px rgba(0,0,0,.45)",
@@ -423,8 +426,8 @@ const itemVariants = {
                   color: "#fff",
                   fontWeight: 700,
                   fontSize: {
-                    xs: "2rem",
-                    md: "2.4rem",
+                    xs: "1.5rem",
+                    md: "1.8rem",
                   },
                   mb: 2,
                 }}
@@ -434,12 +437,12 @@ const itemVariants = {
 
               <Typography
                 sx={{
-                  color: "#d4d4d4",
+                  color: "#cbd5e1",
                   fontSize: {
-                    xs: "0.95rem",
-                    md: "1rem",
+                    xs: "0.85rem",
+                    md: "0.92rem",
                   },
-                  lineHeight: 1.8,
+                  lineHeight: 1.7,
                   maxWidth: "90%",
                 }}
               >
@@ -491,8 +494,8 @@ const itemVariants = {
                   color: "#fff",
                   fontWeight: 700,
                   fontSize: {
-                    xs: "2rem",
-                    md: "2.4rem",
+                    xs: "1.5rem",
+                    md: "1.8rem",
                   },
                   mb: 2,
                 }}
@@ -503,8 +506,11 @@ const itemVariants = {
               <Typography
                 sx={{
                   color: "#fff",
-                  fontSize: "1rem",
-                  lineHeight: 1.8,
+                  fontSize: {
+                    xs: "0.85rem",
+                    md: "0.92rem",
+                  },
+                  lineHeight: 1.7,
                 }}
               >
                 To be the definitive standard for corporate strategic advisory,
@@ -603,15 +609,15 @@ const itemVariants = {
         }}
       >
         {/* Heading */}
-        <Box textAlign="center" mb={7}>
+        <Box textAlign="center" mb={5}>
           <Typography
             sx={{
               color: "#fff",
-              textAlign:'center',
+              textAlign: 'center',
               fontWeight: 700,
               fontSize: {
-                xs: "2rem",
-                md: "2.8rem",
+                xs: "1.8rem",
+                md: "2.2rem",
               },
               mb: 1,
             }}
@@ -621,10 +627,11 @@ const itemVariants = {
 
           <Typography
             sx={{
-              color: "#bdbdbd",
-              fontSize: "2rem",
-                 textAlign:'center',
-                 margin:'50px'
+              color: "#94a3b8",
+              fontSize: "0.95rem",
+              textAlign: 'center',
+              mt: 1,
+              mb: 2,
             }}
           >
             Guided by decades of industry experience.
@@ -691,7 +698,7 @@ const itemVariants = {
                 sx={{
                   color: "#fff",
                   fontWeight: 700,
-                  fontSize: "18px",
+                  fontSize: "16px",
                   mb: 0.5,
                 }}
               >
@@ -701,7 +708,7 @@ const itemVariants = {
               <Typography
                 sx={{
                   color: "#5ba7ff",
-                  fontSize: "14px",
+                  fontSize: "13px",
                   fontWeight: 600,
                   mb: 1.5,
                 }}
@@ -711,9 +718,9 @@ const itemVariants = {
 
               <Typography
                 sx={{
-                  color: "#d1d5db",
-                  fontSize: "14px",
-                  lineHeight: 1.8,
+                  color: "#cbd5e1",
+                  fontSize: "13px",
+                  lineHeight: 1.7,
                 }}
               >
                 {leader.description}
