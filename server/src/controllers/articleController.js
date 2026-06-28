@@ -9,7 +9,9 @@ const __dirname = path.dirname(__filename);
 
 // Setup Nodemailer transporter using Gmail (same as talent HR email system)
 const transporter = nodemailer.createTransport({
-  service: "gmail",
+  host: "smtp.gmail.com",
+  port: 465,
+  secure: true,
   auth: {
     user: process.env.EMAIL_USER || process.env.EMAIL,
     pass: process.env.EMAIL_PASS || process.env.EMAIL_PASSWORD,

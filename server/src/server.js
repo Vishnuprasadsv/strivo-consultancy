@@ -10,6 +10,7 @@ import careerRoutes from "./routes/careerRoutes.js";
 import talentRoutes from "./routes/talentRoutes.js";
 import articleRoutes from "./routes/articleRoutes.js";
 import reviewRoutes from "./routes/reviewRoutes.js";
+
 // Load env vars
 
 

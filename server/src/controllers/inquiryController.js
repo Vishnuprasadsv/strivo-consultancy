@@ -6,7 +6,9 @@ export const createInquiry = async (req, res) => {
     const inquiry = await Inquiry.create(req.body);
 
     const transporter = nodemailer.createTransport({
-      service: "gmail",
+      host: "smtp.gmail.com",
+  port: 465,
+  secure: true,
       auth: {
         user: process.env.EMAIL,
         pass: process.env.EMAIL_PASSWORD,
@@ -112,7 +114,9 @@ export const sendReply = async (req, res) => {
         const { email, subject, message } = req.body;
 
         const transporter = nodemailer.createTransport({
-            service: "gmail",
+            host: "smtp.gmail.com",
+  port: 465,
+  secure: true,
             auth: {
                 user: process.env.EMAIL,
                 pass: process.env.EMAIL_PASSWORD,
