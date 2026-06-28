@@ -2,6 +2,7 @@ import React, { useRef } from "react";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import heroImage from "../assets/services-hero.jpg";
+import Ready from '../Components/Ready';
 
 const fadeUpVariants = {
   hidden: {
@@ -193,7 +194,7 @@ const Services = () => {
           </motion.div>
         ))}
       </section>
-
+     <Ready/>
     </div>
   );
 };

@@ -31,15 +31,52 @@ const Contact = () => {
     service: "",
     message: "",
   });
+  const [errors, setErrors] = useState({});
   const handleChange = (e) => {
     setFormData({
       ...formData,
       [e.target.name]: e.target.value,
     });
+     if (errors[name]) {
+    setErrors((prev) => ({
+      ...prev,
+      [name]: "",
+    }));
   };
+ 
+  
+};
   const handleSubmit = async (e) => {
     e.preventDefault();
-
+    const newErrors = {};
+  // Required Field Validations
+  if (!formData.fullName.trim()) {
+    newErrors.fullName = "Full name is required";
+  }
+  if (!formData.company.trim()) {
+    newErrors.company = "Company name is required";
+  }
+  if (!formData.email.trim()) {
+    newErrors.email = "Email address is required";
+  } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
+    newErrors.email = "Please enter a valid email address";
+  }
+  if (!formData.phone.trim()) {
+    newErrors.phone = "Phone number is required";
+  }
+  if (!formData.service) {
+    newErrors.service = "Please select a service interest";
+  }
+  if (!formData.message.trim()) {
+    newErrors.message = "Message cannot be empty";
+  }
+  // Block submission and set errors if validation fails
+  if (Object.keys(newErrors).length > 0) {
+    setErrors(newErrors);
+    return;
+  }
+  // Clear errors and proceed to submit
+  setErrors({});
     try {
       await axios.post(
         "http://localhost:5000/api/inquiries",
@@ -129,105 +166,153 @@ const Contact = () => {
 
           {/* Right Column: Form */}
           <div className="bg-[#1e293b] p-8 rounded-xl h-full flex flex-col border border-gray-700/50">
-            <h2 className="text-2xl font-bold text-white mb-6">Send us a message</h2>
-            <form className="flex-grow flex flex-col gap-5" onSubmit={handleSubmit}>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-                <div className="flex flex-col gap-2">
-                  <label className="text-sm text-gray-300">Full Name</label>
-                  <input
-                    type="text"
-                    name="fullName"
-                    value={formData.fullName}
-                    onChange={handleChange}
-                    placeholder="Jane Doe"
-                    className="..."
-                  />
-                </div>
-                <div className="flex flex-col gap-2">
-                  <label className="text-sm text-gray-300">Company</label>
-                  <input
-                    type="text"
-                    name="company"
-                    value={formData.company}
-                    onChange={handleChange}
-                    placeholder="Acme Corp"
-                    className="..."
-                  />
-                </div>
-              </div>
+  <h2 className="text-2xl font-bold text-white mb-6">Send us a message</h2>
+  <form className="flex-grow flex flex-col gap-5" onSubmit={handleSubmit}>
+    <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+      {/* Full Name */}
+      <div className="flex flex-col gap-2">
+        <label className="text-sm text-gray-300 font-medium">Full Name</label>
+        <input
+          type="text"
+          name="fullName"
+          value={formData.fullName}
+          onChange={handleChange}
+          placeholder="Jane Doe"
+          className={`w-full bg-[#334155] text-white rounded-lg px-4 py-3 border focus:outline-none focus:ring-2 transition-colors ${
+            errors.fullName
+              ? "border-red-500/50 focus:ring-red-500/30"
+              : "border-gray-600/50 focus:ring-blue-500"
+          }`}
+        />
+        {errors.fullName && (
+          <span className="text-xs text-red-400 mt-0.5">{errors.fullName}</span>
+        )}
+      </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-                <div className="flex flex-col gap-2">
-                  <label className="text-sm text-gray-300">Email Address</label>
-                  <input
-                    type="email"
-                    name="email"
-                    value={formData.email}
-                    onChange={handleChange}
-                    placeholder="jane@acme.com"
-                    className="..."
-                  />
-                </div>
-                <div className="flex flex-col gap-2">
-                  <label className="text-sm text-gray-300">Phone Number</label>
-                  <input
-                    type="tel"
-                    name="phone"
-                    value={formData.phone}
-                    onChange={handleChange}
-                    placeholder="+1 (555) 000-0000"
-                    className="..."
-                  />
-                </div>
-              </div>
+      {/* Company */}
+      <div className="flex flex-col gap-2">
+        <label className="text-sm text-gray-300 font-medium">Company</label>
+        <input
+          type="text"
+          name="company"
+          value={formData.company}
+          onChange={handleChange}
+          placeholder="Acme Corp"
+          className={`w-full bg-[#334155] text-white rounded-lg px-4 py-3 border focus:outline-none focus:ring-2 transition-colors ${
+            errors.company
+              ? "border-red-500/50 focus:ring-red-500/30"
+              : "border-gray-600/50 focus:ring-blue-500"
+          }`}
+        />
+        {errors.company && (
+          <span className="text-xs text-red-400 mt-0.5">{errors.company}</span>
+        )}
+      </div>
+    </div>
 
-              <div className="flex flex-col gap-2">
-                <label className="text-sm text-gray-300">Service Interest</label>
-                <div className="relative">
-                  <select
-                    name="service"
-                    value={formData.service}
-                    onChange={handleChange}
-                    className="w-full bg-[#334155] text-white rounded-lg px-4 py-3 pr-12 border border-gray-600/50 focus:outline-none focus:ring-2 focus:ring-blue-500 appearance-none"
-                  >
-                    <option value="">Select a specialized service...</option>
-                    <option value="Strategy">Strategy</option>
-                    <option value="Operations">Operations</option>
-                    <option value="Digital Transformation">Digital Transformation</option>Change Management
-                    <option value="Change Management">Change Management</option>
-                  </select>
+    <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+      {/* Email Address */}
+      <div className="flex flex-col gap-2">
+        <label className="text-sm text-gray-300 font-medium">Email Address</label>
+        <input
+          type="email"
+          name="email"
+          value={formData.email}
+          onChange={handleChange}
+          placeholder="jane@acme.com"
+          className={`w-full bg-[#334155] text-white rounded-lg px-4 py-3 border focus:outline-none focus:ring-2 transition-colors ${
+            errors.email
+              ? "border-red-500/50 focus:ring-red-500/30"
+              : "border-gray-600/50 focus:ring-blue-500"
+          }`}
+        />
+        {errors.email && (
+          <span className="text-xs text-red-400 mt-0.5">{errors.email}</span>
+        )}
+      </div>
 
-                  <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 text-white">
-                    <ExpandMoreIcon />
-                  </div>
-                </div>
-              </div>
+      {/* Phone Number */}
+      <div className="flex flex-col gap-2">
+        <label className="text-sm text-gray-300 font-medium">Phone Number</label>
+        <input
+          type="tel"
+          name="phone"
+          value={formData.phone}
+          onChange={handleChange}
+          placeholder="+1 (555) 000-0000"
+          className={`w-full bg-[#334155] text-white rounded-lg px-4 py-3 border focus:outline-none focus:ring-2 transition-colors ${
+            errors.phone
+              ? "border-red-500/50 focus:ring-red-500/30"
+              : "border-gray-600/50 focus:ring-blue-500"
+          }`}
+        />
+        {errors.phone && (
+          <span className="text-xs text-red-400 mt-0.5">{errors.phone}</span>
+        )}
+      </div>
+    </div>
 
-              <div className="flex flex-col gap-2 flex-grow">
-                <label className="text-sm text-gray-300">Message</label>
+    {/* Service Interest */}
+    <div className="flex flex-col gap-2">
+      <label className="text-sm text-gray-300 font-medium">Service Interest</label>
+      <div className="relative">
+        <select
+          name="service"
+          value={formData.service}
+          onChange={handleChange}
+          className={`w-full bg-[#334155] text-white rounded-lg px-4 py-3 pr-12 border focus:outline-none focus:ring-2 appearance-none transition-colors ${
+            errors.service
+              ? "border-red-500/50 focus:ring-red-500/30"
+              : "border-gray-600/50 focus:ring-blue-500"
+          }`}
+        >
+          <option value="">Select a specialized service...</option>
+          <option value="Strategy">Strategy</option>
+          <option value="Operations">Operations</option>
+          <option value="Digital Transformation">Digital Transformation</option>
+          <option value="Change Management">Change Management</option>
+        </select>
 
-                <textarea
-                  name="message"
-                  value={formData.message}
-                  onChange={handleChange}
-                  placeholder="Tell us about your project requirements and timelines..."
-                  rows={6}
-                  className="w-full min-h-[150px] bg-[#334155] text-white placeholder-gray-400 rounded-lg px-4 py-3 border border-gray-600/50 resize-none focus:outline-none focus:ring-2 focus:ring-blue-500"
-                />
-              </div>
+        <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 text-white">
+          <ExpandMoreIcon />
+        </div>
+      </div>
+      {errors.service && (
+        <span className="text-xs text-red-400 mt-0.5">{errors.service}</span>
+      )}
+    </div>
 
-              <motion.button
-                type="submit"
-                whileHover={{ scale: 1.02 }}
-                whileTap={{ scale: 0.98 }}
-                className="mt-4 bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-6 rounded-lg transition-colors flex items-center justify-center gap-2 w-full cursor-pointer"
+    {/* Message */}
+    <div className="flex flex-col gap-2 flex-grow">
+      <label className="text-sm text-gray-300 font-medium">Message</label>
+      <textarea
+        name="message"
+        value={formData.message}
+        onChange={handleChange}
+        placeholder="Tell us about your project requirements and timelines..."
+        rows={6}
+        className={`w-full min-h-[150px] bg-[#334155] text-white placeholder-gray-400 rounded-lg px-4 py-3 border resize-none focus:outline-none focus:ring-2 transition-colors ${
+          errors.message
+            ? "border-red-500/50 focus:ring-red-500/30"
+            : "border-gray-600/50 focus:ring-blue-500"
+        }`}
+      />
+      {errors.message && (
+        <span className="text-xs text-red-400 mt-0.5">{errors.message}</span>
+      )}
+    </div>
 
-              >
-                Send Message
-                <SendIcon fontSize="small" />
-              </motion.button>
-            </form>
-          </div>
+    <motion.button
+      type="submit"
+      whileHover={{ scale: 1.02 }}
+      whileTap={{ scale: 0.98 }}
+      className="mt-4 bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-6 rounded-lg transition-colors flex items-center justify-center gap-2 w-full cursor-pointer"
+    >
+      Send Message
+      <SendIcon fontSize="small" />
+    </motion.button>
+  </form>
+</div>
         </motion.section>
 
         {/* Section 3: FAQ */}

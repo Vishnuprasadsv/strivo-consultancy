@@ -184,25 +184,35 @@ study.publicationDate
                 </motion.div>
             </motion.section>
 
-            {/* FEATURED IMAGE */}
-            <motion.section
-                initial="hidden"
-                whileInView="visible"
-                viewport={{ once: true }}
-                variants={fadeUp}
-                className="max-w-6xl mx-auto px-6 py-12"
-            >
-                <motion.img
-                    src={study.coverImage}
-                    alt={study.title}
-                    initial={{ opacity: 0, y: 60 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: true }}
-                    transition={{ duration: 0.8 }}
-                    className="w-full h-[500px] object-cover rounded-2xl"
-                />
-            </motion.section>
+          {/* FEATURED IMAGE WITH BLURRED GLOW */}
+<motion.section
+    initial="hidden"
+    whileInView="visible"
+    viewport={{ once: true }}
+    variants={fadeUp}
+    className="max-w-6xl mx-auto px-6 py-12"
+>
+    <div className="relative w-full h-[500px] rounded-2xl overflow-hidden bg-slate-950 flex items-center justify-center border border-slate-800/80">
+        
+        {/* Blurred Reflection Background */}
+        <img
+            src={study.coverImage || activeStudy.image}
+            alt=""
+            className="absolute inset-0 w-full h-full object-cover filter blur-3xl opacity-30 scale-110 pointer-events-none"
+        />
 
+        {/* Sharp Foreground Full Image */}
+        <motion.img
+            src={study.coverImage || activeStudy.image}
+            alt={study.title}
+            initial={{ opacity: 0, scale: 0.95 }}
+            whileInView={{ opacity: 1, scale: 1 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.8 }}
+            className="relative z-10 max-w-full max-h-full object-contain p-4 rounded-xl"
+        />
+    </div>
+</motion.section>
             {/* EXECUTIVE SUMMARY */}
             <motion.section
                 initial="hidden"
