@@ -461,6 +461,7 @@ const itemVariants = {
               whileInView={{ x: 0, opacity: 1 }}
               viewport={{ once: true }}
               transition={{ duration: 0.8 }}
+              onClick={() => navigate("/vision")}
               sx={{
                 bgcolor: "#2F6BFF",
                 borderRadius: "18px",
@@ -468,6 +469,7 @@ const itemVariants = {
                 minHeight: 220,
                 height: "100%",
                 transition: "0.4s",
+                cursor: "pointer",
                 "&:hover": {
                   transform: "translateY(-8px)",
                   boxShadow: "0 25px 60px rgba(47,107,255,.35)",

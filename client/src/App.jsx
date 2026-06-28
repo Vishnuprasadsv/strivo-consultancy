@@ -28,6 +28,7 @@ const Operations = lazy(() => import('./pages/Operations'));
 const Digital = lazy(() => import('./pages/Digital'));
 const Change = lazy(() => import('./pages/Change'));
 const Mission = lazy(() => import('./pages/Mission'));
+const Vision = lazy(() => import('./pages/Vision'));
 
 // Admin Pages
 const Login = lazy(() => import('./Admin/Login'));
@@ -124,6 +125,7 @@ const App = () => {
               <Route path="/digital" element={<Digital />} />
               <Route path="/change" element={<Change />} />
               <Route path="/mission" element={<Mission />} />
+              <Route path="/vision" element={<Vision />} />
               <Route path="/careerstrivo" element={<Career />} />
 
               <Route path="/review" element={<Review />} />

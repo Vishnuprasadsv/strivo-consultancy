@@ -24,36 +24,36 @@ const containerVariants = {
   visible: { transition: { staggerChildren: 0.15 } }
 };
 
-const Mission = () => {
+const Vision = () => {
   const navigate = useNavigate();
 
-  const missionPillars = [
+  const visionPillars = [
     {
       id: 1,
-      category: 'Methodology',
-      title: 'Analytical Rigor',
-      description: 'We believe that true insight starts with deep diagnostic assessments. Our strategy is built upon objective truth and data-driven integrity.',
+      category: 'Scale',
+      title: 'Global Footprint',
+      description: 'Expanding strategic partnerships across global markets to support enterprises in navigating complex international growth paths.',
       imageUrl: aboutUsImg
     },
     {
       id: 2,
-      category: 'Vision',
-      title: 'Strategic Foresight',
-      description: 'Modeling potential market disruptions, identifying long-term industry opportunities, and building adaptable corporate roadmaps.',
+      category: 'Ethic',
+      title: 'Uncompromising Integrity',
+      description: 'Serving as trusted advisors who prioritize objective diagnostic truth, transparency, and ethical consulting collaborations.',
       imageUrl: strategyHero
     },
     {
       id: 3,
-      category: 'Implementation',
-      title: 'Flawless Execution',
-      description: 'Translating strategy into reality. We design actionable frameworks, customize KPI indicators, and execute with precision.',
+      category: 'Growth',
+      title: 'Generative Innovation',
+      description: 'Leading client organizations into modern operating landscapes by integrating advanced digital strategies and analytical models.',
       imageUrl: servicesHero
     },
     {
       id: 4,
-      category: 'Value Creation',
-      title: 'Sustainable Growth',
-      description: 'Fostering long-term capability building within client organizations to ensure permanent resilience and organic value creation.',
+      category: 'Legacy',
+      title: 'Lasting Enterprise Impact',
+      description: 'Equipping client leaders and teams with sustainable internal capabilities to generate long-term corporate value and resilience.',
       imageUrl: leaderImg
     }
   ];
@@ -69,9 +69,9 @@ const Mission = () => {
           variants={fadeUpVariants}
           className="max-w-3xl"
         >
-          <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold leading-tight mb-6">Our Mission & Purpose</h1>
+          <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold leading-tight mb-6">Our Vision & Future</h1>
           <p className="text-gray-400 text-base md:text-lg leading-relaxed max-w-2xl">
-            To architect sustainable growth for ambitious enterprises through rigorous data analysis, strategic foresight, and flawless operational execution.
+            To be the definitive standard for corporate strategic advisory, recognized globally for integrity and impact.
           </p>
         </motion.section>
 
@@ -85,11 +85,11 @@ const Mission = () => {
         >
           <div className="p-8 md:p-10 flex flex-col justify-center h-full order-2 lg:order-1">
             <span className="inline-block px-3 py-1 bg-blue-500/10 text-blue-400 text-xs font-semibold uppercase tracking-wider rounded-md mb-6 w-max">
-              Core Statement
+              Horizon Plan
             </span>
-            <h2 className="text-2xl md:text-3xl font-bold text-white mb-4">Empowering Enterprises for the Future</h2>
+            <h2 className="text-2xl md:text-3xl font-bold text-white mb-4">Shaping the Corporate Landscape of Tomorrow</h2>
             <p className="text-gray-400 mb-6 text-sm md:text-base leading-relaxed">
-              We partner with global leaders to navigate the complexities of corporate strategy, operational scaling, and digital integration. By delivering objective truth and robust execution frameworks, we help organizations shape their own destiny.
+              We envision a business landscape where leadership is defined by strategic foresight, operational agility, and sustainable value creation. Our horizon plan guides organizations through transformational periods, turning industry disruptions into growth milestones.
             </p>
             <div className="flex flex-wrap gap-4 mt-2">
               <Button
@@ -98,14 +98,14 @@ const Mission = () => {
                 className="bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-lg px-6 py-2.5 text-sm normal-case transition-colors"
                 style={{ background: '#2563eb' }}
               >
-                Let's Partner
+                Connect With Us
               </Button>
             </div>
           </div>
           <div className="h-64 lg:h-full min-h-[300px] relative w-full overflow-hidden order-1 lg:order-2">
             <img
-              src={strategyHero}
-              alt="Our Mission Strategy"
+              src={servicesHero}
+              alt="Our Vision Strategy"
               className="absolute inset-0 w-full h-full object-cover"
             />
             <div className="absolute inset-0 bg-gradient-to-r from-[#09101f] to-transparent lg:w-1/4"></div>
@@ -120,8 +120,8 @@ const Mission = () => {
           variants={fadeUpVariants}
         >
           <div className="mb-8">
-            <h2 className="text-2xl md:text-3xl font-bold text-white mb-3">Our Core Pillars</h2>
-            <p className="text-gray-400 text-sm md:text-base">The methodologies and principles that direct our client delivery model.</p>
+            <h2 className="text-2xl md:text-3xl font-bold text-white mb-3">Our Vision Pillars</h2>
+            <p className="text-gray-400 text-sm md:text-base">The key coordinates that guide our long-term trajectory and global objectives.</p>
           </div>
 
           <motion.div
@@ -130,7 +130,7 @@ const Mission = () => {
             animate="visible"
             className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6"
           >
-            {missionPillars.map((pillar) => (
+            {visionPillars.map((pillar) => (
               <motion.article
                 variants={cardVariants}
                 whileHover={{ y: -10 }}
@@ -161,4 +161,4 @@ const Mission = () => {
   );
 };
 
-export default Mission;
+export default Vision;

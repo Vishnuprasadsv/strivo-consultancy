@@ -1645,6 +1645,8 @@ const stats = [
                         fontSize: "0.95rem",
                         lineHeight: 1.75,
                         mb: 4,
+                        wordBreak: "break-word",
+                        overflowWrap: "break-word",
                       }}
                     >
                       {highlightReview(item.review)}
@@ -1657,20 +1659,23 @@ const stats = [
                       display: "flex",
                       alignItems: "center",
                       gap: 2,
-                      mt: "auto"
+                      mt: "auto",
+                      minWidth: 0,
                     }}
                   >
                     {/* Avatar */}
                     {renderAvatar(item)}
 
                     {/* Meta Data */}
-                    <Box>
+                    <Box sx={{ minWidth: 0, flex: 1 }}>
                       <Typography
                         sx={{
                           color: "#ffffff",
                           fontWeight: 700,
                           fontSize: "0.95rem",
-                          lineHeight: 1.2
+                          lineHeight: 1.2,
+                          wordBreak: "break-word",
+                          overflowWrap: "break-word",
                         }}
                       >
                         {item.name}
@@ -1680,7 +1685,9 @@ const stats = [
                           color: "#64748b",
                           fontSize: "0.78rem",
                           mt: 0.3,
-                          mb: 0.5
+                          mb: 0.5,
+                          wordBreak: "break-word",
+                          overflowWrap: "break-word",
                         }}
                       >
                         {item.role}
@@ -1797,7 +1804,6 @@ const stats = [
   </Container>
 </Box>
 
-<Ready/>
     </div>
   );
 }
