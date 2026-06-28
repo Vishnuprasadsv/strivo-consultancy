@@ -162,7 +162,7 @@ function Career() {
         setApplyForm({ fullName: "", email: "", mobile: "" });
         setResumeFile(null);
       } else {
-        toast.error(response?.response?.data?.message || "Failed to submit.");
+        toast.error(response?.data?.message || response?.response?.data?.message || "Failed to submit.");
       }
     } catch (err) { toast.error("Network error."); }
     setApplyLoading(false);
@@ -187,7 +187,7 @@ function Career() {
         setTalentForm({ fullName: "", email: "", mobile: "", category: "" });
         setTalentFile(null);
       } else {
-        toast.error(response?.response?.data?.message || "Failed to submit.");
+        toast.error(response?.data?.message || response?.response?.data?.message || "Failed to submit.");
       }
     } catch (err) { toast.error("Network error."); }
     setTalentLoading(false);

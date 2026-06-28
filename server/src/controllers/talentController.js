@@ -105,7 +105,7 @@ export const submitTalent = async (req, res) => {
     } catch (cloudinaryError) {
       console.warn("Cloudinary upload failed, falling back to local storage:", cloudinaryError.message);
       
-      const uploadsDir = path.join(__dirname, "../uploads");
+      const uploadsDir = path.join(process.cwd(), "uploads");
       if (!fs.existsSync(uploadsDir)) {
         fs.mkdirSync(uploadsDir, { recursive: true });
       }
