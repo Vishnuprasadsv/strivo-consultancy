@@ -193,7 +193,6 @@ const Services = () => {
           </motion.div>
         ))}
       </section>
-
     </div>
   );
 };

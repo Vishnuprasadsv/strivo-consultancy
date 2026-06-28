@@ -45,7 +45,7 @@ const Profile = () => {
     setIsUploading(true);
     try {
       const token = localStorage.getItem('adminToken');
-      const response = await axios.put('http://localhost:5000/api/admin/profile-image', formData, {
+      const response = await axios.put(`${import.meta.env.VITE_API_BASE_URL}/api/admin/profile-image`, formData, {
         headers: { 
           'Content-Type': 'multipart/form-data',
         }
@@ -94,7 +94,7 @@ const Profile = () => {
 
     setIsChangingPassword(true);
     try {
-      await axios.put('http://localhost:5000/api/admin/change-password', {
+      await axios.put(`${import.meta.env.VITE_API_BASE_URL}/api/admin/change-password`, {
         username: adminUser.username,
         currentPassword: passwordData.currentPassword,
         newPassword: passwordData.newPassword

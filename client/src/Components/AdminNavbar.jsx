@@ -8,11 +8,16 @@ import ArticleIcon from '@mui/icons-material/Article';
 import WorkIcon from '@mui/icons-material/Work';
 import SettingsIcon from '@mui/icons-material/Settings';
 import LogoutIcon from '@mui/icons-material/Logout';
-import SearchIcon from '@mui/icons-material/Search';
 import NotificationsIcon from '@mui/icons-material/Notifications';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
-import { getAdminStatsAPI, getAdminApplicationsAPI } from '../services/allApi';
-
+import MenuIcon from '@mui/icons-material/Menu';
+import CloseIcon from '@mui/icons-material/Close';
+import {
+  getAdminStatsAPI,
+  getAdminApplicationsAPI,
+  getAdminInquiriesAPI,
+  getReviewsAPI
+} from '../services/allApi';
 import logo from '../assets/strivo logo.png';
 import logo2 from '../assets/strivo logo 2.png';
 
@@ -31,34 +36,146 @@ const AdminNavbar = () => {
   const [notificationCount, setNotificationCount] = useState(0);
   const [notifications, setNotifications] = useState([]);
   const [showDropdown, setShowDropdown] = useState(false);
+  const dropdownRef = React.useRef(null);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [lastViewed, setLastViewed] = useState(() => {
+    const saved = localStorage.getItem('adminNotificationsLastViewed');
+    return saved ? new Date(saved) : new Date(0);
+  });
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setShowDropdown(false);
+      }
+    };
+    if (showDropdown) {
+      document.addEventListener('mousedown', handleClickOutside);
+    }
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [showDropdown]);
+
+  const handleToggleDropdown = () => {
+    const nextShow = !showDropdown;
+    setShowDropdown(nextShow);
+    if (nextShow) {
+      const now = new Date();
+      setLastViewed(now);
+      localStorage.setItem('adminNotificationsLastViewed', now.toISOString());
+      setNotificationCount(0);
+    }
+  };
 
   // Fetch count of pending actions and list of top 5 new applications
   const fetchNotifications = async () => {
     try {
-      const [statsRes, appsRes] = await Promise.all([
-        getAdminStatsAPI(),
-        getAdminApplicationsAPI()
-      ]);
 
-      if (statsRes.status === 200 && statsRes.data?.success) {
-        setNotificationCount(statsRes.data.data.pendingActions || 0);
-      }
+      const [statsRes, appsRes, inquiryRes, reviewsRes] =
+        await Promise.all([
+          getAdminStatsAPI(),
+          getAdminApplicationsAPI(),
+          getAdminInquiriesAPI(),
+          getReviewsAPI()
+        ]);
+
+     
+      // Applications
+
+      let applicationNotifications = [];
 
       if (appsRes.status === 200 && appsRes.data?.success) {
-        // Only get pending applications for notifications
-        const pendingApps = appsRes.data.data.filter(app => app.status === 'pending');
-        
-        setNotifications(pendingApps.slice(0, 5).map(app => ({
-          id: app._id,
-          text: `New application: ${app.fullName} for ${app.appliedPosition}`,
-          time: new Date(app.createdAt)
-        })));
+
+        const pendingApps =
+          appsRes.data.data.filter(
+            app => app.status === "pending"
+          );
+
+        applicationNotifications =
+          pendingApps.map(app => ({
+
+            id: app._id,
+
+            type: "career",
+
+            text:
+              `New application: ${app.fullName} for ${app.appliedPosition}`,
+
+            time:
+              new Date(app.createdAt)
+
+          }));
+
       }
-    } catch (err) {
-      console.error("Failed to fetch notifications in navbar:", err);
+
+
+      // Inquiries
+
+      let inquiryNotifications = [];
+
+      if (inquiryRes.status === 200) {
+
+  inquiryNotifications = inquiryRes.data.map(
+
+    inquiry => ({
+
+      id: inquiry._id,
+
+      type: "inquiry",
+
+      text:
+        `${inquiry.fullName} requested ${inquiry.service}`,
+
+      time:
+        new Date(inquiry.createdAt)
+
+    })
+
+  );
+
+}
+
+
+      // Reviews
+      let reviewNotifications = [];
+      if (reviewsRes.status === 200 && reviewsRes.data?.success) {
+        const newReviews = reviewsRes.data.data.filter(
+          review => (new Date() - new Date(review.createdAt)) < 24 * 60 * 60 * 1000
+        );
+        reviewNotifications = newReviews.map(review => ({
+          id: review._id,
+          type: "review",
+          text: `New review from ${review.fullName}`,
+          time: new Date(review.createdAt)
+        }));
+      }
+
+      // Combine notifications
+      const allNotifications = [
+        ...applicationNotifications,
+        ...inquiryNotifications,
+        ...reviewNotifications
+      ]
+        .sort((a, b) => b.time - a.time)
+        .slice(0, 5);
+
+      setNotifications(allNotifications);
+
+      const unreadCount = allNotifications.filter(n => n.time > lastViewed).length;
+      setNotificationCount(unreadCount);
+
+    }
+
+    catch (err) {
+
+      console.error(
+        "Failed to fetch notifications in navbar:",
+        err
+      );
+
     }
   };
-
   const handleLogout = () => {
     localStorage.removeItem('adminToken');
     localStorage.removeItem('adminUser');
@@ -75,7 +192,7 @@ const AdminNavbar = () => {
       if (user) {
         setAdminUser(JSON.parse(user));
       }
-      
+
       // Initial load of notifications
       fetchNotifications();
 
@@ -104,21 +221,24 @@ const AdminNavbar = () => {
         transition={{ duration: 0.6, ease: "easeOut" }}
         className="fixed top-0 left-0 md:left-64 right-0 h-20 bg-white/5 backdrop-blur-xl border-b border-white/10 z-40 flex items-center justify-between px-4 md:px-8"
       >
-        {/* Search */}
-        <div className="flex items-center bg-black/20 border border-white/10 rounded-full px-4 py-2 w-48 md:w-96">
-          <SearchIcon className="text-white/50 mr-2" fontSize="small" />
-          <input 
-            type="text" 
-            placeholder="Search..." 
-            className="bg-transparent border-none outline-none text-white w-full placeholder-white/50 text-sm"
-          />
+        <div className="flex items-center gap-4">
+          {/* Mobile Hamburger Menu */}
+          <button
+            className="md:hidden text-white/70 hover:text-white"
+            onClick={() => setIsMobileMenuOpen(true)}
+          >
+            <MenuIcon />
+          </button>
+          
+          {/* Search - Removed as per user request */}
+          <div></div>
         </div>
 
         {/* Right Icons */}
         <div className="flex items-center gap-4 md:gap-6">
-          <div className="relative">
-            <button 
-              onClick={() => setShowDropdown(!showDropdown)}
+          <div className="relative" ref={dropdownRef}>
+            <button
+              onClick={handleToggleDropdown}
               className="relative text-white/70 hover:text-white transition-colors cursor-pointer border-none bg-transparent"
               title="Notifications"
             >
@@ -129,7 +249,7 @@ const AdminNavbar = () => {
                 </span>
               )}
             </button>
-            
+
             {showDropdown && (
               <div className="absolute right-0 mt-3 w-80 bg-black border border-white/10 rounded-2xl p-4 shadow-2xl z-50 text-white flex flex-col gap-3">
                 <div className="flex justify-between items-center pb-2 border-b border-white/10">
@@ -141,18 +261,24 @@ const AdminNavbar = () => {
                     <p className="text-xs text-white/40 text-center py-4">No new notifications</p>
                   ) : (
                     notifications.map((n) => (
-                      <div 
-                        key={n.id} 
-                        className="p-2 hover:bg-white/5 rounded-lg transition-colors cursor-pointer" 
-                        onClick={() => { 
-                          navigate('/admin/career'); 
-                          setShowDropdown(false); 
+                      <div
+                        key={n.id}
+                        className="p-2 hover:bg-white/5 rounded-lg transition-colors cursor-pointer"
+                        onClick={() => {
+                          if (n.type === "career") {
+                            navigate("/admin/career");
+                          } else if (n.type === "inquiry") {
+                            navigate("/admin/inquiries");
+                          } else if (n.type === "review") {
+                            navigate("/admin/dashboard");
+                          }
+                          setShowDropdown(false);
                         }}
                       >
                         <p className="text-xs text-white/80 leading-snug">{n.text}</p>
                         <span className="text-[9px] text-white/40 block mt-1">
-                          {Math.floor((new Date() - n.time) / 60000) < 60 
-                            ? `${Math.max(0, Math.floor((new Date() - n.time) / 60000))}m ago` 
+                          {Math.floor((new Date() - n.time) / 60000) < 60
+                            ? `${Math.max(0, Math.floor((new Date() - n.time) / 60000))}m ago`
                             : n.time.toLocaleDateString()}
                         </span>
                       </div>
@@ -162,7 +288,7 @@ const AdminNavbar = () => {
               </div>
             )}
           </div>
-          
+
           <div className="flex items-center gap-3 cursor-pointer pl-4 border-l border-white/10">
             <div className="text-right hidden md:block">
               {adminUser?.username && <p className="text-sm font-medium text-white">{adminUser.username}</p>}
@@ -177,19 +303,35 @@ const AdminNavbar = () => {
         </div>
       </motion.nav>
 
+      {/* Mobile Overlay */}
+      {isMobileMenuOpen && (
+        <div 
+          className="fixed inset-0 bg-black/60 backdrop-blur-sm z-40 md:hidden"
+          onClick={() => setIsMobileMenuOpen(false)}
+        />
+      )}
+
       {/* Left Sidebar */}
       <motion.aside
         initial={{ x: -300, opacity: 0 }}
         animate={{ x: 0, opacity: 1 }}
         transition={{ duration: 0.6, ease: "easeOut" }}
-        className="fixed top-0 left-0 h-screen w-64 bg-white/5 backdrop-blur-xl border-r border-white/10 z-50 hidden md:flex flex-col"
+        className={`fixed top-0 left-0 h-screen w-64 bg-[#0a0f1c]/95 md:bg-white/5 backdrop-blur-xl border-r border-white/10 z-50 flex flex-col transition-transform duration-300 ${isMobileMenuOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'}`}
       >
+        {/* Mobile Close Button */}
+        <button 
+          className="md:hidden absolute top-4 right-4 text-white/50 hover:text-white"
+          onClick={() => setIsMobileMenuOpen(false)}
+        >
+          <CloseIcon />
+        </button>
+
         {/* Logo Section */}
         <div className="flex flex-col items-center justify-center py-6 gap-2">
           <img src={logo} alt="Strivo Logo" className="h-10 w-auto" />
           <img src={logo2} alt="Strivo Logo Text" className="h-6 w-auto" />
         </div>
-        
+
         <div className="mx-6 border-b border-white/10 mb-6"></div>
 
         {/* Nav Links */}
@@ -200,9 +342,9 @@ const AdminNavbar = () => {
               <Link
                 key={link.name}
                 to={link.path}
-                className={`relative flex items-center gap-4 px-4 py-3 rounded-xl transition-colors duration-300 group cursor-pointer ${
-                  isActive ? 'text-blue-500 font-medium' : 'text-white/70 hover:text-white hover:bg-white/5'
-                }`}
+                onClick={() => setIsMobileMenuOpen(false)}
+                className={`relative flex items-center gap-4 px-4 py-3 rounded-xl transition-colors duration-300 group cursor-pointer ${isActive ? 'text-blue-500 font-medium' : 'text-white/70 hover:text-white hover:bg-white/5'
+                  }`}
               >
                 {isActive && (
                   <motion.div
@@ -225,9 +367,9 @@ const AdminNavbar = () => {
         <div className="p-4 mt-auto mb-4 flex flex-col gap-2">
           <Link
             to="/admin/profile"
-            className={`relative flex items-center gap-4 px-4 py-3 rounded-xl transition-colors duration-300 group cursor-pointer ${
-              location.pathname === '/admin/profile' ? 'text-blue-500 font-medium' : 'text-white/70 hover:text-white hover:bg-white/5'
-            }`}
+            onClick={() => setIsMobileMenuOpen(false)}
+            className={`relative flex items-center gap-4 px-4 py-3 rounded-xl transition-colors duration-300 group cursor-pointer ${location.pathname === '/admin/profile' ? 'text-blue-500 font-medium' : 'text-white/70 hover:text-white hover:bg-white/5'
+              }`}
           >
             {location.pathname === '/admin/profile' && (
               <motion.div
@@ -242,7 +384,7 @@ const AdminNavbar = () => {
             </span>
             <span className="relative z-10">Profile</span>
           </Link>
-          
+
           <button
             onClick={handleLogout}
             className="relative flex items-center gap-4 px-4 py-3 rounded-xl transition-colors duration-300 group cursor-pointer text-red-400 hover:text-red-300 hover:bg-red-500/10 w-full text-left font-medium"

@@ -35,6 +35,11 @@ const inquirySchema = new mongoose.Schema(
   enum: ["New", "In Progress", "Responded", "Closed"],
   default: "New",
 },
+
+isRead:{
+   type:Boolean,
+   default:false
+}
   },
   {
     timestamps: true,

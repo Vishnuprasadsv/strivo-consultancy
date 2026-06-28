@@ -1,6 +1,7 @@
 import Admin from '../models/Admin.js';
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcryptjs';
+import nodemailer from 'nodemailer';
 
 // Generate JWT
 const generateToken = (id) => {
@@ -73,27 +74,102 @@ export const registerAdmin = async (req, res) => {
   }
 };
 
-// @desc    Forgot password (Mocked for testing)
+// @desc    Forgot password (Generate OTP and email)
 // @route   POST /api/admin/forgot-password
 // @access  Public
 export const forgotPassword = async (req, res) => {
-  const { username } = req.body;
+  const { email } = req.body;
 
   try {
-    const admin = await Admin.findOne({ username });
+    const admin = await Admin.findOne({ email });
 
     if (!admin) {
-      return res.status(404).json({ message: 'Admin not found' });
+      return res.status(404).json({ message: 'Admin not found with that email' });
     }
 
-    // In a real app, generate a reset token, save to DB with expiry, and send via Email
-    // For now, we just generate a JWT for reset and return it in response (mocking email)
-    const resetToken = jwt.sign({ id: admin._id }, process.env.JWT_SECRET, { expiresIn: '15m' });
+    // Generate 6 digit OTP
+    const otp = Math.floor(100000 + Math.random() * 900000).toString();
     
-    res.json({ 
-      message: 'Password reset link sent (mocked)', 
-      resetToken // Important: Sending to client for easy testing without email
+    // Hash OTP before saving
+    const salt = await bcrypt.genSalt(10);
+    admin.resetPasswordOtp = await bcrypt.hash(otp, salt);
+    admin.resetPasswordOtpExpire = Date.now() + 5 * 60 * 1000; // 5 minutes
+
+    await admin.save();
+
+    // Send Email
+    const transporter = nodemailer.createTransport({
+      host: "smtp.gmail.com",
+  port: 587,
+  secure: false,
+      tls: { rejectUnauthorized: false },
+      family: 4,
+      auth: {
+        user: process.env.EMAIL,
+        pass: process.env.EMAIL_PASSWORD,
+      },
     });
+
+    const emailTemplate = `
+      <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+        <h2>Password reset OTP</h2>
+        <p>Dear ${admin.email},</p>
+        <p>Please use the following One-Time Password (OTP) to complete your verification process:</p>
+        <div style="background-color: #f4f4f4; padding: 15px; text-align: center; font-size: 24px; font-weight: bold; letter-spacing: 5px; margin: 20px 0;">
+          ${otp}
+        </div>
+        <p>Note: This OTP is valid for only 5 minutes.</p>
+        <p>For your security, please do not share this code with anyone. Strivo Consultancy will never call or email you to ask for your OTP.</p>
+        <p>If you did not request this verification code, please ignore this email or immediately contact our support team.</p>
+        <br/>
+        <p>Best regards,</p>
+        <p><strong>Strivo Consultancy Private Limited</strong></p>
+        <div style="margin-top: 20px;">
+          <img src="https://strivo.com/logo.png" alt="Strivo Logo" style="height: 40px; margin-right: 10px;" />
+          <img src="https://strivo.com/logo1.png" alt="Strivo Logo 1" style="height: 40px;" />
+        </div>
+      </div>
+    `;
+
+    await transporter.sendMail({
+      from: process.env.EMAIL,
+      to: admin.email,
+      subject: 'Password reset OTP',
+      html: emailTemplate,
+    });
+
+    res.json({ message: 'OTP sent successfully to email' });
+  } catch (error) {
+    res.status(500).json({ message: 'Server error', error: error.message });
+  }
+};
+
+// @desc    Verify OTP
+// @route   POST /api/admin/verify-otp
+// @access  Public
+export const verifyOtp = async (req, res) => {
+  const { email, otp } = req.body;
+
+  try {
+    const admin = await Admin.findOne({
+      email,
+      resetPasswordOtpExpire: { $gt: Date.now() },
+    });
+
+    if (!admin) {
+      return res.status(400).json({ message: 'Invalid or expired OTP' });
+    }
+
+    const isMatch = await bcrypt.compare(otp, admin.resetPasswordOtp);
+
+    if (!isMatch) {
+      return res.status(400).json({ message: 'Invalid or expired OTP' });
+    }
+
+    // Generate a short-lived reset token for the actual password change step
+    const resetToken = jwt.sign({ id: admin._id }, process.env.JWT_SECRET, { expiresIn: '10m' });
+
+    res.json({ message: 'OTP verified successfully', resetToken });
   } catch (error) {
     res.status(500).json({ message: 'Server error', error: error.message });
   }
@@ -119,6 +195,8 @@ export const resetPassword = async (req, res) => {
 
     // Hash and update password
     admin.password = newPassword;
+    admin.resetPasswordOtp = undefined;
+    admin.resetPasswordOtpExpire = undefined;
     await admin.save();
 
     res.json({ message: 'Password updated successfully' });

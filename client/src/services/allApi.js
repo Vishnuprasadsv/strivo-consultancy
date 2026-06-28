@@ -25,6 +25,18 @@ export const getAdminStatsAPI = async () => {
   return await commonAPI("GET", `${SERVER_URL}/api/career/stats`, "", "");
 };
 
+export const getAdminInquiriesAPI = async () => {
+  return await commonAPI("GET", `${SERVER_URL}/api/inquiries/notifications`, "", "");
+};
+
+export const getAllInquiriesAPI = async () => {
+  return await commonAPI("GET", `${SERVER_URL}/api/inquiries`, "", "");
+};
+
+export const getAllCaseStudiesAPI = async () => {
+  return await commonAPI("GET", `${SERVER_URL}/api/case-studies`, "", "");
+};
+
 export const getAdminApplicationsAPI = async () => {
   return await commonAPI("GET", `${SERVER_URL}/api/career/applications`, "", "");
 };
@@ -63,6 +75,10 @@ export const getTalentSubmissionsAPI = async () => {
 
 export const submitReviewAPI = async (reviewData) => {
   return await commonAPI("POST", `${SERVER_URL}/api/reviews`, reviewData, "");
+};
+
+export const getReviewsAPI = async () => {
+  return await commonAPI("GET", `${SERVER_URL}/api/reviews`, "", "");
 };
 
 // article and insights 

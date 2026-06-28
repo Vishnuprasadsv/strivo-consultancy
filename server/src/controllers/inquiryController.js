@@ -6,7 +6,11 @@ export const createInquiry = async (req, res) => {
     const inquiry = await Inquiry.create(req.body);
 
     const transporter = nodemailer.createTransport({
-      service: "gmail",
+      host: "smtp.gmail.com",
+  port: 587,
+  secure: false,
+      tls: { rejectUnauthorized: false },
+      family: 4,
       auth: {
         user: process.env.EMAIL,
         pass: process.env.EMAIL_PASSWORD,
@@ -57,6 +61,35 @@ export const getInquiries = async (req, res) => {
     res.json(inquiries);
 
 };
+export const getNewInquiries = async(req,res)=>{
+
+   try{
+
+      const inquiries = await Inquiry.find({
+
+         status:"New"
+
+      }).sort({
+
+         createdAt:-1
+
+      });
+
+      res.json(inquiries);
+
+   }
+
+   catch(err){
+
+      res.status(500).json({
+
+         message:err.message
+
+      });
+
+   }
+
+}
 export const updateInquiryStatus = async (req, res) => {
     try {
 
@@ -83,7 +116,11 @@ export const sendReply = async (req, res) => {
         const { email, subject, message } = req.body;
 
         const transporter = nodemailer.createTransport({
-            service: "gmail",
+            host: "smtp.gmail.com",
+  port: 587,
+  secure: false,
+      tls: { rejectUnauthorized: false },
+      family: 4,
             auth: {
                 user: process.env.EMAIL,
                 pass: process.env.EMAIL_PASSWORD,

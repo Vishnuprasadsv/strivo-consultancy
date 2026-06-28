@@ -49,7 +49,7 @@ const CaseStudies = () => {
 
       const res = await axios.get(
 
-        "http://localhost:5000/api/case-studies"
+        `${import.meta.env.VITE_API_BASE_URL}/api/case-studies`
 
       );
 
@@ -146,75 +146,80 @@ Loading...
           Showing {filteredStudies.length} case studies
         </p>
       </motion.div>
-
       {/* Cards */}
       <section className="max-w-7xl mx-auto px-6 pb-20">
-        <div className="grid lg:grid-cols-3 gap-6">
+        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
           {filteredStudies.map((study, index) => (
             <motion.div
               key={study.title}
               initial={{ opacity: 0, y: 60 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{
-                duration: 0.5,
+                duration: 0.6,
                 delay: index * 0.1,
+                ease: "easeOut",
               }}
-              className="border border-slate-800 rounded-xl overflow-hidden bg-[#050505]
-                         hover:border-blue-500 hover:-translate-y-2
-                         transition-all duration-300"
+              className="group relative border border-slate-800/80 rounded-2xl overflow-hidden bg-[#0d131f]/40 backdrop-blur-md
+                         hover:border-blue-500/50 hover:-translate-y-2 hover:shadow-[0_20px_40px_rgba(59,130,246,0.08)]
+                         transition-all duration-500 flex flex-col h-full"
             >
-              <div className="relative">
-                <img
-                  src={study.coverImage}
-                  alt={study.title}
-                  className="w-full h-56 object-cover"
-                />
-                <span className="absolute top-4 left-4 bg-blue-600 text-xs px-3 py-1 rounded">
-                  {study.category}
-                </span>
-              </div>
+              {/* Image & Category Badge */}
+              {/* Image Header with Container */}
+<div className="relative overflow-hidden aspect-[16/10] bg-[#070b13] flex items-center justify-center">
+  <img
+    src={study.coverImage}
+    alt={study.title}
+    className="w-full h-full object-contain transform group-hover:scale-105 transition-transform duration-700 ease-out"
+  />
+  <div className="absolute inset-0 bg-gradient-to-t from-[#0a0f1d] via-transparent to-transparent opacity-20 pointer-events-none" />
+  <span className="absolute top-4 left-4 bg-blue-500/10 backdrop-blur-md border border-blue-500/20 text-blue-400 text-[10px] font-bold uppercase tracking-wider px-3 py-1 rounded-full shadow-lg z-10">
+    {study.category}
+  </span>
+</div>
 
-              <div className="p-6">
-                <h3 className="text-2xl font-bold mb-4">
+              {/* Card Body */}
+              <div className="p-6 flex flex-col flex-grow">
+                <h3 className="text-xl font-bold text-white mb-3 group-hover:text-blue-400 transition-colors duration-300 leading-snug">
                   {study.title}
                 </h3>
 
-                <p className="text-gray-400 mb-6">
+                <p className="text-gray-400 text-sm leading-relaxed mb-6 flex-grow">
                   {study.summary}
                 </p>
 
-                <div className="bg-slate-800 rounded-lg p-5 mb-6">
-                  <div className="text-4xl font-bold text-blue-500">
-                    {study.author}
-                  </div>
-
-                  <div className="text-xs text-gray-400 mt-1">
-                    Author
-                  </div>
+               
+                {/* Footer with Slide-arrow Button */}
+                <div className="border-t border-slate-800/60 pt-5 mt-auto flex items-center justify-between">
+                  <button
+                    onClick={() => {
+                      navigate(`/case-study-details/${study._id}`);
+                      window.scrollTo(0, 0);
+                    }}
+                    className="inline-flex items-center gap-2 text-sm font-semibold text-blue-400 hover:text-blue-300 group/btn transition-colors"
+                  >
+                    View Project
+                    <svg
+                      className="w-4 h-4 transform group-hover/btn:translate-x-1.5 transition-transform duration-300"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2.5}
+                        d="M14 5l7 7m0 0l-7 7m7-7H3"
+                      />
+                    </svg>
+                  </button>
                 </div>
-
-                <button
-                  className="text-blue-500 font-medium
-                             hover:text-white hover:translate-x-2
-                             transition-all duration-300"
-                  onClick={() => {
-                   navigate(
-
-`/case-study-details/${study._id}`
-
-);
-                    window.scrollTo(0, 0);
-                  }}
-                >
-                  View Project →
-                </button>
               </div>
             </motion.div>
           ))}
         </div>
 
         {filteredStudies.length === 0 && (
-          <div className="text-center text-gray-500 py-20">
+          <div className="text-center text-gray-500 py-20 font-medium">
             No case studies found for this category.
           </div>
         )}

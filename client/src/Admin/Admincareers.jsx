@@ -447,7 +447,7 @@ const CareerAdmin = () => {
   const recentNotifications = getDynamicNotifications();
 
   return (
-    <div className="min-h-screen pt-24 px-4 sm:px-8 relative z-10 md:ml-64 bg-black text-white">
+    <div className="min-h-screen pt-24 px-4 sm:px-8 relative z-10 md:ml-64 text-white">
    
       <motion.div
         initial={{ opacity: 0, y: 20 }}
@@ -577,19 +577,17 @@ const CareerAdmin = () => {
                 </div>
               ) : (
                 <div className="overflow-x-auto">
-                  <table className="w-full text-left border-collapse min-w-[800px]">
+                  <table className="w-full text-left border-collapse min-w-[700px] table-fixed">
                     <thead>
                       <tr className="border-b border-white/10 text-white/40 text-xs font-semibold uppercase tracking-wider">
-                        <th className="pb-3 pr-4 font-semibold w-1/3 min-w-[200px]">Candidate</th>
-                        <th className="pb-3 px-4 font-semibold w-1/4 min-w-[150px]">Job Title</th>
-                        <th className="pb-3 px-4 font-semibold min-w-[100px]">Applied On</th>
-                        <th className="pb-3 px-4 font-semibold min-w-[120px]">Status</th>
-                        <th className="pb-3 pl-4 font-semibold text-right min-w-[220px]">Action</th>
+                        <th className="pb-3 pr-4 font-semibold w-1/3 min-w-[200px]">Candidate & Position</th>
+                        <th className="pb-3 px-4 font-semibold w-1/6 min-w-[100px]">Applied On</th>
+                        <th className="pb-3 px-4 font-semibold w-1/6 min-w-[100px]">Status</th>
+                        <th className="pb-3 pl-4 font-semibold text-right w-1/3 min-w-[200px]">Action</th>
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-white/5 text-sm">
                       {filteredApplications.map((app) => {
-                        const initials = app.fullName.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2);
                         const statusObj = getStatusDetails(app.status);
                         const appliedDate = new Date(app.createdAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
                         
@@ -598,11 +596,9 @@ const CareerAdmin = () => {
                            
                             <td className="py-4 pr-4 w-1/3 min-w-[200px]">
                               <div className="flex items-center gap-3">
-                                <div className="w-10 h-10 rounded-full bg-blue-600/20 border border-blue-600/30 text-blue-400 flex items-center justify-center font-bold text-sm shrink-0">
-                                  {initials}
-                                </div>
                                 <div className="min-w-0">
                                   <p className="font-bold text-white truncate">{app.fullName}</p>
+                                  <p className="text-xs text-blue-400 font-medium truncate mt-0.5">{app.appliedPosition}</p>
                                   <p className="text-xs text-white/50 truncate mt-0.5">{app.email}</p>
                                 
                                   <a
@@ -616,18 +612,16 @@ const CareerAdmin = () => {
                                 </div>
                               </div>
                             </td>
-                            
-                            <td className="py-4 px-4 text-white/80 font-medium w-1/4 min-w-[150px]">{app.appliedPosition}</td>
                          
-                            <td className="py-4 px-4 text-white/60 min-w-[100px]">{appliedDate}</td>
+                            <td className="py-4 px-4 text-white/60 w-1/6 min-w-[100px]">{appliedDate}</td>
                            
-                            <td className="py-4 px-4 min-w-[120px]">
+                            <td className="py-4 px-4 w-1/6 min-w-[100px]">
                               <span className={`px-3 py-1 rounded-full text-xs font-semibold ${statusObj.className}`}>
                                 {statusObj.label}
                               </span>
                             </td>
                         
-                            <td className="py-4 pl-4 text-right min-w-[220px] whitespace-nowrap">
+                            <td className="py-4 pl-4 text-right w-1/3 min-w-[200px] whitespace-nowrap">
                               <div className="flex items-center justify-end gap-2">
                                 <button
                                   onClick={() => handleViewApplication(app)}

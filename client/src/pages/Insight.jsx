@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Link, useNavigate } from 'react-router-dom';
+import { Dialog, DialogContent, Typography, Button, Box } from '@mui/material';
 
 // Import API services
 import { getArticlesAPI, subscribeEmailAPI } from '../services/allApi';
@@ -76,6 +77,7 @@ const Insight = () => {
   // Newsletter states
   const [newsletterEmail, setNewsletterEmail] = useState('');
   const [submittingNewsletter, setSubmittingNewsletter] = useState(false);
+  const [showSuccessPopup, setShowSuccessPopup] = useState(false);
 
   const handleNewsletterSubscribe = async (e) => {
     e.preventDefault();
@@ -89,7 +91,7 @@ const Insight = () => {
       const response = await subscribeEmailAPI({ email: newsletterEmail });
       if (response.status === 201 || response.status === 200) {
         if (response.data?.success) {
-          toast.success("Subscribed successfully! Welcome to Nexus Insights Daily! 🎉");
+          setShowSuccessPopup(true);
           setNewsletterEmail('');
         } else {
           toast.error(response.data?.message || "Failed to subscribe.");
@@ -136,8 +138,8 @@ const Insight = () => {
   };
 
   // Filter articles by category
-  const filteredArticles = selectedCategory === 'All' 
-    ? articles 
+  const filteredArticles = selectedCategory === 'All'
+    ? articles
     : articles.filter(article => article.category === selectedCategory);
 
   // Slice list of articles for current page display
@@ -154,11 +156,11 @@ const Insight = () => {
   return (
     <div className="bg-transparent text-white min-h-screen pt-12 pb-24 font-sans">
       <div className="max-w-7xl mx-auto px-6 md:px-12 space-y-24">
-        
+
         {/* Section 1: Hero */}
-        <motion.section 
-          initial="hidden" 
-          animate="visible" 
+        <motion.section
+          initial="hidden"
+          animate="visible"
           variants={fadeUpVariants}
           className="max-w-3xl"
         >
@@ -170,9 +172,9 @@ const Insight = () => {
 
         {/* Section 2: Featured Article */}
         {featuredArticle && (
-          <motion.section 
-            initial="hidden" 
-            whileInView="visible" 
+          <motion.section
+            initial="hidden"
+            whileInView="visible"
             viewport={{ once: true, amount: 0.2 }}
             variants={fadeUpVariants}
             className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center bg-[#111827] rounded-xl overflow-hidden border border-[#374151]"
@@ -193,17 +195,17 @@ const Insight = () => {
                   to={`/article/${featuredArticle._id || featuredArticle.id}`}
                   className="text-blue-500 font-medium flex items-center hover:text-white transition-colors group cursor-pointer"
                 >
-                  Read Article 
+                  Read Article
                   <span className="ml-1 group-hover:translate-x-1 transition-transform">→</span>
                 </Link>
 
               </div>
             </div>
             <div className="h-64 lg:h-full min-h-[400px] relative w-full overflow-hidden order-1 lg:order-2">
-              <img 
-                src={featuredArticle.imageUrl} 
-                alt={featuredArticle.title} 
-                className="absolute inset-0 w-full h-full object-cover" 
+              <img
+                src={featuredArticle.imageUrl}
+                alt={featuredArticle.title}
+                className="absolute inset-0 w-full h-full object-cover"
                 onError={(e) => {
                   e.target.src = "https://images.unsplash.com/photo-1488590528505-98d2b5aba04b?q=80&w=600";
                 }}
@@ -214,9 +216,9 @@ const Insight = () => {
         )}
 
         {/* Section 3: All Articles */}
-        <motion.section 
-          initial="hidden" 
-          whileInView="visible" 
+        <motion.section
+          initial="hidden"
+          whileInView="visible"
           viewport={{ once: true, amount: 0.1 }}
           variants={fadeUpVariants}
         >
@@ -224,14 +226,13 @@ const Insight = () => {
             <h2 className="text-2xl font-bold text-white">All Articles</h2>
             <div className="flex flex-wrap gap-3">
               {categories.map((cat) => (
-                <button 
+                <button
                   key={cat}
                   onClick={() => handleCategoryChange(cat)}
-                  className={`px-4 py-1.5 rounded-full text-sm font-medium transition-colors cursor-pointer ${
-                    selectedCategory === cat 
-                      ? 'bg-blue-600 text-white border border-blue-600' 
-                      : 'bg-[#1F2937] text-gray-400 border border-transparent hover:text-white hover:bg-[#374151]'
-                  }`}
+                  className={`px-4 py-1.5 rounded-full text-sm font-medium transition-colors cursor-pointer ${selectedCategory === cat
+                    ? 'bg-blue-600 text-white border border-blue-600'
+                    : 'bg-[#1F2937] text-gray-400 border border-transparent hover:text-white hover:bg-[#374151]'
+                    }`}
                 >
                   {cat}
                 </button>
@@ -243,8 +244,8 @@ const Insight = () => {
             <div className="text-gray-500 py-12 text-center">No articles found in this category.</div>
           ) : (
             <div className="space-y-12">
-              <motion.div 
-                layout 
+              <motion.div
+                layout
                 variants={containerVariants}
                 initial="hidden"
                 animate="visible"
@@ -252,7 +253,7 @@ const Insight = () => {
               >
                 <AnimatePresence mode='popLayout'>
                   {currentArticles.map((article) => (
-                    <motion.article 
+                    <motion.article
                       layout
                       variants={cardVariants}
                       initial="hidden"
@@ -265,14 +266,14 @@ const Insight = () => {
                     >
                       {/* Top gradient line */}
                       <div className="absolute top-0 left-0 w-full h-[2px] bg-gradient-to-r from-blue-600 to-transparent z-10"></div>
-                      
+
                       {/* Glow effect */}
                       <div className="absolute -top-[70px] -right-[70px] w-[180px] h-[180px] bg-[radial-gradient(circle,rgba(37,99,235,0.18),transparent)] pointer-events-none z-10"></div>
 
                       <div className="h-48 w-full relative overflow-hidden z-20">
-                        <img 
-                          src={article.imageUrl} 
-                          alt={article.title} 
+                        <img
+                          src={article.imageUrl}
+                          alt={article.title}
                           className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300 ease-out"
                           onError={(e) => {
                             e.target.src = "https://images.unsplash.com/photo-1488590528505-98d2b5aba04b?q=80&w=400";
@@ -283,7 +284,7 @@ const Insight = () => {
                         <span className="text-blue-500 text-xs font-semibold mb-2 uppercase">{article.category}</span>
                         <h3 className="text-xl font-bold text-white mb-3">{article.title}</h3>
                         <p className="text-gray-400 mb-6 flex-grow">{article.description}</p>
-                        
+
                         <Link
                           to={`/article/${article._id || article.id}`}
                           onClick={(e) => {
@@ -307,15 +308,14 @@ const Insight = () => {
                   <button
                     disabled={currentPage === 1}
                     onClick={() => setCurrentPage(prev => Math.max(1, prev - 1))}
-                    className={`px-4 py-2 rounded-xl text-sm font-semibold border transition-all cursor-pointer ${
-                      currentPage === 1
-                        ? 'border-white/10 text-white/30 bg-white/5 cursor-not-allowed'
-                        : 'border-white/20 text-white hover:bg-white/10 hover:border-white/30'
-                    }`}
+                    className={`px-4 py-2 rounded-xl text-sm font-semibold border transition-all cursor-pointer ${currentPage === 1
+                      ? 'border-white/10 text-white/30 bg-white/5 cursor-not-allowed'
+                      : 'border-white/20 text-white hover:bg-white/10 hover:border-white/30'
+                      }`}
                   >
                     Previous
                   </button>
-                  
+
                   <div className="flex gap-2">
                     {Array.from({ length: totalPages }, (_, index) => {
                       const pageNum = index + 1;
@@ -323,11 +323,10 @@ const Insight = () => {
                         <button
                           key={pageNum}
                           onClick={() => setCurrentPage(pageNum)}
-                          className={`w-10 h-10 rounded-xl text-sm font-bold border transition-all cursor-pointer ${
-                            currentPage === pageNum
-                              ? 'bg-blue-600 border-blue-600 text-white shadow-lg shadow-blue-500/20'
-                              : 'border-white/10 bg-white/5 text-white/70 hover:bg-white/10 hover:text-white'
-                          }`}
+                          className={`w-10 h-10 rounded-xl text-sm font-bold border transition-all cursor-pointer ${currentPage === pageNum
+                            ? 'bg-blue-600 border-blue-600 text-white shadow-lg shadow-blue-500/20'
+                            : 'border-white/10 bg-white/5 text-white/70 hover:bg-white/10 hover:text-white'
+                            }`}
                         >
                           {pageNum}
                         </button>
@@ -338,11 +337,10 @@ const Insight = () => {
                   <button
                     disabled={currentPage === totalPages}
                     onClick={() => setCurrentPage(prev => Math.min(totalPages, prev + 1))}
-                    className={`px-4 py-2 rounded-xl text-sm font-semibold border transition-all cursor-pointer ${
-                      currentPage === totalPages
-                        ? 'border-white/10 text-white/30 bg-white/5 cursor-not-allowed'
-                        : 'border-white/20 text-white hover:bg-white/10 hover:border-white/30'
-                    }`}
+                    className={`px-4 py-2 rounded-xl text-sm font-semibold border transition-all cursor-pointer ${currentPage === totalPages
+                      ? 'border-white/10 text-white/30 bg-white/5 cursor-not-allowed'
+                      : 'border-white/20 text-white hover:bg-white/10 hover:border-white/30'
+                      }`}
                   >
                     Next
                   </button>
@@ -353,9 +351,9 @@ const Insight = () => {
         </motion.section>
 
         {/* Section 4: Newsletter Banner */}
-        <motion.section 
-          initial="hidden" 
-          whileInView="visible" 
+        <motion.section
+          initial="hidden"
+          whileInView="visible"
           viewport={{ once: true, amount: 0.2 }}
           variants={fadeUpVariants}
           className="bg-[#1F2937] rounded-xl p-8 md:p-12 flex flex-col lg:flex-row items-center justify-between gap-8 border border-[#374151]"
@@ -365,16 +363,16 @@ const Insight = () => {
             <p className="text-gray-400">Get weekly deep-dives and strategic guides delivered straight to your inbox. No spam, just high-value signal.</p>
           </div>
           <form onSubmit={handleNewsletterSubscribe} className="flex w-full lg:w-auto gap-3">
-            <input 
-              type="email" 
+            <input
+              type="email"
               required
               value={newsletterEmail}
               onChange={(e) => setNewsletterEmail(e.target.value)}
-              placeholder="Enter your work email" 
+              placeholder="Enter your work email"
               className="bg-[#374151] border border-[#4b5563] text-white placeholder-white/60 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500 w-full md:w-72"
             />
-            <button 
-              type="submit" 
+            <button
+              type="submit"
               disabled={submittingNewsletter}
               className="bg-blue-600 hover:bg-blue-700 disabled:bg-blue-500/50 text-white px-6 py-3 rounded-lg font-semibold whitespace-nowrap transition-colors cursor-pointer"
             >
@@ -384,8 +382,59 @@ const Insight = () => {
         </motion.section>
 
       </div>
+
+      <Dialog
+        open={showSuccessPopup}
+        onClose={() => setShowSuccessPopup(false)}
+        sx={{
+          "& .MuiDialog-paper": {
+            background: 'rgba(0, 0, 0, 0.9) !important',
+            backdropFilter: 'blur(16px)',
+            border: '1px solid rgba(255, 255, 255, 0.2)',
+            borderRadius: '24px',
+            color: '#ffffff !important',
+            boxShadow: '0 4px 30px rgba(0, 0, 0, 0.5)',
+            maxWidth: '500px',
+            textAlign: 'center',
+            p: 3,
+          }
+        }}
+      >
+        <DialogContent sx={{ overflow: 'hidden' }}>
+          <motion.div
+            initial={{ scale: 0.8, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            transition={{ duration: 0.5, type: 'spring' }}
+          >
+            <Typography variant="h3" sx={{ mb: 2 }}>🎉</Typography>
+            <Typography variant="h5" sx={{ fontWeight: 700, mb: 2, color: '#ffffff' }}>
+              Subscription Confirmed!
+            </Typography>
+            <Typography sx={{ color: '#ffffff', lineHeight: 1.6, mb: 4, opacity: 0.9 }}>
+              You are officially on the list. Get ready for weekly deep-dives and high-value signals delivered straight to your inbox.
+            </Typography>
+            <Button
+              variant="contained"
+              onClick={() => setShowSuccessPopup(false)}
+              sx={{
+                background: 'linear-gradient(135deg, #2563eb, #3b82f6)',
+                borderRadius: '12px',
+                px: 5,
+                py: 1.5,
+                textTransform: 'none',
+                fontWeight: 'bold',
+                '&:hover': {
+                  background: 'linear-gradient(135deg, #1d4ed8, #2563eb)',
+                  transform: 'translateY(-2px)',
+                }
+              }}
+            >
+              Awesome!
+            </Button>
+          </motion.div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
-
 export default Insight;

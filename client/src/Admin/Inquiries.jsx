@@ -8,6 +8,7 @@ import {
     FiPhone,
     FiBriefcase,
     FiSend,
+    FiChevronDown
 } from "react-icons/fi";
 import { motion } from 'framer-motion';
 import { createPortal } from "react-dom";
@@ -67,7 +68,7 @@ const Inquiries = () => {
     }, []);
     const fetchInquiries = async () => {
         try {
-            const res = await axios.get("http://localhost:5000/api/inquiries");
+            const res = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/api/inquiries`);
 
             setInquiries(res.data);
 
@@ -81,30 +82,42 @@ const Inquiries = () => {
         }
     };
     const handleStatusChange = async (id, status) => {
-    try {
-        await axios.put(
-            `http://localhost:5000/api/inquiries/${id}`,
-            { status }
-        );
 
-        const updated = inquiries.map((inq) =>
-            inq._id === id ? { ...inq, status } : inq
-        );
+try{
 
-        setInquiries(updated);
+await axios.put(
+`${import.meta.env.VITE_API_BASE_URL}/api/inquiries/${id}`,
+{status}
+);
 
-        if (selected?._id === id) {
-            setSelected({ ...selected, status });
-        }
+const updated = inquiries.map(inq =>
+inq._id === id
+? {...inq,status}
+: inq
+);
 
-    } catch (err) {
-        console.log(err);
-    }
-};
+setInquiries(updated);
+
+if(selected?._id===id){
+
+setSelected(prev=>({
+...prev,
+status
+}));
+
+}
+
+}catch(err){
+
+console.log(err);
+
+}
+
+}
     const handleSendReply = async () => {
         try {
             const response = await axios.post(
-                "http://localhost:5000/api/inquiries/reply",
+                `${import.meta.env.VITE_API_BASE_URL}/api/inquiries/reply`,
                 {
                     email: selected.email,
                     subject: reply.subject,
@@ -152,7 +165,7 @@ const Inquiries = () => {
                 </div>
 
                 {/* Summary Cards */}
-                <div className="grid lg:grid-cols-4 md:grid-cols-2 gap-6 mb-8">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 mb-8">
                     {cards.map((card) => (
                         <div
                             key={card.title}
@@ -192,7 +205,7 @@ duration-300
                 </div>
 
                 {/* Tabs */}
-                <div className="flex gap-8 border-b border-slate-800 pb-4 mb-6">
+                <div className="flex gap-4 sm:gap-8 border-b border-slate-800 pb-4 mb-6 overflow-x-auto whitespace-nowrap scrollbar-hide">
                     {["All", "New", "In Progress", "Responded", "Closed"].map(
                         (tab) => (
                             <button
@@ -239,7 +252,7 @@ ${selected?._id === item._id
                                         : "border-slate-800"
                                     }`}
                             >
-                                <div className="flex justify-between">
+                                <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 sm:gap-0">
                                     <div className="flex gap-3">
                                         <div className="w-12 h-12 rounded-full bg-blue-600 flex items-center justify-center">
                                             {item.fullName?.charAt(0).toUpperCase()}
@@ -256,16 +269,53 @@ ${selected?._id === item._id
                                         </div>
                                     </div>
 
-                                    <select
-                                        value={item.status}
-                                        onChange={(e) => handleStatusChange(item._id, e.target.value)}
-                                        className="bg-slate-900 border border-slate-700 rounded px-2 text-xs"
-                                    >
-                                        <option value="New">New</option>
-                                        <option value="In Progress">In Progress</option>
-                                        <option value="Responded">Responded</option>
-                                        <option value="Closed">Closed</option>
-                                    </select>
+             <div className="relative">
+
+<select
+className="
+appearance-none
+w-40
+h-11
+rounded-full
+bg-[#1a2338]
+border border-blue-500/30
+pl-5
+pr-10
+text-blue-400
+font-semibold
+outline-none
+"
+value={item.status}
+
+onChange={(e) => {
+e.stopPropagation();
+
+handleStatusChange(
+item._id,
+e.target.value
+);
+}}
+>
+
+<option>New</option>
+<option>In Progress</option>
+<option>Responded</option>
+<option>Closed</option>
+
+</select>
+
+<FiChevronDown
+className="
+absolute
+right-4
+top-1/2
+-translate-y-1/2
+text-white/70
+pointer-events-none
+"
+/>
+
+</div>
                                 </div>
 
                                 <p className="text-gray-400 text-sm mt-4">
@@ -299,16 +349,51 @@ overflow-y-auto
     Inquiry #{inquiries.findIndex(i => i._id === selected?._id) + 1}
 </h2>
 
-                           <select
-    value={selected?.status}
-    onChange={(e) => handleStatusChange(selected._id, e.target.value)}
-    className="bg-slate-900 border border-slate-700 rounded px-4 py-2"
+                          <div className="relative">
+
+<select
+className="
+appearance-none
+w-40
+h-11
+rounded-full
+bg-[#1a2338]
+border border-blue-500/30
+pl-5
+pr-10
+text-blue-400
+font-semibold
+outline-none
+"
+value={selected?.status || "New"}
+
+onChange={(e)=>
+handleStatusChange(
+selected._id,
+e.target.value
+)}
 >
-    <option value="New">New</option>
-    <option value="In Progress">In Progress</option>
-    <option value="Responded">Responded</option>
-    <option value="Closed">Closed</option>
+
+<option>New</option>
+<option>In Progress</option>
+<option>Responded</option>
+<option>Closed</option>
+
 </select>
+
+<FiChevronDown
+className="
+absolute
+right-4
+top-1/2
+-translate-y-1/2
+text-white/70
+pointer-events-none
+"
+/>
+
+</div>
+                 
                         </div>
 
                         <div className="border border-slate-800 rounded-xl p-6">

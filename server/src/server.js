@@ -1,4 +1,6 @@
 import 'dotenv/config';
+import dns from 'dns';
+dns.setDefaultResultOrder('ipv4first');
 import express from 'express';
 import cors from 'cors';
 import connectDB from './config/db.js';
@@ -10,6 +12,7 @@ import careerRoutes from "./routes/careerRoutes.js";
 import talentRoutes from "./routes/talentRoutes.js";
 import articleRoutes from "./routes/articleRoutes.js";
 import reviewRoutes from "./routes/reviewRoutes.js";
+
 // Load env vars
 
 
@@ -59,6 +62,10 @@ app.use((err, req, res, next) => {
 
 const PORT = process.env.PORT || 5000;
 
-app.listen(PORT, () => {
-  console.log(`Server running in ${process.env.NODE_ENV || 'development'} mode on port ${PORT}`);
-});
+if (!process.env.VERCEL) {
+  app.listen(PORT, () => {
+    console.log(`Server running in ${process.env.NODE_ENV || 'development'} mode on port ${PORT}`);
+  });
+}
+
+export default app;

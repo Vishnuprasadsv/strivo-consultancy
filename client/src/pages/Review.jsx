@@ -25,9 +25,6 @@ import FormatQuoteIcon from "@mui/icons-material/FormatQuote";
 import CheckCircleOutlineIcon from "@mui/icons-material/CheckCircleOutlineOutlined";
 
 
-import Ferrofluid from "../Components/Ferrofluid";
-
-
 
 const StarRating = ({ value, onChange }) => {
   const [hovered, setHovered] = useState(0);
@@ -271,22 +268,12 @@ export default function Review() {
     <Box
       sx={{
         minHeight: "100vh",
-        background: "#000000",
+        background: "transparent",
         position: "relative",
         overflow: "hidden",
         py: { xs: 6, md: 10 },
       }}
     >
-
-      <Box sx={{ position: "absolute", inset: 0, zIndex: 0 }}>
-        <Ferrofluid
-          colors={['#4F46E5', '#06B6D4', '#E0F2FE']}
-          speed={0.5}
-          scale={1.2}
-          opacity={0.6}
-          flowDirection="down"
-        />
-      </Box>
 
 
       <Box
