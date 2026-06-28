@@ -1,11 +1,12 @@
-const mongoose = require("mongoose");
+import mongoose from "mongoose";
 
+// Define the schema (structure) for our Reviews
 const reviewSchema = new mongoose.Schema(
   {
     fullName: {
       type: String,
       required: [true, "Full name is required"],
-      trim: true,
+      trim: true, // Automatically removes extra spaces around the name
     },
     company: {
       type: String,
@@ -15,8 +16,8 @@ const reviewSchema = new mongoose.Schema(
     rating: {
       type: Number,
       required: [true, "Rating is required"],
-      min: [1, "Rating must be at least 1"],
-      max: [5, "Rating cannot be more than 5"],
+      min: [1, "Rating must be at least 1 star"],
+      max: [5, "Rating cannot exceed 5 stars"],
     },
     title: {
       type: String,
@@ -25,23 +26,17 @@ const reviewSchema = new mongoose.Schema(
     },
     review: {
       type: String,
-      required: [true, "Review text is required"],
+      required: [true, "Detailed review text is required"],
       trim: true,
       minlength: [20, "Review must be at least 20 characters long"],
     },
-    status: {
-      type: String,
-      enum: {
-        values: ["pending", "approved", "rejected"],
-        message: "Status must be pending, approved, or rejected",
-      },
-      default: "pending",
-    },
   },
   {
-    timestamps: true, // Automatically adds createdAt and updatedAt
+    // Automatically creates 'createdAt' and 'updatedAt' fields in our database records
+    timestamps: true,
   }
 );
 
-// Export the Review model
-module.exports = mongoose.model("Review", reviewSchema);
+// Create and export the model
+// This will create a collection called 'reviews' in our MongoDB database
+export default mongoose.model("Review", reviewSchema);

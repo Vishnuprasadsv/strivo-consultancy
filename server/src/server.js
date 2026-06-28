@@ -5,10 +5,11 @@ import connectDB from './config/db.js';
 import adminRoutes from './routes/adminRoutes.js';
 import successStoryRoutes from './routes/successStoryRoutes.js';
 import inquiryRoutes from './routes/inquiryRoutes.js';
+import caseStudyRoutes from "./routes/caseStudyRoutes.js";
+import careerRoutes from "./routes/careerRoutes.js"
 
-import careerRoutes from './routes/careerRoutes.js';
-import talentRoutes from './routes/talentRoutes.js';
-import articleRoutes from './routes/articleRoutes.js';
+import talentRoutes from "./routes/talentRoutes.js"
+import articleRoutes from "./routes/articleRoutes.js"
 // Load env vars
 dotenv.config(); // Adjusted for project structure if .env is in server root
 
@@ -38,6 +39,7 @@ app.use('/api/talent', talentRoutes);
 app.use('/api/articles', articleRoutes);
 
 app.use('/api/inquiries', inquiryRoutes);
+app.use("/api/case-studies", caseStudyRoutes);
 app.get('/', (req, res) => {
   res.send('Strivo Consultancy API is running...');
 });

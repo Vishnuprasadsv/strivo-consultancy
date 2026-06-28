@@ -8,6 +8,9 @@ import { commonAPI } from "./commonApi";
 import { SERVER_URL } from "./serverUrl";
 //  ente api calls by namitha
 // careers
+
+
+
 export const applyJobAPI = async (formData) => {
   return await commonAPI("POST", `${SERVER_URL}/api/career/apply`, formData, {});
 };
@@ -56,7 +59,17 @@ export const getTalentSubmissionsAPI = async () => {
 
 
 
-// insights pinne article
+//  add review object ayit data pull 
+
+// reviewData - Object containing fullName, company, rating, title, and review text.
+
+//  @param {object} reviewData
+
+export const submitReviewAPI = async (reviewData) => {
+  return await commonAPI("POST", `${SERVER_URL}/api/reviews`, reviewData, "");
+};
+
+// article and insights 
 
 export const createArticleAPI = async (articleData) => {
   return await commonAPI("POST", `${SERVER_URL}/api/articles`, articleData, "");
@@ -80,4 +93,12 @@ export const deleteArticleAPI = async (id) => {
 
 export const subscribeEmailAPI = async (emailData) => {
   return await commonAPI("POST", `${SERVER_URL}/api/articles/subscribe`, emailData, "");
+};
+
+export const getSubscribersAPI = async () => {
+  return await commonAPI("GET", `${SERVER_URL}/api/articles/subscribers`, "", "");
+};
+
+export const deleteSubscriberAPI = async (id) => {
+  return await commonAPI("DELETE", `${SERVER_URL}/api/articles/subscribers/${id}`, "", "");
 };

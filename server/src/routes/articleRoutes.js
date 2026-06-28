@@ -6,6 +6,8 @@ import {
   updateArticle,
   deleteArticle,
   subscribeEmail,
+  getSubscribers,
+  deleteSubscriber,
 } from "../controllers/articleController.js";
 
 const router = express.Router();
@@ -22,13 +24,19 @@ router.get("/", getArticles);
 // 3. Register a new email subscriber: POST /api/articles/subscribe
 router.post("/subscribe", subscribeEmail);
 
-// 4. Fetch single article details by ID: GET /api/articles/:id
+// 4. Fetch all active subscribers: GET /api/articles/subscribers
+router.get("/subscribers", getSubscribers);
+
+// 5. Remove a subscriber by ID: DELETE /api/articles/subscribers/:id
+router.delete("/subscribers/:id", deleteSubscriber);
+
+// 6. Fetch single article details by ID: GET /api/articles/:id
 router.get("/:id", getArticleById);
 
-// 5. Update an existing article: PUT /api/articles/:id
+// 7. Update an existing article: PUT /api/articles/:id
 router.put("/:id", updateArticle);
 
-// 6. Delete an article: DELETE /api/articles/:id
+// 8. Delete an article: DELETE /api/articles/:id
 router.delete("/:id", deleteArticle);
 
 export default router;
