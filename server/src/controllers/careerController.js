@@ -28,8 +28,8 @@ cloudinary.config({
 
 const transporter = nodemailer.createTransport({
   host: "smtp.gmail.com",
-  port: 465,
-  secure: true,
+  port: 587,
+  secure: false,
       tls: { rejectUnauthorized: false },
       family: 4,
   auth: {

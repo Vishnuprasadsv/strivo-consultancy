@@ -55,7 +55,7 @@ const ForgotPassword = () => {
       setTimer(300); // Reset timer
       setOtp(['', '', '', '', '', '']);
     } catch (error) {
-      toast.error(error.response?.data?.message || 'Failed to send OTP. Please try again.');
+      toast.error(error.response?.data?.error || error.response?.data?.message || 'Failed to send OTP. Please try again.');
     } finally {
       setIsLoading(false);
     }
