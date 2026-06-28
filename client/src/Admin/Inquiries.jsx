@@ -165,7 +165,7 @@ console.log(err);
                 </div>
 
                 {/* Summary Cards */}
-                <div className="grid lg:grid-cols-4 md:grid-cols-2 gap-6 mb-8">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 mb-8">
                     {cards.map((card) => (
                         <div
                             key={card.title}
@@ -205,7 +205,7 @@ duration-300
                 </div>
 
                 {/* Tabs */}
-                <div className="flex gap-8 border-b border-slate-800 pb-4 mb-6">
+                <div className="flex gap-4 sm:gap-8 border-b border-slate-800 pb-4 mb-6 overflow-x-auto whitespace-nowrap scrollbar-hide">
                     {["All", "New", "In Progress", "Responded", "Closed"].map(
                         (tab) => (
                             <button
@@ -252,7 +252,7 @@ ${selected?._id === item._id
                                         : "border-slate-800"
                                     }`}
                             >
-                                <div className="flex justify-between items-start">
+                                <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 sm:gap-0">
                                     <div className="flex gap-3">
                                         <div className="w-12 h-12 rounded-full bg-blue-600 flex items-center justify-center">
                                             {item.fullName?.charAt(0).toUpperCase()}
@@ -285,8 +285,6 @@ text-blue-400
 font-semibold
 outline-none
 "
- value={selected?.status || "New"}
-
 value={item.status}
 
 onChange={(e) => {

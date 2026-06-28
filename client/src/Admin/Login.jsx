@@ -3,12 +3,15 @@ import { motion } from 'framer-motion';
 import { useNavigate, Link } from 'react-router-dom';
 import { toast } from 'sonner';
 import axios from 'axios';
+import Visibility from '@mui/icons-material/Visibility';
+import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import logo1 from '../assets/strivo logo.png';
 import logo2 from '../assets/strivo logo 2.png';
 
 const Login = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
 
@@ -84,12 +87,19 @@ const Login = () => {
             <label className="text-sm font-medium text-white/80 ml-1">Password</label>
             <div className="relative">
               <input 
-                type="password" 
+                type={showPassword ? "text" : "password"} 
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 placeholder="••••••••"
-                className="w-full bg-black/40 border border-white/10 rounded-xl px-4 py-3 text-white placeholder:text-white/30 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-transparent transition-all"
+                className="w-full bg-black/40 border border-white/10 rounded-xl px-4 py-3 pr-12 text-white placeholder:text-white/30 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-transparent transition-all"
               />
+              <button
+                type="button"
+                onClick={() => setShowPassword(!showPassword)}
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-white/50 hover:text-white transition-colors cursor-pointer"
+              >
+                {showPassword ? <VisibilityOff fontSize="small" /> : <Visibility fontSize="small" />}
+              </button>
             </div>
             <div className="flex justify-end pt-1">
               <Link to="/admin/forgot-password" className="text-xs text-blue-400 hover:text-blue-300 transition-colors">

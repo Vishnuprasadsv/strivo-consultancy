@@ -334,6 +334,7 @@ const stats = [
           >
             <Button
               variant="contained"
+              onClick={() => navigate("/contact")}
               sx={{
                 px: 4,
                 py: 1.8,
@@ -355,6 +356,7 @@ const stats = [
 
             <Button
               variant="outlined"
+              onClick={() => navigate("/about")}
               sx={{
                 px: 4,
                 py: 1.8,
@@ -659,7 +661,10 @@ const stats = [
     {/*  third section */}
     <Box
   sx={{
-    backgroundColor: "transparent",
+    background: "rgba(255, 255, 255, 0.09)",
+    backdropFilter: "blur(12px)",
+    borderTop: "1px solid rgba(11, 12, 94, 0.38)",
+    borderBottom: "1px solid rgba(255, 255, 255, 0.05)",
     py: { xs: 10, md: 14 },
   }}
 >
@@ -1116,7 +1121,10 @@ const stats = [
 {/* 4 section */}
 <Box
   sx={{
-    backgroundColor: "#000",
+    background: "rgba(255, 255, 255, 0.09)",
+    backdropFilter: "blur(12px)",
+    borderTop: "1px solid rgba(255, 255, 255, 0.05)",
+    borderBottom: "1px solid rgba(255, 255, 255, 0.05)",
     py: { xs: 10, md: 14 },
     overflow: "hidden",
   }}

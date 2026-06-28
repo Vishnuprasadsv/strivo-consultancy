@@ -8,9 +8,10 @@ import ArticleIcon from '@mui/icons-material/Article';
 import WorkIcon from '@mui/icons-material/Work';
 import SettingsIcon from '@mui/icons-material/Settings';
 import LogoutIcon from '@mui/icons-material/Logout';
-import SearchIcon from '@mui/icons-material/Search';
 import NotificationsIcon from '@mui/icons-material/Notifications';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
+import MenuIcon from '@mui/icons-material/Menu';
+import CloseIcon from '@mui/icons-material/Close';
 import {
   getAdminStatsAPI,
   getAdminApplicationsAPI,
@@ -36,6 +37,7 @@ const AdminNavbar = () => {
   const [notifications, setNotifications] = useState([]);
   const [showDropdown, setShowDropdown] = useState(false);
   const dropdownRef = React.useRef(null);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [lastViewed, setLastViewed] = useState(() => {
     const saved = localStorage.getItem('adminNotificationsLastViewed');
     return saved ? new Date(saved) : new Date(0);
@@ -219,14 +221,17 @@ const AdminNavbar = () => {
         transition={{ duration: 0.6, ease: "easeOut" }}
         className="fixed top-0 left-0 md:left-64 right-0 h-20 bg-white/5 backdrop-blur-xl border-b border-white/10 z-40 flex items-center justify-between px-4 md:px-8"
       >
-        {/* Search */}
-        <div className="flex items-center bg-black/20 border border-white/10 rounded-full px-4 py-2 w-48 md:w-96">
-          <SearchIcon className="text-white/50 mr-2" fontSize="small" />
-          <input
-            type="text"
-            placeholder="Search..."
-            className="bg-transparent border-none outline-none text-white w-full placeholder-white/50 text-sm"
-          />
+        <div className="flex items-center gap-4">
+          {/* Mobile Hamburger Menu */}
+          <button
+            className="md:hidden text-white/70 hover:text-white"
+            onClick={() => setIsMobileMenuOpen(true)}
+          >
+            <MenuIcon />
+          </button>
+          
+          {/* Search - Removed as per user request */}
+          <div></div>
         </div>
 
         {/* Right Icons */}
@@ -298,13 +303,29 @@ const AdminNavbar = () => {
         </div>
       </motion.nav>
 
+      {/* Mobile Overlay */}
+      {isMobileMenuOpen && (
+        <div 
+          className="fixed inset-0 bg-black/60 backdrop-blur-sm z-40 md:hidden"
+          onClick={() => setIsMobileMenuOpen(false)}
+        />
+      )}
+
       {/* Left Sidebar */}
       <motion.aside
         initial={{ x: -300, opacity: 0 }}
         animate={{ x: 0, opacity: 1 }}
         transition={{ duration: 0.6, ease: "easeOut" }}
-        className="fixed top-0 left-0 h-screen w-64 bg-white/5 backdrop-blur-xl border-r border-white/10 z-50 hidden md:flex flex-col"
+        className={`fixed top-0 left-0 h-screen w-64 bg-[#0a0f1c]/95 md:bg-white/5 backdrop-blur-xl border-r border-white/10 z-50 flex flex-col transition-transform duration-300 ${isMobileMenuOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'}`}
       >
+        {/* Mobile Close Button */}
+        <button 
+          className="md:hidden absolute top-4 right-4 text-white/50 hover:text-white"
+          onClick={() => setIsMobileMenuOpen(false)}
+        >
+          <CloseIcon />
+        </button>
+
         {/* Logo Section */}
         <div className="flex flex-col items-center justify-center py-6 gap-2">
           <img src={logo} alt="Strivo Logo" className="h-10 w-auto" />
@@ -321,6 +342,7 @@ const AdminNavbar = () => {
               <Link
                 key={link.name}
                 to={link.path}
+                onClick={() => setIsMobileMenuOpen(false)}
                 className={`relative flex items-center gap-4 px-4 py-3 rounded-xl transition-colors duration-300 group cursor-pointer ${isActive ? 'text-blue-500 font-medium' : 'text-white/70 hover:text-white hover:bg-white/5'
                   }`}
               >
@@ -345,6 +367,7 @@ const AdminNavbar = () => {
         <div className="p-4 mt-auto mb-4 flex flex-col gap-2">
           <Link
             to="/admin/profile"
+            onClick={() => setIsMobileMenuOpen(false)}
             className={`relative flex items-center gap-4 px-4 py-3 rounded-xl transition-colors duration-300 group cursor-pointer ${location.pathname === '/admin/profile' ? 'text-blue-500 font-medium' : 'text-white/70 hover:text-white hover:bg-white/5'
               }`}
           >

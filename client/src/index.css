@@ -10,3 +10,13 @@ html, body {
   -ms-overflow-style: none;  /* IE and Edge */
   scrollbar-width: none;  /* Firefox */
 }
+
+/* Global Interactive Element Pointers */
+button,
+a,
+[role="button"],
+.MuiButtonBase-root,
+.MuiCardActionArea-root,
+.clickable-card {
+  cursor: pointer !important;
+}

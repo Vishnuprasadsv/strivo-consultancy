@@ -56,11 +56,12 @@ const CaseStudyTable = ({ caseStudies, onStatusChange }) => {
         w-full
       "
     >
-      {/* Table Header */}
+      {/* Table Header - Hidden on Mobile */}
       <div
         className="
-          grid
-          grid-cols-[90px_3fr_2fr_1.5fr_1.2fr_140px_110px]
+          hidden
+          lg:grid
+          lg:grid-cols-[90px_3fr_2fr_1.5fr_1.2fr_140px_110px]
           items-center
           px-6
           py-4
@@ -88,18 +89,41 @@ const CaseStudyTable = ({ caseStudies, onStatusChange }) => {
           <div
             key={study._id}
             className="
-              grid
-              grid-cols-[90px_3fr_2fr_1.5fr_1.2fr_140px_110px]
-              items-center
+              flex flex-col lg:grid
+              lg:grid-cols-[90px_3fr_2fr_1.5fr_1.2fr_140px_110px]
+              items-start lg:items-center
+              gap-4 lg:gap-0
               px-6
-              py-4.5
+              py-6 lg:py-4.5
               hover:bg-white/[0.02]
               transition-colors
               duration-200
             "
           >
-            {/* ID */}
-            <div className="font-mono text-[11px] text-gray-500">
+            {/* Mobile Header: ID and Actions */}
+            <div className="flex justify-between items-center w-full lg:hidden mb-2">
+              <div className="font-mono text-[11px] text-gray-500">
+                #{study._id.slice(-6).toUpperCase()}
+              </div>
+              <div className="flex gap-2">
+                <button
+                  title="Edit Case Study"
+                  onClick={() => navigate(`/admin/edit-case-study/${study._id}`)}
+                  className="w-8 h-8 rounded-lg bg-slate-800/40 text-slate-400 border border-slate-800/80 flex items-center justify-center"
+                >
+                  <FiEdit2 size={13} />
+                </button>
+                <button
+                  title="Delete Case Study"
+                  onClick={() => deleteCaseStudy(study._id)}
+                  className="w-8 h-8 rounded-lg bg-slate-800/40 text-slate-400 border border-slate-800/80 flex items-center justify-center"
+                >
+                  <FiTrash2 size={13} />
+                </button>
+              </div>
+            </div>
+            {/* Desktop ID */}
+            <div className="hidden lg:block font-mono text-[11px] text-gray-500">
               #{study._id.slice(-6).toUpperCase()}
             </div>
 
@@ -123,8 +147,24 @@ const CaseStudyTable = ({ caseStudies, onStatusChange }) => {
               </div>
             </div>
 
-            {/* Author */}
-            <div className="min-w-0 pr-4">
+            {/* Mobile Meta Details Grid */}
+            <div className="grid grid-cols-2 gap-4 w-full lg:hidden mt-2">
+              <div>
+                <p className="text-[10px] text-gray-500 uppercase mb-1">Author</p>
+                <p className="font-medium text-sm text-gray-200 truncate">{study.author}</p>
+                <p className="text-xs text-gray-500 mt-0.5 truncate">{study.authorRole}</p>
+              </div>
+              <div>
+                <p className="text-[10px] text-gray-500 uppercase mb-1">Category</p>
+                <div className="flex items-center gap-2 text-sm text-gray-300">
+                  <span className={`w-2 h-2 rounded-full flex-shrink-0 ${categoryColor[study.category] || "bg-slate-500"}`}></span>
+                  <span className="truncate">{study.category}</span>
+                </div>
+              </div>
+            </div>
+
+            {/* Desktop Author */}
+            <div className="hidden lg:block min-w-0 pr-4">
               <p className="font-medium text-sm text-gray-200 truncate">
                 {study.author}
               </p>
@@ -133,8 +173,8 @@ const CaseStudyTable = ({ caseStudies, onStatusChange }) => {
               </p>
             </div>
 
-            {/* Category */}
-            <div className="flex items-center gap-2 text-sm text-gray-300">
+            {/* Desktop Category */}
+            <div className="hidden lg:flex items-center gap-2 text-sm text-gray-300">
               <span
                 className={`w-2 h-2 rounded-full flex-shrink-0 ${
                   categoryColor[study.category] || "bg-slate-500"
@@ -144,8 +184,9 @@ const CaseStudyTable = ({ caseStudies, onStatusChange }) => {
             </div>
 
             {/* Status (Interactive Select Dropdown) */}
-            <div className="flex justify-center items-center">
-              <div className="relative inline-block w-[110px]">
+            <div className="flex flex-col lg:flex-row justify-start lg:justify-center items-start lg:items-center w-full lg:w-auto">
+              <p className="text-[10px] text-gray-500 uppercase mb-1 lg:hidden">Status</p>
+              <div className="relative inline-block w-[120px] lg:w-[110px]">
                 <select
                   value={study.status}
                   onChange={(e) => handleStatusChange(study._id, e.target.value)}
@@ -184,7 +225,7 @@ const CaseStudyTable = ({ caseStudies, onStatusChange }) => {
             </div>
 
             {/* Publication Date */}
-            <div className="text-center text-sm text-gray-400">
+            <div className="hidden lg:block text-center text-sm text-gray-400">
               {study.publicationDate
                 ? new Date(study.publicationDate).toLocaleDateString(undefined, {
                     year: 'numeric',
@@ -194,8 +235,8 @@ const CaseStudyTable = ({ caseStudies, onStatusChange }) => {
                 : "—"}
             </div>
 
-            {/* Actions */}
-            <div className="flex justify-end gap-2 pr-2">
+            {/* Desktop Actions */}
+            <div className="hidden lg:flex justify-end gap-2 pr-2">
               <button
                 title="Edit Case Study"
                 className="

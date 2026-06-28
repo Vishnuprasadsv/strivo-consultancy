@@ -139,14 +139,14 @@ const CaseStudies = () => {
 
                 {/* Header */}
 
-                <div className="flex justify-between items-center mb-8">
+                <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8">
 
                     <div>
-                        <h1 className="text-4xl font-bold">
+                        <h1 className="text-3xl sm:text-4xl font-bold">
                             Case Studies
                         </h1>
 
-                        <p className="text-gray-400 mt-2">
+                        <p className="text-gray-400 mt-2 text-sm sm:text-base">
                             Showcase successful client projects and
                             business outcomes.
                         </p>
@@ -154,7 +154,7 @@ const CaseStudies = () => {
 
                     <button
                         onClick={() => navigate("/admin/create-case-study")}
-                        className="bg-blue-600 hover:bg-blue-700 px-6 py-3 rounded-xl flex items-center gap-2"
+                        className="bg-blue-600 hover:bg-blue-700 px-4 sm:px-6 py-2 sm:py-3 rounded-xl flex items-center gap-2 text-sm sm:text-base w-full sm:w-auto justify-center"
                     >
                         <FiPlus />
                         Create Case Study
