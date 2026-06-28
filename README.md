@@ -1,5 +1,8 @@
 # Strivo Consultancy
 
+**Deployed Link:** [https://strivo-psi.vercel.app/](https://strivo-psi.vercel.app/)  
+**GitHub Repository:** [https://github.com/Vishnuprasadsv/strivo-consultancy.git](https://github.com/Vishnuprasadsv/strivo-consultancy.git)
+
 Strivo Consultancy is a full-stack web application designed to manage and streamline consultancy operations. It features a robust backend built with Node.js and Express, connected to a MongoDB database, and a dynamic, responsive frontend built with React, Vite, and Tailwind CSS. The platform includes secure authentication, file management via Cloudinary, email notifications, and an admin dashboard.
 
 ---
