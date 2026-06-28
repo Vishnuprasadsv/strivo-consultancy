@@ -64,3 +64,37 @@ export const getTalentSubmissionsAPI = async () => {
 export const submitReviewAPI = async (reviewData) => {
   return await commonAPI("POST", `${SERVER_URL}/api/reviews`, reviewData, "");
 };
+
+// article and insights 
+
+export const createArticleAPI = async (articleData) => {
+  return await commonAPI("POST", `${SERVER_URL}/api/articles`, articleData, "");
+};
+
+export const getArticlesAPI = async () => {
+  return await commonAPI("GET", `${SERVER_URL}/api/articles`, "", "");
+};
+
+export const getArticleByIdAPI = async (id) => {
+  return await commonAPI("GET", `${SERVER_URL}/api/articles/${id}`, "", "");
+};
+
+export const updateArticleAPI = async (id, articleData) => {
+  return await commonAPI("PUT", `${SERVER_URL}/api/articles/${id}`, articleData, "");
+};
+
+export const deleteArticleAPI = async (id) => {
+  return await commonAPI("DELETE", `${SERVER_URL}/api/articles/${id}`, "", "");
+};
+
+export const subscribeEmailAPI = async (emailData) => {
+  return await commonAPI("POST", `${SERVER_URL}/api/articles/subscribe`, emailData, "");
+};
+
+export const getSubscribersAPI = async () => {
+  return await commonAPI("GET", `${SERVER_URL}/api/articles/subscribers`, "", "");
+};
+
+export const deleteSubscriberAPI = async (id) => {
+  return await commonAPI("DELETE", `${SERVER_URL}/api/articles/subscribers/${id}`, "", "");
+};

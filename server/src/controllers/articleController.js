@@ -263,9 +263,7 @@ export const updateArticle = async (req, res) => {
   }
 };
 
-// @desc    Delete an article
-// @route   DELETE /api/articles/:id
-// @access  Public (Admin panel)
+
 export const deleteArticle = async (req, res) => {
   try {
     const { id } = req.params;
@@ -288,6 +286,57 @@ export const deleteArticle = async (req, res) => {
     return res.status(500).json({
       success: false,
       message: "Internal server error. Failed to delete article.",
+      error: error.message,
+    });
+  }
+};
+
+// @desc    Get all newsletter subscribers
+// @route   GET /api/articles/subscribers
+// @access  Public (Admin panel)
+export const getSubscribers = async (req, res) => {
+  try {
+    const subscribers = await Subscriber.find().sort({ createdAt: -1 });
+    return res.status(200).json({
+      success: true,
+      message: "Subscribers fetched successfully",
+      data: subscribers,
+    });
+  } catch (error) {
+    console.error("Error in getSubscribers controller:", error);
+    return res.status(500).json({
+      success: false,
+      message: "Internal server error. Failed to retrieve subscribers.",
+      error: error.message,
+    });
+  }
+};
+
+// @desc    Delete a subscriber
+// @route   DELETE /api/articles/subscribers/:id
+// @access  Public (Admin panel)
+export const deleteSubscriber = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const deleted = await Subscriber.findByIdAndDelete(id);
+
+    if (!deleted) {
+      return res.status(404).json({
+        success: false,
+        message: "Subscriber not found.",
+      });
+    }
+
+    return res.status(200).json({
+      success: true,
+      message: "Subscriber removed successfully.",
+      data: deleted,
+    });
+  } catch (error) {
+    console.error("Error in deleteSubscriber controller:", error);
+    return res.status(500).json({
+      success: false,
+      message: "Internal server error. Failed to remove subscriber.",
       error: error.message,
     });
   }
