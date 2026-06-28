@@ -11,9 +11,9 @@ import {
     FiArchive,
 } from "react-icons/fi";
 import { useNavigate } from "react-router-dom";
-import CaseStudyStats from "../components/CaseStudyStats";
-import CaseStudyFilters from "../components/CaseStudyFilters";
-import CaseStudyTable from "../components/CaseStudyTable";
+import CaseStudyStats from "../Components/CaseStudyStats";
+import CaseStudyFilters from "../Components/CaseStudyFilters";
+import CaseStudyTable from "../Components/CaseStudyTable";
 
 const CaseStudies = () => {
     const navigate = useNavigate();
