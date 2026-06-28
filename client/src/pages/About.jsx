@@ -542,6 +542,7 @@ const itemVariants = {
                   duration: 0.5,
                   delay: index * 0.15,
                 }}
+                onClick={() => navigate(`/values/${item.title.toLowerCase()}`)}
                 sx={{
                   bgcolor: "#000",
                   borderRadius: "16px",
@@ -549,6 +550,7 @@ const itemVariants = {
                   minHeight: 170,
                   height: "100%",
                   transition: "0.4s",
+                  cursor: "pointer",
                   "&:hover": {
                     transform: "translateY(-8px)",
                     boxShadow: "0 20px 50px rgba(0,0,0,.4)",
