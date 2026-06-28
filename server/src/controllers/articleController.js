@@ -6,24 +6,27 @@ import nodemailer from "nodemailer";
 const transporter = nodemailer.createTransport({
   service: "gmail",
   auth: {
-    user: process.env.EMAIL_USER,
-    pass: process.env.EMAIL_PASS,
+    user: process.env.EMAIL_USER || process.env.EMAIL,
+    pass: process.env.EMAIL_PASS || process.env.EMAIL_PASSWORD,
   },
 });
 
 // Helper function to send email notification to a subscriber
 const sendNewArticleEmail = async (toEmail, article) => {
   try {
-    if (!process.env.EMAIL_USER || !process.env.EMAIL_PASS) {
+    const emailUser = process.env.EMAIL_USER || process.env.EMAIL;
+    const emailPass = process.env.EMAIL_PASS || process.env.EMAIL_PASSWORD;
+
+    if (!emailUser || !emailPass) {
       console.log("Email credentials not set. Skipping subscription notification email.");
       return;
     }
 
-    // Construct the direct page URL (Vite client runs on http://localhost:5175)
-    const articleLink = `http://localhost:5175/article/${article._id}`;
+    // Construct the direct page URL (Vite client runs on http://localhost:5173)
+    const articleLink = `http://localhost:5173/article/${article._id}`;
 
     const mailOptions = {
-      from: process.env.EMAIL_USER,
+      from: emailUser,
       to: toEmail,
       subject: `New Strategic Insight: ${article.title}`,
       html: `

@@ -1,23 +1,23 @@
+import 'dotenv/config';
 import express from 'express';
-import dotenv from 'dotenv';
 import cors from 'cors';
 import connectDB from './config/db.js';
 import adminRoutes from './routes/adminRoutes.js';
 import successStoryRoutes from './routes/successStoryRoutes.js';
 import inquiryRoutes from './routes/inquiryRoutes.js';
 import caseStudyRoutes from "./routes/caseStudyRoutes.js";
-import careerRoutes from "./routes/careerRoutes.js"
 import careerRoutes from "./routes/careerRoutes.js";
 import talentRoutes from "./routes/talentRoutes.js";
 import articleRoutes from "./routes/articleRoutes.js";
-
-import talentRoutes from "./routes/talentRoutes.js"
-import articleRoutes from "./routes/articleRoutes.js"
+import reviewRoutes from "./routes/reviewRoutes.js";
 // Load env vars
-dotenv.config(); // Adjusted for project structure if .env is in server root
+
 
 // Connect to database
 connectDB();
+console.log("CLOUDINARY_CLOUD_NAME:", JSON.stringify(process.env.CLOUDINARY_CLOUD_NAME));
+console.log("CLOUDINARY_API_KEY:", JSON.stringify(process.env.CLOUDINARY_API_KEY));
+console.log("CLOUDINARY_API_SECRET:", JSON.stringify(process.env.CLOUDINARY_API_SECRET));
 
 const app = express();
 
@@ -40,6 +40,7 @@ app.use('/api/career', careerRoutes);
 app.use('/api/talent', talentRoutes);
 
 app.use('/api/articles', articleRoutes);
+app.use('/api/reviews', reviewRoutes);
 
 app.use('/api/inquiries', inquiryRoutes);
 app.use("/api/case-studies", caseStudyRoutes);

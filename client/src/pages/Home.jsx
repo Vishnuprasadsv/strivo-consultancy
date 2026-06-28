@@ -8,6 +8,7 @@ import {
   Rating,
 } from '@mui/material';
 import { motion } from 'framer-motion';
+import { useNavigate } from 'react-router-dom';
 import SEO from '../Components/SEO';
 import homeHero from "../assets/herohome1.jpg";
 import leader1 from "../assets/leader1.jpg";
@@ -37,7 +38,8 @@ import "swiper/css";
 import "swiper/css/pagination";
 import Ready from '../Components/Ready';
 function Home() {
-const testimonials = [
+  const navigate = useNavigate();
+  const testimonials = [
   {
     name: "Sarah Johnson",
     role: "CEO, GlobalTech",

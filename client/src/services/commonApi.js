@@ -23,6 +23,6 @@ export const commonAPI = async (httpRequest, url, reqBody, reqHeader) => {
     const result = await axios(reqConfig);
     return result;
   } catch (err) {
-    return err;
+    return err.response || err;
   }
 };
