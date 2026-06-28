@@ -7,6 +7,9 @@ import successStoryRoutes from './routes/successStoryRoutes.js';
 import inquiryRoutes from './routes/inquiryRoutes.js';
 import caseStudyRoutes from "./routes/caseStudyRoutes.js";
 import careerRoutes from "./routes/careerRoutes.js"
+import careerRoutes from "./routes/careerRoutes.js";
+import talentRoutes from "./routes/talentRoutes.js";
+import articleRoutes from "./routes/articleRoutes.js";
 
 import talentRoutes from "./routes/talentRoutes.js"
 import articleRoutes from "./routes/articleRoutes.js"
