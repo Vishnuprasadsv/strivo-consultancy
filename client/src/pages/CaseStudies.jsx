@@ -165,17 +165,17 @@ Loading...
             >
               {/* Image & Category Badge */}
               {/* Image Header with Container */}
-<div className="relative overflow-hidden aspect-[16/10] bg-[#070b13] flex items-center justify-center">
-  <img
-    src={study.coverImage}
-    alt={study.title}
-    className="w-full h-full object-contain transform group-hover:scale-105 transition-transform duration-700 ease-out"
-  />
-  <div className="absolute inset-0 bg-gradient-to-t from-[#0a0f1d] via-transparent to-transparent opacity-20 pointer-events-none" />
-  <span className="absolute top-4 left-4 bg-blue-500/10 backdrop-blur-md border border-blue-500/20 text-blue-400 text-[10px] font-bold uppercase tracking-wider px-3 py-1 rounded-full shadow-lg z-10">
-    {study.category}
-  </span>
-</div>
+              <div className="relative overflow-hidden aspect-[16/10] bg-[#070b13] flex items-center justify-center">
+                <img
+                  src={study.coverImage}
+                  alt={study.title}
+                  className="w-full h-full object-fill transform group-hover:scale-105 transition-transform duration-700 ease-out"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-[#0a0f1d] via-transparent to-transparent opacity-20 pointer-events-none" />
+                <span className="absolute top-4 left-4 bg-blue-500/10 backdrop-blur-md border border-blue-500/20 text-blue-400 text-[10px] font-bold uppercase tracking-wider px-3 py-1 rounded-full shadow-lg z-10">
+                  {study.category}
+                </span>
+              </div>
 
               {/* Card Body */}
               <div className="p-6 flex flex-col flex-grow">
