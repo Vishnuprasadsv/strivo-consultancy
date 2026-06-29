@@ -18,13 +18,9 @@ const fadeUp = {
 const CaseStudyDetails = () => {
     const { id } = useParams();
 
-const [study, setStudy] = useState(null);
-
-const [loading, setLoading] = useState(true);
-
-const [openFaq, setOpenFaq] = useState(null);
-   
-    
+    const [study, setStudy] = useState(null);
+    const [loading, setLoading] = useState(true);
+    const [openFaq, setOpenFaq] = useState(null);
 
     const faqs = [
         {
@@ -67,66 +63,41 @@ const [openFaq, setOpenFaq] = useState(null);
         },
     };
     
-useEffect(() => {
+    useEffect(() => {
+        fetchStudy();
+    }, [id]);
 
-   fetchStudy();
+    const fetchStudy = async () => {
+        try {
+            const res = await axios.get(
+                `${import.meta.env.VITE_API_BASE_URL}/api/case-studies/${id}`
+            );
+            setStudy(res.data);
+        }
+        catch(err){
+            console.log(err);
+        }
+        finally{
+            setLoading(false);
+        }
+    };
 
-}, [id]);
+    if(loading){
+        return(
+            <div className="h-screen flex items-center justify-center">
+                Loading...
+            </div>
+        )
+    }
 
-const fetchStudy = async () => {
+    if(!study){
+        return(
+            <div className="h-screen flex items-center justify-center">
+                Case Study Not Found
+            </div>
+        )
+    }
 
-   try {
-
-      const res = await axios.get(
-
-         `${import.meta.env.VITE_API_BASE_URL}/api/case-studies/${id}`
-
-      );
-
-      setStudy(res.data);
-
-   }
-
-   catch(err){
-
-      console.log(err);
-
-   }
-
-   finally{
-
-      setLoading(false);
-
-   }
-
-};
-if(loading){
-
-return(
-
-<div className="h-screen flex items-center justify-center">
-
-Loading...
-
-</div>
-
-)
-
-}
-
-if(!study){
-
-return(
-
-<div className="h-screen flex items-center justify-center">
-
-Case Study Not Found
-
-</div>
-
-)
-
-}
     return (
         <div className="bg-transparent text-white min-h-screen">
 
@@ -137,8 +108,6 @@ Case Study Not Found
                 variants={fadeUp}
                 className="max-w-6xl mx-auto px-6 pt-16"
             >
-
-
                 <motion.h1
                     initial={{ opacity: 0, y: 50 }}
                     animate={{ opacity: 1, y: 0 }}
@@ -155,64 +124,42 @@ Case Study Not Found
                     className="flex flex-wrap gap-6 text-gray-400 border-b border-slate-800 pb-8"
                 >
                     <span>{study.author}</span>
-
-<span>
-
-{study.publicationDate ?
-
-new Date(
-
-study.publicationDate
-
-).toLocaleDateString()
-
-: "-"}
-
-</span>
-
-<span>
-
-{study.authorRole}
-
-</span>
-
-<span>
-
-{study.duration}
-
-</span>
+                    <span>
+                        {study.publicationDate ?
+                            new Date(study.publicationDate).toLocaleDateString()
+                            : "-"}
+                    </span>
+                    <span>
+                        {study.authorRole}
+                    </span>
+                    <span>
+                        {study.duration}
+                    </span>
                 </motion.div>
             </motion.section>
 
-          {/* FEATURED IMAGE WITH BLURRED GLOW */}
-<motion.section
-    initial="hidden"
-    whileInView="visible"
-    viewport={{ once: true }}
-    variants={fadeUp}
-    className="max-w-6xl mx-auto px-6 py-12"
->
-    <div className="relative w-full h-[500px] rounded-2xl overflow-hidden bg-slate-950 flex items-center justify-center border border-slate-800/80">
-        
-        {/* Blurred Reflection Background */}
-        <img
-            src={study.coverImage || activeStudy.image}
-            alt=""
-            className="absolute inset-0 w-full h-full object-cover filter blur-3xl opacity-30 scale-110 pointer-events-none"
-        />
+            {/* FEATURED IMAGE WITH OBJECT-FILL */}
+            <motion.section
+                initial="hidden"
+                whileInView="visible"
+                viewport={{ once: true }}
+                variants={fadeUp}
+                className="max-w-6xl mx-auto px-6 py-12"
+            >
+                <div className="relative w-full h-[500px] rounded-2xl overflow-hidden bg-slate-950 border border-slate-800/80">
+                    {/* Sharp Foreground Full Image stretched using object-fill */}
+                    <motion.img
+                        src={study.coverImage}
+                        alt={study.title}
+                        initial={{ opacity: 0, scale: 0.95 }}
+                        whileInView={{ opacity: 1, scale: 1 }}
+                        viewport={{ once: true }}
+                        transition={{ duration: 0.8 }}
+                        className="w-full h-full object-fill"
+                    />
+                </div>
+            </motion.section>
 
-        {/* Sharp Foreground Full Image */}
-        <motion.img
-            src={study.coverImage || activeStudy.image}
-            alt={study.title}
-            initial={{ opacity: 0, scale: 0.95 }}
-            whileInView={{ opacity: 1, scale: 1 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.8 }}
-            className="relative z-10 max-w-full max-h-full object-contain p-4 rounded-xl"
-        />
-    </div>
-</motion.section>
             {/* EXECUTIVE SUMMARY */}
             <motion.section
                 initial="hidden"
@@ -224,12 +171,9 @@ study.publicationDate
                 <h2 className="text-4xl font-bold mb-6">
                     Executive Summary
                 </h2>
-
-               <p>
-
-{study.summary}
-
-</p>
+                <p>
+                    {study.summary}
+                </p>
             </motion.section>
 
             {/* BUSINESS CHALLENGE */}
@@ -243,22 +187,16 @@ study.publicationDate
                 <h2 className="text-4xl font-bold mb-6">
                     Business Challenge
                 </h2>
-
                 <p className="text-gray-300 leading-8 mb-6">
                    {study.challenges}
                 </p>
-
-
                 <motion.div
                     variants={staggerContainer}
                     initial="hidden"
                     animate="visible"
                     className="grid md:grid-cols-2 gap-6"
                 >
-                    
-                    
                 </motion.div>
-
             </motion.section>
 
             {/* STRATEGY & SOLUTION */}
@@ -269,32 +207,27 @@ study.publicationDate
                 variants={fadeUp}
                 className="max-w-6xl mx-auto px-6 py-10"
             >
-                
-<motion.div
-  variants={staggerContainer}
-  initial="hidden"
-  animate="visible"
-  className="space-y-4"
->
-                
+                <motion.div
+                    variants={staggerContainer}
+                    initial="hidden"
+                    animate="visible"
+                    className="space-y-4"
+                >
                     <div className="bg-slate-900 border border-slate-800 rounded-xl p-5">
                         ✓ Enterprise Cloud Migration
                     </div>
-
                     <div className="bg-slate-900 border border-slate-800 rounded-xl p-5">
                         ✓ Process Automation & Workflow Optimization
                     </div>
-
                     <div className="bg-slate-900 border border-slate-800 rounded-xl p-5">
                         ✓ Advanced Analytics & Reporting Infrastructure
                     </div>
-
                     <div className="bg-slate-900 border border-slate-800 rounded-xl p-5">
                         ✓ Omnichannel Customer Experience Strategy
                     </div>
-                
                 </motion.div>
             </motion.section>
+
             {/* RESULTS & IMPACT */}
             <motion.section
                 initial="hidden"
@@ -306,19 +239,15 @@ study.publicationDate
                 <h2 className="text-4xl font-bold mb-8">
                     Results & Impact
                 </h2>
-
-               <p className="text-gray-300 mb-10 leading-8">
-
-{study.results}
-
-</p>
-<motion.div
-  variants={staggerContainer}
-  initial="hidden"
-  animate="visible"
-  className="grid md:grid-cols-2 lg:grid-cols-4 gap-6"
->
-                
+                <p className="text-gray-300 mb-10 leading-8">
+                    {study.results}
+                </p>
+                <motion.div
+                    variants={staggerContainer}
+                    initial="hidden"
+                    animate="visible"
+                    className="grid md:grid-cols-2 lg:grid-cols-4 gap-6"
+                >
                     <div className="bg-slate-900 border border-slate-800 rounded-xl p-8 text-center">
                         <h3 className="text-5xl font-bold text-blue-500 mb-3">
                             35%
@@ -327,7 +256,6 @@ study.publicationDate
                             Revenue Growth
                         </p>
                     </div>
-
                     <div className="bg-slate-900 border border-slate-800 rounded-xl p-8 text-center">
                         <h3 className="text-5xl font-bold text-blue-500 mb-3">
                             28%
@@ -336,7 +264,6 @@ study.publicationDate
                             Cost Reduction
                         </p>
                     </div>
-
                     <div className="bg-slate-900 border border-slate-800 rounded-xl p-8 text-center">
                         <h3 className="text-5xl font-bold text-blue-500 mb-3">
                             42%
@@ -345,7 +272,6 @@ study.publicationDate
                             Productivity Increase
                         </p>
                     </div>
-
                     <div className="bg-slate-900 border border-slate-800 rounded-xl p-8 text-center">
                         <h3 className="text-5xl font-bold text-blue-500 mb-3">
                             90%
@@ -354,16 +280,8 @@ study.publicationDate
                             Customer Satisfaction
                         </p>
                     </div>
-               
                 </motion.div>
             </motion.section>
-
-
-
-
-
-
-
 
             {/* AUTHOR INFORMATION */}
             <motion.section
@@ -376,13 +294,12 @@ study.publicationDate
                 <h2 className="text-4xl font-bold mb-8">
                     About the Author
                 </h2>
-<motion.div
-  variants={staggerContainer}
-  initial="hidden"
-  animate="visible"
-  className="bg-slate-900 border border-slate-800 rounded-2xl p-8 grid md:grid-cols-[200px_1fr] gap-8 items-center"
->
-                
+                <motion.div
+                    variants={staggerContainer}
+                    initial="hidden"
+                    animate="visible"
+                    className="bg-slate-900 border border-slate-800 rounded-2xl p-8 grid md:grid-cols-[200px_1fr] gap-8 items-center"
+                >
                     <div className="flex justify-center">
                         <img
                             src={study.authorImage}
@@ -390,7 +307,6 @@ study.publicationDate
                             className="w-40 h-40 rounded-full object-cover border-4 border-blue-500"
                         />
                     </div>
-
                     <div>
                         <a
                             href={study.authorWebsite}
@@ -400,37 +316,29 @@ study.publicationDate
                         >
                            {study.author}
                         </a>
-
                         <p className="text-blue-500 mt-2">
                             {study.authorWebsite}
                         </p>
-
                         <p className="text-gray-400 mt-4 leading-7">
                             {study.authorRole}
                         </p>
-
                         <div className="flex flex-wrap gap-3 mt-6">
                             <span className="px-4 py-2 bg-slate-800 rounded-full text-sm">
                                 Strategy
                             </span>
-
                             <span className="px-4 py-2 bg-slate-800 rounded-full text-sm">
                                 Digital Transformation
                             </span>
-
                             <span className="px-4 py-2 bg-slate-800 rounded-full text-sm">
                                 Operations
                             </span>
-
                             <span className="px-4 py-2 bg-slate-800 rounded-full text-sm">
                                 Leadership
                             </span>
                         </div>
                     </div>
-                
                 </motion.div>
             </motion.section>
-
 
         </div>
     );
