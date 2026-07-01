@@ -154,7 +154,7 @@ const Insight = () => {
   const featuredArticle = articles.length > 0 ? (articles.find(a => a.id === 1) || articles[0]) : null;
 
   return (
-    <div className="bg-transparent text-white min-h-screen pt-12 pb-24 font-sans">
+    <div className="bg-sub-bg text-white min-h-screen pt-12 pb-24 font-sans">
       <div className="max-w-7xl mx-auto px-6 md:px-12 space-y-24">
 
         {/* Section 1: Hero */}
@@ -164,8 +164,8 @@ const Insight = () => {
           variants={fadeUpVariants}
           className="max-w-3xl"
         >
-          <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold leading-tight mb-6">Insights & Resources</h1>
-          <p className="text-gray-400 text-lg leading-relaxed max-w-2xl">
+          <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold leading-tight mb-6 text-pure-black">Insights & Resources</h1>
+          <p className="text-black text-lg leading-relaxed max-w-2xl">
             Explore our curated collection of industry trends, strategic guides, and technical deep-dives to help you navigate the future of digital transformation and enterprise growth.
           </p>
         </motion.section>
@@ -223,7 +223,7 @@ const Insight = () => {
           variants={fadeUpVariants}
         >
           <div className="flex flex-col md:flex-row md:items-end justify-between mb-8 gap-6">
-            <h2 className="text-2xl font-bold text-white">All Articles</h2>
+            <h2 className="text-2xl font-bold text-pure-black">All Articles</h2>
             <div className="flex flex-wrap gap-3">
               {categories.map((cat) => (
                 <button
@@ -309,8 +309,8 @@ const Insight = () => {
                     disabled={currentPage === 1}
                     onClick={() => setCurrentPage(prev => Math.max(1, prev - 1))}
                     className={`px-4 py-2 rounded-xl text-sm font-semibold border transition-all cursor-pointer ${currentPage === 1
-                      ? 'border-white/10 text-white/30 bg-white/5 cursor-not-allowed'
-                      : 'border-white/20 text-white hover:bg-white/10 hover:border-white/30'
+                      ? 'border-white/10 text-pure-black bg-gray-200/5 cursor-not-allowed'
+                      : 'border-white/20 text-pure-black hover:bg-gray-200/10 hover:border-white/30'
                       }`}
                   >
                     Previous
@@ -324,8 +324,8 @@ const Insight = () => {
                           key={pageNum}
                           onClick={() => setCurrentPage(pageNum)}
                           className={`w-10 h-10 rounded-xl text-sm font-bold border transition-all cursor-pointer ${currentPage === pageNum
-                            ? 'bg-blue-600 border-blue-600 text-white shadow-lg shadow-blue-500/20'
-                            : 'border-white/10 bg-white/5 text-white/70 hover:bg-white/10 hover:text-white'
+                            ? 'bg-blue-400 border-blue-600 text-pure-black shadow-lg shadow-blue-500/20'
+                            : 'border-black/10 bg-gray-200/80 text-pure-black hover:bg-gray/10 '
                             }`}
                         >
                           {pageNum}
@@ -338,8 +338,8 @@ const Insight = () => {
                     disabled={currentPage === totalPages}
                     onClick={() => setCurrentPage(prev => Math.min(totalPages, prev + 1))}
                     className={`px-4 py-2 rounded-xl text-sm font-semibold border transition-all cursor-pointer ${currentPage === totalPages
-                      ? 'border-white/10 text-white/30 bg-white/5 cursor-not-allowed'
-                      : 'border-white/20 text-white hover:bg-white/10 hover:border-white/30'
+                      ? 'border-white/10 text-pure-black bg-white/5 cursor-not-allowed'
+                      : 'border-white/20 text-pure-black hover:bg-white/10 hover:border-white/30'
                       }`}
                   >
                     Next

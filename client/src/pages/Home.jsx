@@ -645,24 +645,24 @@ const stats = [
                 sx={{
                   px: 3.5,
                   py: 1.2,
-                  borderRadius: "30px",
+                  borderRadius: "3px",
                   textTransform: "none",
                   fontWeight: 700,
                   fontSize: "0.88rem",
-                  background: "linear-gradient(135deg, #1d4ed8, #2563eb)",
+                  background: "#4764FF",
                   display: "inline-flex",
                   alignItems: "center",
                   gap: 1,
-                  boxShadow: "0 8px 20px rgba(37,99,235,.3)",
+                  boxShadow: "0 8px 20px rgba(71, 100, 255, 0.3)",
                   "&:hover": {
-                    background: "linear-gradient(135deg, #1e40af, #1d4ed8)",
-                    boxShadow: "0 12px 25px rgba(37,99,235,.4)",
+                    background: "#3b55d9",
+                    boxShadow: "0 12px 25px rgba(71, 100, 255, 0.4)",
                   },
                   transition: "all 0.3s ease",
                   width: { xs: "100%", sm: "auto" }
                 }}
               >
-                Get Started
+                Contact Us
                 <ArrowForward sx={{ fontSize: "1rem" }} />
               </Button>
             </motion.div>
@@ -674,7 +674,7 @@ const stats = [
                 sx={{
                   px: 3.5,
                   py: 1.2,
-                  borderRadius: "30px",
+                  borderRadius: "3px",
                   textTransform: "none",
                   fontWeight: 700,
                   fontSize: "0.88rem",
@@ -842,7 +842,7 @@ const stats = [
 <Box
   id="trusted-by-section"
   sx={{
-    backgroundColor: "#ffffff",
+    backgroundColor: "var(--color-main-bg)",
     py: { xs: 6, md: 8 },
   }}
 >
@@ -858,13 +858,13 @@ const stats = [
       }}
     >
       <Typography
+        variant="h4"
         sx={{
           textAlign: "center",
-          color: "#475569",
+          color: "var(--color-pure-black)",
           letterSpacing: "3px",
           fontWeight: 600,
           mb: 6,
-          fontSize: "0.8rem",
         }}
       >
         TRUSTED BY INDUSTRY LEADERS
@@ -1024,7 +1024,7 @@ const stats = [
     {/*  third section */}
     <Box
   sx={{
-    backgroundColor: "#000000",
+    backgroundColor: "var(--color-sub-bg)",
     py: { xs: 6, md: 9 },
   }}
 >
@@ -1047,7 +1047,7 @@ const stats = [
     >
       <Typography
         sx={{
-          color: "#fff",
+          color: "var(--color-pure-black)",
           textAlign: "center",
           fontWeight: 700,
           mb: 2,
@@ -1062,7 +1062,7 @@ const stats = [
 
       <Typography
         sx={{
-          color: "#94a3b8",
+          color: "var(--color-pure-black)",
           textAlign: "center",
           maxWidth: "700px",
           mx: "auto",
@@ -1112,8 +1112,9 @@ const stats = [
               sx={{
                 position: "relative",
                 background:
-                  "linear-gradient(145deg,#081224,#0f172a)",
-                borderRadius: "24px",
+                  // "linear-gradient(145deg,#081224,#0f172a)",
+                  "var(--color-main-bg)",
+                borderRadius: "3px",
                 p: 4,
                 minHeight: "280px",
                 overflow: "hidden",
@@ -1177,7 +1178,7 @@ const stats = [
 
               <Typography
                 sx={{
-                  color: "#fff",
+                  color: "var(--color-pure-black)",
                   fontWeight: 700,
                   mb: 2,
                   fontSize: "1.25rem",
@@ -1190,7 +1191,7 @@ const stats = [
 
               <Typography
                 sx={{
-                  color: "#94a3b8",
+                  color: "var(--color-pure-black)",
                   lineHeight: 1.8,
                   fontSize: "0.95rem",
                 }}
@@ -1206,7 +1207,7 @@ const stats = [
 </Box>
 <Box
   sx={{
-    backgroundColor: "#ffffff",
+    backgroundColor: "var(--color-main-bg)",
     py: { xs: 6, md: 10 },
     position: "relative",
     overflow: "hidden",
@@ -1256,11 +1257,11 @@ const stats = [
         <Typography
           sx={{
             color: "#2563eb",
-            fontWeight: 600,
-            letterSpacing: "3px",
+            fontWeight: 900,
+            letterSpacing: "4px",
             textTransform: "uppercase",
             mb: 2,
-            fontSize: "0.75rem",
+            fontSize: "18px",
           }}
         >
           Why Clients Trust Us
@@ -1348,7 +1349,7 @@ const stats = [
             <Box key={index}>
               <Typography
                 sx={{
-                  color: "#0f172a",
+                  color: "var(--color-btn-bg)",
                   fontWeight: 800,
                   fontSize: {
                     xs: "1.8rem",
@@ -1361,7 +1362,9 @@ const stats = [
 
               <Typography
                 sx={{
-                  color: "#475569",
+                  color: "var(--color-pure-black)",
+                  fontWeight: 700,
+                  letterSpacing:"2px"
                 }}
               >
                 {item.label}
@@ -1435,7 +1438,7 @@ const stats = [
 {/* 4 section */}
 <Box
   sx={{
-    backgroundColor: "#000000",
+    backgroundColor: "var(--color-sub-bg)",
     py: { xs: 6, md: 9 },
     overflow: "hidden",
     position: "relative"
@@ -1451,10 +1454,10 @@ const stats = [
     >
       <Typography
         sx={{
-          color: "#3b82f6",
+          color: "var(--color-pure-black)",
           textAlign: "center",
-          fontWeight: 700,
-          fontSize: "0.75rem",
+          fontWeight: 900,
+          fontSize: "0.95rem",
           letterSpacing: "3px",
           textTransform: "uppercase",
           mb: 1.5,
@@ -1465,7 +1468,7 @@ const stats = [
 
       <Typography
         sx={{
-          color: "#ffffff",
+          color: "var(--color-pure-black)",
           textAlign: "center",
           fontWeight: 900,
           fontSize: { xs: "1.8rem", md: "2.4rem" },
@@ -1478,13 +1481,13 @@ const stats = [
 
       <Typography
         sx={{
-          color: "#cbd5e1",
+          color: "var(--color-pure-black)",
           textAlign: "center",
           maxWidth: "550px",
           mx: "auto",
           mb: 8,
           lineHeight: 1.7,
-          fontSize: "0.9rem"
+          fontSize: "0.98rem"
         }}
       >
         See how we've helped leading organizations overcome challenges, drive growth, and achieve measurable results.
@@ -1511,7 +1514,7 @@ const stats = [
             width: 44,
             height: 44,
             borderRadius: "50%",
-            background: "rgba(10, 10, 10, 0.6)",
+            background: "var(--color-btn-bg)",
             border: "1px solid rgba(255, 255, 255, 0.15)",
             display: "flex",
             alignItems: "center",
@@ -1541,7 +1544,7 @@ const stats = [
             width: 44,
             height: 44,
             borderRadius: "50%",
-            background: "rgba(10, 10, 10, 0.6)",
+            background: "var(--color-btn-bg)",
             border: "1px solid rgba(255, 255, 255, 0.15)",
             display: "flex",
             alignItems: "center",
@@ -1593,6 +1596,7 @@ const stats = [
           }}
           style={{
             paddingBottom: "50px",
+            paddingTop:"30px"
           }}
         >
           {successStories.map((item, index) => (
@@ -1605,21 +1609,26 @@ const stats = [
                     flexDirection: "column",
                     justifyContent: "space-between",
                     background: isActive
-                      ? "linear-gradient(145deg, #091326, #0b111e)"
-                      : "linear-gradient(145deg, #050912, #070b14)",
+                      ? "linear-gradient(145deg, #EDF0FF, #fcfcfc)"
+                      : "linear-gradient(145deg, #fcfcfc, #EDF0FF)",
                     border: isActive
                       ? "1.5px solid #2563eb"
-                      : "1px solid rgba(255, 255, 255, 0.08)",
-                    borderRadius: "16px",
+                      : "1px solid rgba(0, 0, 0, 0.18)",
+                    borderRadius: "3px",
                     p: { xs: 3, md: 4 },
                     position: "relative",
                     transition: "all 0.4s ease",
                     opacity: isActive ? 1 : 0.6,
-                    transform: isActive ? "scale(1.02)" : "scale(0.96)",
+                    transform: isActive ? "scale(1.12)" : "scale(0.96)",
                     boxShadow: isActive
                       ? "0 15px 40px rgba(37, 99, 235, 0.15)"
                       : "none",
-                    textAlign: "left"
+                    textAlign: "left",
+                    cursor: "pointer",
+                    transition: "all 0.3s ease",
+                    "&:hover": {
+                      transform: "scale(1.05)",
+                    }
                   }}
                 >
                   <Box>
@@ -1641,7 +1650,7 @@ const stats = [
                     {/* Review Text */}
                     <Typography
                       sx={{
-                        color: "#cbd5e1",
+                        color: "var(--color-pure-black)",
                         fontSize: "0.95rem",
                         lineHeight: 1.75,
                         mb: 4,
@@ -1670,7 +1679,7 @@ const stats = [
                     <Box sx={{ minWidth: 0, flex: 1 }}>
                       <Typography
                         sx={{
-                          color: "#ffffff",
+                          color: "var(--color-pure-black)",
                           fontWeight: 700,
                           fontSize: "0.95rem",
                           lineHeight: 1.2,
@@ -1682,7 +1691,7 @@ const stats = [
                       </Typography>
                       <Typography
                         sx={{
-                          color: "#64748b",
+                          color: "var(--color-pure-black)",
                           fontSize: "0.78rem",
                           mt: 0.3,
                           mb: 0.5,
@@ -1749,10 +1758,10 @@ const stats = [
     >
       <Typography
         sx={{
-          color: "#cbd5e1",
-          fontSize: "0.75rem",
-          fontWeight: 700,
-          letterSpacing: "2.5px",
+          color: "var(--color-pure-black)",
+          fontSize: "0.85rem",
+          fontWeight: 900,
+          letterSpacing: "1.5px",
           textTransform: "uppercase",
           mb: 4
         }}
@@ -1776,11 +1785,13 @@ const stats = [
               display: "flex",
               alignItems: "center",
               gap: 1,
-              color: "#6b7280",
+              color: "var(--color-pure-black)",
               transition: "all 0.3s ease",
               cursor: "default",
               "&:hover": {
-                color: "#ffffff"
+                color: "#2200ffcc",
+                transform: "scale(1.05)",
+                cursor:"pointer"
               }
             }}
           >

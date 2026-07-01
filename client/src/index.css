@@ -1,5 +1,56 @@
 @import "tailwindcss";
 
+@theme {
+  --font-poppins: "Poppins", sans-serif;
+  --color-black: #131111;
+  /* white */
+  --color-white: #FCFCFC;
+  --color-blue: #4764FF;
+  --color-pure-black: #000000;
+  --color-btn-bg: #4764FF;
+  /* white */
+  --color-main-bg: #FCFCFC;
+  /* off white */
+  --color-sub-bg: #EDF0FF;
+  --color-border-color: #EDEDED;
+}
+
+@layer base {
+  body {
+    font-family: var(--font-poppins);
+    background-color: var(--color-main-bg);
+    color: var(--color-black);
+  }
+  
+  h1 {
+    /* main headings */
+    font-family: var(--font-poppins);
+  }
+  
+  h2 {
+    /* sub headings */
+    font-family: var(--font-poppins);
+  }
+  
+  h3 {
+    /* heading */
+    font-family: var(--font-poppins);
+  }
+}
+
+@layer components {
+.btn {
+    background-color: #4764FF;
+    color: #FFFFFF;
+    border-radius: 3px;
+  }
+
+  .card {
+    border-radius: 3px;
+    border-color: var(--color-border-color);
+  }
+}
+
 /* Hide scrollbar for Chrome, Safari and Opera */
 ::-webkit-scrollbar {
   display: none;

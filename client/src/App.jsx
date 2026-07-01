@@ -1,5 +1,6 @@
 import React, { Suspense, lazy, useEffect } from 'react';
 import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom';
+import { ThemeProvider, createTheme } from '@mui/material/styles';
 import { Toaster } from 'sonner';
 import Navbar from './Components/Navbar';
 import AdminNavbar from './Components/AdminNavbar';
@@ -41,6 +42,24 @@ const CaseStudiesAdmin = lazy(() => import('./Admin/CaseStudies'));
 const CreateCaseStudy = lazy(() => import('./Admin/CreateCaseStudy'));
 const EditCaseStudy = lazy(() => import('./Admin/EditCaseStudy'));
 const Profile = lazy(() => import('./Admin/Profile'));
+const clientTheme = createTheme({
+  typography: {
+    fontFamily: 'var(--font-poppins)',
+  },
+});
+
+const adminTheme = createTheme();
+
+const DynamicThemeProvider = ({ children }) => {
+  const { pathname } = useLocation();
+  const isAdmin = pathname.startsWith('/admin');
+  return (
+    <ThemeProvider theme={isAdmin ? adminTheme : clientTheme}>
+      {children}
+    </ThemeProvider>
+  );
+};
+
 // ScrollToTop component ensures navigating to a new route scrolls to the top smoothly
 const ScrollToTop = () => {
   const { pathname } = useLocation();
@@ -79,9 +98,10 @@ const PageLoader = () => (
 const App = () => {
   return (
     <BrowserRouter>
-      <ScrollToTop />
-      <Toaster position="top-right" theme="dark" />
-      <div className="min-h-screen bg-transparent text-white flex flex-col relative z-0">
+      <DynamicThemeProvider>
+        <ScrollToTop />
+        <Toaster position="top-right" theme="dark" />
+        <div className="min-h-screen bg-transparent text-white flex flex-col relative z-0">
         {/* Global Ferrofluid Background */}
         <div className="fixed inset-0 z-[-1] bg-black">
           <Ferrofluid
@@ -157,7 +177,8 @@ const App = () => {
         </main>
 
         <ConditionalFooter />
-      </div>
+        </div>
+      </DynamicThemeProvider>
     </BrowserRouter>
   );
 };

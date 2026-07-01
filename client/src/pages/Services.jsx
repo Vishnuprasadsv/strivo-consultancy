@@ -91,64 +91,74 @@ const Services = () => {
       </motion.section>
 
       {/* Service Cards */}
-      <motion.section
-        initial="hidden"
-        whileInView="visible"
-        viewport={{ once: true }}
-        variants={fadeUpVariants}
-        className="max-w-7xl mx-auto px-6 pb-16"
-      >
-        <h2 className="text-4xl font-bold mb-3">
-          Our Consulting Services
-        </h2>
+      <div style={{ backgroundColor: "var(--color-main-bg)", padding: "4rem 0" }}>
+        <motion.section
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true }}
+          variants={fadeUpVariants}
+          className="max-w-7xl mx-auto px-6"
+        >
+          <h2 className="text-4xl font-bold mb-3" style={{ color: "var(--color-pure-black)" }}>
+            Our Consulting Services
+          </h2>
 
-        <p className="text-gray-400 mb-10">
-          We provide comprehensive consulting across strategy,
-          operations, digital transformation, and change management.
-        </p>
+          <p className="mb-10" style={{ color: "var(--color-pure-black)" }}>
+            We provide comprehensive consulting across strategy,
+            operations, digital transformation, and change management.
+          </p>
 
-        <div className="grid md:grid-cols-2 gap-6">
-          {services.map((service, index) => (
-            <motion.div
-              key={index}
-              initial={{ opacity: 0, y: 40 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{
-                duration: 0.5,
-                delay: index * 0.15,
-              }}
-             onClick={() => {
-  document
-    .getElementById(`service-${index}`)
-    ?.scrollIntoView({
-      behavior: "smooth",
-      block: "start",
-    });
-}}
-              className="bg-[#111] border border-gray-800 rounded-xl p-6 hover:border-blue-500 hover:-translate-y-2 cursor-pointer transition-all duration-300"
-            >
-              <div className="text-4xl">{service.icon}</div>
+          <div className="grid md:grid-cols-2 gap-6">
+            {services.map((service, index) => (
+              <motion.div
+                key={index}
+                initial={{ opacity: 0, y: 40 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{
+                  duration: 0.5,
+                  delay: index * 0.15,
+                }}
+                onClick={() => {
+                  document
+                    .getElementById(`service-${index}`)
+                    ?.scrollIntoView({
+                      behavior: "smooth",
+                      block: "start",
+                    });
+                }}
+                style={{ backgroundColor: "var(--color-sub-bg)" }}
+                className="border border-gray-200 rounded-xl p-6 hover:border-blue-500 hover:-translate-y-2 cursor-pointer transition-all duration-300"
+              >
+                <div className="text-4xl">{service.icon}</div>
 
-              <h3 className="text-2xl font-semibold mt-4 mb-3">
-                {service.title}
-              </h3>
+                <h3 className="text-2xl font-semibold mt-4 mb-3" style={{ color: "var(--color-pure-black)" }}>
+                  {service.title}
+                </h3>
 
-              <p className="text-gray-400">
-                {service.description}
-              </p>
-            </motion.div>
-          ))}
-        </div>
-      </motion.section>
+                <p style={{ color: "var(--color-pure-black)" }}>
+                  {service.description}
+                </p>
+              </motion.div>
+            ))}
+          </div>
+        </motion.section>
+      </div>
 
       {/* Detailed Service Sections */}
-      <section className="max-w-7xl mx-auto px-6 pb-16">
+      <div className="h-100vh w-100vw bg-sub-bg">
+      <section className="max-w-[89%] mx-auto px-6 pt-16 pb-16">
         {services.map((service, index) => (
           <motion.div
             key={index}
             id={`service-${index}`}
-            style={{ scrollMarginTop: "100px" }}
+            style={{ 
+              scrollMarginTop: "100px", 
+              backgroundColor: "var(--color-main-bg)", 
+              color: "var(--color-pure-black)",
+              border: "1px solid rgba(5, 0, 0, 0.135)",
+            borderRadius: "8px",
+            }}
             initial={{ opacity: 0, y: 60 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, amount: 0.2 }}
@@ -157,18 +167,18 @@ const Services = () => {
               delay: index * 0.15,
             }}
             ref={(el) => (detailRefs.current[index] = el)}
-            className="grid lg:grid-cols-2 gap-8 border border-gray-800 rounded-xl p-8 mb-8"
+            className="grid lg:grid-cols-2 gap-8 border rounded-xl p-8 mb-8"
           >
             <div>
               <h3 className="text-3xl font-bold mb-4">
                 {service.title}
               </h3>
 
-              <p className="text-gray-400 mb-6">
+              <p className="mb-6">
                 {service.description}
               </p>
 
-              <ul className="space-y-3 text-gray-300">
+              <ul className="space-y-3">
                 <li>✔ Comprehensive assessment and diagnostics</li>
                 <li>✔ Customized implementation roadmap</li>
                 <li>✔ Ongoing support and optimization</li>
@@ -177,13 +187,16 @@ const Services = () => {
 
               <Link
                 to={service.link}
-                className="inline-block mt-6 px-4 py-2 border border-blue-500 text-blue-500 rounded-md hover:bg-blue-500 hover:text-white transition duration-300"
+                className="btn h-[40px] w-[140px] flex items-center justify-center inline-block mt-6 pt-2 pl-7"
               >
                 Learn More
               </Link>
             </div>
 
-            <div className="bg-white rounded-xl flex flex-col items-center justify-center h-[280px]">
+            <div 
+              style={{ borderRadius: "8px" }}
+              className="bg-white flex flex-col items-center justify-center h-[280px]"
+            >
               <div className="text-6xl">{service.icon}</div>
 
               <h4 className="text-black text-xl mt-4 font-semibold">
@@ -193,6 +206,7 @@ const Services = () => {
           </motion.div>
         ))}
       </section>
+      </div>
     </div>
   );
 };

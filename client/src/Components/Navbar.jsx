@@ -88,7 +88,7 @@ const Navbar = () => {
                 {activeTab === link.name && (
                   <motion.div
                     layoutId="active-underline"
-                    className="absolute left-1 right-1 bottom-0 h-[10px] border-b-[3px] border-blue-600 rounded-[12px]"
+                    className="absolute left-1 right-1 bottom-0 h-[10px] border-b-[3px] border-blue-600 rounded-[3px]"
                     transition={{ type: 'spring', stiffness: 350, damping: 30 }}
                     initial={false}
                   />
@@ -100,7 +100,7 @@ const Navbar = () => {
           <motion.div variants={itemVariants} className="flex items-center gap-4">
             <Link 
               to="/contact" 
-              className={`cursor-pointer px-5 py-2 rounded-full transition-colors text-sm font-medium shadow-[0_0_15px_rgba(37,99,235,0.3)] hover:shadow-[0_0_20px_rgba(37,99,235,0.5)] ${
+              className={`cursor-pointer px-5 py-2 rounded-[3px] transition-colors text-sm font-medium shadow-[0_0_15px_rgba(37,99,235,0.3)] hover:shadow-[0_0_20px_rgba(37,99,235,0.5)] ${
                 isContactPage ? 'bg-blue-600 text-white' : 'bg-black border border-blue-600 text-white hover:bg-blue-900/30'
               }`}
             >

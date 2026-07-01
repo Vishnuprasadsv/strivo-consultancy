@@ -98,7 +98,7 @@ Loading...
 
 }
   return (
-    <div className="bg-transparent text-white min-h-screen">
+    <div className="bg-main-bg text-white min-h-screen">
       {/* Hero Section */}
       <motion.section
         initial="hidden"
@@ -106,11 +106,11 @@ Loading...
         variants={fadeUpVariants}
         className="max-w-7xl mx-auto px-6 py-20 text-center"
       >
-        <h1 className="text-5xl font-bold mb-6">
+        <h1 className="text-5xl font-bold mb-6 text-pure-black">
           Proven Results for Industry Leaders
         </h1>
 
-        <p className="text-gray-400 max-w-3xl mx-auto mb-10">
+        <p className="text-black max-w-3xl mx-auto mb-10">
           Explore how we partner with forward-thinking organizations
           to drive transformation, optimize operations, and achieve
           sustainable growth.
@@ -142,7 +142,7 @@ Loading...
         variants={fadeUpVariants}
         className="max-w-7xl mx-auto px-6 pb-8"
       >
-        <p className="text-gray-400">
+        <p className="text-black">
           Showing {filteredStudies.length} case studies
         </p>
       </motion.div>
@@ -159,7 +159,7 @@ Loading...
                 delay: index * 0.1,
                 ease: "easeOut",
               }}
-              className="group relative border border-slate-800/80 rounded-2xl overflow-hidden bg-[#0d131f]/40 backdrop-blur-md
+              className="group relative border border-slate-800/80 rounded-2xl overflow-hidden bg-[#0d131f] backdrop-blur-md
                          hover:border-blue-500/50 hover:-translate-y-2 hover:shadow-[0_20px_40px_rgba(59,130,246,0.08)]
                          transition-all duration-500 flex flex-col h-full"
             >
@@ -231,14 +231,15 @@ Loading...
         whileInView="visible"
         viewport={{ once: true }}
         variants={fadeUpVariants}
-        className="border-t border-slate-800"
+        
       >
+        <div className="w-[100vw] bg-sub-bg overflow-hidden">
         <div className="max-w-7xl mx-auto px-6 py-20 text-center">
-          <h2 className="text-4xl font-bold mb-4">
+          <h2 className="text-4xl font-bold mb-4 text-pure-black">
             Global Impact
           </h2>
 
-          <p className="text-gray-400 mb-14">
+          <p className="text-black mb-14">
             Quantifiable results delivered across industries.
           </p>
 
@@ -263,12 +264,13 @@ Loading...
                   {item.value}
                 </h3>
 
-                <p className="text-gray-400 mt-2">
+                <p className="text-black mt-2">
                   {item.label}
                 </p>
               </motion.div>
             ))}
           </div>
+        </div>
         </div>
       </motion.section>
     </div>

@@ -21,7 +21,7 @@ function Ready() {
     <Box sx={{ mt: 6, mb: 2 }}>
       <Box
         sx={{
-          background: "linear-gradient(150deg, #ffffff 0%, #f8fafc 100%)",
+          background: "var(--color-main-bg)",
           border: "1px solid rgba(0, 0, 0, 0.06)",
           borderRadius: "24px",
           p: { xs: 3, md: 4.5 },

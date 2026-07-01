@@ -58,22 +58,22 @@ function Aboutus() {
 
 const featureData = [
   {
-    icon: <ShieldIcon sx={{ color: "#fff", fontSize: 20 }} />,
+    icon: <ShieldIcon sx={{ color: "var(--color-blue)", fontSize: 20 }} />,
     title: "Integrity",
     desc: "Uncompromising honesty in our analysis and advice.",
   },
   {
-    icon: <LightbulbIcon sx={{ color: "#fff", fontSize: 20 }} />,
+    icon: <LightbulbIcon sx={{ color: "var(--color-blue)", fontSize: 20 }} />,
     title: "Innovation",
     desc: "Challenging the status quo to find superior solutions.",
   },
   {
-    icon: <TrendingUpIcon sx={{ color: "#fff", fontSize: 20 }} />,
+    icon: <TrendingUpIcon sx={{ color: "var(--color-blue)", fontSize: 20 }} />,
     title: "Impact",
     desc: "Measuring success exclusively by client outcomes.",
   },
   {
-    icon: <GroupIcon sx={{ color: "#fff", fontSize: 20 }} />,
+    icon: <GroupIcon sx={{ color: "var(--color-blue)", fontSize: 20 }} />,
     title: "Collaboration",
     desc: "Partnering deeply with clients to ensure lasting capability.",
   },
@@ -233,7 +233,7 @@ const itemVariants = {
     {/* second section  */}
      <Box
   sx={{
-    backgroundColor: "transparent",
+    backgroundColor: "var(--color-main-bg)",
     py: { xs: 8, md: 12 },
   }}
 >
@@ -267,7 +267,7 @@ const itemVariants = {
             md: "500px",
           },
           objectFit: "cover",
-          borderRadius: "24px",
+          borderRadius: "8px",
           boxShadow: "0 20px 50px rgba(0,0,0,0.5)",
           transition: "all 0.5s ease",
 
@@ -299,12 +299,12 @@ const itemVariants = {
       >
         <Typography
           sx={{
-            color: "#4da3ff",
-            fontWeight: 700,
+            color: "var(--color-pure-black)",
+            fontWeight: 900,
             letterSpacing: "3px",
             mb: 2,
             textTransform: "uppercase",
-            fontSize: "0.75rem",
+            fontSize: "0.95rem",
           }}
         >
           Our Story
@@ -313,7 +313,7 @@ const itemVariants = {
         <Typography
           sx={{
             fontWeight: 700,
-            color: "#fff",
+            color: "var(--color-pure-black)",
             mb: 4,
             lineHeight: 1.2,
             fontSize: {
@@ -328,7 +328,7 @@ const itemVariants = {
 
         <Typography
           sx={{
-            color: "#cbd5e1",
+            color: "var(--color-pure-black)",
             mb: 3,
             lineHeight: 1.8,
             fontSize: {
@@ -345,7 +345,7 @@ const itemVariants = {
 
         <Typography
           sx={{
-            color: "#cbd5e1",
+            color: "var(--color-pure-black)",
             lineHeight: 1.8,
             fontSize: {
               xs: "0.9rem",
@@ -393,7 +393,7 @@ const itemVariants = {
               transition={{ duration: 0.8 }}
               onClick={() => navigate("/mission")}
               sx={{
-                bgcolor: "#000",
+                bgcolor: "var(--color-sub-bg)",
                 borderRadius: "18px",
                 p: { xs: 3, md: 4 },
                 minHeight: 220,
@@ -410,6 +410,7 @@ const itemVariants = {
                 sx={{
                   width: 42,
                   height: 42,
+                  border:"2px solid white",
                   borderRadius: "50%",
                   bgcolor: "rgba(255,255,255,0.12)",
                   display: "flex",
@@ -418,12 +419,12 @@ const itemVariants = {
                   mb: 3,
                 }}
               >
-                <RocketLaunchIcon sx={{ color: "#fff" }} />
+                <RocketLaunchIcon sx={{ color: "var(--color-blue)" }} />
               </Box>
 
               <Typography
                 sx={{
-                  color: "#fff",
+                  color: "var(--color-pure-black)",
                   fontWeight: 700,
                   fontSize: {
                     xs: "1.5rem",
@@ -437,7 +438,7 @@ const itemVariants = {
 
               <Typography
                 sx={{
-                  color: "#cbd5e1",
+                  color: "var(--color-pure-black)",
                   fontSize: {
                     xs: "0.85rem",
                     md: "0.92rem",
@@ -463,7 +464,7 @@ const itemVariants = {
               transition={{ duration: 0.8 }}
               onClick={() => navigate("/vision")}
               sx={{
-                bgcolor: "#2F6BFF",
+                bgcolor: "var(--color-sub-bg)",
                 borderRadius: "18px",
                 p: { xs: 3, md: 4 },
                 minHeight: 220,
@@ -480,6 +481,7 @@ const itemVariants = {
                 sx={{
                   width: 42,
                   height: 42,
+                  border:"2px solid white",
                   borderRadius: "50%",
                   bgcolor: "rgba(255,255,255,0.15)",
                   display: "flex",
@@ -488,12 +490,12 @@ const itemVariants = {
                   mb: 3,
                 }}
               >
-                <VisibilityIcon sx={{ color: "#fff" }} />
+                <VisibilityIcon sx={{ color: "var(--color-blue)" }} />
               </Box>
 
               <Typography
                 sx={{
-                  color: "#fff",
+                  color: "var(--color-pure-black)",
                   fontWeight: 700,
                   fontSize: {
                     xs: "1.5rem",
@@ -507,7 +509,7 @@ const itemVariants = {
 
               <Typography
                 sx={{
-                  color: "#fff",
+                  color: "var(--color-pure-black)",
                   fontSize: {
                     xs: "0.85rem",
                     md: "0.92rem",
@@ -544,7 +546,7 @@ const itemVariants = {
                 }}
                 onClick={() => navigate(`/values/${item.title.toLowerCase()}`)}
                 sx={{
-                  bgcolor: "#000",
+                  bgcolor: "var(--color-sub-bg)",
                   borderRadius: "16px",
                   p: 3,
                   minHeight: 170,
@@ -561,6 +563,7 @@ const itemVariants = {
                   sx={{
                     width: 40,
                     height: 40,
+                    border:"2px solid white",
                     borderRadius: "50%",
                     bgcolor: "rgba(255,255,255,0.12)",
                     display: "flex",
@@ -574,7 +577,7 @@ const itemVariants = {
 
                 <Typography
                   sx={{
-                    color: "#fff",
+                    color: "var(--color-pure-black)",
                     fontWeight: 600,
                     fontSize: "1.1rem",
                     mb: 1,
@@ -585,7 +588,7 @@ const itemVariants = {
 
                 <Typography
                   sx={{
-                    color: "#bdbdbd",
+                    color: "var(--color-pure-black)",
                     fontSize: "0.9rem",
                     lineHeight: 1.7,
                   }}
@@ -602,7 +605,7 @@ const itemVariants = {
     {/* fourth section */}
       <Box
       sx={{
-        backgroundColor: "transparent",
+        backgroundColor: "var(--color-main-bg)",
         py: { xs: 8, md: 12 },
       }}
     >
@@ -616,7 +619,7 @@ const itemVariants = {
         <Box textAlign="center" mb={5}>
           <Typography
             sx={{
-              color: "#fff",
+              color: "var(--color-pure-black)",
               textAlign: 'center',
               fontWeight: 700,
               fontSize: {
@@ -631,7 +634,7 @@ const itemVariants = {
 
           <Typography
             sx={{
-              color: "#94a3b8",
+              color: "var(--color-pure-black)",
               fontSize: "0.95rem",
               textAlign: 'center',
               mt: 1,
@@ -658,6 +661,9 @@ const itemVariants = {
             <Box
               key={index}
               sx={{
+                bgcolor: "var(--color-sub-bg)",
+                p: 2,
+                borderRadius: "16px",
                 cursor: "pointer",
                 transition: "all .4s ease",
 
@@ -700,7 +706,7 @@ const itemVariants = {
               {/* Content */}
               <Typography
                 sx={{
-                  color: "#fff",
+                  color: "var(--color-pure-black)",
                   fontWeight: 700,
                   fontSize: "16px",
                   mb: 0.5,
@@ -711,7 +717,7 @@ const itemVariants = {
 
               <Typography
                 sx={{
-                  color: "#5ba7ff",
+                  color: "var(--color-pure-black)",
                   fontSize: "13px",
                   fontWeight: 600,
                   mb: 1.5,
@@ -722,7 +728,7 @@ const itemVariants = {
 
               <Typography
                 sx={{
-                  color: "#cbd5e1",
+                  color: "var(--color-pure-black)",
                   fontSize: "13px",
                   lineHeight: 1.7,
                 }}
