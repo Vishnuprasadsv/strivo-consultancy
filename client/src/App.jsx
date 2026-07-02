@@ -32,6 +32,7 @@ const Mission = lazy(() => import('./pages/Mission'));
 const Vision = lazy(() => import('./pages/Vision'));
 const Values = lazy(() => import('./pages/Values'));
 const PrivacyPolicy = lazy(() => import('./pages/PrivacyPolicy'));
+const TermsAndConditions = lazy(() => import('./pages/TermsAndConditions'));
 
 // Admin Pages
 const Login = lazy(() => import('./Admin/Login'));
@@ -96,40 +97,43 @@ const PageLoader = () => (
   </div>
 );
 
-const App = () => {
+const AppLayout = () => {
+  const { pathname } = useLocation();
+  const noFerrofluidRoutes = [
+    '/mission', '/vision', '/values/integrity', '/values/innovation', '/values/impact', '/values/collaboration'
+  ];
+  const isNoFerrofluid = noFerrofluidRoutes.includes(pathname);
+
   return (
-    <BrowserRouter>
-      <DynamicThemeProvider>
-        <ScrollToTop />
-        <Toaster position="top-right" theme="dark" />
-        <div className="min-h-screen bg-transparent text-white flex flex-col relative z-0">
-          {/* Global Ferrofluid Background */}
-          <div className="fixed inset-0 z-[-1] bg-black">
-            <Ferrofluid
-              colors={["#002c9b", "#3673d6", "#7ba0db"]}
-              speed={0.1}
-              scale={2.6}
-              turbulence={0.65}
-              fluidity={0.14}
-              rimWidth={0.2}
-              sharpness={3}
-              shimmer={1}
-              glow={1.6}
-              flowDirection="up"
-              opacity={1}
-              mouseInteraction={true}
-              mouseStrength={1}
-              mouseRadius={0.3}
-            />
-            <div className="absolute inset-0 backdrop-blur-[6px] bg-black/40 pointer-events-none" />
-          </div>
+    <div className={`min-h-screen ${isNoFerrofluid ? 'bg-[var(--color-main-bg)] text-[var(--color-pure-black)]' : 'bg-transparent text-white'} flex flex-col relative z-0`}>
+      {!isNoFerrofluid && (
+        <div className="fixed inset-0 z-[-1] bg-black">
+          <Ferrofluid
+            colors={["#002c9b", "#3673d6", "#7ba0db"]}
+            speed={0.1}
+            scale={2.6}
+            turbulence={0.65}
+            fluidity={0.14}
+            rimWidth={0.2}
+            sharpness={3}
+            shimmer={1}
+            glow={1.6}
+            flowDirection="up"
+            opacity={1}
+            mouseInteraction={true}
+            mouseStrength={1}
+            mouseRadius={0.3}
+          />
+          <div className="absolute inset-0 backdrop-blur-[6px] bg-black/40 pointer-events-none" />
+        </div>
+      )}
 
-          <ConditionalNavbar />
-          <AdminNavbar />
+      <ConditionalNavbar />
+      <AdminNavbar />
 
-          {/* Main content area */}
-          <main className="flex-grow relative z-10">
-            <Suspense fallback={<PageLoader />}>
+      {/* Main content area */}
+      <main className="flex-grow relative z-10">
+        <Suspense fallback={<PageLoader />}>
               <Routes>
                 {/* Fix: Root path now directly renders Home */}
                 <Route path="/" element={<Home />} />
@@ -153,6 +157,10 @@ const App = () => {
                 <Route
                   path="/privacy-policy"
                   element={<PrivacyPolicy />}
+                />
+                <Route
+                  path="/terms-and-conditions"
+                  element={<TermsAndConditions />}
                 />
                 <Route path="/review" element={<Review />} />
 
@@ -179,10 +187,20 @@ const App = () => {
                 <Route path="/admin/profile" element={<Profile />} />
               </Routes>
             </Suspense>
-          </main>
+      </main>
 
-          <ConditionalFooter />
-        </div>
+      <ConditionalFooter />
+    </div>
+  );
+};
+
+const App = () => {
+  return (
+    <BrowserRouter>
+      <DynamicThemeProvider>
+        <ScrollToTop />
+        <Toaster position="top-right" theme="dark" />
+        <AppLayout />
       </DynamicThemeProvider>
     </BrowserRouter>
   );

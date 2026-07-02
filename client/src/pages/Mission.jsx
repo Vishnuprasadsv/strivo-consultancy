@@ -59,7 +59,7 @@ const Mission = () => {
   ];
 
   return (
-    <div className="bg-transparent text-white min-h-screen pt-24 pb-24 font-sans">
+    <div className="bg-transparent text-[var(--color-pure-black)] min-h-screen pt-24 pb-24 font-sans">
       <div className="max-w-7xl mx-auto px-6 md:px-12 space-y-12">
         
         {/* Back Button */}
@@ -71,7 +71,7 @@ const Mission = () => {
         >
           <button 
             onClick={() => navigate("/about")} 
-            className="text-blue-500 hover:text-white transition-colors flex items-center border border-blue-500/30 rounded-full px-5 py-2 text-sm font-medium hover:border-blue-500 cursor-pointer"
+            className="text-blue-500 hover:text-[var(--color-pure-black)] transition-colors flex items-center border border-blue-500/30 rounded-full px-5 py-2 text-sm font-medium hover:border-blue-500 cursor-pointer"
           >
             ← Back to About Us
           </button>
@@ -85,7 +85,7 @@ const Mission = () => {
           className="max-w-3xl"
         >
           <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold leading-tight mb-6">Our Mission & Purpose</h1>
-          <p className="text-gray-400 text-base md:text-lg leading-relaxed max-w-2xl">
+          <p className="text-[var(--color-pure-black)] text-base md:text-lg leading-relaxed max-w-2xl">
             To architect sustainable growth for ambitious enterprises through rigorous data analysis, strategic foresight, and flawless operational execution.
           </p>
         </motion.section>
@@ -96,21 +96,21 @@ const Mission = () => {
           whileInView="visible"
           viewport={{ once: true, amount: 0.2 }}
           variants={fadeUpVariants}
-          className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center bg-[#09101f] rounded-xl overflow-hidden border border-blue-500/10"
+          className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center bg-transparent rounded-xl overflow-hidden border border-blue-500/10"
         >
           <div className="p-8 md:p-10 flex flex-col justify-center h-full order-2 lg:order-1">
             <span className="inline-block px-3 py-1 bg-blue-500/10 text-blue-400 text-xs font-semibold uppercase tracking-wider rounded-md mb-6 w-max">
               Core Statement
             </span>
-            <h2 className="text-2xl md:text-3xl font-bold text-white mb-4">Empowering Enterprises for the Future</h2>
-            <p className="text-gray-400 mb-6 text-sm md:text-base leading-relaxed">
+            <h2 className="text-2xl md:text-3xl font-bold text-[var(--color-pure-black)] mb-4">Empowering Enterprises for the Future</h2>
+            <p className="text-[var(--color-pure-black)] mb-6 text-sm md:text-base leading-relaxed">
               We partner with global leaders to navigate the complexities of corporate strategy, operational scaling, and digital integration. By delivering objective truth and robust execution frameworks, we help organizations shape their own destiny.
             </p>
             <div className="flex flex-wrap gap-4 mt-2">
               <Button
                 variant="contained"
                 onClick={() => navigate("/contact")}
-                className="bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-lg px-6 py-2.5 text-sm normal-case transition-colors"
+                className="bg-blue-600 hover:bg-blue-700 text-[var(--color-pure-black)] font-bold rounded-lg px-6 py-2.5 text-sm normal-case transition-colors"
                 style={{ background: '#2563eb' }}
               >
                 Let's Partner
@@ -123,7 +123,7 @@ const Mission = () => {
               alt="Our Mission Strategy"
               className="absolute inset-0 w-full h-full object-cover"
             />
-            <div className="absolute inset-0 bg-gradient-to-r from-[#09101f] to-transparent lg:w-1/4"></div>
+            <div className="absolute inset-0 bg-gradient-to-r from-[var(--color-main-bg)] to-transparent lg:w-1/4"></div>
           </div>
         </motion.section>
 
@@ -135,8 +135,8 @@ const Mission = () => {
           variants={fadeUpVariants}
         >
           <div className="mb-8">
-            <h2 className="text-2xl md:text-3xl font-bold text-white mb-3">Our Core Pillars</h2>
-            <p className="text-gray-400 text-sm md:text-base">The methodologies and principles that direct our client delivery model.</p>
+            <h2 className="text-2xl md:text-3xl font-bold text-[var(--color-pure-black)] mb-3">Our Core Pillars</h2>
+            <p className="text-[var(--color-pure-black)] text-sm md:text-base">The methodologies and principles that direct our client delivery model.</p>
           </div>
 
           <motion.div
@@ -150,7 +150,7 @@ const Mission = () => {
                 variants={cardVariants}
                 whileHover={{ y: -10 }}
                 key={pillar.id}
-                className="relative bg-gradient-to-br from-[#081224] to-[#0f172a] border border-blue-500/10 rounded-2xl overflow-hidden group transition-all duration-300 ease-out hover:border-blue-500/40 hover:shadow-[0_20px_45px_rgba(37,99,235,0.12)] flex flex-col h-full"
+                className="relative bg-gradient-to-br from-[var(--color-main-bg)] to-[var(--color-sub-bg)] border border-blue-500/10 rounded-2xl overflow-hidden group transition-all duration-300 ease-out hover:border-blue-500/40 hover:shadow-[0_20px_45px_rgba(37,99,235,0.12)] flex flex-col h-full"
               >
                 {/* Top accent line */}
                 <div className="absolute top-0 left-0 w-full h-[2px] bg-gradient-to-r from-blue-600 to-transparent z-10"></div>
@@ -162,10 +162,10 @@ const Mission = () => {
                     className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300 ease-out"
                   />
                 </div>
-                <div className="p-5 flex flex-col flex-grow relative z-20 bg-gradient-to-br from-[#081224]/50 to-[#0f172a]/50">
+                <div className="p-5 flex flex-col flex-grow relative z-20 bg-gradient-to-br from-[var(--color-main-bg)]/50 to-[var(--color-sub-bg)]/50">
                   <span className="text-blue-500 text-xs font-semibold mb-2 uppercase">{pillar.category}</span>
-                  <h3 className="text-lg md:text-xl font-bold text-white mb-2">{pillar.title}</h3>
-                  <p className="text-gray-400 text-xs md:text-sm leading-relaxed flex-grow">{pillar.description}</p>
+                  <h3 className="text-lg md:text-xl font-bold text-[var(--color-pure-black)] mb-2">{pillar.title}</h3>
+                  <p className="text-[var(--color-pure-black)] text-xs md:text-sm leading-relaxed flex-grow">{pillar.description}</p>
                 </div>
               </motion.article>
             ))}
