@@ -13,13 +13,14 @@ const Operations = () => {
   }, []);
 
   return (
-    <div className="bg-transparent text-white min-h-screen pt-20 pb-24 font-sans selection:bg-blue-600 selection:text-white">
+    <div className="bg-transparent text-white min-h-screen pt-20 font-sans selection:bg-blue-600 selection:text-white">
       
       {/* Section 1: Hero */}
       <motion.section 
         initial="hidden" animate="visible" variants={fadeUpVariants}
-        className="max-w-7xl mx-auto px-6 md:px-12 py-16 md:py-24"
+        className="w-full bg-transparent"
       >
+        <div className="max-w-7xl mx-auto px-6 md:px-12 py-16 md:py-24">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
           <div className="space-y-8">
             <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold leading-tight text-white">Architecting Operational Excellence</h1>
@@ -36,13 +37,15 @@ const Operations = () => {
             <img alt="3D workflow optimization illustration" className="object-contain w-full h-full opacity-90 drop-shadow-[0_0_30px_rgba(37,99,235,0.2)]" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAJgsChU0yTK8RMWxphON2ie81nOFWArko__RFbW3N21PEAz6C3NM-TE2HiZaWadpaDSCU5KTcVsNBHkqC_u_N5ZQes7-jHfSVtClljZCNcJfYBvrEdcUSHv3W9DNSB8bspImBZJhVh0ZGTk-MPH7SGX4TWVqdbS5jdZ17wsP0hVeswdKJVpjN_AlCFFin7_6VzQWvkE6tVcHOEOsdjdD_PBb4xULhO3BhapOILD1Y6CRoBUnscC65_BnCSpyZLMgZeE_T15vMBXg" />
           </div>
         </div>
+        </div>
       </motion.section>
 
       {/* Section 2: Service Overview */}
       <motion.section 
         initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.2 }} variants={fadeUpVariants}
-        className="max-w-7xl mx-auto px-6 md:px-12 py-16 md:py-24 border-t border-[#1F2937]"
+        className="w-full bg-sub-bg text-pure-black border-t border-[#1F2937]"
       >
+        <div className="max-w-7xl mx-auto px-6 md:px-12 py-16 md:py-24">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
           <div className="order-2 md:order-1 relative w-full aspect-square md:aspect-auto md:h-[500px] rounded-2xl overflow-hidden bg-[#111111] border border-[#222222] flex items-center justify-center p-8">
             <img alt="Operational efficiency workflow visualization" className="object-contain w-full h-full opacity-90 drop-shadow-[0_0_30px_rgba(37,99,235,0.2)]" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCm_KBVAgfaPgwoYpyM1P40sQ54CoO107p_1JBVcN4vjJdMGJBq_OJ5nrGankemaIDcoCQtDU-OQYRz4K6L1cFKNTHMIDjSSAhr04BDJmudBALrgEryjkZWV05ib5NvOx_s0BZHXyqVvl3fyRj_spL8WIA2oq31GJhSsvtWSmSlurtIzkTXn8PyFrD_MaOdwV6P_ERvAaHPqmwG5nE_wBgki0tuWKWCh5I5xqEx-6vggUmgnaF7w6KcXiW-omCJ2BZ7tmw-LPf5vQ" />
@@ -54,8 +57,8 @@ const Operations = () => {
               </div>
               <span className="text-xs font-semibold text-blue-500 uppercase tracking-widest">Service Overview</span>
             </div>
-            <h2 className="text-3xl md:text-4xl font-bold text-white">Precision in Every Process</h2>
-            <ul className="space-y-4">
+            <h2 className="text-3xl md:text-4xl font-bold text-pure-black">Precision in Every Process</h2>
+            <ul className="space-y-4 text-pure-black">
               {[
                 { title: "Process efficiency enhancement", desc: "Identify and eliminate bottlenecks across your operations." },
                 { title: "Operational streamlining", desc: "Simplify complex workflows for maximum productivity." },
@@ -67,23 +70,25 @@ const Operations = () => {
                 <li key={idx} className="flex items-start gap-3">
                   <svg className="text-blue-500 w-6 h-6 shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd"></path></svg>
                   <div>
-                    <strong className="text-base text-white block">{item.title}</strong>
-                    <span className="text-base text-gray-400">{item.desc}</span>
+                    <strong className="text-base text-pure-black block">{item.title}</strong>
+                    <span className="text-base text-pure-black">{item.desc}</span>
                   </div>
                 </li>
               ))}
             </ul>
           </div>
         </div>
+        </div>
       </motion.section>
 
       {/* Section 3: Operations Pillars (matches Core Capabilities) */}
       <motion.section 
         initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.1 }} variants={fadeUpVariants}
-        className="max-w-7xl mx-auto px-6 md:px-12 py-16 md:py-24"
+        className="w-full bg-main-bg text-pure-black"
       >
+        <div className="max-w-7xl mx-auto px-6 md:px-12 py-16 md:py-24">
         <div className="mb-12">
-          <h2 className="text-3xl md:text-4xl font-bold text-white">Operations Pillars</h2>
+          <h2 className="text-3xl md:text-4xl font-bold text-pure-black">Operations Pillars</h2>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {[
@@ -103,35 +108,36 @@ const Operations = () => {
               desc: "Analyzing expenditure to uncover opportunities for substantial margin improvement without quality loss."
             }
           ].map((pillar, idx) => (
-            <div key={idx} className="bg-[#111111] border border-[#222222] rounded-2xl p-6 hover:-translate-y-1 hover:shadow-[0_10px_25px_-5px_rgba(37,99,235,0.1)] transition-all duration-200">
+            <div key={idx} className="bg-[var(--color-main-bg)] border border-[var(--color-border-color)] rounded-2xl p-6 hover:-translate-y-1 hover:shadow-[0_10px_25px_-5px_rgba(37,99,235,0.1)] transition-all duration-200">
               <svg className="text-blue-500 w-8 h-8 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">{pillar.icon}</svg>
-              <h3 className="text-xl font-semibold text-white mb-3">{pillar.title}</h3>
-              <p className="text-gray-400">{pillar.desc}</p>
+              <h3 className="text-xl font-semibold text-pure-black mb-3">{pillar.title}</h3>
+              <p className="text-pure-black">{pillar.desc}</p>
             </div>
           ))}
+        </div>
         </div>
       </motion.section>
 
       {/* Section 4: Operations Methodology (matches Acumen Strategic Framework) */}
       <motion.section 
         initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.1 }} variants={fadeUpVariants}
-        className="bg-[#0A0A0A] py-16 md:py-24 border-y border-[#1F2937]"
+        className="w-full bg-sub-bg py-16 md:py-24 border-y border-[var(--color-border-color)]"
       >
         <div className="max-w-7xl mx-auto px-6 md:px-12 text-center">
-          <span className="inline-block px-3 py-1 rounded-full bg-[#111827] border border-[#374151] text-xs font-semibold text-blue-500 uppercase tracking-widest mb-4">4-Step Optimization Process</span>
-          <h2 className="text-3xl md:text-4xl font-bold text-white mb-16">Operations Methodology</h2>
+          <span className="inline-block px-3 py-1 rounded-full bg-white border border-[#374151] text-xs font-bold text-pure-black uppercase tracking-[3px] mb-4">4-Step Optimization Process</span>
+          <h2 className="text-3xl md:text-4xl font-bold text-pure-black mb-16">Operations Methodology</h2>
           <div className="flex flex-col lg:flex-row gap-6 relative">
-            <div className="hidden lg:block absolute top-1/2 left-[10%] right-[10%] h-[2px] bg-[#1F2937] -translate-y-1/2 z-0"></div>
+            <div className="hidden lg:block absolute top-1/2 left-[10%] right-[10%] h-[2px] bg-[#8C8C8C] -translate-y-1/2 z-0"></div>
             {[
               { num: 1, title: "Operational Audit", items: ["Process Mapping", "Inefficiency Identification", "Cost Analysis"] },
               { num: 2, title: "Solution Design", items: ["Workflow Redesign", "Automation Planning", "Resource Allocation"] },
               { num: 3, title: "Implementation", items: ["System Integration", "Change Management", "Training & Rollout"] },
               { num: 4, title: "Optimization", items: ["Performance Tracking", "KPI Monitoring", "Continuous Tuning"] }
             ].map((step) => (
-              <div key={step.num} className="flex-1 bg-[#111111] border border-[#222222] rounded-2xl p-6 relative z-10 hover:-translate-y-1 hover:shadow-[0_10px_25px_-5px_rgba(37,99,235,0.1)] transition-all duration-200 text-left">
+              <div key={step.num} className="flex-1 bg-[var(--color-main-bg)] border border-[var(--color-border-color)] rounded-2xl p-6 relative z-10 hover:-translate-y-1 hover:shadow-[0_10px_25px_-5px_rgba(37,99,235,0.1)] transition-all duration-200 text-left">
                 <div className="w-12 h-12 rounded-full bg-blue-600 text-white flex items-center justify-center text-xl font-semibold mb-6 shadow-[0_0_15px_rgba(37,99,235,0.5)]">{step.num}</div>
-                <h3 className="text-xl font-semibold text-white mb-2">{step.title}</h3>
-                <ul className="text-gray-400 space-y-1 list-disc list-inside">
+                <h3 className="text-xl font-semibold text-pure-black mb-2">{step.title}</h3>
+                <ul className="text-pure-black space-y-1 list-disc list-inside">
                   {step.items.map((item, idx) => <li key={idx}>{item}</li>)}
                 </ul>
               </div>
@@ -143,10 +149,11 @@ const Operations = () => {
       {/* Section 5: Impact Metrics */}
       <motion.section 
         initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.2 }} variants={fadeUpVariants}
-        className="max-w-7xl mx-auto px-6 md:px-12 py-16 md:py-24"
+        className="w-full bg-main-bg py-16 md:py-24"
       >
-        <h2 className="text-3xl md:text-4xl font-bold text-white mb-12 text-center">Impact Metrics</h2>
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-8 bg-[#111111] border border-[#222222] rounded-2xl p-8 divide-x divide-[#222222]">
+        <div className="max-w-7xl mx-auto px-6 md:px-12">
+        <h2 className="text-3xl md:text-4xl font-bold text-pure-black mb-12 text-center">Impact Metrics</h2>
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-8 bg-[var(--color-main-bg)] p-8 divide-x divide-[var(--color-border-color)]">
           {[
             { val: "35%", label: "Operational Cost Reduction" },
             { val: "60%", label: "Process Efficiency Improvement" },
@@ -155,17 +162,19 @@ const Operations = () => {
           ].map((metric, idx) => (
             <div key={idx} className="text-center px-4">
               <div className="text-4xl md:text-5xl font-bold text-blue-500 mb-2">{metric.val}</div>
-              <div className="text-xs font-semibold text-gray-400 uppercase tracking-wider">{metric.label}</div>
+              <div className="text-xs font-semibold text-pure-black uppercase tracking-wider">{metric.label}</div>
             </div>
           ))}
+        </div>
         </div>
       </motion.section>
 
       {/* Section 6: Proven Impact (matches Strategic Excellence in Action) */}
       <motion.section 
         initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.1 }} variants={fadeUpVariants}
-        className="max-w-7xl mx-auto px-6 md:px-12 py-16 md:py-24 border-t border-[#1F2937]"
+        className="w-full bg-main-bg py-16 md:py-24 border-t border-[var(--color-border-color)]"
       >
+        <div className="max-w-7xl mx-auto px-6 md:px-12">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-stretch">
           <div className="bg-[#111111] border border-[#222222] rounded-2xl p-8 flex flex-col justify-between">
             <div>
@@ -201,13 +210,15 @@ const Operations = () => {
             </div>
           </div>
         </div>
+        </div>
       </motion.section>
 
       {/* Section 7: CTA Banner */}
       <motion.section 
         initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.2 }} variants={fadeUpVariants}
-        className="max-w-7xl mx-auto px-6 md:px-12 py-16"
+        className="w-full bg-main-bg py-16"
       >
+        <div className="max-w-7xl mx-auto px-6 md:px-12">
         <div className="bg-[#111111] border border-[#222222] rounded-2xl p-12 text-center relative overflow-hidden">
           <div className="absolute inset-0 bg-gradient-to-br from-blue-600/10 to-transparent pointer-events-none"></div>
           <div className="relative z-10 max-w-2xl mx-auto space-y-6">
@@ -220,20 +231,23 @@ const Operations = () => {
             </Link>
           </div>
         </div>
+        </div>
       </motion.section>
 
       {/* Section 8: Final Conversion */}
       <motion.section 
         initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.2 }} variants={fadeUpVariants}
-        className="max-w-7xl mx-auto px-6 md:px-12 py-24 text-center border-t border-[#1F2937]"
+        className="w-full bg-sub-bg py-24 text-center border-t border-[var(--color-border-color)]"
       >
-        <h2 className="text-4xl md:text-5xl font-bold text-white mb-6">What Could Operational Efficiency Unlock For Your Business?</h2>
-        <p className="text-lg text-gray-400 mb-10 max-w-3xl mx-auto">
+        <div className="max-w-7xl mx-auto px-6 md:px-12">
+        <h2 className="text-4xl md:text-5xl font-bold text-pure-black mb-6">What Could Operational Efficiency Unlock For Your Business?</h2>
+        <p className="text-lg text-pure-black mb-10 max-w-3xl mx-auto">
           The difference between market leaders and followers is relentless optimization. Let's build your blueprint for tomorrow.
         </p>
         <Link to="/contact" className="bg-blue-600 text-white text-sm font-medium px-8 py-4 rounded-lg hover:bg-blue-700 transition-colors shadow-[0_0_15px_rgba(37,99,235,0.3)] hover:shadow-[0_0_25px_rgba(37,99,235,0.5)] inline-block">
           Contact Our Team
         </Link>
+        </div>
       </motion.section>
     </div>
   );
