@@ -32,6 +32,8 @@ import {
   DialogActions,
   TextField,
   MenuItem,
+  Select,
+  InputAdornment,
 } from "@mui/material";
 
 function Career() {
@@ -46,6 +48,14 @@ function Career() {
   const [talentFile, setTalentFile] = useState(null);
 
   const [applyForm, setApplyForm] = useState({ fullName: "", email: "", mobile: "" });
+  const [applyCountryCode, setApplyCountryCode] = useState("+91");
+  const [talentCountryCode, setTalentCountryCode] = useState("+91");
+  const [expandedJobs, setExpandedJobs] = useState({});
+
+  const toggleExpandJob = (jobKey) => {
+    setExpandedJobs((prev) => ({ ...prev, [jobKey]: !prev[jobKey] }));
+  };
+
   const [talentForm, setTalentForm] = useState({ fullName: "", email: "", mobile: "", category: "" });
 
   const [applyErrors, setApplyErrors] = useState({});
@@ -95,6 +105,7 @@ function Career() {
     setSelectedJob({ title, description });
     setResumeFile(null);
     setApplyForm({ fullName: "", email: "", mobile: "" });
+    setApplyCountryCode("+91");
     setApplyErrors({});
     setOpenApplyModal(true);
   };
@@ -146,7 +157,7 @@ function Career() {
     const formData = new FormData();
     formData.append("fullName", applyForm.fullName);
     formData.append("email", applyForm.email);
-    formData.append("mobile", applyForm.mobile);
+    formData.append("mobile", applyCountryCode + " " + applyForm.mobile);
     formData.append("appliedPosition", selectedJob.title);
     formData.append("roleDescription", selectedJob.description);
     formData.append("resume", resumeFile);
@@ -172,7 +183,7 @@ function Career() {
     const formData = new FormData();
     formData.append("fullName", talentForm.fullName);
     formData.append("email", talentForm.email);
-    formData.append("mobile", talentForm.mobile);
+    formData.append("mobile", talentCountryCode + " " + talentForm.mobile);
     formData.append("category", talentForm.category);
     formData.append("resume", talentFile);
     try {
@@ -337,6 +348,7 @@ function Career() {
             justifyContent: "space-between",
             p: 3,
             zIndex: 1,
+            display: { xs: "none", md: "flex" },
 
             "&::before": {
               content: '""',
@@ -379,13 +391,14 @@ function Career() {
                 display: "flex",
                 alignItems: "center",
                 gap: 1,
+                backgroundColor: "var(--color-sub-bg)"
               }}
             >
               <Box
                 component={motion.div}
                 animate={{ scale: [1, 1.4, 1], opacity: [0.5, 1, 0.5] }}
                 transition={{ duration: 2, repeat: Infinity }}
-                sx={{ width: 6, height: 6, borderRadius: "50%", background: "#10B981" }}
+                sx={{ width: 6, height: 6, borderRadius: "50%", backgroundColor:"var(--color-sub-bg: #EDF0FF)"}}
               />
               <Typography sx={{ color: "#34D399", fontSize: "0.7rem", fontWeight: 600 }}>
                 Hiring
@@ -393,7 +406,7 @@ function Career() {
             </Box>
           </Box>
 
-          <Box>
+          <Box sx={{backgroundColor:"var(--color-sub-bg: #EDF0FF)"}}>
             <Typography sx={{ color: "#ffffff", fontWeight: 700, fontSize: "1.15rem", mb: 0.5 }}>
               Join Our Team
             </Typography>
@@ -441,6 +454,7 @@ function Career() {
             background:
               "radial-gradient(circle, rgba(37,99,235,.8), rgba(37,99,235,.05))",
             filter: "blur(15px)",
+            display: { xs: "none", md: "block" },
           }}
         />
 
@@ -799,7 +813,7 @@ function Career() {
         id="life-at-strivo"
         sx={{
           py: { xs: 10, md: 14 },
-          background: "var(--color-main-bg)",
+          background: "var(--color-sub-bg)",
         }}
       >
         <Container maxWidth="lg">
@@ -1051,7 +1065,11 @@ function Career() {
                   sx={{
                     color: "var(--color-pure-black)",
                     lineHeight: 1.8,
-                    mb: 2.5,
+                    mb: expandedJobs["frontend"] ? 1.5 : 0.5,
+                    display: "-webkit-box",
+                    WebkitLineClamp: expandedJobs["frontend"] ? "none" : 3,
+                    WebkitBoxOrient: "vertical",
+                    overflow: "hidden",
                   }}
                 >
                   Build modern web applications using React,
@@ -1059,6 +1077,22 @@ function Career() {
                   designers and backend teams to deliver fast,
                   responsive, and user-centric digital experiences.
                 </Typography>
+                <Button
+                  onClick={() => toggleExpandJob("frontend")}
+                  sx={{
+                    textTransform: "none",
+                    color: "#2563EB",
+                    p: 0,
+                    minWidth: "auto",
+                    fontWeight: 600,
+                    fontSize: "0.85rem",
+                    mb: 2.5,
+                    display: "inline-block",
+                    "&:hover": { background: "transparent", textDecoration: "underline" }
+                  }}
+                >
+                  {expandedJobs["frontend"] ? "Read less" : "Read more"}
+                </Button>
 
                 <Stack sx={{
                   "& .MuiChip-root": {
@@ -1144,7 +1178,11 @@ function Career() {
                   sx={{
                     color: "var(--color-pure-black)",
                     lineHeight: 1.8,
-                    mb: 2.5,
+                    mb: expandedJobs["uiux"] ? 1.5 : 0.5,
+                    display: "-webkit-box",
+                    WebkitLineClamp: expandedJobs["uiux"] ? "none" : 3,
+                    WebkitBoxOrient: "vertical",
+                    overflow: "hidden",
                   }}
                 >
                   Create intuitive interfaces, wireframes,
@@ -1152,6 +1190,22 @@ function Career() {
                   and provide seamless digital experiences
                   across web and mobile platforms.
                 </Typography>
+                <Button
+                  onClick={() => toggleExpandJob("uiux")}
+                  sx={{
+                    textTransform: "none",
+                    color: "#2563EB",
+                    p: 0,
+                    minWidth: "auto",
+                    fontWeight: 600,
+                    fontSize: "0.85rem",
+                    mb: 2.5,
+                    display: "inline-block",
+                    "&:hover": { background: "transparent", textDecoration: "underline" }
+                  }}
+                >
+                  {expandedJobs["uiux"] ? "Read less" : "Read more"}
+                </Button>
 
                 <Stack sx={{
                   "& .MuiChip-root": {
@@ -1236,7 +1290,11 @@ function Career() {
                   sx={{
                     color: "var(--color-pure-black)",
                     lineHeight: 1.8,
-                    mb: 2.5,
+                    mb: expandedJobs["consultant"] ? 1.5 : 0.5,
+                    display: "-webkit-box",
+                    WebkitLineClamp: expandedJobs["consultant"] ? "none" : 3,
+                    WebkitBoxOrient: "vertical",
+                    overflow: "hidden",
                   }}
                 >
                   Work closely with clients to analyze business
@@ -1244,6 +1302,22 @@ function Career() {
                   deliver strategic solutions that drive measurable
                   outcomes and transformation.
                 </Typography>
+                <Button
+                  onClick={() => toggleExpandJob("consultant")}
+                  sx={{
+                    textTransform: "none",
+                    color: "#2563EB",
+                    p: 0,
+                    minWidth: "auto",
+                    fontWeight: 600,
+                    fontSize: "0.85rem",
+                    mb: 2.5,
+                    display: "inline-block",
+                    "&:hover": { background: "transparent", textDecoration: "underline" }
+                  }}
+                >
+                  {expandedJobs["consultant"] ? "Read less" : "Read more"}
+                </Button>
 
                 <Stack sx={{
                   "& .MuiChip-root": {
@@ -1333,11 +1407,31 @@ function Career() {
                         sx={{
                           color: "var(--color-pure-black)",
                           lineHeight: 1.8,
-                          mb: 2.5,
+                          mb: expandedJobs[job._id] ? 1.5 : 0.5,
+                          display: "-webkit-box",
+                          WebkitLineClamp: expandedJobs[job._id] ? "none" : 3,
+                          WebkitBoxOrient: "vertical",
+                          overflow: "hidden",
                         }}
                       >
                         {job.description}
                       </Typography>
+                      <Button
+                        onClick={() => toggleExpandJob(job._id)}
+                        sx={{
+                          textTransform: "none",
+                          color: "#2563EB",
+                          p: 0,
+                          minWidth: "auto",
+                          fontWeight: 600,
+                          fontSize: "0.85rem",
+                          mb: 2.5,
+                          display: "inline-block",
+                          "&:hover": { background: "transparent", textDecoration: "underline" }
+                        }}
+                      >
+                        {expandedJobs[job._id] ? "Read less" : "Read more"}
+                      </Button>
 
                       <Stack sx={{
                         "& .MuiChip-root": {
@@ -1426,7 +1520,7 @@ function Career() {
         sx={{
           py: { xs: 8, md: 12 },
           px: 2,
-          background: "var(--color-main-bg)",
+          background: "var(--color-sub-bg)",
         }}
       >
         <Container maxWidth="lg">
@@ -1436,7 +1530,7 @@ function Career() {
               p: { xs: 4, md: 6 },
               borderRadius: "30px",
 
-              background: "var(--color-sub-bg)",
+              background: "var(--color-main-bg)",
 
               backdropFilter: "blur(20px)",
 
@@ -1477,7 +1571,10 @@ function Career() {
 
             <Button
               variant="contained"
-              onClick={() => setOpenResumeModal(true)}
+              onClick={() => {
+                setTalentCountryCode("+91");
+                setOpenResumeModal(true);
+              }}
               sx={{
                 background: "#2563EB",
                 px: 5,
@@ -1501,31 +1598,20 @@ function Career() {
       <Dialog
         open={openApplyModal}
         onClose={() => setOpenApplyModal(false)}
-        maxWidth="sm"
+        maxWidth="xs"
         fullWidth
         sx={{
           "& .MuiDialog-container": {
-            backdropFilter: "blur(12px)",
-            background: "rgba(0, 0, 0, 0.4)",
+            backgroundColor: "rgba(10,15,30,0.7)",
+            backdropFilter: "blur(8px)",
           },
           "& .MuiDialog-paper": {
-            background: "var(--color-sub-bg) !important",
-            color: "var(--color-pure-black) !important",
-            borderRadius: { xs: "20px", sm: "28px" },
-            overflow: "hidden",
-            position: "relative",
+            borderRadius: "24px",
+            background: "var(--color-main-bg)",
             border: "1px solid var(--color-border-color)",
-            boxShadow: "0 0 80px rgba(37,99,235,.22)",
-            margin: { xs: "16px", sm: "32px" },
-            width: "100%",
-            "&::before": {
-              content: '""',
-              position: "absolute",
-              top: 0, left: 0, right: 0,
-              height: "4px",
-              background: "linear-gradient(90deg,#2563EB,#60A5FA)",
-            },
-          }
+            boxShadow: "0 25px 50px -12px rgba(0, 0, 0, 0.5)",
+            maxWidth: "480px",
+          },
         }}
       >
         <DialogTitle component="div" sx={{ textAlign: "center", pt: 3.5, pb: 1, px: { xs: 2.5, sm: 4 } }}>
@@ -1579,17 +1665,38 @@ function Career() {
               helperText={applyErrors.email}
               sx={fieldStyle}
             />
-            <TextField
-              fullWidth
-              size="small"
-              label="Mobile Number"
-              name="mobile"
-              value={applyForm.mobile}
-              onChange={handleApplyChange}
-              error={!!applyErrors.mobile}
-              helperText={applyErrors.mobile}
-              sx={fieldStyle}
-            />
+            <Stack direction="row" spacing={1.5} alignItems="flex-start">
+              <TextField
+                select
+                size="small"
+                value={applyCountryCode}
+                onChange={(e) => setApplyCountryCode(e.target.value)}
+                sx={{
+                  ...fieldStyle,
+                  width: "115px",
+                  flexShrink: 0,
+                }}
+              >
+                <MenuItem value="+91">+91 (IN)</MenuItem>
+                <MenuItem value="+1">+1 (US)</MenuItem>
+                <MenuItem value="+44">+44 (UK)</MenuItem>
+                <MenuItem value="+971">+971 (AE)</MenuItem>
+                <MenuItem value="+65">+65 (SG)</MenuItem>
+                <MenuItem value="+61">+61 (AU)</MenuItem>
+                <MenuItem value="+49">+49 (DE)</MenuItem>
+              </TextField>
+              <TextField
+                fullWidth
+                size="small"
+                label="Mobile Number"
+                name="mobile"
+                value={applyForm.mobile}
+                onChange={handleApplyChange}
+                error={!!applyErrors.mobile}
+                helperText={applyErrors.mobile}
+                sx={fieldStyle}
+              />
+            </Stack>
             <Button
               component="label"
               sx={{
@@ -1653,31 +1760,20 @@ function Career() {
       <Dialog
         open={openResumeModal}
         onClose={() => setOpenResumeModal(false)}
-        maxWidth="sm"
+        maxWidth="xs"
         fullWidth
         sx={{
           "& .MuiDialog-container": {
-            backdropFilter: "blur(12px)",
-            background: "rgba(0, 0, 0, 0.4)",
+            backgroundColor: "rgba(10,15,30,0.7)",
+            backdropFilter: "blur(8px)",
           },
           "& .MuiDialog-paper": {
-            background: "var(--color-sub-bg) !important",
-            color: "var(--color-pure-black) !important",
-            borderRadius: { xs: "20px", sm: "28px" },
-            overflow: "hidden",
-            position: "relative",
+            borderRadius: "24px",
+            background: "var(--color-main-bg)",
             border: "1px solid var(--color-border-color)",
-            boxShadow: "0 0 80px rgba(37,99,235,.22)",
-            margin: { xs: "16px", sm: "32px" },
-            width: "100%",
-            "&::before": {
-              content: '""',
-              position: "absolute",
-              top: 0, left: 0, right: 0,
-              height: "4px",
-              background: "linear-gradient(90deg,#2563EB,#60A5FA)",
-            },
-          }
+            boxShadow: "0 25px 50px -12px rgba(0, 0, 0, 0.5)",
+            maxWidth: "480px",
+          },
         }}
       >
         <DialogTitle component="div" sx={{ textAlign: "center", pt: 3.5, pb: 1, px: { xs: 2.5, sm: 4 } }}>
@@ -1704,12 +1800,38 @@ function Career() {
               error={!!talentErrors.email} helperText={talentErrors.email}
               sx={fieldStyle}
             />
-            <TextField
-              fullWidth size="small" label="Mobile Number" name="mobile"
-              value={talentForm.mobile} onChange={handleTalentChange}
-              error={!!talentErrors.mobile} helperText={talentErrors.mobile}
-              sx={fieldStyle}
-            />
+            <Stack direction="row" spacing={1.5} alignItems="flex-start">
+              <TextField
+                select
+                size="small"
+                value={talentCountryCode}
+                onChange={(e) => setTalentCountryCode(e.target.value)}
+                sx={{
+                  ...fieldStyle,
+                  width: "115px",
+                  flexShrink: 0,
+                }}
+              >
+                <MenuItem value="+91">+91 (IN)</MenuItem>
+                <MenuItem value="+1">+1 (US)</MenuItem>
+                <MenuItem value="+44">+44 (UK)</MenuItem>
+                <MenuItem value="+971">+971 (AE)</MenuItem>
+                <MenuItem value="+65">+65 (SG)</MenuItem>
+                <MenuItem value="+61">+61 (AU)</MenuItem>
+                <MenuItem value="+49">+49 (DE)</MenuItem>
+              </TextField>
+              <TextField
+                fullWidth
+                size="small"
+                label="Mobile Number"
+                name="mobile"
+                value={talentForm.mobile}
+                onChange={handleTalentChange}
+                error={!!talentErrors.mobile}
+                helperText={talentErrors.mobile}
+                sx={fieldStyle}
+              />
+            </Stack>
             <TextField
               select fullWidth size="small" label="Category" name="category"
               value={talentForm.category} onChange={handleTalentChange}
