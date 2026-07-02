@@ -6,8 +6,9 @@ import {
   Container,
   Stack,
   Rating,
+  Dialog,
 } from '@mui/material';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import SEO from '../Components/SEO';
 import { SERVER_URL } from '../services/serverUrl';
@@ -24,9 +25,10 @@ import {
   Groups,
   WorkspacePremium,
   ArrowForward,
+  KeyboardArrowUp,
 } from "@mui/icons-material";
 
-import heroBg from "../assets/heroBg.jpg";
+import heroBg from "../assets/heroBg.jpeg";
 import {
   Swiper,
   SwiperSlide,
@@ -91,6 +93,23 @@ const AnimatedCounter = ({ target, duration = 1500, suffix = "" }) => {
 function Home() {
   const navigate = useNavigate();
   const swiperRef = useRef(null);
+  const [showScrollTop, setShowScrollTop] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setShowScrollTop(window.scrollY > 300);
+    };
+
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
+  const scrollToTop = () => {
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth",
+    });
+  };
   const testimonials = [
     {
       name: "John Smith",
@@ -470,6 +489,7 @@ const stats = [
   
   const [successStories, setSuccessStories] = useState([]);
   const [loadingStories, setLoadingStories] = useState(true);
+  const [selectedTestimonial, setSelectedTestimonial] = useState(null);
 
   useEffect(() => {
     const fetchStories = async () => {
@@ -514,50 +534,39 @@ const stats = [
         title="Home" 
         description="We partner with ambitious leaders to solve complex challenges, optimize operations, and drive sustainable growth in an ever-evolving global landscape." 
       />
-   <Box
-  sx={{
-    position: "relative",
-    height: { xs: "auto", lg: "calc(100vh - 80px)" },
-    minHeight: { xs: "auto", lg: "500px", xl: "700px" },
-    py: { xs: 6, lg: 0 },
-    display: "flex",
-    alignItems: "center",
-    overflow: "hidden",
-  }}
->
-  {/* Background Image */}
-
-  <Box
-    component="img"
-    src={heroBg}
-    alt="Background"
-    sx={{
-      position: "absolute",
-      inset: 0,
-      width: "100%",
-      height: "100%",
-      objectFit: "cover",
-      zIndex: 0,
-    }}
-  />
-
-  {/* Dark Overlay */}
-
-  <Box
-    sx={{
-      position: "absolute",
-      inset: 0,
-      background:
-        "linear-gradient(90deg, rgba(0,0,0,.92) 0%, rgba(0,0,0,.80) 45%, rgba(0,0,0,.60) 100%)",
-      zIndex: 1,
-    }}
-  />
+    <Box
+      component="section"
+      id="hero-section"
+      sx={{
+        position: "relative",
+        minHeight: { xs: "auto", lg: "calc(100vh - 80px)" },
+        py: { xs: 6, lg: 0 },
+        display: "flex",
+        alignItems: "center",
+        overflow: "hidden",
+        backgroundColor: "var(--color-black)",
+      }}
+    >
+      {/* Decorative Radial Glow */}
+      <Box
+        sx={{
+          position: "absolute",
+          top: "50%",
+          left: "55%",
+          transform: "translate(-50%, -50%)",
+          width: { xs: "500px", md: "800px" },
+          height: { xs: "500px", md: "800px" },
+          background: "radial-gradient(circle, rgba(37,99,235,0.08), transparent 75%)",
+          pointerEvents: "none",
+          zIndex: 0,
+        }}
+      />
 
   {/* Main Content */}
 
   <Container
-    maxWidth="xl"
     sx={{
+      maxWidth: { xs: "100%", md: "960px", lg: "1000px" },
       position: "relative",
       zIndex: 2,
     }}
@@ -567,15 +576,15 @@ const stats = [
         display: "grid",
         gridTemplateColumns: {
           xs: "1fr",
-          lg: "1.15fr 0.85fr",
+          lg: "1.1fr 0.9fr",
         },
         alignItems: "center",
-        gap: { xs: 4, lg: 6 },
+        gap: { xs: 4, lg: 8 },
       }}
     >
       {/* LEFT CONTENT */}
 
-      <Box>
+      <Box sx={{ pr: { xs: 0, lg: 5 } }}>
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
@@ -588,11 +597,12 @@ const stats = [
               lineHeight: 1.15,
               letterSpacing: "-0.5px",
               mb: 2,
+              textAlign: "left",
               fontSize: {
-                xs: "2rem",
-                sm: "2.4rem",
-                md: "2.6rem",
-                lg: "2.8rem",
+                xs: "1.8rem",
+                sm: "2.2rem",
+                md: "2.4rem",
+                lg: "2.5rem",
               },
             }}
           >
@@ -840,15 +850,16 @@ const stats = [
 
 {/* second section */}
 <Box
-  id="trusted-by-section"
+  component="section"
+  id="stats-section"
   sx={{
     backgroundColor: "var(--color-main-bg)",
-    py: { xs: 6, md: 8 },
+    py: { xs: 6, lg: 8.5 },
   }}
 >
   {/* TRUSTED BY SECTION */}
 
-  <Container maxWidth="xl">
+  <Container sx={{ maxWidth: { xs: "100%", md: "960px", lg: "1000px" } }}>
     <Box
       sx={{
         borderTop: "1px solid rgba(0,0,0,0.06)",
@@ -919,20 +930,19 @@ const stats = [
   {/* STATS SECTION */}
 
   <Container
-    maxWidth="xl"
     sx={{
-      mt: { xs: 5, md: 7 },
+      maxWidth: { xs: "100%", md: "960px", lg: "1000px" },
+      mt: { xs: 4, lg: 6 },
     }}
   >
     <Box
       sx={{
         display: "grid",
         gridTemplateColumns: {
-          xs: "1fr",
-          sm: "repeat(2,1fr)",
+          xs: "repeat(2,1fr)",
           lg: "repeat(4,1fr)",
         },
-        gap: 4,
+        gap: { xs: 2, sm: 4 },
       }}
     >
       {stats.map((item, index) => (
@@ -959,7 +969,7 @@ const stats = [
               background: "#f8fafc",
               border: "1px solid rgba(37,99,235,0.08)",
               borderRadius: "24px",
-              p: 5,
+              p: { xs: 2.5, sm: 3, md: 3.5 },
               textAlign: "center",
               position: "relative",
               overflow: "hidden",
@@ -1023,12 +1033,14 @@ const stats = [
 </Box>
     {/*  third section */}
     <Box
-  sx={{
-    backgroundColor: "var(--color-sub-bg)",
-    py: { xs: 6, md: 9 },
-  }}
->
-  <Container maxWidth="xl">
+      component="section"
+      id="expertise-section"
+      sx={{
+        backgroundColor: "var(--color-sub-bg)",
+        py: { xs: 6, lg: 8.5 },
+    }}
+  >
+    <Container sx={{ maxWidth: { xs: "100%", md: "960px", lg: "1000px" } }}>
     {/* Heading */}
 
     <motion.div
@@ -1052,8 +1064,8 @@ const stats = [
           fontWeight: 700,
           mb: 2,
           fontSize: {
-            xs: "1.8rem",
-            md: "2.2rem",
+            xs: "1.45rem",
+            md: "1.85rem",
           },
         }}
       >
@@ -1092,11 +1104,10 @@ const stats = [
         sx={{
           display: "grid",
           gridTemplateColumns: {
-            xs: "1fr",
-            sm: "repeat(2,1fr)",
+            xs: "repeat(2,1fr)",
             lg: "repeat(4,1fr)",
           },
-          gap: 4,
+          gap: { xs: 1.5, sm: 3, md: 4 },
         }}
       >
         {services.map((service, index) => (
@@ -1104,9 +1115,10 @@ const stats = [
             key={index}
             variants={cardVariants}
             whileHover={{
-              y: -15,
-              scale: 1.03,
+              y: -8,
+              scale: 1.01,
             }}
+            style={{ height: "100%" }}
           >
             <Box
               sx={{
@@ -1115,8 +1127,11 @@ const stats = [
                   // "linear-gradient(145deg,#081224,#0f172a)",
                   "var(--color-main-bg)",
                 borderRadius: "3px",
-                p: 4,
-                minHeight: "280px",
+                p: { xs: 1.5, sm: 2.5, md: 3 },
+                minHeight: { xs: "145px", md: "180px" },
+                height: "100%",
+                display: "flex",
+                flexDirection: "column",
                 overflow: "hidden",
                 border:
                   "1px solid rgba(59,130,246,.12)",
@@ -1160,15 +1175,15 @@ const stats = [
 
               <Box
                 sx={{
-                  width: 60,
-                  height: 60,
+                  width: { xs: 44, md: 60 },
+                  height: { xs: 44, md: 60 },
                   borderRadius: "16px",
                   background:
                     "rgba(37,99,235,.12)",
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "center",
-                  mb: 3,
+                  mb: { xs: 2, md: 3 },
                 }}
               >
                 {service.icon}
@@ -1180,8 +1195,8 @@ const stats = [
                 sx={{
                   color: "var(--color-pure-black)",
                   fontWeight: 700,
-                  mb: 2,
-                  fontSize: "1.25rem",
+                  mb: { xs: 1, md: 2 },
+                  fontSize: { xs: "1rem", md: "1.25rem" },
                 }}
               >
                 {service.title}
@@ -1192,8 +1207,12 @@ const stats = [
               <Typography
                 sx={{
                   color: "var(--color-pure-black)",
-                  lineHeight: 1.8,
-                  fontSize: "0.95rem",
+                  lineHeight: { xs: 1.45, md: 1.8 },
+                  fontSize: { xs: "0.8rem", md: "0.95rem" },
+                  display: "-webkit-box",
+                  WebkitLineClamp: 3,
+                  WebkitBoxOrient: "vertical",
+                  overflow: "hidden",
                 }}
               >
                 {service.description}
@@ -1206,9 +1225,11 @@ const stats = [
   </Container>
 </Box>
 <Box
+  component="section"
+  id="trust-section"
   sx={{
     backgroundColor: "var(--color-main-bg)",
-    py: { xs: 6, md: 10 },
+    py: { xs: 6, lg: 8.5 },
     position: "relative",
     overflow: "hidden",
   }}
@@ -1227,7 +1248,7 @@ const stats = [
     }}
   />
 
-  <Container maxWidth="lg">
+  <Container sx={{ maxWidth: { xs: "100%", md: "960px", lg: "1000px" }, px: { xs: 2, md: 4 } }}>
     <Box
       sx={{
         display: "grid",
@@ -1275,9 +1296,9 @@ const stats = [
             mb: 4,
             maxWidth: "700px",
             fontSize: {
-              xs: "1.8rem",
-              md: "2.2rem",
-              lg: "2.5rem",
+              xs: "1.5rem",
+              md: "1.85rem",
+              lg: "2.05rem",
             },
           }}
         >
@@ -1392,8 +1413,9 @@ const stats = [
         <Box
           sx={{
             position: "relative",
-            maxWidth: "500px",
+            maxWidth: "600px",
             ml: "auto",
+            width: "100%",
           }}
         >
           {/* Glow */}
@@ -1417,13 +1439,13 @@ const stats = [
             alt="Business Consulting"
             sx={{
               width: "100%",
-              height: { xs: "auto", md: "350px" },
-              borderRadius: "28px",
+              height: { xs: "auto", md: "380px", lg: "420px" },
+              borderRadius: "3px",
               position: "relative",
               zIndex: 2,
               objectFit: "cover",
               boxShadow:
-                "0 30px 70px rgba(0,0,0,.45)",
+                "0 20px 50px rgba(0,0,0,.15)",
               transition: ".5s ease",
               "&:hover": {
                 transform: "scale(1.03)",
@@ -1435,16 +1457,18 @@ const stats = [
     </Box>
   </Container>
 </Box>
-{/* 4 section */}
+{/* Client Success Stories Section */}
 <Box
+  component="section"
+  id="testimonials-section"
   sx={{
     backgroundColor: "var(--color-sub-bg)",
-    py: { xs: 6, md: 9 },
+    py: { xs: 6, lg: 8.5 },
     overflow: "hidden",
     position: "relative"
   }}
 >
-  <Container maxWidth="lg">
+  <Container sx={{ maxWidth: { xs: "100%", md: "960px", lg: "1000px" } }}>
     {/* Heading */}
     <motion.div
       initial={{ opacity: 0, y: 40 }}
@@ -1471,7 +1495,7 @@ const stats = [
           color: "var(--color-pure-black)",
           textAlign: "center",
           fontWeight: 900,
-          fontSize: { xs: "1.8rem", md: "2.4rem" },
+          fontSize: { xs: "1.45rem", md: "1.9rem" },
           mb: 2,
           lineHeight: 1.1,
         }}
@@ -1582,10 +1606,10 @@ const stats = [
           }}
           breakpoints={{
             0: {
-              slidesPerView: 1,
-              spaceBetween: 16,
+              slidesPerView: 2,
+              spaceBetween: 12,
             },
-            600: {
+            768: {
               slidesPerView: 2,
               spaceBetween: 20,
             },
@@ -1603,62 +1627,60 @@ const stats = [
             <SwiperSlide key={index} style={{ height: "auto" }}>
               {({ isActive }) => (
                 <Box
+                  onClick={() => setSelectedTestimonial(item)}
                   sx={{
                     height: "100%",
                     display: "flex",
                     flexDirection: "column",
                     justifyContent: "space-between",
-                    background: isActive
-                      ? "linear-gradient(145deg, #EDF0FF, #fcfcfc)"
-                      : "linear-gradient(145deg, #fcfcfc, #EDF0FF)",
-                    border: isActive
-                      ? "1.5px solid #2563eb"
-                      : "1px solid rgba(0, 0, 0, 0.18)",
+                    background: "linear-gradient(145deg, #fcfcfc, #EDF0FF)",
+                    border: "1px solid rgba(0, 0, 0, 0.15)",
                     borderRadius: "3px",
-                    p: { xs: 3, md: 4 },
+                    p: { xs: 2.5, md: 3.5 },
                     position: "relative",
-                    transition: "all 0.4s ease",
-                    opacity: isActive ? 1 : 0.6,
-                    transform: isActive ? "scale(1.12)" : "scale(0.96)",
-                    boxShadow: isActive
-                      ? "0 15px 40px rgba(37, 99, 235, 0.15)"
-                      : "none",
+                    opacity: 1,
+                    transform: "none",
+                    boxShadow: "0 4px 12px rgba(0,0,0,0.03)",
                     textAlign: "left",
                     cursor: "pointer",
                     transition: "all 0.3s ease",
                     "&:hover": {
-                      transform: "scale(1.05)",
+                      transform: "translateY(-4px)",
+                      borderColor: "#2563eb",
+                      boxShadow: "0 10px 25px rgba(37, 99, 235, 0.08)",
                     }
                   }}
                 >
                   <Box>
-                    {/* Quote Icon */}
-                    <Typography
-                      sx={{
-                        color: "#2563eb",
-                        fontSize: "3rem",
-                        fontWeight: 900,
-                        fontFamily: "Georgia, serif",
-                        lineHeight: 1,
-                        mb: 1.5,
-                        userSelect: "none"
-                      }}
-                    >
-                      ““
-                    </Typography>
-
                     {/* Review Text */}
                     <Typography
                       sx={{
                         color: "var(--color-pure-black)",
-                        fontSize: "0.95rem",
-                        lineHeight: 1.75,
-                        mb: 4,
+                        fontSize: { xs: "0.78rem", md: "0.92rem" },
+                        lineHeight: { xs: 1.45, md: 1.7 },
                         wordBreak: "break-word",
                         overflowWrap: "break-word",
+                        display: "-webkit-box",
+                        WebkitLineClamp: 3,
+                        WebkitBoxOrient: "vertical",
+                        overflow: "hidden",
                       }}
                     >
                       {highlightReview(item.review)}
+                    </Typography>
+
+                    {/* Read More Link */}
+                    <Typography
+                      sx={{
+                        color: "#2563eb",
+                        fontSize: { xs: "0.72rem", md: "0.82rem" },
+                        fontWeight: 600,
+                        display: "inline-block",
+                        mt: 0.8,
+                        "&:hover": { textDecoration: "underline" }
+                      }}
+                    >
+                      ... Read more
                     </Typography>
                   </Box>
 
@@ -1668,7 +1690,7 @@ const stats = [
                       display: "flex",
                       alignItems: "center",
                       gap: 2,
-                      mt: "auto",
+                      mt: 2,
                       minWidth: 0,
                     }}
                   >
@@ -1681,7 +1703,7 @@ const stats = [
                         sx={{
                           color: "var(--color-pure-black)",
                           fontWeight: 700,
-                          fontSize: "0.95rem",
+                          fontSize: { xs: "0.8rem", md: "0.95rem" },
                           lineHeight: 1.2,
                           wordBreak: "break-word",
                           overflowWrap: "break-word",
@@ -1692,8 +1714,8 @@ const stats = [
                       <Typography
                         sx={{
                           color: "var(--color-pure-black)",
-                          fontSize: "0.78rem",
-                          mt: 0.3,
+                          fontSize: { xs: "0.68rem", md: "0.78rem" },
+                          mt: 0.2,
                           mb: 0.5,
                           wordBreak: "break-word",
                           overflowWrap: "break-word",
@@ -1750,9 +1772,9 @@ const stats = [
     {/* Trusted By Industry Leaders Logo Strip */}
     <Box
       sx={{
-        mt: 10,
-        pt: 6,
-        borderTop: "1px solid rgba(255, 255, 255, 0.08)",
+        mt: 5,
+        pt: 4,
+        borderTop: "1px solid rgba(0, 0, 0, 0.06)",
         textAlign: "center"
       }}
     >
@@ -1815,6 +1837,128 @@ const stats = [
   </Container>
 </Box>
 
+      {/* Testimonial Detail Modal */}
+      <Dialog
+        open={Boolean(selectedTestimonial)}
+        onClose={() => setSelectedTestimonial(null)}
+        maxWidth="sm"
+        fullWidth
+        sx={{
+          "& .MuiDialog-container": {
+            backdropFilter: "blur(8px)",
+            background: "rgba(0, 0, 0, 0.4)",
+          },
+          "& .MuiDialog-paper": {
+            background: "var(--color-main-bg)",
+            color: "var(--color-pure-black)",
+            borderRadius: "20px",
+            border: "1px solid rgba(0, 0, 0, 0.08)",
+            boxShadow: "0 20px 40px rgba(0, 0, 0, 0.15)",
+            p: { xs: 3, sm: 4 },
+            margin: "16px",
+          }
+        }}
+      >
+        {selectedTestimonial && (
+          <Box sx={{ position: "relative" }}>
+            <Typography
+              onClick={() => setSelectedTestimonial(null)}
+              sx={{
+                position: "absolute",
+                top: -5,
+                right: -5,
+                cursor: "pointer",
+                fontSize: "1.6rem",
+                color: "#64748b",
+                fontWeight: 500,
+                lineHeight: 1,
+                transition: "color 0.2s",
+                "&:hover": { color: "#000" }
+              }}
+            >
+              ×
+            </Typography>
+
+            <Typography
+              sx={{
+                color: "#2563eb",
+                fontSize: "3.5rem",
+                fontWeight: 900,
+                fontFamily: "Georgia, serif",
+                lineHeight: 1,
+                mt: 0.5,
+                mb: 0.5,
+                userSelect: "none"
+              }}
+            >
+              “
+            </Typography>
+
+            <Typography
+              sx={{
+                color: "var(--color-pure-black)",
+                fontSize: { xs: "0.88rem", sm: "1rem" },
+                lineHeight: 1.7,
+                mb: 3,
+                fontStyle: "italic",
+                wordBreak: "break-word",
+                overflowWrap: "break-word"
+              }}
+            >
+              {selectedTestimonial.review}
+            </Typography>
+
+            <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
+              {renderAvatar(selectedTestimonial)}
+              <Box>
+                <Typography sx={{ color: "var(--color-pure-black)", fontWeight: 700, fontSize: "0.95rem" }}>
+                  {selectedTestimonial.name}
+                </Typography>
+                <Typography sx={{ color: "#64748b", fontSize: "0.75rem", mt: 0.2 }}>
+                  {selectedTestimonial.role}
+                </Typography>
+              </Box>
+            </Box>
+          </Box>
+        )}
+      </Dialog>
+
+      {/* Floating Scroll to Top Arrow */}
+      <AnimatePresence>
+        {showScrollTop && (
+          <Box
+            component={motion.div}
+            initial={{ opacity: 0, scale: 0.5, y: 50 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            exit={{ opacity: 0, scale: 0.5, y: 50 }}
+            onClick={scrollToTop}
+            sx={{
+              position: "fixed",
+              bottom: { xs: 20, md: 30 },
+              right: { xs: 20, md: 30 },
+              zIndex: 999,
+              width: { xs: 40, md: 46 },
+              height: { xs: 40, md: 46 },
+              borderRadius: "50%",
+              backgroundColor: "var(--color-blue)",
+              color: "#ffffff",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              cursor: "pointer",
+              boxShadow: "0 4px 15px rgba(71, 100, 255, 0.4)",
+              transition: "all 0.3s ease",
+              "&:hover": {
+                backgroundColor: "#2563eb",
+                transform: "translateY(-4px)",
+                boxShadow: "0 6px 20px rgba(37, 99, 235, 0.6)",
+              },
+            }}
+          >
+            <KeyboardArrowUp sx={{ fontSize: { xs: "20px", md: "24px" } }} />
+          </Box>
+        )}
+      </AnimatePresence>
     </div>
   );
 }

@@ -1,10 +1,4 @@
 import React from 'react';
-import {
-  Box,
-  Typography,
-  Button,
-  Grid,
-} from "@mui/material";
 import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 import {
@@ -18,287 +12,135 @@ function Ready() {
   const navigate = useNavigate();
 
   return (
-    <Box sx={{ mt: 6, mb: 2 }}>
-      <Box
-        sx={{
-          background: "var(--color-main-bg)",
-          border: "1px solid rgba(0, 0, 0, 0.06)",
-          borderRadius: "24px",
-          p: { xs: 3, md: 4.5 },
-          position: "relative",
-          overflow: "hidden",
-          boxShadow: "0 15px 45px rgba(0, 0, 0, 0.02)",
-        }}
-      >
-        {/* Glow Effects */}
-        <Box
-          sx={{
-            position: "absolute",
-            top: "-100px",
-            left: "-100px",
-            width: "300px",
-            height: "300px",
-            background: "radial-gradient(circle, rgba(37,99,235,0.06), transparent 70%)",
-            pointerEvents: "none",
-            zIndex: 1,
-          }}
-        />
-
-        <Grid container spacing={4} alignItems="center" sx={{ position: "relative", zIndex: 2 }}>
-          {/* Left Content Side */}
-          <Grid item xs={12} md={7.5}>
-            <Box sx={{ textAlign: "left" }}>
-              <Typography
-                sx={{
-                  color: "#3b82f6",
-                  fontWeight: 700,
-                  fontSize: "0.72rem",
-                  letterSpacing: "3px",
-                  textTransform: "uppercase",
-                  mb: 2,
-                }}
-              >
-                Let's Build What's Next
-              </Typography>
-
-              <Typography
-                sx={{
-                  color: "#0f172a",
-                  fontWeight: 900,
-                  fontSize: { xs: "2rem", md: "2.8rem" },
-                  lineHeight: 1.15,
-                  mb: 2,
-                }}
-              >
-                Ready to <span style={{ color: "#2563eb" }}>Transform</span>
-                <br />
-                Your Business?
-              </Typography>
-
-              <Typography
-                sx={{
-                  color: "#475569",
-                  fontSize: "0.95rem",
-                  lineHeight: 1.7,
-                  maxWidth: "500px",
-                  mb: 5,
-                }}
-              >
-                Partner with experienced consultants to unlock growth opportunities,
-                streamline operations, and build long-term success.
-              </Typography>
-
-              {/* Value Props Row */}
-              <Grid container spacing={3}>
-                {/* Prop 1 */}
-                <Grid item xs={12} sm={4}>
-                  <Box
-                    sx={{
-                      width: 44,
-                      height: 44,
-                      borderRadius: "50%",
-                      border: "1px solid rgba(59, 130, 246, 0.3)",
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      mb: 2,
-                      color: "#3b82f6",
-                      background: "rgba(37, 99, 235, 0.05)"
-                    }}
-                  >
-                    <TrendingUp fontSize="small" />
-                  </Box>
-                  <Typography sx={{ color: "#0f172a", fontWeight: 700, fontSize: "0.9rem", mb: 1 }}>
-                    Drive Growth
-                  </Typography>
-                  <Typography sx={{ color: "#475569", fontSize: "0.78rem", lineHeight: 1.5 }}>
-                    Identify new opportunities and accelerate results.
-                  </Typography>
-                </Grid>
-
-                {/* Prop 2 */}
-                <Grid item xs={12} sm={4}>
-                  <Box
-                    sx={{
-                      width: 44,
-                      height: 44,
-                      borderRadius: "50%",
-                      border: "1px solid rgba(59, 130, 246, 0.3)",
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      mb: 2,
-                      color: "#3b82f6",
-                      background: "rgba(37, 99, 235, 0.05)"
-                    }}
-                  >
-                    <Settings fontSize="small" />
-                  </Box>
-                  <Typography sx={{ color: "#0f172a", fontWeight: 700, fontSize: "0.9rem", mb: 1 }}>
-                    Optimize Operations
-                  </Typography>
-                  <Typography sx={{ color: "#475569", fontSize: "0.78rem", lineHeight: 1.5 }}>
-                    Streamline processes and improve efficiency.
-                  </Typography>
-                </Grid>
-
-                {/* Prop 3 */}
-                <Grid item xs={12} sm={4}>
-                  <Box
-                    sx={{
-                      width: 44,
-                      height: 44,
-                      borderRadius: "50%",
-                      border: "1px solid rgba(59, 130, 246, 0.3)",
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      mb: 2,
-                      color: "#3b82f6",
-                      background: "rgba(37, 99, 235, 0.05)"
-                    }}
-                  >
-                    <WorkspacePremium fontSize="small" />
-                  </Box>
-                  <Typography sx={{ color: "#0f172a", fontWeight: 700, fontSize: "0.9rem", mb: 1 }}>
-                    Build Lasting Success
-                  </Typography>
-                  <Typography sx={{ color: "#475569", fontSize: "0.78rem", lineHeight: 1.5 }}>
-                    Create sustainable value and long-term impact.
-                  </Typography>
-                </Grid>
-              </Grid>
-            </Box>
-          </Grid>
-
-          {/* Vertical Separator for Desktop */}
-          <Grid
-            item
-            xs={false}
-            md={0.5}
-            sx={{
-              display: { xs: "none", md: "flex" },
-              justifyContent: "center",
-              alignSelf: "stretch"
+    <div className="w-full bg-[var(--color-main-bg)]">
+      <div className="max-w-[960px] mx-auto py-6 md:py-12 px-4 sm:px-6">
+        <div className="bg-white border border-black/5 rounded-[20px] relative overflow-hidden shadow-[0_15px_35px_rgba(0,0,0,0.03)] p-5 sm:p-6 md:p-8 text-center w-full sm:max-w-[540px] md:max-w-[620px] mx-auto">
+          {/* Glow Effects */}
+          <div
+            className="absolute -top-[150px] left-1/2 -translate-x-1/2 w-[350px] pointer-events-none z-10"
+            style={{
+              height: '350px',
+              background: "radial-gradient(circle, rgba(37,99,235,0.06), transparent 70%)"
             }}
-          >
-            <Box
-              sx={{
-                width: "1px",
-                backgroundColor: "rgba(0, 0, 0, 0.08)",
-                height: "80%",
-                my: "auto"
-              }}
-            />
-          </Grid>
+          />
 
-          {/* Right Globe / CTA Side */}
-          <Grid item xs={12} md={4} sx={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", position: "relative" }}>
-            {/* Animated Rotating Globe Graphic */}
-            <Box
-              sx={{
-                position: "absolute",
-                width: "360px",
-                height: "360px",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                pointerEvents: "none",
-                opacity: 0.6,
-                zIndex: 0
-              }}
+          {/* Animated Rotating Globe Graphic in Background */}
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[300px] md:w-[400px] h-[300px] md:h-[400px] flex items-center justify-center pointer-events-none opacity-25 z-10">
+            <motion.div
+              animate={{ rotate: 360 }}
+              transition={{ duration: 50, repeat: Infinity, ease: "linear" }}
+              className="w-full h-full flex items-center justify-center"
             >
-              <motion.div
-                animate={{ rotate: 360 }}
-                transition={{ duration: 40, repeat: Infinity, ease: "linear" }}
-                style={{ width: "100%", height: "100%", display: "flex", alignItems: "center", justifyItems: "center" }}
-              >
-                <svg width="360" height="360" viewBox="0 0 360 360" fill="none" xmlns="http://www.w3.org/2000/svg" style={{ margin: "auto" }}>
-                  <circle cx="180" cy="180" r="140" stroke="rgba(37, 99, 235, 0.08)" strokeWidth="1" />
-                  <ellipse cx="180" cy="180" rx="140" ry="40" stroke="rgba(37, 99, 235, 0.08)" strokeWidth="1" />
-                  <ellipse cx="180" cy="180" rx="140" ry="85" stroke="rgba(37, 99, 235, 0.08)" strokeWidth="1" />
-                  <ellipse cx="180" cy="180" rx="40" ry="140" stroke="rgba(37, 99, 235, 0.08)" strokeWidth="1" />
-                  <ellipse cx="180" cy="180" rx="85" ry="140" stroke="rgba(37, 99, 235, 0.08)" strokeWidth="1" />
-                  
-                  {/* Nodes */}
-                  <circle cx="100" cy="120" r="3" fill="#3b82f6" />
-                  <circle cx="100" cy="120" r="7" fill="#3b82f6" opacity="0.25" />
-                  
-                  <circle cx="260" cy="120" r="3" fill="#3b82f6" />
-                  <circle cx="260" cy="120" r="7" fill="#3b82f6" opacity="0.25" />
+              <svg width="100%" height="100%" viewBox="0 0 360 360" fill="none" xmlns="http://www.w3.org/2000/svg" className="m-auto scale-110">
+                <circle cx="180" cy="180" r="140" stroke="rgba(37, 99, 235, 0.08)" strokeWidth="1" />
+                <ellipse cx="180" cy="180" rx="140" ry="40" stroke="rgba(37, 99, 235, 0.08)" strokeWidth="1" />
+                <ellipse cx="180" cy="180" rx="140" ry="85" stroke="rgba(37, 99, 235, 0.08)" strokeWidth="1" />
+                <ellipse cx="180" cy="180" rx="40" ry="140" stroke="rgba(37, 99, 235, 0.08)" strokeWidth="1" />
+                <ellipse cx="180" cy="180" rx="85" ry="140" stroke="rgba(37, 99, 235, 0.08)" strokeWidth="1" />
+                
+                <circle cx="100" cy="120" r="3" fill="#3b82f6" />
+                <circle cx="100" cy="120" r="7" fill="#3b82f6" opacity="0.25" />
+                
+                <circle cx="260" cy="120" r="3" fill="#3b82f6" />
+                <circle cx="260" cy="120" r="7" fill="#3b82f6" opacity="0.25" />
 
-                  <circle cx="180" cy="80" r="2" fill="#3b82f6" />
-                  <circle cx="180" cy="280" r="2" fill="#3b82f6" />
+                <circle cx="180" cy="80" r="2" fill="#3b82f6" />
+                <circle cx="180" cy="280" r="2" fill="#3b82f6" />
 
-                  <circle cx="115" cy="235" r="3" fill="#3b82f6" />
-                  <circle cx="115" cy="235" r="7" fill="#3b82f6" opacity="0.25" />
+                <circle cx="115" cy="235" r="3" fill="#3b82f6" />
+                <circle cx="115" cy="235" r="7" fill="#3b82f6" opacity="0.25" />
 
-                  <circle cx="245" cy="235" r="3.5" fill="#3b82f6" />
-                  <circle cx="245" cy="235" r="8" fill="#3b82f6" opacity="0.25" />
-                </svg>
-              </motion.div>
-            </Box>
+                <circle cx="245" cy="235" r="3.5" fill="#3b82f6" />
+                <circle cx="245" cy="235" r="8" fill="#3b82f6" opacity="0.25" />
+              </svg>
+            </motion.div>
+          </div>
 
-            {/* Content card overlay */}
-            <Box sx={{ position: "relative", zIndex: 2, textAlign: "center" }}>
-              <Button
-                variant="contained"
+          <div className="relative z-20 max-w-[700px] mx-auto">
+            {/* Subheading */}
+            <p className="text-[#3b82f6] font-bold text-[11px] sm:text-[12px] tracking-[3px] uppercase mb-3">
+              Let's Build What's Next
+            </p>
+
+            {/* Heading */}
+            <h2 className="text-[#0f172a] font-extrabold text-[22px] sm:text-[32px] md:text-[42px] leading-tight mb-3">
+              Ready to <span className="text-[#2563eb]">Transform</span> Your Business?
+            </h2>
+
+            {/* Description */}
+            <p className="text-[#475569] text-[13px] md:text-[15px] leading-relaxed max-w-[520px] mx-auto mb-6 md:mb-8">
+              Partner with experienced consultants to unlock growth opportunities,
+              streamline operations, and build long-term success.
+            </p>
+
+            {/* Value Props Row */}
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-5 md:gap-6 mb-6 md:mb-8 justify-center">
+              {/* Prop 1 */}
+              <div className="flex flex-row sm:flex-col items-center text-left sm:text-center gap-4 sm:gap-3 max-w-[280px] sm:max-w-none mx-auto w-full">
+                <div className="w-9 sm:w-10 h-9 sm:h-10 rounded-full border border-blue-500/30 flex items-center justify-center text-[#3b82f6] bg-blue-500/5 shrink-0">
+                  <TrendingUp className="w-4 h-4 sm:w-5 sm:h-5" />
+                </div>
+                <div>
+                  <h3 className="text-[#0f172a] font-bold text-[13px] sm:text-[14px] mb-1 sm:mb-2">
+                    Drive Growth
+                  </h3>
+                  <p className="text-[#475569] text-[12px] leading-relaxed">
+                    Identify new opportunities and accelerate results.
+                  </p>
+                </div>
+              </div>
+
+              {/* Prop 2 */}
+              <div className="flex flex-row sm:flex-col items-center text-left sm:text-center gap-4 sm:gap-3 max-w-[280px] sm:max-w-none mx-auto w-full">
+                <div className="w-9 sm:w-10 h-9 sm:h-10 rounded-full border border-blue-500/30 flex items-center justify-center text-[#3b82f6] bg-blue-500/5 shrink-0">
+                  <Settings className="w-4 h-4 sm:w-5 sm:h-5" />
+                </div>
+                <div>
+                  <h3 className="text-[#0f172a] font-bold text-[13px] sm:text-[14px] mb-1 sm:mb-2">
+                    Optimize Operations
+                  </h3>
+                  <p className="text-[#475569] text-[12px] leading-relaxed">
+                    Streamline processes and improve efficiency.
+                  </p>
+                </div>
+              </div>
+
+              {/* Prop 3 */}
+              <div className="flex flex-row sm:flex-col items-center text-left sm:text-center gap-4 sm:gap-3 max-w-[280px] sm:max-w-none mx-auto w-full">
+                <div className="w-9 sm:w-10 h-9 sm:h-10 rounded-full border border-blue-500/30 flex items-center justify-center text-[#3b82f6] bg-blue-500/5 shrink-0">
+                  <WorkspacePremium className="w-4 h-4 sm:w-5 sm:h-5" />
+                </div>
+                <div>
+                  <h3 className="text-[#0f172a] font-bold text-[13px] sm:text-[14px] mb-1 sm:mb-2">
+                    Build Lasting Success
+                  </h3>
+                  <p className="text-[#475569] text-[12px] leading-relaxed">
+                    Create sustainable value and long-term impact.
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            {/* CTA */}
+            <div className="flex flex-col items-center mt-2">
+              <button
                 onClick={() => navigate("/contact")}
-                sx={{
-                  pl: 2,
-                  pr: 4,
-                  py: 1.6,
-                  borderRadius: "30px",
-                  textTransform: "none",
-                  fontWeight: 700,
-                  fontSize: "0.95rem",
-                  background: "linear-gradient(135deg, #1d4ed8, #2563eb)",
-                  display: "inline-flex",
-                  alignItems: "center",
-                  gap: 2,
-                  boxShadow: "0 10px 30px rgba(37,99,235,0.2)",
-                  "&:hover": {
-                    background: "linear-gradient(135deg, #1e40af, #1d4ed8)",
-                    transform: "translateY(-2px)",
-                    boxShadow: "0 15px 35px rgba(37,99,235,0.3)"
-                  },
-                  transition: "all 0.3s ease"
-                }}
+                className="pl-5 pr-8 py-2 md:py-2.5 rounded-[3px] font-bold text-[14px] md:text-[15px] text-white bg-gradient-to-r from-blue-700 to-blue-600 hover:from-blue-800 hover:to-blue-700 shadow-[0_8px_25px_rgba(37,99,235,0.18)] hover:shadow-[0_12px_30px_rgba(37,99,235,0.25)] hover:-translate-y-0.5 transition-all duration-300 flex items-center gap-3 cursor-pointer"
               >
-                {/* Arrow Circle */}
-                <Box
-                  sx={{
-                    width: 28,
-                    height: 28,
-                    borderRadius: "50%",
-                    backgroundColor: "rgba(255, 255, 255, 0.15)",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center"
-                  }}
-                >
-                  <ArrowForward sx={{ fontSize: "1rem", color: "#fff" }} />
-                </Box>
+                <div className="w-[22px] h-[22px] rounded-full bg-white/15 flex items-center justify-center">
+                  <ArrowForward className="text-[12px] sm:text-[14px] text-white" />
+                </div>
                 Contact Us
-              </Button>
+              </button>
 
-              <Typography
-                sx={{
-                  color: "#475569",
-                  fontSize: "0.82rem",
-                  mt: 3.5,
-                  maxWidth: "200px",
-                  mx: "auto",
-                  lineHeight: 1.4
-                }}
-              >
+              <p className="text-[#475569] text-[12.5px] mt-4 max-w-[180px] leading-relaxed">
                 Let's start a conversation about your goals.
-              </Typography>
-            </Box>
-          </Grid>
-        </Grid>
-      </Box>
-    </Box>
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
   );
 }
 
