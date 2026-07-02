@@ -16,25 +16,15 @@
 }
 
 @layer base {
+  * {
+    font-family: var(--font-poppins) !important;
+  }
+
   body {
-    font-family: var(--font-poppins);
     background-color: var(--color-main-bg);
     color: var(--color-black);
-  }
-  
-  h1 {
-    /* main headings */
-    font-family: var(--font-poppins);
-  }
-  
-  h2 {
-    /* sub headings */
-    font-family: var(--font-poppins);
-  }
-  
-  h3 {
-    /* heading */
-    font-family: var(--font-poppins);
+    font-size: 14.5px;
+    line-height: 1.6;
   }
 }
 

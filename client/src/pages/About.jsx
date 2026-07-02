@@ -382,9 +382,9 @@ const itemVariants = {
     >
       <Container maxWidth="xl">
         {/* TOP SECTION */}
-        <Grid container spacing={4} sx={{margin:'40px'}}>
+        <Grid container spacing={4} sx={{ margin: { xs: '20px auto', md: '40px auto' }, width: 'auto' }}>
           {/* MISSION */}
-          <Grid size={{ xs: 12, md: 8.5 }}>
+          <Grid size={{ xs: 6, md: 8.5 }}>
             <Box
               component={motion.div}
               initial={{ x: -100, opacity: 0 }}
@@ -394,33 +394,62 @@ const itemVariants = {
               onClick={() => navigate("/mission")}
               sx={{
                 bgcolor: "white",
-               border: "1px solid black" ,
-                p: { xs: 3, md: 4 },
-                minHeight: 220,
+                border: "1px solid #e2e8f0" ,
+                borderRadius: "6px",
+                boxShadow: "0 4px 20px rgba(0, 0, 0, 0.03)",
+                p: { xs: 2, md: 3 },
+                minHeight: { xs: 170, md: 220 },
                 height: "100%",
-                transition: "0.4s",
+                transition: "all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94)",
                 cursor: "pointer",
+                position: "relative",
+                overflow: "hidden",
                 "&:hover": {
+                  borderColor: "#2F6BFF",
+                  boxShadow: "0 20px 40px rgba(47, 107, 255, 0.15)",
                   transform: "translateY(-8px)",
-                  boxShadow: "0 4px 12px rgba(0, 0, 0, 0.08)",
-                 
                 },
+                "&::after": {
+                  content: '""',
+                  position: "absolute",
+                  bottom: 0,
+                  left: 0,
+                  width: "100%",
+                  height: "4px",
+                  backgroundColor: "#2F6BFF",
+                  transform: "scaleX(0)",
+                  transformOrigin: "left",
+                  transition: "transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94)",
+                },
+                "&:hover::after": {
+                  transform: "scaleX(1)",
+                },
+                "&:hover .icon-container": {
+                  backgroundColor: "#2F6BFF",
+                  borderColor: "#2F6BFF",
+                  transform: "scale(1.1) rotate(5deg)",
+                },
+                "&:hover .icon-container svg": {
+                  color: "#ffffff !important",
+                }
               }}
             >
               <Box
+                className="icon-container"
                 sx={{
-                  width: 42,
-                  height: 42,
-                  border:"1px solid black",
+                  width: 40,
+                  height: 40,
+                  border: "1px solid #e2e8f0",
                   borderRadius: "50%",
-                  bgcolor: "rgba(255,255,255,0.12)",
+                  bgcolor: "rgba(47, 107, 255, 0.05)",
                   display: "flex",
                   justifyContent: "center",
                   alignItems: "center",
-                  mb: 3,
+                  mb: 2,
+                  transition: "all 0.3s ease",
                 }}
               >
-                <RocketLaunchIcon sx={{ color: "var(--color-blue)" }} />
+                <RocketLaunchIcon sx={{ color: "var(--color-blue)", transition: "all 0.3s ease" }} />
               </Box>
 
               <Typography
@@ -428,7 +457,7 @@ const itemVariants = {
                   color: "var(--color-pure-black)",
                   fontWeight: 700,
                   fontSize: {
-                    xs: "1.5rem",
+                    xs: "1.1rem",
                     md: "1.8rem",
                   },
                   mb: 2,
@@ -446,6 +475,11 @@ const itemVariants = {
                   },
                   lineHeight: 1.7,
                   maxWidth: "90%",
+                  textAlign: "left",
+                  display: "-webkit-box",
+                  WebkitLineClamp: { xs: 3, md: "none" },
+                  WebkitBoxOrient: "vertical",
+                  overflow: { xs: "hidden", md: "visible" },
                 }}
               >
                 To architect sustainable growth for ambitious enterprises
@@ -456,7 +490,7 @@ const itemVariants = {
           </Grid>
 
           {/* VISION */}
-          <Grid size={{ xs: 12, md: 3.5 }}>
+          <Grid size={{ xs: 6, md: 3.5 }}>
             <Box
               component={motion.div}
               initial={{ x: 100, opacity: 0 }}
@@ -466,33 +500,62 @@ const itemVariants = {
               onClick={() => navigate("/vision")}
               sx={{
                 bgcolor: "white",
-              border:"1px,solid,black",
-                p: { xs: 3, md: 4 },
-                minHeight: 220,
+                border: "1px solid #e2e8f0",
+                borderRadius: "6px",
+                boxShadow: "0 4px 20px rgba(0, 0, 0, 0.03)",
+                p: { xs: 2, md: 3 },
+                minHeight: { xs: 170, md: 220 },
                 height: "100%",
-                transition: "0.4s",
+                transition: "all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94)",
                 cursor: "pointer",
+                position: "relative",
+                overflow: "hidden",
                 "&:hover": {
+                  borderColor: "#2F6BFF",
+                  boxShadow: "0 20px 40px rgba(47, 107, 255, 0.15)",
                   transform: "translateY(-8px)",
-                 boxShadow: "0 4px 12px rgba(0, 0, 0, 0.08)",
-                  background:"white"
                 },
+                "&::after": {
+                  content: '""',
+                  position: "absolute",
+                  bottom: 0,
+                  left: 0,
+                  width: "100%",
+                  height: "4px",
+                  backgroundColor: "#2F6BFF",
+                  transform: "scaleX(0)",
+                  transformOrigin: "left",
+                  transition: "transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94)",
+                },
+                "&:hover::after": {
+                  transform: "scaleX(1)",
+                },
+                "&:hover .icon-container": {
+                  backgroundColor: "#2F6BFF",
+                  borderColor: "#2F6BFF",
+                  transform: "scale(1.1) rotate(5deg)",
+                },
+                "&:hover .icon-container svg": {
+                  color: "#ffffff !important",
+                }
               }}
             >
               <Box
+                className="icon-container"
                 sx={{
-                  width: 42,
-                  height: 42,
-                  border:"1px solid black",
+                  width: 40,
+                  height: 40,
+                  border: "1px solid #e2e8f0",
                   borderRadius: "50%",
-                  bgcolor: "rgba(255,255,255,0.15)",
+                  bgcolor: "rgba(47, 107, 255, 0.05)",
                   display: "flex",
                   justifyContent: "center",
                   alignItems: "center",
-                  mb: 3,
+                  mb: 2,
+                  transition: "all 0.3s ease",
                 }}
               >
-                <VisibilityIcon sx={{ color: "var(--color-blue)" }} />
+                <VisibilityIcon sx={{ color: "var(--color-blue)", transition: "all 0.3s ease" }} />
               </Box>
 
               <Typography
@@ -500,7 +563,7 @@ const itemVariants = {
                   color: "var(--color-pure-black)",
                   fontWeight: 700,
                   fontSize: {
-                    xs: "1.5rem",
+                    xs: "1.1rem",
                     md: "1.8rem",
                   },
                   mb: 2,
@@ -517,6 +580,11 @@ const itemVariants = {
                     md: "0.92rem",
                   },
                   lineHeight: 1.7,
+                  textAlign: "left",
+                  display: "-webkit-box",
+                  WebkitLineClamp: { xs: 3, md: "none" },
+                  WebkitBoxOrient: "vertical",
+                  overflow: { xs: "hidden", md: "visible" },
                 }}
               >
                 To be the definitive standard for corporate strategic advisory,
@@ -532,7 +600,7 @@ const itemVariants = {
             <Grid
               key={index}
               size={{
-                xs: 12,
+                xs: 6,
                 sm: 6,
                 md: 3,
               }}
@@ -549,31 +617,59 @@ const itemVariants = {
                 onClick={() => navigate(`/values/${item.title.toLowerCase()}`)}
                 sx={{
                   bgcolor: "white",
-                  
-                 border:"1px,solid,black",
-                  p: 3,
+                  border: "1px solid #e2e8f0",
+                  borderRadius: "6px",
+                  boxShadow: "0 4px 20px rgba(0, 0, 0, 0.03)",
+                  p: { xs: 2, md: 3 },
                   minHeight: 170,
                   height: "100%",
-                  transition: "0.4s",
+                  transition: "all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94)",
                   cursor: "pointer",
+                  position: "relative",
+                  overflow: "hidden",
                   "&:hover": {
+                    borderColor: "#2F6BFF",
+                    boxShadow: "0 20px 40px rgba(47, 107, 255, 0.15)",
                     transform: "translateY(-8px)",
-                   boxShadow: "0 4px 12px rgba(0, 0, 0, 0.08)",
-                    background:"white"
                   },
+                  "&::after": {
+                    content: '""',
+                    position: "absolute",
+                    bottom: 0,
+                    left: 0,
+                    width: "100%",
+                    height: "4px",
+                    backgroundColor: "#2F6BFF",
+                    transform: "scaleX(0)",
+                    transformOrigin: "left",
+                    transition: "transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94)",
+                  },
+                  "&:hover::after": {
+                    transform: "scaleX(1)",
+                  },
+                  "&:hover .icon-container": {
+                    backgroundColor: "#2F6BFF",
+                    borderColor: "#2F6BFF",
+                    transform: "scale(1.1) rotate(5deg)",
+                  },
+                  "&:hover .icon-container svg": {
+                    color: "#ffffff !important",
+                  }
                 }}
               >
                 <Box
+                  className="icon-container"
                   sx={{
                     width: 40,
                     height: 40,
-                    border:"1px solid black",
+                    border: "1px solid #e2e8f0",
                     borderRadius: "50%",
-                    bgcolor: "rgba(255,255,255,0.12)",
+                    bgcolor: "rgba(47, 107, 255, 0.05)",
                     display: "flex",
                     justifyContent: "center",
                     alignItems: "center",
                     mb: 2,
+                    transition: "all 0.3s ease",
                   }}
                 >
                   {item.icon}
@@ -583,7 +679,7 @@ const itemVariants = {
                   sx={{
                     color: "var(--color-pure-black)",
                     fontWeight: 600,
-                    fontSize: "1.1rem",
+                    fontSize: { xs: "0.95rem", md: "1.1rem" },
                     mb: 1,
                   }}
                 >
@@ -593,8 +689,13 @@ const itemVariants = {
                 <Typography
                   sx={{
                     color: "var(--color-pure-black)",
-                    fontSize: "0.9rem",
+                    fontSize: { xs: "0.8rem", md: "0.9rem" },
                     lineHeight: 1.7,
+                    textAlign: "left",
+                    display: "-webkit-box",
+                    WebkitLineClamp: { xs: 3, md: "none" },
+                    WebkitBoxOrient: "vertical",
+                    overflow: { xs: "hidden", md: "visible" },
                   }}
                 >
                   {item.desc}
@@ -654,11 +755,10 @@ const itemVariants = {
           sx={{
             display: "grid",
             gridTemplateColumns: {
-              xs: "1fr",
-              sm: "repeat(2, 1fr)",
+              xs: "repeat(2, 1fr)",
               lg: "repeat(4, 1fr)",
             },
-            gap: 4,
+            gap: { xs: 2, sm: 4 },
           }}
         >
           {leaders.map((leader, index) => (
@@ -666,18 +766,37 @@ const itemVariants = {
               key={index}
               sx={{
                 bgcolor: "var(--color-sub-bg)",
-                p: 2,
-                borderRadius: "3px",
+                p: { xs: 1.5, sm: 2 },
+                borderRadius: "6px",
                 cursor: "pointer",
-                transition: "all .4s ease",
+                transition: "all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94)",
+                position: "relative",
+                overflow: "hidden",
 
                 "&:hover": {
-                  transform: "translateY(-10px)",
+                  transform: "translateY(-8px)",
+                  boxShadow: "0 20px 40px rgba(47, 107, 255, 0.12)",
                 },
 
                 "&:hover img": {
                   transform: "scale(1.08)",
                 },
+
+                "&::after": {
+                  content: '""',
+                  position: "absolute",
+                  bottom: 0,
+                  left: 0,
+                  width: "100%",
+                  height: "4px",
+                  backgroundColor: "#2F6BFF",
+                  transform: "scaleX(0)",
+                  transformOrigin: "left",
+                  transition: "transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94)",
+                },
+                "&:hover::after": {
+                  transform: "scaleX(1)",
+                }
               }}
             >
               {/* Image */}
@@ -686,9 +805,9 @@ const itemVariants = {
                   overflow: "hidden",
                   borderRadius: "4px",
                   height: {
-                    xs: 350,
-                    sm: 320,
-                    md: 340,
+                    xs: 200,
+                    sm: 280,
+                    md: 320,
                   },
                   mb: 2,
                 }}
@@ -712,7 +831,7 @@ const itemVariants = {
                 sx={{
                   color: "var(--color-pure-black)",
                   fontWeight: 700,
-                  fontSize: "16px",
+                  fontSize: { xs: "14px", sm: "16px" },
                   mb: 0.5,
                 }}
               >
@@ -722,7 +841,7 @@ const itemVariants = {
               <Typography
                 sx={{
                   color: "var(--color-pure-black)",
-                  fontSize: "13px",
+                  fontSize: { xs: "11px", sm: "13px" },
                   fontWeight: 600,
                   mb: 1.5,
                 }}
@@ -733,8 +852,13 @@ const itemVariants = {
               <Typography
                 sx={{
                   color: "var(--color-pure-black)",
-                  fontSize: "13px",
+                  fontSize: { xs: "11px", sm: "13px" },
                   lineHeight: 1.7,
+                  textAlign: "left",
+                  display: "-webkit-box",
+                  WebkitLineClamp: { xs: 3, md: "none" },
+                  WebkitBoxOrient: "vertical",
+                  overflow: { xs: "hidden", md: "visible" },
                 }}
               >
                 {leader.description}
