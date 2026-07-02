@@ -267,12 +267,12 @@ const itemVariants = {
             md: "500px",
           },
           objectFit: "cover",
-          borderRadius: "8px",
-          boxShadow: "0 20px 50px rgba(0,0,0,0.5)",
+          borderRadius: "3px",
+          boxShadow: "0 12px 12px rgba(0,0,0,0.5)",
           transition: "all 0.5s ease",
 
           "&:hover": {
-            transform: "scale(1.03)",
+            transform: "scale(1.00)",
           },
         }}
       />
@@ -374,8 +374,8 @@ const itemVariants = {
       spacing={4}
       sx={{
         width: "100%",
-        background:
-          "transparent",
+        background:"var(--color-sub-bg)",
+          
         py: { xs: 6, md: 10 },
         
       }}
@@ -393,8 +393,8 @@ const itemVariants = {
               transition={{ duration: 0.8 }}
               onClick={() => navigate("/mission")}
               sx={{
-                bgcolor: "var(--color-sub-bg)",
-                borderRadius: "18px",
+                bgcolor: "white",
+               border: "1px solid black" ,
                 p: { xs: 3, md: 4 },
                 minHeight: 220,
                 height: "100%",
@@ -402,7 +402,8 @@ const itemVariants = {
                 cursor: "pointer",
                 "&:hover": {
                   transform: "translateY(-8px)",
-                  boxShadow: "0 25px 60px rgba(0,0,0,.45)",
+                  boxShadow: "0 4px 12px rgba(0, 0, 0, 0.08)",
+                 
                 },
               }}
             >
@@ -410,7 +411,7 @@ const itemVariants = {
                 sx={{
                   width: 42,
                   height: 42,
-                  border:"2px solid white",
+                  border:"1px solid black",
                   borderRadius: "50%",
                   bgcolor: "rgba(255,255,255,0.12)",
                   display: "flex",
@@ -464,8 +465,8 @@ const itemVariants = {
               transition={{ duration: 0.8 }}
               onClick={() => navigate("/vision")}
               sx={{
-                bgcolor: "var(--color-sub-bg)",
-                borderRadius: "18px",
+                bgcolor: "white",
+              border:"1px,solid,black",
                 p: { xs: 3, md: 4 },
                 minHeight: 220,
                 height: "100%",
@@ -473,7 +474,8 @@ const itemVariants = {
                 cursor: "pointer",
                 "&:hover": {
                   transform: "translateY(-8px)",
-                  boxShadow: "0 25px 60px rgba(47,107,255,.35)",
+                 boxShadow: "0 4px 12px rgba(0, 0, 0, 0.08)",
+                  background:"white"
                 },
               }}
             >
@@ -481,7 +483,7 @@ const itemVariants = {
                 sx={{
                   width: 42,
                   height: 42,
-                  border:"2px solid white",
+                  border:"1px solid black",
                   borderRadius: "50%",
                   bgcolor: "rgba(255,255,255,0.15)",
                   display: "flex",
@@ -524,7 +526,7 @@ const itemVariants = {
           </Grid>
         </Grid>
 
-        {/* FEATURE CARDS */}
+       
         <Grid container spacing={3} mt={1}>
           {featureData.map((item, index) => (
             <Grid
@@ -546,8 +548,9 @@ const itemVariants = {
                 }}
                 onClick={() => navigate(`/values/${item.title.toLowerCase()}`)}
                 sx={{
-                  bgcolor: "var(--color-sub-bg)",
-                  borderRadius: "16px",
+                  bgcolor: "white",
+                  
+                 border:"1px,solid,black",
                   p: 3,
                   minHeight: 170,
                   height: "100%",
@@ -555,7 +558,8 @@ const itemVariants = {
                   cursor: "pointer",
                   "&:hover": {
                     transform: "translateY(-8px)",
-                    boxShadow: "0 20px 50px rgba(0,0,0,.4)",
+                   boxShadow: "0 4px 12px rgba(0, 0, 0, 0.08)",
+                    background:"white"
                   },
                 }}
               >
@@ -563,7 +567,7 @@ const itemVariants = {
                   sx={{
                     width: 40,
                     height: 40,
-                    border:"2px solid white",
+                    border:"1px solid black",
                     borderRadius: "50%",
                     bgcolor: "rgba(255,255,255,0.12)",
                     display: "flex",
@@ -663,7 +667,7 @@ const itemVariants = {
               sx={{
                 bgcolor: "var(--color-sub-bg)",
                 p: 2,
-                borderRadius: "16px",
+                borderRadius: "3px",
                 cursor: "pointer",
                 transition: "all .4s ease",
 
@@ -680,7 +684,7 @@ const itemVariants = {
               <Box
                 sx={{
                   overflow: "hidden",
-                  borderRadius: "12px",
+                  borderRadius: "4px",
                   height: {
                     xs: 350,
                     sm: 320,
