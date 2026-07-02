@@ -99,7 +99,7 @@ const CaseStudyDetails = () => {
     }
 
     return (
-        <div className="bg-transparent text-white min-h-screen">
+        <div className="min-h-screen" style={{ background: "var(--color-sub-bg)", color: "var(--color-pure-black)" }}>
 
             {/* HEADER */}
             <motion.section
@@ -121,7 +121,7 @@ const CaseStudyDetails = () => {
                     initial={{ opacity: 0, y: 30 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.8, delay: 0.2 }}
-                    className="flex flex-wrap gap-6 text-gray-400 border-b border-slate-800 pb-8"
+                    className="flex flex-wrap gap-6 text-[var(--color-pure-black)] border-b border-[var(--color-border-color)] pb-8"
                 >
                     <span>{study.author}</span>
                     <span>
@@ -146,7 +146,7 @@ const CaseStudyDetails = () => {
                 variants={fadeUp}
                 className="max-w-6xl mx-auto px-6 py-12"
             >
-                <div className="relative w-full h-[500px] rounded-2xl overflow-hidden bg-slate-950 border border-slate-800/80">
+                <div className="relative w-full h-[500px] rounded-2xl overflow-hidden bg-[var(--color-main-bg)] border border-[var(--color-border-color)]">
                     {/* Sharp Foreground Full Image stretched using object-fill */}
                     <motion.img
                         src={study.coverImage}
@@ -187,7 +187,7 @@ const CaseStudyDetails = () => {
                 <h2 className="text-4xl font-bold mb-6">
                     Business Challenge
                 </h2>
-                <p className="text-gray-300 leading-8 mb-6">
+                <p className="text-[var(--color-pure-black)] leading-8 mb-6">
                    {study.challenges}
                 </p>
                 <motion.div
@@ -213,16 +213,16 @@ const CaseStudyDetails = () => {
                     animate="visible"
                     className="space-y-4"
                 >
-                    <div className="bg-slate-900 border border-slate-800 rounded-xl p-5">
+                    <div className="bg-[var(--color-main-bg)] border border-[var(--color-border-color)] rounded-xl p-5">
                         ✓ Enterprise Cloud Migration
                     </div>
-                    <div className="bg-slate-900 border border-slate-800 rounded-xl p-5">
+                    <div className="bg-[var(--color-main-bg)] border border-[var(--color-border-color)] rounded-xl p-5">
                         ✓ Process Automation & Workflow Optimization
                     </div>
-                    <div className="bg-slate-900 border border-slate-800 rounded-xl p-5">
+                    <div className="bg-[var(--color-main-bg)] border border-[var(--color-border-color)] rounded-xl p-5">
                         ✓ Advanced Analytics & Reporting Infrastructure
                     </div>
-                    <div className="bg-slate-900 border border-slate-800 rounded-xl p-5">
+                    <div className="bg-[var(--color-main-bg)] border border-[var(--color-border-color)] rounded-xl p-5">
                         ✓ Omnichannel Customer Experience Strategy
                     </div>
                 </motion.div>
@@ -239,7 +239,7 @@ const CaseStudyDetails = () => {
                 <h2 className="text-4xl font-bold mb-8">
                     Results & Impact
                 </h2>
-                <p className="text-gray-300 mb-10 leading-8">
+                <p className="text-[var(--color-pure-black)] mb-10 leading-8">
                     {study.results}
                 </p>
                 <motion.div
@@ -248,35 +248,35 @@ const CaseStudyDetails = () => {
                     animate="visible"
                     className="grid md:grid-cols-2 lg:grid-cols-4 gap-6"
                 >
-                    <div className="bg-slate-900 border border-slate-800 rounded-xl p-8 text-center">
+                    <div className="bg-[var(--color-main-bg)] border border-[var(--color-border-color)] rounded-xl p-8 text-center">
                         <h3 className="text-5xl font-bold text-blue-500 mb-3">
                             35%
                         </h3>
-                        <p className="text-gray-400">
+                        <p className="text-[var(--color-pure-black)]">
                             Revenue Growth
                         </p>
                     </div>
-                    <div className="bg-slate-900 border border-slate-800 rounded-xl p-8 text-center">
+                    <div className="bg-[var(--color-main-bg)] border border-[var(--color-border-color)] rounded-xl p-8 text-center">
                         <h3 className="text-5xl font-bold text-blue-500 mb-3">
                             28%
                         </h3>
-                        <p className="text-gray-400">
+                        <p className="text-[var(--color-pure-black)]">
                             Cost Reduction
                         </p>
                     </div>
-                    <div className="bg-slate-900 border border-slate-800 rounded-xl p-8 text-center">
+                    <div className="bg-[var(--color-main-bg)] border border-[var(--color-border-color)] rounded-xl p-8 text-center">
                         <h3 className="text-5xl font-bold text-blue-500 mb-3">
                             42%
                         </h3>
-                        <p className="text-gray-400">
+                        <p className="text-[var(--color-pure-black)]">
                             Productivity Increase
                         </p>
                     </div>
-                    <div className="bg-slate-900 border border-slate-800 rounded-xl p-8 text-center">
+                    <div className="bg-[var(--color-main-bg)] border border-[var(--color-border-color)] rounded-xl p-8 text-center">
                         <h3 className="text-5xl font-bold text-blue-500 mb-3">
                             90%
                         </h3>
-                        <p className="text-gray-400">
+                        <p className="text-[var(--color-pure-black)]">
                             Customer Satisfaction
                         </p>
                     </div>
@@ -298,7 +298,7 @@ const CaseStudyDetails = () => {
                     variants={staggerContainer}
                     initial="hidden"
                     animate="visible"
-                    className="bg-slate-900 border border-slate-800 rounded-2xl p-8 grid md:grid-cols-[200px_1fr] gap-8 items-center"
+                    className="bg-[var(--color-main-bg)] border border-[var(--color-border-color)] rounded-2xl p-8 grid md:grid-cols-[200px_1fr] gap-8 items-center"
                 >
                     <div className="flex justify-center">
                         <img
@@ -319,20 +319,20 @@ const CaseStudyDetails = () => {
                         <p className="text-blue-500 mt-2">
                             {study.authorWebsite}
                         </p>
-                        <p className="text-gray-400 mt-4 leading-7">
+                        <p className="text-[var(--color-pure-black)] mt-4 leading-7">
                             {study.authorRole}
                         </p>
                         <div className="flex flex-wrap gap-3 mt-6">
-                            <span className="px-4 py-2 bg-slate-800 rounded-full text-sm">
+                            <span className="px-4 py-2 bg-[var(--color-main-bg)] rounded-full text-sm">
                                 Strategy
                             </span>
-                            <span className="px-4 py-2 bg-slate-800 rounded-full text-sm">
+                            <span className="px-4 py-2 bg-[var(--color-main-bg)] rounded-full text-sm">
                                 Digital Transformation
                             </span>
-                            <span className="px-4 py-2 bg-slate-800 rounded-full text-sm">
+                            <span className="px-4 py-2 bg-[var(--color-main-bg)] rounded-full text-sm">
                                 Operations
                             </span>
-                            <span className="px-4 py-2 bg-slate-800 rounded-full text-sm">
+                            <span className="px-4 py-2 bg-[var(--color-main-bg)] rounded-full text-sm">
                                 Leadership
                             </span>
                         </div>

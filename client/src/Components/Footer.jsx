@@ -2,7 +2,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import logo from '../assets/strivo logo.png';
-import logo2 from '../assets/strivo logo 2.png';
+
 
 const Footer = () => {
   return (
@@ -18,7 +18,6 @@ const Footer = () => {
         <div className="flex flex-col gap-6">
           <div className="flex flex-col gap-3 items-start">
             <img src={logo} alt="Strivo Logo" className="h-10 w-auto object-contain" />
-            <img src={logo2} alt="Strivo Logo Text" className="h-8 w-auto object-contain" />
           </div>
           <p className="text-gray-400 text-sm leading-relaxed pr-4">
             © 2024 Strivo Consultancy. All rights reserved. Expert precision for enterprise growth.

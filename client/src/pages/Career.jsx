@@ -194,11 +194,11 @@ function Career() {
   const fieldStyle = {
     "& .MuiOutlinedInput-root": {
       borderRadius: "14px",
-      background: "rgba(255,255,255,0.03)",
+      background: "var(--color-main-bg)",
       transition: "all 0.3s ease",
 
       "& fieldset": {
-        borderColor: "rgba(255,255,255,0.12)",
+        borderColor: "var(--color-border-color)",
         transition: "all 0.3s ease",
       },
 
@@ -212,20 +212,20 @@ function Career() {
 
       "&.Mui-focused": {
         boxShadow: "0 0 14px rgba(37,99,235, 0.25)",
-        background: "rgba(255,255,255,0.05)",
+        background: "var(--color-sub-bg)",
       },
     },
 
 
     "& .MuiInputBase-input": {
-      color: "#ffffff !important",
+      color: "var(--color-pure-black) !important",
     },
     "& .MuiSelect-select": {
-      color: "#ffffff !important",
+      color: "var(--color-pure-black) !important",
     },
 
     "& .MuiInputLabel-root": {
-      color: "#94A3B8",
+      color: "var(--color-pure-black)",
     },
 
     "& .MuiInputLabel-root.Mui-focused": {
@@ -233,7 +233,7 @@ function Career() {
     },
 
     "& .MuiSvgIcon-root": {
-      color: "#fff",
+      color: "var(--color-pure-black)",
     },
   };
   const MotionBox = motion.create(Box);
@@ -531,7 +531,7 @@ function Career() {
                       minWidth: 230,
                       height: 60,
                       background: "#2563EB",
-                      borderRadius: "16px",
+                      borderRadius: "3px",
                       fontWeight: 700,
                       textTransform: "none",
                       boxShadow: "0 15px 40px rgba(37,99,235,.35)",
@@ -551,7 +551,7 @@ function Career() {
                     sx={{
                       minWidth: 230,
                       height: 60,
-                      borderRadius: "16px",
+                      borderRadius: "3px",
                       borderColor: "rgba(255,255,255,.15)",
                       color: "#fff",
                       textTransform: "none",
@@ -586,7 +586,7 @@ function Career() {
             bottom: 40,
             left: "50%",
             transform: "translateX(-50%)",
-            color: "#fff",
+            color: "var(--color-pure-black)",
             cursor: "pointer",
           }}
         >
@@ -599,7 +599,7 @@ function Career() {
         id="why-join-us"
         sx={{
           py: { xs: 10, md: 18 },
-          background: "#000000",
+          background: "var(--color-main-bg)",
           position: "relative",
         }}
       >
@@ -653,8 +653,8 @@ function Career() {
                     borderRadius: "32px",
                     overflow: "hidden",
                     backdropFilter: "blur(20px)",
-                    border: "1px solid rgba(255,255,255,0.08)",
-                    background: "rgba(255,255,255,0.03)",
+                    border: "1px solid var(--color-border-color)",
+                    background: "var(--color-sub-bg)",
                   }}
                 >
                   <Box
@@ -703,7 +703,7 @@ function Career() {
 
                 <Typography
                   sx={{
-                    color: "#fff",
+                    color: "var(--color-pure-black)",
                     fontWeight: 700,
                     lineHeight: 1.1,
                     mb: 4,
@@ -721,7 +721,7 @@ function Career() {
 
                 <Typography
                   sx={{
-                    color: "#94A3B8",
+                    color: "var(--color-pure-black)",
                     lineHeight: 1.7,
                     fontSize: "0.95rem",
                     mb: 6,
@@ -768,6 +768,7 @@ function Career() {
                             borderRadius: "50%",
                             background:
                               "rgba(37,99,235,0.15)",
+                              color:"black",
                             display: "flex",
                             alignItems: "center",
                             justifyContent: "center",
@@ -778,7 +779,7 @@ function Career() {
 
                         <Typography
                           sx={{
-                            color: "#fff",
+                            color: "var(--color-pure-black)",
                             fontSize: "1.05rem",
                             fontWeight: 500,
                           }}
@@ -798,7 +799,7 @@ function Career() {
         id="life-at-strivo"
         sx={{
           py: { xs: 10, md: 14 },
-          background: "#000000",
+          background: "var(--color-main-bg)",
         }}
       >
         <Container maxWidth="lg">
@@ -825,7 +826,7 @@ function Career() {
 
             <Typography
               sx={{
-                color: "#fff",
+                color: "var(--color-pure-black)",
                 fontWeight: 700,
                 lineHeight: 1.1,
                 mb: 3,
@@ -842,7 +843,7 @@ function Career() {
 
             <Typography
               sx={{
-                color: "#94A3B8",
+                color: "var(--color-pure-black)",
                 maxWidth: "700px",
                 mx: "auto",
                 lineHeight: 1.7,
@@ -916,7 +917,7 @@ function Career() {
             >
               <Typography
                 sx={{
-                  color: "#fff",
+                  color: "white",
                   fontWeight: 700,
                   mb: 1,
 
@@ -931,7 +932,7 @@ function Career() {
 
               <Typography
                 sx={{
-                  color: "#CBD5E1",
+                  color: "white",
                   maxWidth: "650px",
                   lineHeight: 1.8,
                 }}
@@ -949,7 +950,7 @@ function Career() {
         id="open-positions"
         sx={{
           py: { xs: 8, md: 12 },
-          background: "#000000",
+          background: "var(--color-main-bg)",
         }}
       >
         <Container maxWidth="xl">
@@ -974,7 +975,7 @@ function Career() {
 
             <Typography
               sx={{
-                color: "#fff",
+                color: "var(--color-pure-black)",
                 fontWeight: 700,
                 lineHeight: 1.1,
                 mb: 3,
@@ -991,7 +992,7 @@ function Career() {
 
             <Typography
               sx={{
-                color: "#94A3B8",
+                color: "var(--color-pure-black)",
                 maxWidth: "650px",
                 mx: "auto",
                 lineHeight: 1.7,
@@ -1011,8 +1012,8 @@ function Career() {
                 minHeight: 250,
                 p: 4,
                 borderRadius: "24px",
-                background: "rgba(255,255,255,0.04)",
-                border: "1px solid rgba(255,255,255,0.08)",
+                background: "var(--color-sub-bg)",
+                border: "1px solid var(--color-border-color)",
                 backdropFilter: "blur(20px)",
                 transition: "all .3s ease",
 
@@ -1037,7 +1038,7 @@ function Career() {
               <Box maxWidth="750px">
                 <Typography
                   sx={{
-                    color: "#fff",
+                    color: "var(--color-pure-black)",
                     fontSize: "1.35rem",
                     fontWeight: 700,
                     mb: 1,
@@ -1048,7 +1049,7 @@ function Career() {
 
                 <Typography
                   sx={{
-                    color: "#94A3B8",
+                    color: "var(--color-pure-black)",
                     lineHeight: 1.8,
                     mb: 2.5,
                   }}
@@ -1061,7 +1062,7 @@ function Career() {
 
                 <Stack sx={{
                   "& .MuiChip-root": {
-                    color: "#fff",
+                    color: "var(--color-pure-black)",
                     background: "rgba(37,99,235,0.15)",
                     border: "1px solid rgba(37,99,235,0.3)",
                     fontWeight: 500,
@@ -1084,7 +1085,7 @@ function Career() {
                 variant="contained"
                 sx={{
                   background: "#2563EB",
-                  borderRadius: "14px",
+                  borderRadius: "3px",
                   px: 4,
                   minWidth: 150,
                   height: 50,
@@ -1104,8 +1105,8 @@ function Career() {
                 minHeight: 250,
                 p: 4,
                 borderRadius: "24px",
-                background: "rgba(255,255,255,0.04)",
-                border: "1px solid rgba(255,255,255,0.08)",
+                background: "var(--color-sub-bg)",
+                border: "1px solid var(--color-border-color)",
                 backdropFilter: "blur(20px)",
                 transition: "all .3s ease",
 
@@ -1130,7 +1131,7 @@ function Career() {
               <Box maxWidth="750px">
                 <Typography
                   sx={{
-                    color: "#fff",
+                    color: "var(--color-pure-black)",
                     fontSize: "1.35rem",
                     fontWeight: 700,
                     mb: 1,
@@ -1141,7 +1142,7 @@ function Career() {
 
                 <Typography
                   sx={{
-                    color: "#94A3B8",
+                    color: "var(--color-pure-black)",
                     lineHeight: 1.8,
                     mb: 2.5,
                   }}
@@ -1154,7 +1155,7 @@ function Career() {
 
                 <Stack sx={{
                   "& .MuiChip-root": {
-                    color: "#fff",
+                    color: "var(--color-pure-black)",
                     background: "rgba(37,99,235,0.15)",
                     border: "1px solid rgba(37,99,235,0.3)",
                     fontWeight: 500,
@@ -1176,7 +1177,7 @@ function Career() {
                 variant="contained"
                 sx={{
                   background: "#2563EB",
-                  borderRadius: "14px",
+                  borderRadius: "3px",
                   px: 4,
                   minWidth: 150,
                   height: 50,
@@ -1196,8 +1197,8 @@ function Career() {
                 minHeight: 250,
                 p: 4,
                 borderRadius: "24px",
-                background: "rgba(255,255,255,0.04)",
-                border: "1px solid rgba(255,255,255,0.08)",
+                background: "var(--color-sub-bg)",
+                border: "1px solid var(--color-border-color)",
                 backdropFilter: "blur(20px)",
                 transition: "all .3s ease",
 
@@ -1222,7 +1223,7 @@ function Career() {
               <Box maxWidth="750px">
                 <Typography
                   sx={{
-                    color: "#fff",
+                    color: "var(--color-pure-black)",
                     fontSize: "1.35rem",
                     fontWeight: 700,
                     mb: 1,
@@ -1233,7 +1234,7 @@ function Career() {
 
                 <Typography
                   sx={{
-                    color: "#94A3B8",
+                    color: "var(--color-pure-black)",
                     lineHeight: 1.8,
                     mb: 2.5,
                   }}
@@ -1246,7 +1247,7 @@ function Career() {
 
                 <Stack sx={{
                   "& .MuiChip-root": {
-                    color: "#fff",
+                    color: "var(--color-pure-black)",
                     background: "rgba(37,99,235,0.15)",
                     border: "1px solid rgba(37,99,235,0.3)",
                     fontWeight: 500,
@@ -1269,7 +1270,7 @@ function Career() {
                 variant="contained"
                 sx={{
                   background: "#2563EB",
-                  borderRadius: "14px",
+                  borderRadius: "3px",
                   px: 4,
                   minWidth: 150,
                   height: 50,
@@ -1293,8 +1294,8 @@ function Career() {
                       minHeight: 250,
                       p: 4,
                       borderRadius: "24px",
-                      background: "rgba(255,255,255,0.04)",
-                      border: "1px solid rgba(255,255,255,0.08)",
+                      background: "var(--color-sub-bg)",
+                      border: "1px solid var(--color-border-color)",
                       backdropFilter: "blur(20px)",
                       transition: "all .3s ease",
 
@@ -1319,7 +1320,7 @@ function Career() {
                     <Box maxWidth="750px">
                       <Typography
                         sx={{
-                          color: "#fff",
+                          color: "var(--color-pure-black)",
                           fontSize: "1.35rem",
                           fontWeight: 700,
                           mb: 1,
@@ -1330,7 +1331,7 @@ function Career() {
 
                       <Typography
                         sx={{
-                          color: "#94A3B8",
+                          color: "var(--color-pure-black)",
                           lineHeight: 1.8,
                           mb: 2.5,
                         }}
@@ -1340,7 +1341,7 @@ function Career() {
 
                       <Stack sx={{
                         "& .MuiChip-root": {
-                          color: "#fff",
+                          color: "var(--color-pure-black)",
                           background: "rgba(37,99,235,0.15)",
                           border: "1px solid rgba(37,99,235,0.3)",
                           fontWeight: 500,
@@ -1362,7 +1363,7 @@ function Career() {
                       variant="contained"
                       sx={{
                         background: "#2563EB",
-                        borderRadius: "14px",
+                        borderRadius: "3px",
                         px: 4,
                         minWidth: 150,
                         height: 50,
@@ -1384,9 +1385,9 @@ function Career() {
                     onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
                     variant="outlined"
                     sx={{
-                      color: "#fff",
+                      color: "var(--color-pure-black)",
                       borderColor: "rgba(255, 255, 255, 0.15)",
-                      borderRadius: "10px",
+                      borderRadius: "3px",
                       textTransform: "none",
                       px: 3,
                       "&:hover": { borderColor: "#2563EB", background: "rgba(37, 99, 235, 0.1)" },
@@ -1403,9 +1404,9 @@ function Career() {
                     onClick={() => setCurrentPage(prev => Math.min(prev + 1, Math.ceil(dynamicJobs.length / jobsPerPage)))}
                     variant="outlined"
                     sx={{
-                      color: "#fff",
+                      color: "var(--color-pure-black)",
                       borderColor: "rgba(255, 255, 255, 0.15)",
-                      borderRadius: "10px",
+                      borderRadius: "3px",
                       textTransform: "none",
                       px: 3,
                       "&:hover": { borderColor: "#2563EB", background: "rgba(37, 99, 235, 0.1)" },
@@ -1425,7 +1426,7 @@ function Career() {
         sx={{
           py: { xs: 8, md: 12 },
           px: 2,
-          background: "#000000",
+          background: "var(--color-main-bg)",
         }}
       >
         <Container maxWidth="lg">
@@ -1435,11 +1436,11 @@ function Career() {
               p: { xs: 4, md: 6 },
               borderRadius: "30px",
 
-              background: "rgba(255,255,255,0.04)",
+              background: "var(--color-sub-bg)",
 
               backdropFilter: "blur(20px)",
 
-              border: "1px solid rgba(255,255,255,0.08)",
+              border: "1px solid var(--color-border-color)",
 
               boxShadow:
                 "0 0 40px rgba(37,99,235,0.08)",
@@ -1447,7 +1448,7 @@ function Career() {
           >
             <Typography
               sx={{
-                color: "#fff",
+                color: "var(--color-pure-black)",
                 fontWeight: 700,
                 fontSize: {
                   xs: "1.6rem",
@@ -1461,7 +1462,7 @@ function Career() {
 
             <Typography
               sx={{
-                color: "#94A3B8",
+                color: "var(--color-pure-black)",
                 maxWidth: "700px",
                 mx: "auto",
                 lineHeight: 1.8,
@@ -1481,7 +1482,7 @@ function Career() {
                 background: "#2563EB",
                 px: 5,
                 py: 1.5,
-                borderRadius: "14px",
+                borderRadius: "3px",
                 textTransform: "none",
                 fontWeight: 600,
 
@@ -1508,12 +1509,12 @@ function Career() {
             background: "rgba(0, 0, 0, 0.4)",
           },
           "& .MuiDialog-paper": {
-            background: "#000000 !important",
-            color: "#ffffff !important",
+            background: "var(--color-sub-bg) !important",
+            color: "var(--color-pure-black) !important",
             borderRadius: { xs: "20px", sm: "28px" },
             overflow: "hidden",
             position: "relative",
-            border: "1px solid rgba(255,255,255,0.1)",
+            border: "1px solid var(--color-border-color)",
             boxShadow: "0 0 80px rgba(37,99,235,.22)",
             margin: { xs: "16px", sm: "32px" },
             width: "100%",
@@ -1531,7 +1532,7 @@ function Career() {
           <Typography fontWeight={700} sx={{ mb: 0.5, fontSize: { xs: "1.25rem", sm: "1.5rem" } }}>
             Apply for {selectedJob.title || "Job"}
           </Typography>
-          <Typography sx={{ color: "#94A3B8", maxWidth: "440px", mx: "auto", fontSize: { xs: "0.75rem", sm: "0.85rem" }, lineHeight: 1.5 }}>
+          <Typography sx={{ color: "var(--color-pure-black)", maxWidth: "440px", mx: "auto", fontSize: { xs: "0.75rem", sm: "0.85rem" }, lineHeight: 1.5 }}>
             Submit your details and resume below.
           </Typography>
         </DialogTitle>
@@ -1543,14 +1544,14 @@ function Career() {
                 p: 1.5,
                 mb: 2,
                 borderRadius: "12px",
-                background: "rgba(255, 255, 255, 0.03)",
+                background: "var(--color-sub-bg)",
                 border: "1px solid rgba(255, 255, 255, 0.08)",
               }}
             >
               <Typography variant="subtitle2" sx={{ color: "#2563EB", fontWeight: 600, mb: 0.5 }}>
                 Job Description:
               </Typography>
-              <Typography sx={{ color: "#CBD5E1", fontSize: "0.85rem", lineHeight: 1.5 }}>
+              <Typography sx={{ color: "var(--color-pure-black)", fontSize: "0.85rem", lineHeight: 1.5 }}>
                 {selectedJob.description}
               </Typography>
             </Box>
@@ -1592,11 +1593,11 @@ function Career() {
             <Button
               component="label"
               sx={{
-                height: 90, borderRadius: "18px",
+                height: 90, borderRadius: "3px",
                 border: "2px dashed rgba(37,99,235,.4)",
-                background: "rgba(255,255,255,0.03)",
+                background: "var(--color-sub-bg)",
                 display: "flex", flexDirection: "column", gap: 0.5,
-                color: "#fff", textTransform: "none",
+                color: "var(--color-pure-black)", textTransform: "none",
                 "&:hover": { background: "rgba(37,99,235,.08)", borderColor: "#2563EB" },
               }}
             >
@@ -1626,14 +1627,14 @@ function Career() {
             margin: "0 !important"
           }
         }}>
-          <Button onClick={() => setOpenApplyModal(false)} sx={{ color: "#94A3B8", textTransform: "none" }}>Cancel</Button>
+          <Button onClick={() => setOpenApplyModal(false)} sx={{ color: "var(--color-pure-black)", textTransform: "none" }}>Cancel</Button>
           <Button
             variant="contained"
             onClick={handleApplySubmit}
             disabled={applyLoading}
             sx={{
               background: "linear-gradient(90deg,#2563EB,#3B82F6)",
-              px: 4, py: 1.2, borderRadius: "12px", textTransform: "none", fontWeight: 600,
+              px: 4, py: 1.2, borderRadius: "3px", textTransform: "none", fontWeight: 600,
               boxShadow: "0 10px 30px rgba(37,99,235,.35)",
               transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
               "&:hover": {
@@ -1660,12 +1661,12 @@ function Career() {
             background: "rgba(0, 0, 0, 0.4)",
           },
           "& .MuiDialog-paper": {
-            background: "#000000 !important",
-            color: "#ffffff !important",
+            background: "var(--color-sub-bg) !important",
+            color: "var(--color-pure-black) !important",
             borderRadius: { xs: "20px", sm: "28px" },
             overflow: "hidden",
             position: "relative",
-            border: "1px solid rgba(255,255,255,0.1)",
+            border: "1px solid var(--color-border-color)",
             boxShadow: "0 0 80px rgba(37,99,235,.22)",
             margin: { xs: "16px", sm: "32px" },
             width: "100%",
@@ -1684,7 +1685,7 @@ function Career() {
             <CloudUploadOutlinedIcon sx={{ fontSize: 26, color: "#2563EB" }} />
           </Box>
           <Typography fontWeight={700} sx={{ mb: 0.5, fontSize: { xs: "1.25rem", sm: "1.5rem" } }}>Join Our Talent Network</Typography>
-          <Typography sx={{ color: "#94A3B8", maxWidth: "440px", mx: "auto", fontSize: { xs: "0.75rem", sm: "0.85rem" }, lineHeight: 1.5 }}>
+          <Typography sx={{ color: "var(--color-pure-black)", maxWidth: "440px", mx: "auto", fontSize: { xs: "0.75rem", sm: "0.85rem" }, lineHeight: 1.5 }}>
             Submit your profile and we'll reach out when a suitable opportunity becomes available.
           </Typography>
         </DialogTitle>
@@ -1723,11 +1724,11 @@ function Career() {
             <Button
               component="label"
               sx={{
-                height: 90, borderRadius: "18px",
+                height: 90, borderRadius: "3px",
                 border: "2px dashed rgba(37,99,235,.4)",
-                background: "rgba(255,255,255,0.03)",
+                background: "var(--color-sub-bg)",
                 display: "flex", flexDirection: "column", gap: 0.5,
-                color: "#fff", textTransform: "none",
+                color: "var(--color-pure-black)", textTransform: "none",
                 "&:hover": { background: "rgba(37,99,235,.08)", borderColor: "#2563EB" },
               }}
             >
@@ -1757,14 +1758,14 @@ function Career() {
             margin: "0 !important"
           }
         }}>
-          <Button onClick={() => setOpenResumeModal(false)} sx={{ color: "#94A3B8", textTransform: "none" }}>Cancel</Button>
+          <Button onClick={() => setOpenResumeModal(false)} sx={{ color: "var(--color-pure-black)", textTransform: "none" }}>Cancel</Button>
           <Button
             variant="contained"
             onClick={handleTalentSubmit}
             disabled={talentLoading}
             sx={{
               background: "linear-gradient(90deg,#2563EB,#3B82F6)",
-              px: 4, py: 1.2, borderRadius: "12px", textTransform: "none", fontWeight: 600,
+              px: 4, py: 1.2, borderRadius: "3px", textTransform: "none", fontWeight: 600,
               boxShadow: "0 10px 30px rgba(37,99,235,.35)",
               transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
               "&:hover": {

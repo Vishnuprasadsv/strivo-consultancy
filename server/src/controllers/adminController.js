@@ -125,8 +125,7 @@ export const forgotPassword = async (req, res) => {
         <p>Best regards,</p>
         <p><strong>Strivo Consultancy Private Limited</strong></p>
         <div style="margin-top: 20px;">
-          <img src="https://strivo.com/logo.png" alt="Strivo Logo" style="height: 40px; margin-right: 10px;" />
-          <img src="https://strivo.com/logo1.png" alt="Strivo Logo 1" style="height: 40px;" />
+          <img src="https://strivo.com/logo.png" alt="Strivo Logo" style="height: 40px;" />
         </div>
       </div>
     `;

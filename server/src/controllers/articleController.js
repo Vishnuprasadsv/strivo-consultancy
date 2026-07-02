@@ -103,7 +103,6 @@ export const subscribeEmail = async (req, res) => {
     try {
       const emailUser = process.env.EMAIL_USER || process.env.EMAIL;
       const logo1Path = path.join(__dirname, "../../../client/src/assets/strivo logo.png");
-      const logo2Path = path.join(__dirname, "../../../client/src/assets/strivo logo 2.png");
 
       const mailOptions = {
         from: emailUser,
@@ -119,8 +118,7 @@ export const subscribeEmail = async (req, res) => {
             <p>The Team at Strivo Private Limited</p>
             <br/>
             <div>
-              <img src="cid:strivologo" alt="Strivo Logo" style="width: 150px; margin-right: 15px;" />
-              <img src="cid:strivologo2" alt="Strivo Logo 2" style="width: 150px;" />
+              <img src="cid:strivologo" alt="Strivo Logo" style="width: 150px;" />
             </div>
           </div>
         `,
@@ -129,11 +127,6 @@ export const subscribeEmail = async (req, res) => {
             filename: "strivo logo.png",
             path: logo1Path,
             cid: "strivologo"
-          },
-          {
-            filename: "strivo logo 2.png",
-            path: logo2Path,
-            cid: "strivologo2"
           }
         ]
       };
