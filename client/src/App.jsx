@@ -31,6 +31,7 @@ const Change = lazy(() => import('./pages/Change'));
 const Mission = lazy(() => import('./pages/Mission'));
 const Vision = lazy(() => import('./pages/Vision'));
 const Values = lazy(() => import('./pages/Values'));
+const PrivacyPolicy = lazy(() => import('./pages/PrivacyPolicy'));
 
 // Admin Pages
 const Login = lazy(() => import('./Admin/Login'));
@@ -102,82 +103,85 @@ const App = () => {
         <ScrollToTop />
         <Toaster position="top-right" theme="dark" />
         <div className="min-h-screen bg-transparent text-white flex flex-col relative z-0">
-        {/* Global Ferrofluid Background */}
-        <div className="fixed inset-0 z-[-1] bg-black">
-          <Ferrofluid
-            colors={["#002c9b", "#3673d6", "#7ba0db"]}
-            speed={0.1}
-            scale={2.6}
-            turbulence={0.65}
-            fluidity={0.14}
-            rimWidth={0.2}
-            sharpness={3}
-            shimmer={1}
-            glow={1.6}
-            flowDirection="up"
-            opacity={1}
-            mouseInteraction={true}
-            mouseStrength={1}
-            mouseRadius={0.3}
-          />
-          <div className="absolute inset-0 backdrop-blur-[6px] bg-black/40 pointer-events-none" />
-        </div>
+          {/* Global Ferrofluid Background */}
+          <div className="fixed inset-0 z-[-1] bg-black">
+            <Ferrofluid
+              colors={["#002c9b", "#3673d6", "#7ba0db"]}
+              speed={0.1}
+              scale={2.6}
+              turbulence={0.65}
+              fluidity={0.14}
+              rimWidth={0.2}
+              sharpness={3}
+              shimmer={1}
+              glow={1.6}
+              flowDirection="up"
+              opacity={1}
+              mouseInteraction={true}
+              mouseStrength={1}
+              mouseRadius={0.3}
+            />
+            <div className="absolute inset-0 backdrop-blur-[6px] bg-black/40 pointer-events-none" />
+          </div>
 
-        <ConditionalNavbar />
-        <AdminNavbar />
+          <ConditionalNavbar />
+          <AdminNavbar />
 
-        {/* Main content area */}
-        <main className="flex-grow relative z-10">
-          <Suspense fallback={<PageLoader />}>
-            <Routes>
-              {/* Fix: Root path now directly renders Home */}
-              <Route path="/" element={<Home />} />
-              <Route path="/home" element={<Home />} />
+          {/* Main content area */}
+          <main className="flex-grow relative z-10">
+            <Suspense fallback={<PageLoader />}>
+              <Routes>
+                {/* Fix: Root path now directly renders Home */}
+                <Route path="/" element={<Home />} />
+                <Route path="/home" element={<Home />} />
 
-              <Route path="/about" element={<Aboutus />} />
-              <Route path="/contact" element={<Contact />} />
-              <Route path="/insights" element={<Insight />} />
-              <Route path="/casestudies" element={<CaseStudies />} />
-              <Route path="/case-study-details/:id" element={<CaseStudyDetails />} />
-              <Route path="/services" element={<Services />} />
-              <Route path="/article/:id" element={<Article />} />
-              <Route path="/strategic" element={<Strategic />} />
-              <Route path="/operations" element={<Operations />} />
-              <Route path="/digital" element={<Digital />} />
-              <Route path="/change" element={<Change />} />
-              <Route path="/mission" element={<Mission />} />
-              <Route path="/vision" element={<Vision />} />
-              <Route path="/values/:valueType" element={<Values />} />
-              <Route path="/careerstrivo" element={<Career />} />
+                <Route path="/about" element={<Aboutus />} />
+                <Route path="/contact" element={<Contact />} />
+                <Route path="/insights" element={<Insight />} />
+                <Route path="/casestudies" element={<CaseStudies />} />
+                <Route path="/case-study-details/:id" element={<CaseStudyDetails />} />
+                <Route path="/services" element={<Services />} />
+                <Route path="/article/:id" element={<Article />} />
+                <Route path="/strategic" element={<Strategic />} />
+                <Route path="/operations" element={<Operations />} />
+                <Route path="/digital" element={<Digital />} />
+                <Route path="/change" element={<Change />} />
+                <Route path="/mission" element={<Mission />} />
+                <Route path="/vision" element={<Vision />} />
+                <Route path="/values/:valueType" element={<Values />} />
+                <Route path="/careerstrivo" element={<Career />} />
+                <Route
+                  path="/privacy-policy"
+                  element={<PrivacyPolicy />}
+                />
+                <Route path="/review" element={<Review />} />
 
-              <Route path="/review" element={<Review />} />
+                {/* Admin Routes */}
+                <Route path="/admin" element={<Login />} />
+                <Route path="/admin/login" element={<Login />} />
+                <Route path="/admin/forgot-password" element={<ForgotPassword />} />
+                <Route path="/admin/reset-password" element={<ResetPassword />} />
+                <Route path="/admin/dashboard" element={<Dashboard />} />
+                <Route path="/admin/inquiries" element={<Inquiries />} />
+                <Route path="/admin/casestudies" element={<CaseStudiesAdmin />} />
+                <Route path='/admin/career' element={<CareerAdmin />} />
+                <Route path='/admin/article' element={<ArticlesAdmin />} />
+                <Route
+                  path="/admin/create-case-study"
+                  element={<CreateCaseStudy />}
+                />
+                <Route
+                  path="/admin/edit-case-study/:id"
+                  element={<EditCaseStudy />}
+                />
+                <Route path="/admin/article" element={<ArticlesAdmin />} />
+                <Route path="/admin/career" element={<CareerAdmin />} />
+                <Route path="/admin/profile" element={<Profile />} />
+              </Routes>
+            </Suspense>
+          </main>
 
-              {/* Admin Routes */}
-              <Route path="/admin" element={<Login />} />
-              <Route path="/admin/login" element={<Login />} />
-              <Route path="/admin/forgot-password" element={<ForgotPassword />} />
-              <Route path="/admin/reset-password" element={<ResetPassword />} />
-              <Route path="/admin/dashboard" element={<Dashboard />} />
-              <Route path="/admin/inquiries" element={<Inquiries />} />
-              <Route path="/admin/casestudies" element={<CaseStudiesAdmin />} />
-             <Route path='/admin/career' element={<CareerAdmin />} />
-             <Route path='/admin/article' element={<ArticlesAdmin />} />
-              <Route
-                path="/admin/create-case-study"
-                element={<CreateCaseStudy />}
-              />
-              <Route
-                path="/admin/edit-case-study/:id"
-                element={<EditCaseStudy />}
-              />
-              <Route path="/admin/article" element={<ArticlesAdmin />} />
-              <Route path="/admin/career" element={<CareerAdmin />} />
-              <Route path="/admin/profile" element={<Profile />} />
-            </Routes>
-          </Suspense>
-        </main>
-
-        <ConditionalFooter />
+          <ConditionalFooter />
         </div>
       </DynamicThemeProvider>
     </BrowserRouter>
