@@ -8,7 +8,7 @@ import {
   Rating,
   Dialog,
 } from '@mui/material';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import SEO from '../Components/SEO';
 import { SERVER_URL } from '../services/serverUrl';
@@ -472,6 +472,19 @@ function Home() {
   const [successStories, setSuccessStories] = useState([]);
   const [loadingStories, setLoadingStories] = useState(true);
   const [selectedTestimonial, setSelectedTestimonial] = useState(null);
+  const [showScrollTop, setShowScrollTop] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      if (window.scrollY > 300) {
+        setShowScrollTop(true);
+      } else {
+        setShowScrollTop(false);
+      }
+    };
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
 
   useEffect(() => {
     const fetchStories = async () => {
@@ -818,7 +831,7 @@ function Home() {
           transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}
           style={{ cursor: "pointer" }}
           onClick={() => {
-            const targetElement = document.getElementById("trusted-by-section");
+            const targetElement = document.getElementById("stats-section");
             if (targetElement) {
               targetElement.scrollIntoView({ behavior: "smooth" });
             }
@@ -1916,6 +1929,53 @@ function Home() {
           </Box>
         )}
       </Dialog>
+
+      <AnimatePresence>
+        {showScrollTop && (
+          <motion.div
+            initial={{ opacity: 0, scale: 0.8 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 0.8 }}
+            transition={{ duration: 0.2 }}
+            style={{
+              position: "fixed",
+              bottom: "32px",
+              right: "32px",
+              zIndex: 1000,
+            }}
+          >
+            <Box
+              onClick={() => {
+                const target = document.getElementById("hero-section");
+                if (target) {
+                  target.scrollIntoView({ behavior: "smooth" });
+                }
+              }}
+              sx={{
+                width: 50,
+                height: 50,
+                borderRadius: "50%",
+                background: "#4764FF",
+                boxShadow: "0 8px 25px rgba(71, 100, 255, 0.4)",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                cursor: "pointer",
+                transition: "all 0.3s ease",
+                "&:hover": {
+                  background: "#3b55d9",
+                  transform: "translateY(-4px)",
+                  boxShadow: "0 12px 30px rgba(71, 100, 255, 0.6)",
+                },
+              }}
+            >
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#ffffff" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M18 15l-6-6-6 6" />
+              </svg>
+            </Box>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
     </div>
   );

@@ -1675,35 +1675,32 @@ function Career() {
               error={!!applyErrors.mobile}
               helperText={applyErrors.mobile}
               sx={fieldStyle}
+              InputLabelProps={{ shrink: true }}
               InputProps={{
                 startAdornment: (
                   <InputAdornment position="start">
-                    <Select
+                    <select
                       value={applyCountryCode}
                       onChange={(e) => setApplyCountryCode(e.target.value)}
-                      variant="standard"
-                      disableUnderline
-                      sx={{
-                        mr: 1,
+                      style={{
+                        border: "none",
+                        background: "transparent",
                         fontSize: "0.85rem",
                         color: "var(--color-pure-black)",
-                        "& .MuiSelect-select": {
-                          paddingRight: "18px !important",
-                          color: "var(--color-pure-black) !important",
-                        },
-                        "& .MuiSvgIcon-root": {
-                          color: "var(--color-pure-black)",
-                        }
+                        outline: "none",
+                        cursor: "pointer",
+                        marginRight: "4px",
+                        paddingRight: "8px",
                       }}
                     >
-                      <MenuItem value="+91">+91 (IN)</MenuItem>
-                      <MenuItem value="+1">+1 (US)</MenuItem>
-                      <MenuItem value="+44">+44 (UK)</MenuItem>
-                      <MenuItem value="+971">+971 (AE)</MenuItem>
-                      <MenuItem value="+65">+65 (SG)</MenuItem>
-                      <MenuItem value="+61">+61 (AU)</MenuItem>
-                      <MenuItem value="+49">+49 (DE)</MenuItem>
-                    </Select>
+                      <option value="+91">+91 (IN)</option>
+                      <option value="+1">+1 (US)</option>
+                      <option value="+44">+44 (UK)</option>
+                      <option value="+971">+971 (AE)</option>
+                      <option value="+65">+65 (SG)</option>
+                      <option value="+61">+61 (AU)</option>
+                      <option value="+49">+49 (DE)</option>
+                    </select>
                   </InputAdornment>
                 ),
               }}
@@ -1821,35 +1818,32 @@ function Career() {
               error={!!talentErrors.mobile}
               helperText={talentErrors.mobile}
               sx={fieldStyle}
+              InputLabelProps={{ shrink: true }}
               InputProps={{
                 startAdornment: (
                   <InputAdornment position="start">
-                    <Select
+                    <select
                       value={talentCountryCode}
                       onChange={(e) => setTalentCountryCode(e.target.value)}
-                      variant="standard"
-                      disableUnderline
-                      sx={{
-                        mr: 1,
+                      style={{
+                        border: "none",
+                        background: "transparent",
                         fontSize: "0.85rem",
                         color: "var(--color-pure-black)",
-                        "& .MuiSelect-select": {
-                          paddingRight: "18px !important",
-                          color: "var(--color-pure-black) !important",
-                        },
-                        "& .MuiSvgIcon-root": {
-                          color: "var(--color-pure-black)",
-                        }
+                        outline: "none",
+                        cursor: "pointer",
+                        marginRight: "4px",
+                        paddingRight: "8px",
                       }}
                     >
-                      <MenuItem value="+91">+91 (IN)</MenuItem>
-                      <MenuItem value="+1">+1 (US)</MenuItem>
-                      <MenuItem value="+44">+44 (UK)</MenuItem>
-                      <MenuItem value="+971">+971 (AE)</MenuItem>
-                      <MenuItem value="+65">+65 (SG)</MenuItem>
-                      <MenuItem value="+61">+61 (AU)</MenuItem>
-                      <MenuItem value="+49">+49 (DE)</MenuItem>
-                    </Select>
+                      <option value="+91">+91 (IN)</option>
+                      <option value="+1">+1 (US)</option>
+                      <option value="+44">+44 (UK)</option>
+                      <option value="+971">+971 (AE)</option>
+                      <option value="+65">+65 (SG)</option>
+                      <option value="+61">+61 (AU)</option>
+                      <option value="+49">+49 (DE)</option>
+                    </select>
                   </InputAdornment>
                 ),
               }}
