@@ -398,7 +398,7 @@ function Career() {
                 component={motion.div}
                 animate={{ scale: [1, 1.4, 1], opacity: [0.5, 1, 0.5] }}
                 transition={{ duration: 2, repeat: Infinity }}
-                sx={{ width: 6, height: 6, borderRadius: "50%", backgroundColor:"var(--color-sub-bg: #EDF0FF)"}}
+                sx={{ width: 6, height: 6, borderRadius: "50%", backgroundColor: "var(--color-sub-bg: #EDF0FF)" }}
               />
               <Typography sx={{ color: "#34D399", fontSize: "0.7rem", fontWeight: 600 }}>
                 Hiring
@@ -406,7 +406,7 @@ function Career() {
             </Box>
           </Box>
 
-          <Box sx={{backgroundColor:"var(--color-sub-bg: #EDF0FF)"}}>
+          <Box sx={{ backgroundColor: "var(--color-sub-bg: #EDF0FF)" }}>
             <Typography sx={{ color: "#ffffff", fontWeight: 700, fontSize: "1.15rem", mb: 0.5 }}>
               Join Our Team
             </Typography>
@@ -782,7 +782,7 @@ function Career() {
                             borderRadius: "50%",
                             background:
                               "rgba(37,99,235,0.15)",
-                              color:"black",
+                            color: "black",
                             display: "flex",
                             alignItems: "center",
                             justifyContent: "center",
@@ -1132,7 +1132,7 @@ function Career() {
             </Box>
           </MotionBox>
 
-         
+
           <MotionBox whileHover={{ y: -5 }} sx={{ mb: 3 }}>
             <Box
               sx={{
@@ -1244,7 +1244,7 @@ function Career() {
             </Box>
           </MotionBox>
 
-          
+
           <MotionBox whileHover={{ y: -5 }}>
             <Box
               sx={{
@@ -1357,7 +1357,7 @@ function Career() {
             </Box>
           </MotionBox>
 
-        
+
           {dynamicJobs.length > 0 && (
             <Box sx={{ mt: 3 }}>
 
@@ -1471,7 +1471,7 @@ function Career() {
                 </MotionBox>
               ))}
 
-             
+
               {dynamicJobs.length > jobsPerPage && (
                 <Box sx={{ display: "flex", justifyContent: "center", alignItems: "center", gap: 2, mt: 5 }}>
                   <Button
@@ -1515,7 +1515,7 @@ function Career() {
           )}
         </Container>
       </Box>
-   
+
       <Box
         sx={{
           py: { xs: 8, md: 12 },
@@ -1594,7 +1594,7 @@ function Career() {
         </Container>
       </Box>
 
-    
+
       <Dialog
         open={openApplyModal}
         onClose={() => setOpenApplyModal(false)}
@@ -1665,38 +1665,49 @@ function Career() {
               helperText={applyErrors.email}
               sx={fieldStyle}
             />
-            <Stack direction="row" spacing={1.5} alignItems="flex-start">
-              <TextField
-                select
-                size="small"
-                value={applyCountryCode}
-                onChange={(e) => setApplyCountryCode(e.target.value)}
-                sx={{
-                  ...fieldStyle,
-                  width: "115px",
-                  flexShrink: 0,
-                }}
-              >
-                <MenuItem value="+91">+91 (IN)</MenuItem>
-                <MenuItem value="+1">+1 (US)</MenuItem>
-                <MenuItem value="+44">+44 (UK)</MenuItem>
-                <MenuItem value="+971">+971 (AE)</MenuItem>
-                <MenuItem value="+65">+65 (SG)</MenuItem>
-                <MenuItem value="+61">+61 (AU)</MenuItem>
-                <MenuItem value="+49">+49 (DE)</MenuItem>
-              </TextField>
-              <TextField
-                fullWidth
-                size="small"
-                label="Mobile Number"
-                name="mobile"
-                value={applyForm.mobile}
-                onChange={handleApplyChange}
-                error={!!applyErrors.mobile}
-                helperText={applyErrors.mobile}
-                sx={fieldStyle}
-              />
-            </Stack>
+            <TextField
+              fullWidth
+              size="small"
+              label="Mobile Number"
+              name="mobile"
+              value={applyForm.mobile}
+              onChange={handleApplyChange}
+              error={!!applyErrors.mobile}
+              helperText={applyErrors.mobile}
+              sx={fieldStyle}
+              InputProps={{
+                startAdornment: (
+                  <InputAdornment position="start">
+                    <Select
+                      value={applyCountryCode}
+                      onChange={(e) => setApplyCountryCode(e.target.value)}
+                      variant="standard"
+                      disableUnderline
+                      sx={{
+                        mr: 1,
+                        fontSize: "0.85rem",
+                        color: "var(--color-pure-black)",
+                        "& .MuiSelect-select": {
+                          paddingRight: "18px !important",
+                          color: "var(--color-pure-black) !important",
+                        },
+                        "& .MuiSvgIcon-root": {
+                          color: "var(--color-pure-black)",
+                        }
+                      }}
+                    >
+                      <MenuItem value="+91">+91 (IN)</MenuItem>
+                      <MenuItem value="+1">+1 (US)</MenuItem>
+                      <MenuItem value="+44">+44 (UK)</MenuItem>
+                      <MenuItem value="+971">+971 (AE)</MenuItem>
+                      <MenuItem value="+65">+65 (SG)</MenuItem>
+                      <MenuItem value="+61">+61 (AU)</MenuItem>
+                      <MenuItem value="+49">+49 (DE)</MenuItem>
+                    </Select>
+                  </InputAdornment>
+                ),
+              }}
+            />
             <Button
               component="label"
               sx={{
@@ -1756,7 +1767,7 @@ function Career() {
         </DialogActions>
       </Dialog>
 
-    
+
       <Dialog
         open={openResumeModal}
         onClose={() => setOpenResumeModal(false)}
@@ -1800,38 +1811,49 @@ function Career() {
               error={!!talentErrors.email} helperText={talentErrors.email}
               sx={fieldStyle}
             />
-            <Stack direction="row" spacing={1.5} alignItems="flex-start">
-              <TextField
-                select
-                size="small"
-                value={talentCountryCode}
-                onChange={(e) => setTalentCountryCode(e.target.value)}
-                sx={{
-                  ...fieldStyle,
-                  width: "115px",
-                  flexShrink: 0,
-                }}
-              >
-                <MenuItem value="+91">+91 (IN)</MenuItem>
-                <MenuItem value="+1">+1 (US)</MenuItem>
-                <MenuItem value="+44">+44 (UK)</MenuItem>
-                <MenuItem value="+971">+971 (AE)</MenuItem>
-                <MenuItem value="+65">+65 (SG)</MenuItem>
-                <MenuItem value="+61">+61 (AU)</MenuItem>
-                <MenuItem value="+49">+49 (DE)</MenuItem>
-              </TextField>
-              <TextField
-                fullWidth
-                size="small"
-                label="Mobile Number"
-                name="mobile"
-                value={talentForm.mobile}
-                onChange={handleTalentChange}
-                error={!!talentErrors.mobile}
-                helperText={talentErrors.mobile}
-                sx={fieldStyle}
-              />
-            </Stack>
+            <TextField
+              fullWidth
+              size="small"
+              label="Mobile Number"
+              name="mobile"
+              value={talentForm.mobile}
+              onChange={handleTalentChange}
+              error={!!talentErrors.mobile}
+              helperText={talentErrors.mobile}
+              sx={fieldStyle}
+              InputProps={{
+                startAdornment: (
+                  <InputAdornment position="start">
+                    <Select
+                      value={talentCountryCode}
+                      onChange={(e) => setTalentCountryCode(e.target.value)}
+                      variant="standard"
+                      disableUnderline
+                      sx={{
+                        mr: 1,
+                        fontSize: "0.85rem",
+                        color: "var(--color-pure-black)",
+                        "& .MuiSelect-select": {
+                          paddingRight: "18px !important",
+                          color: "var(--color-pure-black) !important",
+                        },
+                        "& .MuiSvgIcon-root": {
+                          color: "var(--color-pure-black)",
+                        }
+                      }}
+                    >
+                      <MenuItem value="+91">+91 (IN)</MenuItem>
+                      <MenuItem value="+1">+1 (US)</MenuItem>
+                      <MenuItem value="+44">+44 (UK)</MenuItem>
+                      <MenuItem value="+971">+971 (AE)</MenuItem>
+                      <MenuItem value="+65">+65 (SG)</MenuItem>
+                      <MenuItem value="+61">+61 (AU)</MenuItem>
+                      <MenuItem value="+49">+49 (DE)</MenuItem>
+                    </Select>
+                  </InputAdornment>
+                ),
+              }}
+            />
             <TextField
               select fullWidth size="small" label="Category" name="category"
               value={talentForm.category} onChange={handleTalentChange}

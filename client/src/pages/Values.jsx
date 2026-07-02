@@ -1,7 +1,7 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { useNavigate, useParams } from 'react-router-dom';
-import { Typography, Button, Box } from '@mui/material';
+import { Button, Box } from '@mui/material';
 
 // Import local assets
 import strategyHero from "../assets/strategy-hero.jpg";
@@ -197,8 +197,8 @@ const Values = () => {
   const currentContent = valuesContent[normalizedType] || valuesContent.integrity;
 
   return (
-    <div className="min-h-screen bg-transparent text-white font-sans">
-      {/* HERO SECTION CONTAINER - dark transparent */}
+    <div className="min-h-screen bg-transparent text-black font-sans">
+      {/* HERO SECTION CONTAINER - transparent with black text */}
       <div className="max-w-7xl mx-auto px-6 md:px-12 pt-24 pb-12">
         {/* Back Button */}
         <motion.div 
@@ -209,7 +209,7 @@ const Values = () => {
         >
           <button 
             onClick={() => navigate("/about")} 
-            className="text-blue-500 hover:text-[var(--color-pure-black)] transition-colors flex items-center border border-blue-500/30 rounded-full px-5 py-2 text-sm font-medium hover:border-blue-500 cursor-pointer"
+            className="text-blue-500 hover:text-white transition-colors flex items-center border border-blue-500/30 rounded-full px-5 py-2 text-sm font-medium hover:border-blue-500 cursor-pointer"
           >
             ← Back to About Us
           </button>
@@ -223,17 +223,17 @@ const Values = () => {
           variants={fadeUpVariants}
           className="max-w-3xl"
         >
-          <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold leading-tight mb-6">
+          <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold leading-tight mb-6 text-black">
             {currentContent.heroTitle}
           </h1>
-          <p className="text-[var(--color-pure-black)] text-base md:text-lg leading-relaxed max-w-2xl">
+          <p className="text-gray-700 text-base md:text-lg leading-relaxed max-w-2xl">
             {currentContent.heroSubtitle}
           </p>
         </motion.section>
       </div>
 
-      {/* SECTION 2: FEATURED BANNER - White bg, dark text */}
-      <div className="bg-[var(--color-main-bg)] py-16 md:py-24 text-[var(--color-black)]">
+      {/* SECTION 2: FEATURED BANNER - White bg, solid black text */}
+      <div className="bg-[var(--color-main-bg)] py-16 md:py-24 text-black">
         <div className="max-w-7xl mx-auto px-6 md:px-12">
           <motion.section
             key={`featured-${normalizedType}`}
@@ -247,10 +247,10 @@ const Values = () => {
               <span className="inline-block px-3 py-1 bg-blue-500/10 text-blue-600 text-xs font-semibold uppercase tracking-wider rounded-md mb-6 w-max">
                 {currentContent.featuredTag}
               </span>
-              <h2 className="text-2xl md:text-3xl font-bold text-[var(--color-black)] mb-4">
+              <h2 className="text-2xl md:text-3xl font-bold text-black mb-4">
                 {currentContent.featuredTitle}
               </h2>
-              <p className="text-gray-600 mb-6 text-sm md:text-base leading-relaxed">
+              <p className="text-black mb-6 text-sm md:text-base leading-relaxed">
                 {currentContent.featuredDesc}
               </p>
               <div className="flex flex-wrap gap-4 mt-2">
@@ -276,8 +276,8 @@ const Values = () => {
         </div>
       </div>
 
-      {/* SECTION 3: PILLARS - Light Blue bg, dark text */}
-      <div className="bg-[var(--color-sub-bg)] py-16 md:py-24 text-[var(--color-black)]">
+      {/* SECTION 3: PILLARS - Light Blue bg, solid black text */}
+      <div className="bg-[var(--color-sub-bg)] py-16 md:py-24 text-black">
         <div className="max-w-7xl mx-auto px-6 md:px-12">
           <motion.section
             key={`pillars-${normalizedType}`}
@@ -287,10 +287,10 @@ const Values = () => {
             variants={fadeUpVariants}
           >
             <div className="mb-12">
-              <h2 className="text-2xl md:text-3xl font-bold text-[var(--color-black)] mb-3">
+              <h2 className="text-2xl md:text-3xl font-bold text-black mb-3">
                 {currentContent.pillarsTitle}
               </h2>
-              <p className="text-gray-600 text-sm md:text-base">
+              <p className="text-black text-sm md:text-base">
                 {currentContent.pillarsDesc}
               </p>
             </div>
@@ -323,10 +323,10 @@ const Values = () => {
                     <span className="text-blue-600 text-xs font-semibold mb-2 uppercase">
                       {pillar.category}
                     </span>
-                    <h3 className="text-lg md:text-xl font-bold text-[var(--color-black)] mb-2">
+                    <h3 className="text-lg md:text-xl font-bold text-black mb-2">
                       {pillar.title}
                     </h3>
-                    <p className="text-gray-600 text-xs md:text-sm leading-relaxed flex-grow">
+                    <p className="text-black text-xs md:text-sm leading-relaxed flex-grow">
                       {pillar.description}
                     </p>
                   </div>
