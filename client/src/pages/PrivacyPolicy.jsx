@@ -15,7 +15,7 @@ const fadeUp = {
 
 const PrivacyPolicy = () => {
     return (
-        <div className="min-h-screen bg-main-bg text-white">
+        <div className="min-h-screen bg-[var(--color-main-bg)] text-[var(--color-pure-black)]">
 
             {/* Hero */}
 
@@ -53,7 +53,7 @@ const PrivacyPolicy = () => {
                     </h1>
 
                     <p className="
-          text-gray-400
+          text-[var(--color-pure-black)]
           max-w-3xl
           mx-auto
           leading-8">
@@ -65,7 +65,7 @@ const PrivacyPolicy = () => {
 
                     </p>
 
-                    <p className="text-sm text-gray-500 mt-5">
+                    <p className="text-sm text-[var(--color-pure-black)] mt-5">
 
                         Last Updated: July 2026
 
@@ -89,9 +89,9 @@ const PrivacyPolicy = () => {
                         whileInView="visible"
                         viewport={{ once: true }}
                         className="
-            bg-[#1e293b]
+            bg-[var(--color-sub-bg)]
             border
-            border-gray-700/50
+            border-gray-200
             rounded-2xl
             p-8">
 
@@ -107,7 +107,7 @@ const PrivacyPolicy = () => {
 
                         </div>
 
-                        <p className="text-gray-400 leading-8">
+                        <p className="text-[var(--color-pure-black)] leading-8">
 
                             We may collect:
 
@@ -116,7 +116,7 @@ const PrivacyPolicy = () => {
                         <ul className="
             mt-4
             space-y-2
-            text-gray-400
+            text-[var(--color-pure-black)]
             list-disc
             pl-6">
 
@@ -144,9 +144,9 @@ const PrivacyPolicy = () => {
                         whileInView="visible"
                         viewport={{ once: true }}
                         className="
-            bg-[#1e293b]
+            bg-[var(--color-sub-bg)]
             border
-            border-gray-700/50
+            border-gray-200
             rounded-2xl
             p-8">
 
@@ -164,7 +164,7 @@ const PrivacyPolicy = () => {
 
                         <ul className="
             space-y-3
-            text-gray-400
+            text-[var(--color-pure-black)]
             list-disc
             pl-6">
 
@@ -190,9 +190,9 @@ const PrivacyPolicy = () => {
                         whileInView="visible"
                         viewport={{ once: true }}
                         className="
-            bg-[#1e293b]
+            bg-[var(--color-sub-bg)]
             border
-            border-gray-700/50
+            border-gray-200
             rounded-2xl
             p-8">
 
@@ -208,7 +208,7 @@ const PrivacyPolicy = () => {
 
                         </div>
 
-                        <p className="text-gray-400 leading-8">
+                        <p className="text-[var(--color-pure-black)] leading-8">
 
                             We implement security measures to
                             protect your information against
@@ -217,7 +217,7 @@ const PrivacyPolicy = () => {
 
                         </p>
 
-                        <p className="text-gray-400 leading-8 mt-4">
+                        <p className="text-[var(--color-pure-black)] leading-8 mt-4">
 
                             We never sell your personal information
                             to third parties.
@@ -234,24 +234,18 @@ const PrivacyPolicy = () => {
                         whileInView="visible"
                         viewport={{ once: true }}
                         className="
-  bg-gradient-to-r
-  from-blue-900/60
-  via-slate-800
-  to-cyan-900/50
-  border
-  border-blue-500/30
-  rounded-2xl
-  p-8
-  shadow-lg
-  shadow-blue-500/10
-"
+            bg-[var(--color-sub-bg)]
+            border
+            border-gray-200
+            rounded-2xl
+            p-8"
                     >
 
-                        <h2 className="text-2xl font-bold text-white mb-4">
+                        <h2 className="text-2xl font-bold text-[var(--color-pure-black)] mb-4">
                             Questions?
                         </h2>
 
-                        <p className="text-gray-300 leading-7">
+                        <p className="text-[var(--color-pure-black)] leading-7">
                             If you have any questions regarding this Privacy Policy,
                             our team will be happy to assist you.
                         </p>
@@ -261,9 +255,9 @@ const PrivacyPolicy = () => {
                             className="
       inline-block
       mt-5
-      text-blue-400
+      text-blue-600
       font-semibold
-      hover:text-cyan-300
+      hover:text-blue-700
       transition
     "
                         >
