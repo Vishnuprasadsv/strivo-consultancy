@@ -100,19 +100,21 @@ const Contact = () => {
     }
   };
   return (
-    <div className="bg-transparent text-white min-h-screen pt-12 pb-24 font-sans overflow-hidden">
-      <div className="max-w-7xl mx-auto px-6 md:px-12 space-y-32">
+    <div className="flex flex-col min-h-screen font-sans overflow-hidden bg-main-bg">
+      {/* Wrapper for Sections 1 & 2 */}
+      <div className="w-full  pt-12 pb-24 flex-grow">
+        <div className="max-w-7xl mx-auto px-6 md:px-12 space-y-32">
 
-        {/* Section 1: Hero */}
-        <motion.section
-          initial="hidden"
-          animate="visible"
-          variants={fadeUpVariants}
-          className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center"
-        >
+          {/* Section 1: Hero */}
+          <motion.section
+            initial="hidden"
+            animate="visible"
+            variants={fadeUpVariants}
+            className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center text-pure-black"
+          >
           <div className="space-y-6">
-            <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold leading-tight">Let's Start a Conversation</h1>
-            <p className="text-gray-300 text-lg leading-relaxed max-w-lg">
+            <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold leading-tight text-pure-black">Let's Start a Conversation</h1>
+            <p className="text-pure-black text-lg leading-relaxed max-w-lg">
               Whether you're looking to scale your infrastructure, optimize workflows, or explore new technological frontiers, our team of experts is ready to assist. Reach out to discuss how Premium Enterprise can accelerate your growth.
             </p>
           </div>
@@ -314,18 +316,22 @@ const Contact = () => {
   </form>
 </div>
         </motion.section>
+        </div>
+      </div>
 
-        {/* Section 3: FAQ */}
-        <motion.section
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true, amount: 0.2 }}
-          variants={fadeUpVariants}
-          className="flex flex-col items-center"
-        >
+      {/* Section 3: FAQ */}
+      <div className="w-full bg-sub-bg py-24">
+        <div className="max-w-7xl mx-auto px-6 md:px-12">
+          <motion.section
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, amount: 0.2 }}
+            variants={fadeUpVariants}
+            className="flex flex-col items-center text-pure-black"
+          >
           <div className="text-center mb-10">
             <h2 className="text-3xl font-bold mb-3">Frequently Asked Questions</h2>
-            <p className="text-gray-400">Quick answers to common inquiries before you reach out.</p>
+            <p className="text-pure-black">Quick answers to common inquiries before you reach out.</p>
           </div>
 
           <div className="w-full max-w-3xl space-y-3">
@@ -339,17 +345,17 @@ const Contact = () => {
                 key={index}
                 disableGutters
                 sx={{
-                  backgroundColor: '#1e293b',
-                  color: 'white',
+                  backgroundColor: 'var(--color-main-bg)',
+                  color: 'var(--color-pure-black)',
                   borderRadius: '8px !important',
                   '&:before': { display: 'none' },
                   boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)',
                   mb: '12px',
-                  border: '1px solid rgba(75, 85, 99, 0.5)'
+                  border: '1px solid var(--color-border-color)'
                 }}
               >
                 <AccordionSummary
-                  expandIcon={<ExpandMoreIcon sx={{ color: 'white' }} />}
+                  expandIcon={<ExpandMoreIcon sx={{ color: 'var(--color-pure-black)' }} />}
                   aria-controls={`panel${index}-content`}
                   id={`panel${index}-header`}
                   sx={{
@@ -361,14 +367,14 @@ const Contact = () => {
                 >
                   {faq.q}
                 </AccordionSummary>
-                <AccordionDetails sx={{ px: 3, pb: 3, color: '#9ca3af', lineHeight: 1.6 }}>
+                <AccordionDetails sx={{ px: 3, pb: 3, color: 'var(--color-pure-black)', lineHeight: 1.6 }}>
                   {faq.a}
                 </AccordionDetails>
               </Accordion>
             ))}
           </div>
         </motion.section>
-
+        </div>
       </div>
     </div>
   );
