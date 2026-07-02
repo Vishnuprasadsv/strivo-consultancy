@@ -47,6 +47,8 @@ const Footer = () => {
           <h3 className="text-white font-semibold text-base mb-1">Get in Touch</h3>
           <Link to="/contact" className="text-gray-300 hover:text-blue-400 transition-colors text-sm">Contact Us</Link>
           <Link to="/review" className="text-gray-300 hover:text-blue-400 transition-colors text-sm">Add Review</Link>
+          <Link to="/privacy-policy" className="text-gray-300 hover:text-blue-400 transition-colors text-sm">Privacy Policy</Link>
+          <Link to="/terms-and-conditions" className="text-gray-300 hover:text-blue-400 transition-colors text-sm">Terms & Conditions</Link>
         </div>
       </div>
     </motion.footer>

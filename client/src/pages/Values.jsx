@@ -209,7 +209,7 @@ const Values = () => {
         >
           <button 
             onClick={() => navigate("/about")} 
-            className="text-blue-500 hover:text-white transition-colors flex items-center border border-blue-500/30 rounded-full px-5 py-2 text-sm font-medium hover:border-blue-500 cursor-pointer"
+            className="text-blue-500 hover:text-[var(--color-pure-black)] transition-colors flex items-center border border-blue-500/30 rounded-full px-5 py-2 text-sm font-medium hover:border-blue-500 cursor-pointer"
           >
             ← Back to About Us
           </button>
@@ -226,7 +226,7 @@ const Values = () => {
           <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold leading-tight mb-6">
             {currentContent.heroTitle}
           </h1>
-          <p className="text-gray-400 text-base md:text-lg leading-relaxed max-w-2xl">
+          <p className="text-[var(--color-pure-black)] text-base md:text-lg leading-relaxed max-w-2xl">
             {currentContent.heroSubtitle}
           </p>
         </motion.section>
