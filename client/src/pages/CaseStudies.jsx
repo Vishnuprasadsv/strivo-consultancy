@@ -25,78 +25,51 @@ const CaseStudies = () => {
   const [caseStudies, setCaseStudies] = useState([]);
   const [loading, setLoading] = useState(true);
   const categories = [
-
     "All",
-
     "Finance",
-
     "Healthcare",
-
     "Technology",
-
     "Retail"
-
   ];
+
   useEffect(() => {
-
     fetchCaseStudies();
-
   }, []);
 
   const fetchCaseStudies = async () => {
-
     try {
-
       const res = await axios.get(
-
         `${import.meta.env.VITE_API_BASE_URL}/api/case-studies`
-
       );
-
       setCaseStudies(
-
         res.data.filter(
-
           item => item.status === "Published"
-
         )
-
       );
-
     }
-
     catch (err) {
-
       console.log(err);
-
     }
-
     finally {
-
       setLoading(false);
-
     }
-
   }
+
   const filteredStudies =
     selectedCategory === "All"
       ? caseStudies
       : caseStudies.filter(
         (study) => study.category === selectedCategory
       );
-  if(loading){
 
-return(
+  if (loading) {
+    return (
+      <div className="flex justify-center items-center h-screen">
+        Loading...
+      </div>
+    );
+  }
 
-<div className="flex justify-center items-center h-screen">
-
-Loading...
-
-</div>
-
-)
-
-}
   return (
     <div className="bg-main-bg text-white min-h-screen">
       {/* Hero Section */}
@@ -146,6 +119,7 @@ Loading...
           Showing {filteredStudies.length} case studies
         </p>
       </motion.div>
+
       {/* Cards */}
       <section className="max-w-7xl mx-auto px-6 pb-20">
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
@@ -163,7 +137,6 @@ Loading...
                          hover:border-blue-500/50 hover:-translate-y-2 hover:shadow-[0_20px_40px_rgba(59,130,246,0.08)]
                          transition-all duration-500 flex flex-col h-full"
             >
-              {/* Image & Category Badge */}
               {/* Image Header with Container */}
               <div className="relative overflow-hidden aspect-[16/10] bg-[#070b13] flex items-center justify-center">
                 <img
@@ -179,15 +152,16 @@ Loading...
 
               {/* Card Body */}
               <div className="p-6 flex flex-col flex-grow">
-                <h3 className="text-xl font-bold text-white mb-3 group-hover:text-blue-400 transition-colors duration-300 leading-snug">
+                {/* Truncated Title (2 lines max) */}
+                <h3 className="text-xl font-bold text-white mb-3 group-hover:text-blue-400 transition-colors duration-300 leading-snug line-clamp-2">
                   {study.title}
                 </h3>
 
-                <p className="text-gray-400 text-sm leading-relaxed mb-6 flex-grow">
+                {/* Truncated Summary (3 lines max) */}
+                <p className="text-gray-400 text-sm leading-relaxed mb-6 flex-grow line-clamp-3">
                   {study.summary}
                 </p>
 
-               
                 {/* Footer with Slide-arrow Button */}
                 <div className="border-t border-slate-800/60 pt-5 mt-auto flex items-center justify-between">
                   <button
@@ -231,46 +205,45 @@ Loading...
         whileInView="visible"
         viewport={{ once: true }}
         variants={fadeUpVariants}
-        
       >
         <div className="w-[100vw] bg-sub-bg overflow-hidden">
-        <div className="max-w-7xl mx-auto px-6 py-20 text-center">
-          <h2 className="text-4xl font-bold mb-4 text-pure-black">
-            Global Impact
-          </h2>
+          <div className="max-w-7xl mx-auto px-6 py-20 text-center">
+            <h2 className="text-4xl font-bold mb-4 text-pure-black">
+              Global Impact
+            </h2>
 
-          <p className="text-black mb-14">
-            Quantifiable results delivered across industries.
-          </p>
+            <p className="text-black mb-14">
+              Quantifiable results delivered across industries.
+            </p>
 
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-10">
-            {[
-              { value: "$2B+", label: "VALUE CREATED" },
-              { value: "50+", label: "ENTERPRISE CLIENTS" },
-              { value: "12", label: "COUNTRIES SERVED" },
-              { value: "98%", label: "CLIENT RETENTION" },
-            ].map((item, index) => (
-              <motion.div
-                key={index}
-                initial={{ opacity: 0, y: 30 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{
-                  duration: 0.5,
-                  delay: index * 0.15,
-                }}
-              >
-                <h3 className="text-5xl font-bold text-blue-500">
-                  {item.value}
-                </h3>
+            <div className="grid grid-cols-2 lg:grid-cols-4 gap-10">
+              {[
+                { value: "$2B+", label: "VALUE CREATED" },
+                { value: "50+", label: "ENTERPRISE CLIENTS" },
+                { value: "12", label: "COUNTRIES SERVED" },
+                { value: "98%", label: "CLIENT RETENTION" },
+              ].map((item, index) => (
+                <motion.div
+                  key={index}
+                  initial={{ opacity: 0, y: 30 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{
+                    duration: 0.5,
+                    delay: index * 0.15,
+                  }}
+                >
+                  <h3 className="text-5xl font-bold text-blue-500">
+                    {item.value}
+                  </h3>
 
-                <p className="text-black mt-2">
-                  {item.label}
-                </p>
-              </motion.div>
-            ))}
+                  <p className="text-black mt-2">
+                    {item.label}
+                  </p>
+                </motion.div>
+              ))}
+            </div>
           </div>
-        </div>
         </div>
       </motion.section>
     </div>
