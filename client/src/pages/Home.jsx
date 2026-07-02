@@ -1540,7 +1540,7 @@ const stats = [
             borderRadius: "50%",
             background: "var(--color-btn-bg)",
             border: "1px solid rgba(255, 255, 255, 0.15)",
-            display: "flex",
+            display: { xs: "none", md: "flex" },
             alignItems: "center",
             justifyContent: "center",
             cursor: "pointer",
@@ -1570,7 +1570,7 @@ const stats = [
             borderRadius: "50%",
             background: "var(--color-btn-bg)",
             border: "1px solid rgba(255, 255, 255, 0.15)",
-            display: "flex",
+            display: { xs: "none", md: "flex" },
             alignItems: "center",
             justifyContent: "center",
             cursor: "pointer",
@@ -1606,8 +1606,8 @@ const stats = [
           }}
           breakpoints={{
             0: {
-              slidesPerView: 2,
-              spaceBetween: 12,
+              slidesPerView: 1,
+              spaceBetween: 16,
             },
             768: {
               slidesPerView: 2,
