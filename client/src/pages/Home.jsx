@@ -565,8 +565,9 @@ const stats = [
   {/* Main Content */}
 
   <Container
+    maxWidth={false}
     sx={{
-      maxWidth: { xs: "100%", md: "960px", lg: "1000px" },
+      px: { xs: "20px", md: "50px" },
       position: "relative",
       zIndex: 2,
     }}
@@ -576,7 +577,7 @@ const stats = [
         display: "grid",
         gridTemplateColumns: {
           xs: "1fr",
-          lg: "1.1fr 0.9fr",
+          lg: "1fr 1fr",
         },
         alignItems: "center",
         gap: { xs: 4, lg: 8 },
@@ -599,10 +600,10 @@ const stats = [
               mb: 2,
               textAlign: "left",
               fontSize: {
-                xs: "1.8rem",
-                sm: "2.2rem",
-                md: "2.4rem",
-                lg: "2.5rem",
+                xs: "2.5rem",
+                sm: "3rem",
+                md: "3.5rem",
+                lg: "4rem",
               },
             }}
           >
@@ -624,11 +625,12 @@ const stats = [
             sx={{
               color: "#cbd5e1",
               lineHeight: 1.7,
-              maxWidth: "520px",
+              maxWidth: "100%",
               mb: 3,
               fontSize: {
-                xs: "0.85rem",
-                md: "0.92rem",
+                xs: "1rem",
+                md: "1.2rem",
+                lg: "1.3rem",
               },
             }}
           >
@@ -714,7 +716,6 @@ const stats = [
             lg: "block",
           },
           position: "relative",
-          maxHeight: "360px",
           width: "100%",
         }}
       >
@@ -739,7 +740,7 @@ const stats = [
             alt="Meeting"
             sx={{
               width: "100%",
-              height: "340px",
+              height: { lg: "500px", xl: "600px" },
               borderRadius: "16px",
               boxShadow: "0 20px 50px rgba(0,0,0,.55)",
               objectFit: "cover",
