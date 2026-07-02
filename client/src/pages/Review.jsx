@@ -90,19 +90,19 @@ const StarRating = ({ value, onChange }) => {
 
 const fieldSx = {
   "& .MuiOutlinedInput-root": {
-    color: "#fff",
+    color: "var(--color-pure-black)",
     borderRadius: "14px",
-    background: "rgba(255,255,255,0.04)",
+    background: "var(--color-main-bg)",
     transition: "all 0.3s ease",
-    "& fieldset": { borderColor: "rgba(255,255,255,0.1)" },
+    "& fieldset": { borderColor: "var(--color-border-color)" },
     "&:hover fieldset": { borderColor: "rgba(37,99,235,0.5)" },
     "&.Mui-focused fieldset": {
       borderColor: "#2563EB",
       boxShadow: "0 0 0 3px rgba(37,99,235,0.12)",
     },
   },
-  "& .MuiInputLabel-root": { color: "#64748B", fontSize: "0.9rem" },
-  "& .MuiInputLabel-root.Mui-focused": { color: "#60A5FA" },
+  "& .MuiInputLabel-root": { color: "var(--color-pure-black)", fontSize: "0.9rem" },
+  "& .MuiInputLabel-root.Mui-focused": { color: "#2563EB" },
 };
 
 
@@ -142,11 +142,11 @@ const SuccessScreen = ({ onReset }) => {
         <CheckCircleIcon sx={{ fontSize: 44, color: "#fff" }} />
       </Box>
 
-      <Typography sx={{ color: "#fff", fontWeight: 800, fontSize: "1.6rem", mb: 1.5 }}>
+      <Typography sx={{ color: "var(--color-pure-black)", fontWeight: 800, fontSize: "1.6rem", mb: 1.5 }}>
         Thank You!
       </Typography>
 
-      <Typography sx={{ color: "#94A3B8", lineHeight: 1.6, mb: 4, maxWidth: 400, mx: "auto", fontSize: "0.88rem" }}>
+      <Typography sx={{ color: "var(--color-pure-black)", lineHeight: 1.6, mb: 4, maxWidth: 400, mx: "auto", fontSize: "0.88rem" }}>
         We truly appreciate your feedback — it helps us serve enterprises better.
       </Typography>
 
@@ -265,33 +265,14 @@ export default function Review() {
   };
 
   return (
-    <Box
+    <Box className="bg-main-bg"
       sx={{
         minHeight: "100vh",
-        background: "transparent",
         position: "relative",
         overflow: "hidden",
         py: { xs: 6, md: 10 },
       }}
     >
-
-
-      <Box
-        sx={{
-          position: "absolute",
-          width: 800,
-          height: 800,
-          borderRadius: "50%",
-          background: "#2563EB",
-          filter: "blur(260px)",
-          opacity: 0.05,
-          top: "40%",
-          left: "50%",
-          transform: "translate(-50%,-50%)",
-          pointerEvents: "none",
-        }}
-      />
-
       <Container maxWidth="xl" sx={{ position: "relative", zIndex: 1 }}>
 
         {/* Header Section */}
@@ -318,7 +299,7 @@ export default function Review() {
               <AutoAwesomeIcon sx={{ fontSize: 16, color: "#60A5FA" }} />
               <Typography
                 sx={{
-                  color: "#60A5FA",
+                  color: "var(--color-pure-black)",
                   fontWeight: 700,
                   fontSize: "0.8rem",
                   letterSpacing: "2px",
@@ -332,7 +313,7 @@ export default function Review() {
 
             <Typography
               sx={{
-                color: "#fff",
+                color: "var(--color-pure-black)",
                 fontWeight: 900,
                 fontSize: { xs: "2rem", sm: "2.5rem", md: "3rem" },
                 lineHeight: 1.1,
@@ -355,7 +336,7 @@ export default function Review() {
 
             <Typography
               sx={{
-                color: "#94A3B8",
+                color: "var(--color-pure-black)",
                 maxWidth: 640,
                 lineHeight: 1.7,
                 fontSize: { xs: "0.85rem", md: "0.92rem" },
@@ -378,9 +359,8 @@ export default function Review() {
               transition={{ duration: 0.4 }}
               style={{
                 borderRadius: "28px",
-                background: "rgba(255,255,255,0.03)",
-                border: "1px solid rgba(255,255,255,0.08)",
-                backdropFilter: "blur(24px)",
+                background: "var(--color-sub-bg)",
+                border: "1px solid var(--color-border-color)",
                 maxWidth: 640,
                 margin: "0 auto",
               }}
@@ -406,10 +386,8 @@ export default function Review() {
                     sx={{
                       p: { xs: 2.5, sm: 3, md: 3.5 },
                       borderRadius: "24px",
-                      background: "rgba(255,255,255,0.03)",
-                      border: "1px solid rgba(255,255,255,0.08)",
-                      backdropFilter: "blur(24px)",
-                      boxShadow: "0 0 60px rgba(0,0,0,0.4)",
+                      background: "var(--color-sub-bg)",
+                      border: "1px solid var(--color-border-color)",
                       position: "relative",
                       overflow: "hidden",
                       "&::before": {
@@ -475,11 +453,11 @@ export default function Review() {
                           borderRadius: "12px",
                           border: errors.rating
                             ? "1px solid rgba(239,68,68,0.4)"
-                            : "1px solid rgba(255,255,255,0.06)",
-                          background: "rgba(255,255,255,0.02)",
+                            : "1px solid var(--color-border-color)",
+                          background: "var(--color-main-bg)",
                         }}
                       >
-                        <Typography sx={{ color: "#64748B", fontSize: "0.78rem", mb: 1 }}>
+                        <Typography sx={{ color: "var(--color-pure-black)", fontSize: "0.78rem", mb: 1 }}>
                           Overall Rating
                         </Typography>
                         <StarRating
@@ -546,7 +524,7 @@ export default function Review() {
                               ? "rgba(37,99,235,0.5)"
                               : "linear-gradient(90deg,#1D4ED8,#3B82F6)",
                             px: 4, py: 1.1,
-                            borderRadius: "10px",
+                            borderRadius: "3px",
                             textTransform: "none",
                             fontWeight: 700,
                             fontSize: "0.9rem",
@@ -570,31 +548,30 @@ export default function Review() {
                     sx={{
                       p: { xs: 2.5, md: 3 },
                       borderRadius: "24px",
-                      background: "rgba(30,58,138,0.12)",
-                      border: "1px solid rgba(37,99,235,0.2)",
-                      backdropFilter: "blur(20px)",
+                      background: "var(--color-sub-bg)",
+                      border: "1px solid var(--color-border-color)",
                       position: { md: "sticky" },
                       top: { md: 100 },
                     }}
                   >
-                    <Stack direction="row" spacing={1.5} alignItems="center" mb={2.5}>
+                    <Stack direction="row" spacing={1.5} alignItems="center" sx={{ mb: "24px" }}>
                       <Box
                         sx={{
                           width: 34, height: 34,
                           borderRadius: "8px",
                           background: "rgba(37,99,235,0.2)",
-                          display: "flex", alignItems: "center", justifyContent: "center",
+                          display: "flex", alignItems: "center", justifyContent: "center" 
                         }}
                       >
                         <InfoOutlinedIcon sx={{ color: "#3B82F6", fontSize: 18 }} />
                       </Box>
-                      <Typography sx={{ color: "#fff", fontWeight: 700, fontSize: "0.95rem" }}>
+                      <Typography sx={{ color: "var(--color-pure-black)", fontWeight: 700, fontSize: "0.95rem" }}>
                         Review Guidelines
                       </Typography>
                     </Stack>
 
 
-                    <Stack spacing={1.5}>
+                    <Stack spacing={1.5} sx={{ mt: "24px" }}>
                       {guidelines.map((g, i) => (
                         <Box
                           key={i}
@@ -602,12 +579,13 @@ export default function Review() {
                             display: "flex",
                             gap: 1.5, p: 1.5,
                             borderRadius: "12px",
-                            background: "rgba(255,255,255,0.02)",
-                            border: "1px solid rgba(255,255,255,0.04)",
+                            background: "var(--color-main-bg)",
+                            border: "1px solid var(--color-border-color)",
                             transition: "all 0.25s ease",
                             "&:hover": {
                               background: "rgba(37,99,235,0.08)",
                               border: "1px solid rgba(37,99,235,0.2)",
+                            
                             },
                           }}
                         >
@@ -620,10 +598,10 @@ export default function Review() {
                             }}
                           />
                           <Box>
-                            <Typography sx={{ color: "#fff", fontWeight: 700, fontSize: "0.8rem", mb: 0.3 }}>
+                            <Typography sx={{ color: "var(--color-pure-black)", fontWeight: 700, fontSize: "0.8rem", mb: 0.3 }}>
                               {g.title}
                             </Typography>
-                            <Typography sx={{ color: "#64748B", fontSize: "0.75rem", lineHeight: 1.4 }}>
+                            <Typography sx={{ color: "var(--color-pure-black)", fontSize: "0.75rem", lineHeight: 1.4 }}>
                               {g.desc}
                             </Typography>
                           </Box>
@@ -631,7 +609,7 @@ export default function Review() {
                       ))}
                     </Stack>
 
-                    
+
                     <Box
                       sx={{
                         mt: 2.5, p: 1.5,
@@ -641,7 +619,7 @@ export default function Review() {
                         textAlign: "center",
                       }}
                     >
-                      <Typography sx={{ color: "#475569", fontSize: "0.68rem", lineHeight: 1.4 }}>
+                      <Typography sx={{ color: "var(--color-pure-black)", fontSize: "0.68rem", lineHeight: 1.4 }}>
                         Your review may be featured on our website with your
                         permission. We never share personal data without consent.
                       </Typography>

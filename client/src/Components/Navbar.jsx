@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import logo from '../assets/strivo logo.png';
-import logo2 from '../assets/strivo logo 2.png';
+
 
 const navLinks = [
   { name: 'Home', path: '/home' },
@@ -59,7 +59,6 @@ const Navbar = () => {
         <div className="max-w-7xl mx-auto px-8 flex items-center justify-between h-20">
           <motion.div variants={itemVariants} className="flex items-center gap-2">
             <img src={logo} alt="Strivo Logo" className="h-10 w-auto" />
-            <img src={logo2} alt="Strivo Logo Text" className="h-10 w-auto" />
           </motion.div>
 
           <ul className="flex items-center gap-6">
@@ -118,7 +117,6 @@ const Navbar = () => {
       >
         <motion.div variants={itemVariants} className="flex items-center gap-2">
           <img src={logo} alt="Strivo Logo" className="h-8 w-auto" />
-          <img src={logo2} alt="Strivo Logo Text" className="h-8 w-auto" />
         </motion.div>
         <motion.button
           variants={itemVariants}

@@ -153,6 +153,7 @@ const App = () => {
               <Route path="/review" element={<Review />} />
 
               {/* Admin Routes */}
+              <Route path="/admin" element={<Login />} />
               <Route path="/admin/login" element={<Login />} />
               <Route path="/admin/forgot-password" element={<ForgotPassword />} />
               <Route path="/admin/reset-password" element={<ResetPassword />} />

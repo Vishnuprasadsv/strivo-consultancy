@@ -6,7 +6,7 @@ import axios from 'axios';
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import logo1 from '../assets/strivo logo.png';
-import logo2 from '../assets/strivo logo 2.png';
+
 
 const Login = () => {
   const [username, setUsername] = useState('');
@@ -53,8 +53,7 @@ const Login = () => {
         <div className="absolute top-0 left-1/2 -translate-x-1/2 w-3/4 h-32 bg-blue-600/30 blur-[60px] -z-10 rounded-full pointer-events-none"></div>
 
         <div className="flex flex-col items-center gap-4 mb-8">
-          <img src={logo1} alt="Strivo Logo 1" className="h-10 object-contain" />
-          <img src={logo2} alt="Strivo Logo 2" className="h-10 object-contain" />
+          <img src={logo1} alt="Strivo Logo" className="h-10 object-contain" />
         </div>
 
         <div className="text-center mb-10">

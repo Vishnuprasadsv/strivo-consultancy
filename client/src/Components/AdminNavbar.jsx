@@ -19,7 +19,7 @@ import {
   getReviewsAPI
 } from '../services/allApi';
 import logo from '../assets/strivo logo.png';
-import logo2 from '../assets/strivo logo 2.png';
+
 
 const navLinks = [
   { name: 'Dashboard', path: '/admin/dashboard', icon: <DashboardIcon /> },
@@ -183,7 +183,7 @@ const AdminNavbar = () => {
   };
 
   // Check auth and hide on login pages
-  const isAuthPage = ['/admin/login', '/admin/forgot-password', '/admin/reset-password'].includes(location.pathname);
+  const isAuthPage = ['/admin', '/admin/login', '/admin/forgot-password', '/admin/reset-password'].includes(location.pathname);
   const isAdminRoute = location.pathname.startsWith('/admin');
 
   useEffect(() => {
@@ -329,7 +329,6 @@ const AdminNavbar = () => {
         {/* Logo Section */}
         <div className="flex flex-col items-center justify-center py-6 gap-2">
           <img src={logo} alt="Strivo Logo" className="h-10 w-auto" />
-          <img src={logo2} alt="Strivo Logo Text" className="h-6 w-auto" />
         </div>
 
         <div className="mx-6 border-b border-white/10 mb-6"></div>
