@@ -1,7 +1,7 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
-import { Typography, Button, Box } from '@mui/material';
+import { Button, Box } from '@mui/material';
 
 // Import local assets
 import strategyHero from "../assets/strategy-hero.jpg";
@@ -59,8 +59,8 @@ const Vision = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-transparent text-white font-sans">
-      {/* HERO SECTION CONTAINER - dark transparent */}
+    <div className="min-h-screen bg-transparent text-black font-sans">
+      {/* HERO SECTION CONTAINER - transparent with black text */}
       <div className="max-w-7xl mx-auto px-6 md:px-12 pt-24 pb-12">
         {/* Back Button */}
         <motion.div 
@@ -71,7 +71,7 @@ const Vision = () => {
         >
           <button 
             onClick={() => navigate("/about")} 
-            className="text-blue-500 hover:text-[var(--color-pure-black)] transition-colors flex items-center border border-blue-500/30 rounded-full px-5 py-2 text-sm font-medium hover:border-blue-500 cursor-pointer"
+            className="text-blue-500 hover:text-white transition-colors flex items-center border border-blue-500/30 rounded-full px-5 py-2 text-sm font-medium hover:border-blue-500 cursor-pointer"
           >
             ← Back to About Us
           </button>
@@ -84,15 +84,15 @@ const Vision = () => {
           variants={fadeUpVariants}
           className="max-w-3xl"
         >
-          <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold leading-tight mb-6">Our Vision & Future</h1>
-          <p className="text-[var(--color-pure-black)] text-base md:text-lg leading-relaxed max-w-2xl">
+          <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold leading-tight mb-6 text-black">Our Vision & Future</h1>
+          <p className="text-gray-700 text-base md:text-lg leading-relaxed max-w-2xl">
             To be the definitive standard for corporate strategic advisory, recognized globally for integrity and impact.
           </p>
         </motion.section>
       </div>
 
-      {/* SECTION 2: FEATURED BANNER - White bg, dark text */}
-      <div className="bg-[var(--color-main-bg)] py-16 md:py-24 text-[var(--color-black)]">
+      {/* SECTION 2: FEATURED BANNER - White bg, solid black text */}
+      <div className="bg-[var(--color-main-bg)] py-16 md:py-24 text-black">
         <div className="max-w-7xl mx-auto px-6 md:px-12">
           <motion.section
             initial="hidden"
@@ -105,8 +105,8 @@ const Vision = () => {
               <span className="inline-block px-3 py-1 bg-blue-500/10 text-blue-600 text-xs font-semibold uppercase tracking-wider rounded-md mb-6 w-max">
                 Horizon Plan
               </span>
-              <h2 className="text-2xl md:text-3xl font-bold text-[var(--color-black)] mb-4">Shaping the Corporate Landscape of Tomorrow</h2>
-              <p className="text-gray-600 mb-6 text-sm md:text-base leading-relaxed">
+              <h2 className="text-2xl md:text-3xl font-bold text-black mb-4">Shaping the Corporate Landscape of Tomorrow</h2>
+              <p className="text-black mb-6 text-sm md:text-base leading-relaxed">
                 We envision a business landscape where leadership is defined by strategic foresight, operational agility, and sustainable value creation. Our horizon plan guides organizations through transformational periods, turning industry disruptions into growth milestones.
               </p>
               <div className="flex flex-wrap gap-4 mt-2">
@@ -132,8 +132,8 @@ const Vision = () => {
         </div>
       </div>
 
-      {/* SECTION 3: PILLARS - Light Blue bg, dark text */}
-      <div className="bg-[var(--color-sub-bg)] py-16 md:py-24 text-[var(--color-black)]">
+      {/* SECTION 3: PILLARS - Light Blue bg, solid black text */}
+      <div className="bg-[var(--color-sub-bg)] py-16 md:py-24 text-black">
         <div className="max-w-7xl mx-auto px-6 md:px-12">
           <motion.section
             initial="hidden"
@@ -142,8 +142,8 @@ const Vision = () => {
             variants={fadeUpVariants}
           >
             <div className="mb-12">
-              <h2 className="text-2xl md:text-3xl font-bold text-[var(--color-black)] mb-3">Our Vision Pillars</h2>
-              <p className="text-gray-600 text-sm md:text-base">The key coordinates that guide our long-term trajectory and global objectives.</p>
+              <h2 className="text-2xl md:text-3xl font-bold text-black mb-3">Our Vision Pillars</h2>
+              <p className="text-black text-sm md:text-base">The key coordinates that guide our long-term trajectory and global objectives.</p>
             </div>
 
             <motion.div
@@ -172,8 +172,8 @@ const Vision = () => {
                   </div>
                   <div className="p-5 flex flex-col flex-grow relative z-20 bg-white">
                     <span className="text-blue-600 text-xs font-semibold mb-2 uppercase">{pillar.category}</span>
-                    <h3 className="text-lg md:text-xl font-bold text-[var(--color-black)] mb-2">{pillar.title}</h3>
-                    <p className="text-gray-600 text-xs md:text-sm leading-relaxed flex-grow">{pillar.description}</p>
+                    <h3 className="text-lg md:text-xl font-bold text-black mb-2">{pillar.title}</h3>
+                    <p className="text-black text-xs md:text-sm leading-relaxed flex-grow">{pillar.description}</p>
                   </div>
                 </motion.article>
               ))}

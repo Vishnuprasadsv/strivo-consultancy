@@ -8,7 +8,7 @@ import {
   Rating,
   Dialog,
 } from '@mui/material';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import SEO from '../Components/SEO';
 import { SERVER_URL } from '../services/serverUrl';
@@ -25,7 +25,6 @@ import {
   Groups,
   WorkspacePremium,
   ArrowForward,
-  KeyboardArrowUp,
 } from "@mui/icons-material";
 
 import heroBg from "../assets/heroBg.jpeg";
@@ -93,23 +92,6 @@ const AnimatedCounter = ({ target, duration = 1500, suffix = "" }) => {
 function Home() {
   const navigate = useNavigate();
   const swiperRef = useRef(null);
-  const [showScrollTop, setShowScrollTop] = useState(false);
-
-  useEffect(() => {
-    const handleScroll = () => {
-      setShowScrollTop(window.scrollY > 300);
-    };
-
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
-
-  const scrollToTop = () => {
-    window.scrollTo({
-      top: 0,
-      behavior: "smooth",
-    });
-  };
   const testimonials = [
     {
       name: "John Smith",
@@ -287,7 +269,7 @@ function Home() {
   const renderAvatar = (item) => {
     const roleLower = item.role?.toLowerCase() || "";
     const nameLower = item.name?.toLowerCase() || "";
-    
+
     if (roleLower.includes("hexatech") || nameLower.includes("smith")) {
       return <CompanyAvatar company="HexaTech" />;
     }
@@ -386,107 +368,107 @@ function Home() {
       )
     }
   ];
-const services = [
-  {
-    icon: <AccountTree sx={{ color: "#3b82f6" }} />,
-    title: "Strategic Planning",
-    description:
-      "Aligning vision with actionable roadmaps to secure long-term competitive advantage.",
-  },
-  {
-    icon: <Settings sx={{ color: "#3b82f6" }} />,
-    title: "Operations Optimization",
-    description:
-      "Streamlining processes to enhance efficiency, reduce costs, and scale effectively.",
-  },
-  {
-    icon: <AutoGraph sx={{ color: "#3b82f6" }} />,
-    title: "Digital Transformation",
-    description:
-      "Modernizing technology stacks to drive agility and unlock new revenue streams.",
-  },
-  {
-    icon: <Groups sx={{ color: "#3b82f6" }} />,
-    title: "Change Management",
-    description:
-      "Guiding organizations through complex transitions with minimal disruption.",
-  },
-];
-
-
-const cardVariants = {
-  hidden: {
-    opacity: 0,
-    y: 60,
-    scale: 0.9,
-  },
-  visible: {
-    opacity: 1,
-    y: 0,
-    scale: 1,
-    transition: {
-      duration: 0.8,
+  const services = [
+    {
+      icon: <AccountTree sx={{ color: "#3b82f6" }} />,
+      title: "Strategic Planning",
+      description:
+        "Aligning vision with actionable roadmaps to secure long-term competitive advantage.",
     },
-  },
-};
-const containerVariants = {
-  hidden: {},
-  visible: {
-    transition: {
-      staggerChildren: 0.25,
+    {
+      icon: <Settings sx={{ color: "#3b82f6" }} />,
+      title: "Operations Optimization",
+      description:
+        "Streamlining processes to enhance efficiency, reduce costs, and scale effectively.",
     },
-  },
-};
-
-const itemVariants = {
-  hidden: {
-    opacity: 0,
-    y: 60,
-  },
-  visible: {
-    opacity: 1,
-    y: 0,
-    transition: {
-      duration: 1,
-      ease: [0.22, 1, 0.36, 1],
+    {
+      icon: <AutoGraph sx={{ color: "#3b82f6" }} />,
+      title: "Digital Transformation",
+      description:
+        "Modernizing technology stacks to drive agility and unlock new revenue streams.",
     },
-  },
-};
+    {
+      icon: <Groups sx={{ color: "#3b82f6" }} />,
+      title: "Change Management",
+      description:
+        "Guiding organizations through complex transitions with minimal disruption.",
+    },
+  ];
 
-const companies = [
-  "Acme Corp",
-  "GlobalTech",
-  "Nexus",
-  "Stratos",
-  "Apex",
-  "Vertex",
-  "Vision",
-];
 
-const stats = [
-  {
-    value: 500,
-    suffix: "+",
-    label: "PROJECTS COMPLETED",
-  },
-  {
-    value: 200,
-    suffix: "+",
-    label: "CLIENTS SERVED",
-  },
-  {
-    value: 15,
-    suffix: "",
-    label: "INDUSTRIES",
-  },
-  {
-    value: 98,
-    suffix: "%",
-    label: "SUCCESS RATE",
-  },
-];
+  const cardVariants = {
+    hidden: {
+      opacity: 0,
+      y: 60,
+      scale: 0.9,
+    },
+    visible: {
+      opacity: 1,
+      y: 0,
+      scale: 1,
+      transition: {
+        duration: 0.8,
+      },
+    },
+  };
+  const containerVariants = {
+    hidden: {},
+    visible: {
+      transition: {
+        staggerChildren: 0.25,
+      },
+    },
+  };
 
-  
+  const itemVariants = {
+    hidden: {
+      opacity: 0,
+      y: 60,
+    },
+    visible: {
+      opacity: 1,
+      y: 0,
+      transition: {
+        duration: 1,
+        ease: [0.22, 1, 0.36, 1],
+      },
+    },
+  };
+
+  const companies = [
+    "Acme Corp",
+    "GlobalTech",
+    "Nexus",
+    "Stratos",
+    "Apex",
+    "Vertex",
+    "Vision",
+  ];
+
+  const stats = [
+    {
+      value: 500,
+      suffix: "+",
+      label: "PROJECTS COMPLETED",
+    },
+    {
+      value: 200,
+      suffix: "+",
+      label: "CLIENTS SERVED",
+    },
+    {
+      value: 15,
+      suffix: "",
+      label: "INDUSTRIES",
+    },
+    {
+      value: 98,
+      suffix: "%",
+      label: "SUCCESS RATE",
+    },
+  ];
+
+
   const [successStories, setSuccessStories] = useState([]);
   const [loadingStories, setLoadingStories] = useState(true);
   const [selectedTestimonial, setSelectedTestimonial] = useState(null);
@@ -506,7 +488,7 @@ const stats = [
               image: story.imageUrl,
               review: story.clientStories
             }));
-          
+
           // Merge backend stories with custom high-quality testimonials to ensure we have enough slides
           const combined = [...formattedData];
           testimonials.forEach(t => {
@@ -530,1313 +512,1324 @@ const stats = [
 
   return (
     <div>
-      <SEO 
-        title="Home" 
-        description="We partner with ambitious leaders to solve complex challenges, optimize operations, and drive sustainable growth in an ever-evolving global landscape." 
+      <SEO
+        title="Home"
+        description="We partner with ambitious leaders to solve complex challenges, optimize operations, and drive sustainable growth in an ever-evolving global landscape."
       />
-    <Box
-      component="section"
-      id="hero-section"
-      sx={{
-        position: "relative",
-        minHeight: { xs: "auto", lg: "calc(100vh - 80px)" },
-        py: { xs: 6, lg: 0 },
-        display: "flex",
-        alignItems: "center",
-        overflow: "hidden",
-        backgroundColor: "var(--color-black)",
-      }}
-    >
-      {/* Decorative Radial Glow */}
       <Box
+        component="section"
+        id="hero-section"
         sx={{
-          position: "absolute",
-          top: "50%",
-          left: "55%",
-          transform: "translate(-50%, -50%)",
-          width: { xs: "500px", md: "800px" },
-          height: { xs: "500px", md: "800px" },
-          background: "radial-gradient(circle, rgba(37,99,235,0.08), transparent 75%)",
-          pointerEvents: "none",
-          zIndex: 0,
-        }}
-      />
-
-  {/* Main Content */}
-
-  <Container
-    maxWidth={false}
-    sx={{
-      px: { xs: "20px", md: "50px" },
-      position: "relative",
-      zIndex: 2,
-    }}
-  >
-    <Box
-      sx={{
-        display: "grid",
-        gridTemplateColumns: {
-          xs: "1fr",
-          lg: "1fr 1fr",
-        },
-        alignItems: "center",
-        gap: { xs: 4, lg: 8 },
-      }}
-    >
-      {/* LEFT CONTENT */}
-
-      <Box sx={{ pr: { xs: 0, lg: 5 } }}>
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8 }}
-        >
-          <Typography
-            sx={{
-              color: "#fff",
-              fontWeight: 900,
-              lineHeight: 1.15,
-              letterSpacing: "-0.5px",
-              mb: 2,
-              textAlign: "left",
-              fontSize: {
-                xs: "2.5rem",
-                sm: "3rem",
-                md: "3.5rem",
-                lg: "4rem",
-              },
-            }}
-          >
-            Empowering Enterprise Growth
-            <br />
-            through Strategic Innovation
-          </Typography>
-        </motion.div>
-
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{
-            delay: 0.2,
-            duration: 0.6,
-          }}
-        >
-          <Typography
-            sx={{
-              color: "#cbd5e1",
-              lineHeight: 1.7,
-              maxWidth: "100%",
-              mb: 3,
-              fontSize: {
-                xs: "1rem",
-                md: "1.2rem",
-                lg: "1.3rem",
-              },
-            }}
-          >
-            We partner with ambitious leaders to solve complex challenges, optimize operations, and drive sustainable growth in an ever-evolving global landscape.
-          </Typography>
-        </motion.div>
-
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{
-            delay: 0.4,
-            duration: 0.6,
-          }}
-        >
-          <Stack
-            direction={{ xs: "column", sm: "row" }}
-            spacing={2}
-          >
-            <motion.div whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.98 }}>
-              <Button
-                variant="contained"
-                onClick={() => navigate("/contact")}
-                sx={{
-                  px: 3.5,
-                  py: 1.2,
-                  borderRadius: "3px",
-                  textTransform: "none",
-                  fontWeight: 700,
-                  fontSize: "0.88rem",
-                  background: "#4764FF",
-                  display: "inline-flex",
-                  alignItems: "center",
-                  gap: 1,
-                  boxShadow: "0 8px 20px rgba(71, 100, 255, 0.3)",
-                  "&:hover": {
-                    background: "#3b55d9",
-                    boxShadow: "0 12px 25px rgba(71, 100, 255, 0.4)",
-                  },
-                  transition: "all 0.3s ease",
-                  width: { xs: "100%", sm: "auto" }
-                }}
-              >
-                Contact Us
-                <ArrowForward sx={{ fontSize: "1rem" }} />
-              </Button>
-            </motion.div>
-
-            <motion.div whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.98 }}>
-              <Button
-                variant="outlined"
-                onClick={() => navigate("/about")}
-                sx={{
-                  px: 3.5,
-                  py: 1.2,
-                  borderRadius: "3px",
-                  textTransform: "none",
-                  fontWeight: 700,
-                  fontSize: "0.88rem",
-                  color: "#fff",
-                  borderColor: "rgba(255, 255, 255, 0.25)",
-                  "&:hover": {
-                    background: "rgba(255, 255, 255, 0.08)",
-                    borderColor: "#3b82f6",
-                  },
-                  transition: "all 0.3s ease",
-                  width: { xs: "100%", sm: "auto" }
-                }}
-              >
-                Learn More
-              </Button>
-            </motion.div>
-          </Stack>
-        </motion.div>
-      </Box>
-
-      {/* RIGHT IMAGE */}
-
-      <Box
-        sx={{
-          display: {
-            xs: "none",
-            lg: "block",
-          },
           position: "relative",
-          width: "100%",
+          minHeight: { xs: "auto", lg: "calc(100vh - 80px)" },
+          py: { xs: 6, lg: 0 },
+          display: "flex",
+          alignItems: "center",
+          overflow: "hidden",
+          backgroundColor: "var(--color-black)",
         }}
       >
-        <motion.div
-          initial={{
-            opacity: 0,
-            x: 30,
-            scale: 0.97,
-          }}
-          animate={{
-            opacity: 1,
-            x: 0,
-            scale: 1,
-          }}
-          transition={{
-            duration: 0.8,
-          }}
-        >
-          <Box
-            component="img"
-            src={homeHero}
-            alt="Meeting"
-            sx={{
-              width: "100%",
-              height: { lg: "500px", xl: "600px" },
-              borderRadius: "16px",
-              boxShadow: "0 20px 50px rgba(0,0,0,.55)",
-              objectFit: "cover",
-              border: "1px solid rgba(255, 255, 255, 0.08)",
-              transition: "all .5s ease",
-              "&:hover": {
-                transform: "scale(1.01)",
-              },
-            }}
-          />
-        </motion.div>
-
-        {/* Floating Glassmorphic Badge */}
-
-        <motion.div
-          animate={{
-            y: [0, -8, 0],
-            boxShadow: [
-              "0 10px 30px rgba(0, 0, 0, 0.5), 0 0 0px rgba(37, 99, 235, 0)",
-              "0 15px 35px rgba(0, 0, 0, 0.6), 0 0 20px rgba(37, 99, 235, 0.25)",
-              "0 10px 30px rgba(0, 0, 0, 0.5), 0 0 0px rgba(37, 99, 235, 0)"
-            ]
-          }}
-          transition={{
-            duration: 4,
-            repeat: Infinity,
-            ease: "easeInOut"
-          }}
-          style={{
+        {/* Decorative Radial Glow */}
+        <Box
+          sx={{
             position: "absolute",
-            bottom: "-10px",
-            left: "-10px",
-            zIndex: 3,
-            borderRadius: "16px"
+            top: "50%",
+            left: "55%",
+            transform: "translate(-50%, -50%)",
+            width: { xs: "500px", md: "800px" },
+            height: { xs: "500px", md: "800px" },
+            background: "radial-gradient(circle, rgba(37,99,235,0.08), transparent 75%)",
+            pointerEvents: "none",
+            zIndex: 0,
           }}
-        >
-          <Box
-            sx={{
-              background: "rgba(10, 17, 32, 0.85)",
-              backdropFilter: "blur(12px)",
-              border: "1px solid rgba(59, 130, 246, 0.25)",
-              borderRadius: "16px",
-              p: "16px 20px",
-              minWidth: "210px",
-              display: "flex",
-              alignItems: "center",
-              gap: 2,
-              textAlign: "left"
-            }}
-          >
-            <Box
-              sx={{
-                width: 40,
-                height: 40,
-                borderRadius: "12px",
-                background: "rgba(37, 99, 235, 0.12)",
-                border: "1px solid rgba(37, 99, 235, 0.3)",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                color: "#3b82f6",
-              }}
-            >
-              <WorkspacePremium sx={{ fontSize: "1.3rem" }} />
-            </Box>
-            <Box>
-              <Typography sx={{ color: "#fff", fontWeight: 800, fontSize: "1.3rem", lineHeight: 1.1 }}>
-                15+
-              </Typography>
-              <Typography sx={{ color: "#94a3b8", fontSize: "0.75rem", mt: 0.5, fontWeight: 500, letterSpacing: "0.5px" }}>
-                Years Experience
-              </Typography>
-            </Box>
-          </Box>
-        </motion.div>
-      </Box>
-    </Box>
-  </Container>
-</Box>
+        />
 
-{/* Animated downward arrow below hero image */}
-<Box
-  sx={{
-    backgroundColor: "#000",
-    display: "flex",
-    justifyContent: "center",
-    alignItems: "center",
-    py: 2.5,
-    borderBottom: "1px solid rgba(255, 255, 255, 0.05)"
-  }}
->
-  <motion.div
-    animate={{ y: [0, 6, 0] }}
-    transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}
-    style={{ cursor: "pointer" }}
-    onClick={() => {
-      const targetElement = document.getElementById("trusted-by-section");
-      if (targetElement) {
-        targetElement.scrollIntoView({ behavior: "smooth" });
-      }
-    }}
-  >
-    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#3b82f6" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-      <path d="M12 5v14M19 12l-7 7-7-7" />
-    </svg>
-  </motion.div>
-</Box>
+        {/* Main Content */}
 
-{/* second section */}
-<Box
-  component="section"
-  id="stats-section"
-  sx={{
-    backgroundColor: "var(--color-main-bg)",
-    py: { xs: 6, lg: 8.5 },
-  }}
->
-  {/* TRUSTED BY SECTION */}
-
-  <Container sx={{ maxWidth: { xs: "100%", md: "960px", lg: "1000px" } }}>
-    <Box
-      sx={{
-        borderTop: "1px solid rgba(0,0,0,0.06)",
-        borderBottom: "1px solid rgba(0,0,0,0.06)",
-        py: 4,
-        overflow: "hidden",
-      }}
-    >
-      <Typography
-        variant="h4"
-        sx={{
-          textAlign: "center",
-          color: "var(--color-pure-black)",
-          letterSpacing: "3px",
-          fontWeight: 600,
-          mb: 6,
-        }}
-      >
-        TRUSTED BY INDUSTRY LEADERS
-      </Typography>
-
-      <motion.div
-        animate={{
-          x: ["0%", "-50%"],
-        }}
-        transition={{
-          duration: 20,
-          repeat: Infinity,
-          ease: "linear",
-        }}
-      >
-        <Box
-          sx={{
-            display: "flex",
-            gap: { xs: 6, md: 10 },
-            width: "max-content",
-          }}
-        >
-          {[...companies, ...companies].map(
-            (company, index) => (
-              <Typography
-                key={index}
-                sx={{
-                  color: "#94a3b8",
-                  fontWeight: 700,
-                  whiteSpace: "nowrap",
-                  cursor: "pointer",
-                  transition: ".4s",
-                  fontSize: {
-                    xs: "1.2rem",
-                    md: "1.8rem",
-                  },
-
-                  "&:hover": {
-                    color: "#0f172a",
-                  },
-                }}
-              >
-                {company}
-              </Typography>
-            )
-          )}
-        </Box>
-      </motion.div>
-    </Box>
-  </Container>
-
-  {/* STATS SECTION */}
-
-  <Container
-    sx={{
-      maxWidth: { xs: "100%", md: "960px", lg: "1000px" },
-      mt: { xs: 4, lg: 6 },
-    }}
-  >
-    <Box
-      sx={{
-        display: "grid",
-        gridTemplateColumns: {
-          xs: "repeat(2,1fr)",
-          lg: "repeat(4,1fr)",
-        },
-        gap: { xs: 2, sm: 4 },
-      }}
-    >
-      {stats.map((item, index) => (
-        <motion.div
-          key={index}
-          initial={{
-            opacity: 0,
-            y: 60,
-          }}
-          whileInView={{
-            opacity: 1,
-            y: 0,
-          }}
-          viewport={{
-            once: true,
-          }}
-          transition={{
-            duration: 0.8,
-            delay: index * 0.2,
-          }}
-        >
-          <Box
-            sx={{
-              background: "#f8fafc",
-              border: "1px solid rgba(37,99,235,0.08)",
-              borderRadius: "24px",
-              p: { xs: 2.5, sm: 3, md: 3.5 },
-              textAlign: "center",
-              position: "relative",
-              overflow: "hidden",
-              transition: "all .4s ease",
-              boxShadow: "0 10px 30px rgba(0,0,0,0.02)",
-
-              "&::before": {
-                content: '""',
-                position: "absolute",
-                top: 0,
-                left: 0,
-                width: "100%",
-                height: "2px",
-                background:
-                  "linear-gradient(90deg,#2563eb,transparent)",
-              },
-
-              "&:hover": {
-                transform: "translateY(-12px)",
-                background: "#ffffff",
-                border: "1px solid rgba(37,99,235,0.2)",
-                boxShadow: "0 20px 40px rgba(37,99,235,0.08)",
-              },
-            }}
-          >
-            <Typography
-              sx={{
-                fontWeight: 800,
-                color: "#2563eb",
-                mb: 1,
-                lineHeight: 1,
-                fontSize: {
-                  xs: "2rem",
-                  md: "2.6rem",
-                },
-              }}
-            >
-              {item.value}
-              {item.suffix}
-            </Typography>
-
-            <Typography
-              sx={{
-                color: "#475569",
-                letterSpacing: "2px",
-                fontWeight: 600,
-                textTransform: "uppercase",
-                fontSize: {
-                  xs: "0.75rem",
-                  md: "0.85rem",
-                },
-              }}
-            >
-              {item.label}
-            </Typography>
-          </Box>
-        </motion.div>
-      ))}
-    </Box>
-  </Container>
-</Box>
-    {/*  third section */}
-    <Box
-      component="section"
-      id="expertise-section"
-      sx={{
-        backgroundColor: "var(--color-sub-bg)",
-        py: { xs: 6, lg: 8.5 },
-    }}
-  >
-    <Container sx={{ maxWidth: { xs: "100%", md: "960px", lg: "1000px" } }}>
-    {/* Heading */}
-
-    <motion.div
-      initial={{
-        opacity: 0,
-        y: 40,
-      }}
-      whileInView={{
-        opacity: 1,
-        y: 0,
-      }}
-      viewport={{ once: true }}
-      transition={{
-        duration: 1,
-      }}
-    >
-      <Typography
-        sx={{
-          color: "var(--color-pure-black)",
-          textAlign: "center",
-          fontWeight: 700,
-          mb: 2,
-          fontSize: {
-            xs: "1.45rem",
-            md: "1.85rem",
-          },
-        }}
-      >
-        Our Core Expertise
-      </Typography>
-
-      <Typography
-        sx={{
-          color: "var(--color-pure-black)",
-          textAlign: "center",
-          maxWidth: "700px",
-          mx: "auto",
-          mb: 8,
-          lineHeight: 1.8,
-          fontSize: {
-            xs: "0.9rem",
-            md: "0.95rem",
-          },
-        }}
-      >
-        Comprehensive solutions designed to elevate
-        your enterprise across every critical
-        dimension.
-      </Typography>
-    </motion.div>
-
-    {/* Cards */}
-
-    <motion.div
-      variants={containerVariants}
-      initial="hidden"
-      whileInView="visible"
-      viewport={{ once: true }}
-    >
-      <Box
-        sx={{
-          display: "grid",
-          gridTemplateColumns: {
-            xs: "repeat(2,1fr)",
-            lg: "repeat(4,1fr)",
-          },
-          gap: { xs: 1.5, sm: 3, md: 4 },
-        }}
-      >
-        {services.map((service, index) => (
-          <motion.div
-            key={index}
-            variants={cardVariants}
-            whileHover={{
-              y: -8,
-              scale: 1.01,
-            }}
-            style={{ height: "100%" }}
-          >
-            <Box
-              sx={{
-                position: "relative",
-                background:
-                  // "linear-gradient(145deg,#081224,#0f172a)",
-                  "var(--color-main-bg)",
-                borderRadius: "3px",
-                p: { xs: 1.5, sm: 2.5, md: 3 },
-                minHeight: { xs: "145px", md: "180px" },
-                height: "100%",
-                display: "flex",
-                flexDirection: "column",
-                overflow: "hidden",
-                border:
-                  "1px solid rgba(59,130,246,.12)",
-                transition: ".4s ease",
-
-                "&::before": {
-                  content: '""',
-                  position: "absolute",
-                  top: 0,
-                  left: 0,
-                  width: "100%",
-                  height: "2px",
-                  background:
-                    "linear-gradient(90deg,#2563eb,transparent)",
-                },
-
-                "&:hover": {
-                  border:
-                    "1px solid rgba(59,130,246,.4)",
-                  boxShadow:
-                    "0 20px 50px rgba(37,99,235,.18)",
-                },
-              }}
-            >
-              {/* Glow */}
-
-              <Box
-                sx={{
-                  position: "absolute",
-                  width: "180px",
-                  height: "180px",
-                  background:
-                    "radial-gradient(circle, rgba(37,99,235,.18), transparent)",
-                  top: "-70px",
-                  right: "-70px",
-                  pointerEvents: "none",
-                }}
-              />
-
-              {/* Icon */}
-
-              <Box
-                sx={{
-                  width: { xs: 44, md: 60 },
-                  height: { xs: 44, md: 60 },
-                  borderRadius: "16px",
-                  background:
-                    "rgba(37,99,235,.12)",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  mb: { xs: 2, md: 3 },
-                }}
-              >
-                {service.icon}
-              </Box>
-
-              {/* Title */}
-
-              <Typography
-                sx={{
-                  color: "var(--color-pure-black)",
-                  fontWeight: 700,
-                  mb: { xs: 1, md: 2 },
-                  fontSize: { xs: "1rem", md: "1.25rem" },
-                }}
-              >
-                {service.title}
-              </Typography>
-
-              {/* Description */}
-
-              <Typography
-                sx={{
-                  color: "var(--color-pure-black)",
-                  lineHeight: { xs: 1.45, md: 1.8 },
-                  fontSize: { xs: "0.8rem", md: "0.95rem" },
-                  display: "-webkit-box",
-                  WebkitLineClamp: 3,
-                  WebkitBoxOrient: "vertical",
-                  overflow: "hidden",
-                }}
-              >
-                {service.description}
-              </Typography>
-            </Box>
-          </motion.div>
-        ))}
-      </Box>
-    </motion.div>
-  </Container>
-</Box>
-<Box
-  component="section"
-  id="trust-section"
-  sx={{
-    backgroundColor: "var(--color-main-bg)",
-    py: { xs: 6, lg: 8.5 },
-    position: "relative",
-    overflow: "hidden",
-  }}
->
-  {/* Background Glow */}
-  <Box
-    sx={{
-      position: "absolute",
-      top: "-200px",
-      right: "-150px",
-      width: "500px",
-      height: "500px",
-      background:
-        "radial-gradient(circle, rgba(37,99,235,.06), transparent 70%)",
-      pointerEvents: "none",
-    }}
-  />
-
-  <Container sx={{ maxWidth: { xs: "100%", md: "960px", lg: "1000px" }, px: { xs: 2, md: 4 } }}>
-    <Box
-      sx={{
-        display: "grid",
-        gridTemplateColumns: {
-          xs: "1fr",
-          lg: "1.1fr 0.9fr",
-        },
-        gap: { xs: 4, md: 6 },
-        alignItems: "center",
-      }}
-    >
-      {/* LEFT CONTENT */}
-      <motion.div
-        initial={{
-          opacity: 0,
-          y: 60,
-        }}
-        whileInView={{
-          opacity: 1,
-          y: 0,
-        }}
-        viewport={{ once: true }}
-        transition={{
-          duration: 1,
-        }}
-      >
-        <Typography
-          sx={{
-            color: "#2563eb",
-            fontWeight: 900,
-            letterSpacing: "4px",
-            textTransform: "uppercase",
-            mb: 2,
-            fontSize: "18px",
-          }}
-        >
-          Why Clients Trust Us
-        </Typography>
-
-        <Typography
-          sx={{
-            color: "#0f172a",
-            fontWeight: 800,
-            lineHeight: 1.15,
-            mb: 4,
-            maxWidth: "700px",
-            fontSize: {
-              xs: "1.5rem",
-              md: "1.85rem",
-              lg: "2.05rem",
-            },
-          }}
-        >
-          Building Long-Term Partnerships Through Proven Results
-        </Typography>
-
-        <Typography
-          sx={{
-            color: "#475569",
-            lineHeight: 1.8,
-            mb: 3,
-            fontSize: {
-              xs: "0.9rem",
-              md: "0.95rem",
-            },
-          }}
-        >
-          For more than 15 years, we have partnered with
-          organizations across industries to solve complex
-          business challenges, improve operational performance,
-          and accelerate sustainable growth.
-        </Typography>
-
-        <Typography
-          sx={{
-            color: "#475569",
-            lineHeight: 1.8,
-            mb: 3,
-            fontSize: {
-              xs: "0.9rem",
-              md: "0.95rem",
-            },
-          }}
-        >
-          Our consultants combine strategic insight, industry
-          expertise, and data-driven decision-making to deliver
-          solutions that create measurable business impact.
-        </Typography>
-
-        <Typography
-          sx={{
-            color: "#475569",
-            lineHeight: 1.7,
-            fontSize: {
-              xs: "0.9rem",
-              md: "0.95rem",
-            },
-          }}
-        >
-          Every engagement is tailored to the unique goals of
-          our clients, ensuring practical, scalable, and
-          results-oriented outcomes that drive long-term success.
-        </Typography>
-
-        {/* Bottom Metrics */}
-        <Box
-          sx={{
-            display: "flex",
-            flexWrap: "wrap",
-            gap: { xs: 4, md: 6 },
-            mt: 5,
-          }}
-        >
-          {[
-            { value: 500, suffix: "+", label: "Projects" },
-            { value: 200, suffix: "+", label: "Clients" },
-            { value: 98, suffix: "%", label: "Success Rate" },
-          ].map((item, index) => (
-            <Box key={index}>
-              <Typography
-                sx={{
-                  color: "var(--color-btn-bg)",
-                  fontWeight: 800,
-                  fontSize: {
-                    xs: "1.8rem",
-                    md: "2.5rem",
-                  },
-                }}
-              >
-                <AnimatedCounter target={item.value} suffix={item.suffix} />
-              </Typography>
-
-              <Typography
-                sx={{
-                  color: "var(--color-pure-black)",
-                  fontWeight: 700,
-                  letterSpacing:"2px"
-                }}
-              >
-                {item.label}
-              </Typography>
-            </Box>
-          ))}
-        </Box>
-      </motion.div>
-
-      {/* RIGHT IMAGE */}
-      <motion.div
-        initial={{
-          opacity: 0,
-          x: 80,
-        }}
-        whileInView={{
-          opacity: 1,
-          x: 0,
-        }}
-        viewport={{ once: true }}
-        transition={{
-          duration: 1,
-        }}
-      >
-        <Box
+        <Container
+          maxWidth="xl"
           sx={{
             position: "relative",
-            maxWidth: "600px",
-            ml: "auto",
-            width: "100%",
+            zIndex: 2,
           }}
         >
-          {/* Glow */}
           <Box
             sx={{
-              position: "absolute",
-              width: "250px",
-              height: "250px",
-              background:
-                "radial-gradient(circle, rgba(37,99,235,.25), transparent)",
-              top: "-50px",
-              right: "-50px",
-              zIndex: 0,
-            }}
-          />
-
-          {/* Main Image */}
-          <Box
-            component="img"
-            src={aboutus}
-            alt="Business Consulting"
-            sx={{
-              width: "100%",
-              height: { xs: "auto", md: "380px", lg: "420px" },
-              borderRadius: "3px",
-              position: "relative",
-              zIndex: 2,
-              objectFit: "cover",
-              boxShadow:
-                "0 20px 50px rgba(0,0,0,.15)",
-              transition: ".5s ease",
-              "&:hover": {
-                transform: "scale(1.03)",
+              display: "grid",
+              gridTemplateColumns: {
+                xs: "1fr",
+                lg: "1.15fr 0.85fr",
               },
+              alignItems: "center",
+              gap: { xs: 4, lg: 6 },
             }}
-          />
-        </Box>
-      </motion.div>
-    </Box>
-  </Container>
-</Box>
-{/* Client Success Stories Section */}
-<Box
-  component="section"
-  id="testimonials-section"
-  sx={{
-    backgroundColor: "var(--color-sub-bg)",
-    py: { xs: 6, lg: 8.5 },
-    overflow: "hidden",
-    position: "relative"
-  }}
->
-  <Container sx={{ maxWidth: { xs: "100%", md: "960px", lg: "1000px" } }}>
-    {/* Heading */}
-    <motion.div
-      initial={{ opacity: 0, y: 40 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true }}
-      transition={{ duration: 0.8 }}
-    >
-      <Typography
-        sx={{
-          color: "var(--color-pure-black)",
-          textAlign: "center",
-          fontWeight: 900,
-          fontSize: "0.95rem",
-          letterSpacing: "3px",
-          textTransform: "uppercase",
-          mb: 1.5,
-        }}
-      >
-        Client Success Stories
-      </Typography>
+          >
+            {/* LEFT CONTENT */}
 
-      <Typography
-        sx={{
-          color: "var(--color-pure-black)",
-          textAlign: "center",
-          fontWeight: 900,
-          fontSize: { xs: "1.45rem", md: "1.9rem" },
-          mb: 2,
-          lineHeight: 1.1,
-        }}
-      >
-        Real Results. Real Impact.
-      </Typography>
-
-      <Typography
-        sx={{
-          color: "var(--color-pure-black)",
-          textAlign: "center",
-          maxWidth: "550px",
-          mx: "auto",
-          mb: 8,
-          lineHeight: 1.7,
-          fontSize: "0.98rem"
-        }}
-      >
-        See how we've helped leading organizations overcome challenges, drive growth, and achieve measurable results.
-      </Typography>
-    </motion.div>
-
-    {/* Swiper Slider Wrapper with Custom Nav Buttons */}
-    {loadingStories ? (
-      <Box sx={{ display: 'flex', justifyContent: 'center', py: 10 }}>
-        <div className="w-10 h-10 border-4 border-blue-600 border-t-transparent rounded-full animate-spin"></div>
-      </Box>
-    ) : (
-      <Box sx={{ position: "relative", px: { xs: 0, md: 6 } }}>
-        
-        {/* Custom Navigation - Left Arrow */}
-        <Box
-          onClick={() => swiperRef.current?.slidePrev()}
-          sx={{
-            position: "absolute",
-            left: { xs: "-10px", md: "-40px" },
-            top: "50%",
-            transform: "translateY(-50%)",
-            zIndex: 10,
-            width: 44,
-            height: 44,
-            borderRadius: "50%",
-            background: "var(--color-btn-bg)",
-            border: "1px solid rgba(255, 255, 255, 0.15)",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            cursor: "pointer",
-            color: "#ffffff",
-            fontSize: "1.2rem",
-            transition: "all 0.3s ease",
-            "&:hover": {
-              background: "rgba(37, 99, 235, 0.2)",
-              borderColor: "#3b82f6",
-            },
-          }}
-        >
-          ←
-        </Box>
-
-        {/* Custom Navigation - Right Arrow */}
-        <Box
-          onClick={() => swiperRef.current?.slideNext()}
-          sx={{
-            position: "absolute",
-            right: { xs: "-10px", md: "-40px" },
-            top: "50%",
-            transform: "translateY(-50%)",
-            zIndex: 10,
-            width: 44,
-            height: 44,
-            borderRadius: "50%",
-            background: "var(--color-btn-bg)",
-            border: "1px solid rgba(255, 255, 255, 0.15)",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            cursor: "pointer",
-            color: "#ffffff",
-            fontSize: "1.2rem",
-            transition: "all 0.3s ease",
-            "&:hover": {
-              background: "rgba(37, 99, 235, 0.2)",
-              borderColor: "#3b82f6",
-            },
-          }}
-        >
-          →
-        </Box>
-
-        <Swiper
-          modules={[Pagination, Autoplay]}
-          onBeforeInit={(swiper) => {
-            swiperRef.current = swiper;
-          }}
-          slidesPerView={1}
-          spaceBetween={24}
-          loop={true}
-          centeredSlides={true}
-          speed={800}
-          autoplay={{
-            delay: 5000,
-            disableOnInteraction: false,
-          }}
-          pagination={{
-            clickable: true,
-            el: ".custom-swiper-pagination"
-          }}
-          breakpoints={{
-            0: {
-              slidesPerView: 2,
-              spaceBetween: 12,
-            },
-            768: {
-              slidesPerView: 2,
-              spaceBetween: 20,
-            },
-            1024: {
-              slidesPerView: 3,
-              spaceBetween: 24,
-            },
-          }}
-          style={{
-            paddingBottom: "50px",
-            paddingTop:"30px"
-          }}
-        >
-          {successStories.map((item, index) => (
-            <SwiperSlide key={index} style={{ height: "auto" }}>
-              {({ isActive }) => (
-                <Box
-                  onClick={() => setSelectedTestimonial(item)}
+            <Box>
+              <motion.div
+                initial={{ opacity: 0, y: 30 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.8 }}
+              >
+                <Typography
                   sx={{
-                    height: "100%",
-                    display: "flex",
-                    flexDirection: "column",
-                    justifyContent: "space-between",
-                    background: "linear-gradient(145deg, #fcfcfc, #EDF0FF)",
-                    border: "1px solid rgba(0, 0, 0, 0.15)",
-                    borderRadius: "3px",
-                    p: { xs: 2.5, md: 3.5 },
-                    position: "relative",
-                    opacity: 1,
-                    transform: "none",
-                    boxShadow: "0 4px 12px rgba(0,0,0,0.03)",
+                    color: "#fff",
+                    fontWeight: 900,
+                    lineHeight: 1.15,
+                    letterSpacing: "-0.5px",
+                    mb: 2,
                     textAlign: "left",
-                    cursor: "pointer",
-                    transition: "all 0.3s ease",
-                    "&:hover": {
-                      transform: "translateY(-4px)",
-                      borderColor: "#2563eb",
-                      boxShadow: "0 10px 25px rgba(37, 99, 235, 0.08)",
-                    }
+                    fontSize: {
+                      xs: "2rem",
+                      sm: "2.4rem",
+                      md: "2.6rem",
+                      lg: "2.8rem",
+                    },
                   }}
                 >
+                  Empowering Enterprise Growth
+                  <br />
+                  through Strategic Innovation
+                </Typography>
+              </motion.div>
+
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{
+                  delay: 0.2,
+                  duration: 0.6,
+                }}
+              >
+                <Typography
+                  sx={{
+                    color: "#cbd5e1",
+                    lineHeight: 1.7,
+                    maxWidth: "520px",
+                    mb: 3,
+                    fontSize: {
+                      xs: "0.85rem",
+                      md: "0.92rem",
+                    },
+                  }}
+                >
+                  We partner with ambitious leaders to solve complex challenges, optimize operations, and drive sustainable growth in an ever-evolving global landscape.
+                </Typography>
+              </motion.div>
+
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{
+                  delay: 0.4,
+                  duration: 0.6,
+                }}
+              >
+                <Stack
+                  direction={{ xs: "column", sm: "row" }}
+                  spacing={2}
+                >
+                  <motion.div whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.98 }}>
+                    <Button
+                      variant="contained"
+                      onClick={() => navigate("/contact")}
+                      sx={{
+                        px: 3.5,
+                        py: 1.2,
+                        borderRadius: "3px",
+                        textTransform: "none",
+                        fontWeight: 700,
+                        fontSize: "0.88rem",
+                        background: "#4764FF",
+                        display: "inline-flex",
+                        alignItems: "center",
+                        gap: 1,
+                        boxShadow: "0 8px 20px rgba(71, 100, 255, 0.3)",
+                        "&:hover": {
+                          background: "#3b55d9",
+                          boxShadow: "0 12px 25px rgba(71, 100, 255, 0.4)",
+                        },
+                        transition: "all 0.3s ease",
+                        width: { xs: "100%", sm: "auto" }
+                      }}
+                    >
+                      Contact Us
+                      <ArrowForward sx={{ fontSize: "1rem" }} />
+                    </Button>
+                  </motion.div>
+
+                  <motion.div whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.98 }}>
+                    <Button
+                      variant="outlined"
+                      onClick={() => navigate("/about")}
+                      sx={{
+                        px: 3.5,
+                        py: 1.2,
+                        borderRadius: "3px",
+                        textTransform: "none",
+                        fontWeight: 700,
+                        fontSize: "0.88rem",
+                        color: "#fff",
+                        borderColor: "rgba(255, 255, 255, 0.25)",
+                        "&:hover": {
+                          background: "rgba(255, 255, 255, 0.08)",
+                          borderColor: "#3b82f6",
+                        },
+                        transition: "all 0.3s ease",
+                        width: { xs: "100%", sm: "auto" }
+                      }}
+                    >
+                      Learn More
+                    </Button>
+                  </motion.div>
+                </Stack>
+              </motion.div>
+            </Box>
+
+            {/* RIGHT IMAGE */}
+
+            <Box
+              sx={{
+                display: {
+                  xs: "none",
+                  lg: "block",
+                },
+                position: "relative",
+                maxHeight: "360px",
+                width: "100%",
+              }}
+            >
+              <motion.div
+                initial={{
+                  opacity: 0,
+                  x: 30,
+                  scale: 0.97,
+                }}
+                animate={{
+                  opacity: 1,
+                  x: 0,
+                  scale: 1,
+                }}
+                transition={{
+                  duration: 0.8,
+                }}
+              >
+                <Box
+                  component="img"
+                  src={homeHero}
+                  alt="Meeting"
+                  sx={{
+                    width: "100%",
+                    height: "340px",
+                    borderRadius: "16px",
+                    boxShadow: "0 20px 50px rgba(0,0,0,.55)",
+                    objectFit: "cover",
+                    border: "1px solid rgba(255, 255, 255, 0.08)",
+                    transition: "all .5s ease",
+                    "&:hover": {
+                      transform: "scale(1.01)",
+                    },
+                  }}
+                />
+              </motion.div>
+
+              {/* Floating Glassmorphic Badge */}
+
+              <motion.div
+                animate={{
+                  y: [0, -8, 0],
+                  boxShadow: [
+                    "0 10px 30px rgba(0, 0, 0, 0.5), 0 0 0px rgba(37, 99, 235, 0)",
+                    "0 15px 35px rgba(0, 0, 0, 0.6), 0 0 20px rgba(37, 99, 235, 0.25)",
+                    "0 10px 30px rgba(0, 0, 0, 0.5), 0 0 0px rgba(37, 99, 235, 0)"
+                  ]
+                }}
+                transition={{
+                  duration: 4,
+                  repeat: Infinity,
+                  ease: "easeInOut"
+                }}
+                style={{
+                  position: "absolute",
+                  bottom: "-10px",
+                  left: "-10px",
+                  zIndex: 3,
+                  borderRadius: "16px"
+                }}
+              >
+                <Box
+                  sx={{
+                    background: "rgba(10, 17, 32, 0.85)",
+                    backdropFilter: "blur(12px)",
+                    border: "1px solid rgba(59, 130, 246, 0.25)",
+                    borderRadius: "16px",
+                    p: "16px 20px",
+                    minWidth: "210px",
+                    display: "flex",
+                    alignItems: "center",
+                    gap: 2,
+                    textAlign: "left"
+                  }}
+                >
+                  <Box
+                    sx={{
+                      width: 40,
+                      height: 40,
+                      borderRadius: "12px",
+                      background: "rgba(37, 99, 235, 0.12)",
+                      border: "1px solid rgba(37, 99, 235, 0.3)",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      color: "#3b82f6",
+                    }}
+                  >
+                    <WorkspacePremium sx={{ fontSize: "1.3rem" }} />
+                  </Box>
                   <Box>
-                    {/* Review Text */}
+                    <Typography sx={{ color: "#fff", fontWeight: 800, fontSize: "1.3rem", lineHeight: 1.1 }}>
+                      15+
+                    </Typography>
+                    <Typography sx={{ color: "#94a3b8", fontSize: "0.75rem", mt: 0.5, fontWeight: 500, letterSpacing: "0.5px" }}>
+                      Years Experience
+                    </Typography>
+                  </Box>
+                </Box>
+              </motion.div>
+            </Box>
+          </Box>
+        </Container>
+      </Box>
+
+      {/* Animated downward arrow below hero image */}
+      <Box
+        sx={{
+          backgroundColor: "#000",
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          py: 2.5,
+          borderBottom: "1px solid rgba(255, 255, 255, 0.05)"
+        }}
+      >
+        <motion.div
+          animate={{ y: [0, 6, 0] }}
+          transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}
+          style={{ cursor: "pointer" }}
+          onClick={() => {
+            const targetElement = document.getElementById("trusted-by-section");
+            if (targetElement) {
+              targetElement.scrollIntoView({ behavior: "smooth" });
+            }
+          }}
+        >
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#3b82f6" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M12 5v14M19 12l-7 7-7-7" />
+          </svg>
+        </motion.div>
+      </Box>
+
+      {/* second section */}
+      <Box
+        component="section"
+        id="stats-section"
+        sx={{
+          backgroundColor: "var(--color-main-bg)",
+          py: { xs: 8, lg: 12.5 },
+          minHeight: { xs: "auto", lg: "100vh" },
+          display: "flex",
+          flexDirection: "column",
+          justifyContent: "center",
+        }}
+      >
+        {/* TRUSTED BY SECTION */}
+
+        <Container maxWidth="xl">
+          <Box
+            sx={{
+              borderTop: "1px solid rgba(0,0,0,0.06)",
+              borderBottom: "1px solid rgba(0,0,0,0.06)",
+              py: 4,
+              overflow: "hidden",
+            }}
+          >
+            <Typography
+              variant="h4"
+              sx={{
+                textAlign: "center",
+                color: "var(--color-pure-black)",
+                letterSpacing: "3px",
+                fontWeight: 600,
+                mb: 6,
+              }}
+            >
+              TRUSTED BY INDUSTRY LEADERS
+            </Typography>
+
+            <motion.div
+              animate={{
+                x: ["0%", "-50%"],
+              }}
+              transition={{
+                duration: 20,
+                repeat: Infinity,
+                ease: "linear",
+              }}
+            >
+              <Box
+                sx={{
+                  display: "flex",
+                  gap: { xs: 6, md: 10 },
+                  width: "max-content",
+                }}
+              >
+                {[...companies, ...companies].map(
+                  (company, index) => (
+                    <Typography
+                      key={index}
+                      sx={{
+                        color: "#94a3b8",
+                        fontWeight: 700,
+                        whiteSpace: "nowrap",
+                        cursor: "pointer",
+                        transition: ".4s",
+                        fontSize: {
+                          xs: "1.2rem",
+                          md: "1.8rem",
+                        },
+
+                        "&:hover": {
+                          color: "#0f172a",
+                        },
+                      }}
+                    >
+                      {company}
+                    </Typography>
+                  )
+                )}
+              </Box>
+            </motion.div>
+          </Box>
+        </Container>
+
+        {/* STATS SECTION */}
+
+        <Container
+          maxWidth="lg"
+          sx={{
+            mt: { xs: 4, lg: 6 },
+          }}
+        >
+          <Box
+            sx={{
+              display: "grid",
+              gridTemplateColumns: {
+                xs: "repeat(2,1fr)",
+                lg: "repeat(4,1fr)",
+              },
+              gap: { xs: 2, sm: 4 },
+            }}
+          >
+            {stats.map((item, index) => (
+              <motion.div
+                key={index}
+                initial={{
+                  opacity: 0,
+                  y: 60,
+                }}
+                whileInView={{
+                  opacity: 1,
+                  y: 0,
+                }}
+                viewport={{
+                  once: true,
+                }}
+                transition={{
+                  duration: 0.8,
+                  delay: index * 0.2,
+                }}
+              >
+                <Box
+                  sx={{
+                    background: "#f8fafc",
+                    border: "1px solid rgba(37,99,235,0.08)",
+                    borderRadius: "24px",
+                    p: { xs: 2.5, sm: 3, md: 3.5 },
+                    textAlign: "center",
+                    position: "relative",
+                    overflow: "hidden",
+                    transition: "all .4s ease",
+                    boxShadow: "0 10px 30px rgba(0,0,0,0.02)",
+
+                    "&::before": {
+                      content: '""',
+                      position: "absolute",
+                      top: 0,
+                      left: 0,
+                      width: "100%",
+                      height: "2px",
+                      background:
+                        "linear-gradient(90deg,#2563eb,transparent)",
+                    },
+
+                    "&:hover": {
+                      transform: "translateY(-12px)",
+                      background: "#ffffff",
+                      border: "1px solid rgba(37,99,235,0.2)",
+                      boxShadow: "0 20px 40px rgba(37,99,235,0.08)",
+                    },
+                  }}
+                >
+                  <Typography
+                    sx={{
+                      fontWeight: 800,
+                      color: "#2563eb",
+                      mb: 1,
+                      lineHeight: 1,
+                      fontSize: {
+                        xs: "2rem",
+                        md: "2.6rem",
+                      },
+                    }}
+                  >
+                    {item.value}
+                    {item.suffix}
+                  </Typography>
+
+                  <Typography
+                    sx={{
+                      color: "#475569",
+                      letterSpacing: "2px",
+                      fontWeight: 600,
+                      textTransform: "uppercase",
+                      fontSize: {
+                        xs: "0.75rem",
+                        md: "0.85rem",
+                      },
+                    }}
+                  >
+                    {item.label}
+                  </Typography>
+                </Box>
+              </motion.div>
+            ))}
+          </Box>
+        </Container>
+      </Box>
+      {/*  third section */}
+      <Box
+        component="section"
+        id="expertise-section"
+        sx={{
+          backgroundColor: "var(--color-sub-bg)",
+          py: { xs: 8, lg: 12.5 },
+          minHeight: { xs: "auto", lg: "100vh" },
+          display: "flex",
+          flexDirection: "column",
+          justifyContent: "center",
+        }}
+      >
+        <Container maxWidth="lg">
+          {/* Heading */}
+
+          <motion.div
+            initial={{
+              opacity: 0,
+              y: 40,
+            }}
+            whileInView={{
+              opacity: 1,
+              y: 0,
+            }}
+            viewport={{ once: true }}
+            transition={{
+              duration: 1,
+            }}
+          >
+            <Typography
+              sx={{
+                color: "var(--color-pure-black)",
+                textAlign: "center",
+                fontWeight: 700,
+                mb: 2,
+                fontSize: {
+                  xs: "1.8rem",
+                  md: "2.2rem",
+                },
+              }}
+            >
+              Our Core Expertise
+            </Typography>
+
+            <Typography
+              sx={{
+                color: "var(--color-pure-black)",
+                textAlign: "center",
+                maxWidth: "700px",
+                mx: "auto",
+                mb: 8,
+                lineHeight: 1.8,
+                fontSize: {
+                  xs: "0.9rem",
+                  md: "0.95rem",
+                },
+              }}
+            >
+              Comprehensive solutions designed to elevate
+              your enterprise across every critical
+              dimension.
+            </Typography>
+          </motion.div>
+
+          {/* Cards */}
+
+          <motion.div
+            variants={containerVariants}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true }}
+          >
+            <Box
+              sx={{
+                display: "grid",
+                gridTemplateColumns: {
+                  xs: "repeat(2,1fr)",
+                  lg: "repeat(4,1fr)",
+                },
+                gap: { xs: 2, sm: 4 },
+              }}
+            >
+              {services.map((service, index) => (
+                <motion.div
+                  key={index}
+                  variants={cardVariants}
+                  whileHover={{
+                    y: -8,
+                    scale: 1.01,
+                  }}
+                  style={{ height: "100%" }}
+                >
+                  <Box
+                    sx={{
+                      position: "relative",
+                      background:
+                        // "linear-gradient(145deg,#081224,#0f172a)",
+                        "var(--color-main-bg)",
+                      borderRadius: "3px",
+                      p: { xs: 2, sm: 3, md: 3 },
+                      minHeight: { xs: "230px", md: "240px" },
+                      height: "100%",
+                      display: "flex",
+                      flexDirection: "column",
+                      overflow: "hidden",
+                      border:
+                        "1px solid rgba(59,130,246,.12)",
+                      transition: ".4s ease",
+
+                      "&::before": {
+                        content: '""',
+                        position: "absolute",
+                        top: 0,
+                        left: 0,
+                        width: "100%",
+                        height: "2px",
+                        background:
+                          "linear-gradient(90deg,#2563eb,transparent)",
+                      },
+
+                      "&:hover": {
+                        border:
+                          "1px solid rgba(59,130,246,.4)",
+                        boxShadow:
+                          "0 20px 50px rgba(37,99,235,.18)",
+                      },
+                    }}
+                  >
+                    {/* Glow */}
+
+                    <Box
+                      sx={{
+                        position: "absolute",
+                        width: "180px",
+                        height: "180px",
+                        background:
+                          "radial-gradient(circle, rgba(37,99,235,.18), transparent)",
+                        top: "-70px",
+                        right: "-70px",
+                        pointerEvents: "none",
+                      }}
+                    />
+
+                    {/* Icon */}
+
+                    <Box
+                      sx={{
+                        width: { xs: 44, md: 60 },
+                        height: { xs: 44, md: 60 },
+                        borderRadius: "16px",
+                        background:
+                          "rgba(37,99,235,.12)",
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        mb: { xs: 2, md: 3 },
+                      }}
+                    >
+                      {service.icon}
+                    </Box>
+
+                    {/* Title */}
+
                     <Typography
                       sx={{
                         color: "var(--color-pure-black)",
-                        fontSize: { xs: "0.78rem", md: "0.92rem" },
-                        lineHeight: { xs: 1.45, md: 1.7 },
-                        wordBreak: "break-word",
-                        overflowWrap: "break-word",
-                        display: "-webkit-box",
-                        WebkitLineClamp: 3,
-                        WebkitBoxOrient: "vertical",
-                        overflow: "hidden",
+                        fontWeight: 700,
+                        mb: { xs: 1, md: 2 },
+                        fontSize: { xs: "1rem", md: "1.25rem" },
                       }}
                     >
-                      {highlightReview(item.review)}
+                      {service.title}
                     </Typography>
 
-                    {/* Read More Link */}
+                    {/* Description */}
+
                     <Typography
                       sx={{
-                        color: "#2563eb",
-                        fontSize: { xs: "0.72rem", md: "0.82rem" },
-                        fontWeight: 600,
-                        display: "inline-block",
-                        mt: 0.8,
-                        "&:hover": { textDecoration: "underline" }
+                        color: "var(--color-pure-black)",
+                        lineHeight: { xs: 1.45, md: 1.8 },
+                        fontSize: { xs: "0.8rem", md: "0.95rem" },
                       }}
                     >
-                      ... Read more
+                      {service.description}
                     </Typography>
                   </Box>
-
-                  {/* Client Info Block */}
-                  <Box
-                    sx={{
-                      display: "flex",
-                      alignItems: "center",
-                      gap: 2,
-                      mt: 2,
-                      minWidth: 0,
-                    }}
-                  >
-                    {/* Avatar */}
-                    {renderAvatar(item)}
-
-                    {/* Meta Data */}
-                    <Box sx={{ minWidth: 0, flex: 1 }}>
-                      <Typography
-                        sx={{
-                          color: "var(--color-pure-black)",
-                          fontWeight: 700,
-                          fontSize: { xs: "0.8rem", md: "0.95rem" },
-                          lineHeight: 1.2,
-                          wordBreak: "break-word",
-                          overflowWrap: "break-word",
-                        }}
-                      >
-                        {item.name}
-                      </Typography>
-                      <Typography
-                        sx={{
-                          color: "var(--color-pure-black)",
-                          fontSize: { xs: "0.68rem", md: "0.78rem" },
-                          mt: 0.2,
-                          mb: 0.5,
-                          wordBreak: "break-word",
-                          overflowWrap: "break-word",
-                        }}
-                      >
-                        {item.role}
-                      </Typography>
-                      <Rating
-                        value={5}
-                        readOnly
-                        size="small"
-                        sx={{
-                          fontSize: "0.85rem",
-                          "& .MuiRating-iconFilled": {
-                            color: "#f59e0b",
-                          }
-                        }}
-                      />
-                    </Box>
-                  </Box>
-                </Box>
-              )}
-            </SwiperSlide>
-          ))}
-        </Swiper>
-
-        {/* Custom Styled Pagination Dots */}
+                </motion.div>
+              ))}
+            </Box>
+          </motion.div>
+        </Container>
+      </Box>
+      <Box
+        component="section"
+        id="trust-section"
+        sx={{
+          backgroundColor: "var(--color-main-bg)",
+          py: { xs: 8, lg: 12.5 },
+          minHeight: { xs: "auto", lg: "100vh" },
+          display: "flex",
+          flexDirection: "column",
+          justifyContent: "center",
+          position: "relative",
+          overflow: "hidden",
+        }}
+      >
+        {/* Background Glow */}
         <Box
-          className="custom-swiper-pagination"
           sx={{
-            display: "flex",
-            justifyContent: "center",
-            gap: 1,
-            mt: 2,
-            "& .swiper-pagination-bullet": {
-              width: 8,
-              height: 8,
-              backgroundColor: "#4b5563",
-              opacity: 0.5,
-              transition: "all 0.3s ease",
-              cursor: "pointer",
-            },
-            "& .swiper-pagination-bullet-active": {
-              backgroundColor: "#2563eb",
-              opacity: 1,
-              width: 20,
-              borderRadius: "4px"
-            }
+            position: "absolute",
+            top: "-200px",
+            right: "-150px",
+            width: "500px",
+            height: "500px",
+            background:
+              "radial-gradient(circle, rgba(37,99,235,.06), transparent 70%)",
+            pointerEvents: "none",
           }}
         />
-      </Box>
-    )}
 
-    {/* Trusted By Industry Leaders Logo Strip */}
-    <Box
-      sx={{
-        mt: 5,
-        pt: 4,
-        borderTop: "1px solid rgba(0, 0, 0, 0.06)",
-        textAlign: "center"
-      }}
-    >
-      <Typography
-        sx={{
-          color: "var(--color-pure-black)",
-          fontSize: "0.85rem",
-          fontWeight: 900,
-          letterSpacing: "1.5px",
-          textTransform: "uppercase",
-          mb: 4
-        }}
-      >
-        Trusted by Industry Leaders
-      </Typography>
-
-      <Box
-        sx={{
-          display: "flex",
-          flexWrap: "wrap",
-          justifyContent: "center",
-          alignItems: "center",
-          gap: { xs: 4, md: 8 },
-        }}
-      >
-        {companyLogos.map((company, index) => (
+        <Container maxWidth="xl" sx={{ px: { xs: 2, md: 6, lg: 8 } }}>
           <Box
-            key={index}
             sx={{
-              display: "flex",
+              display: "grid",
+              gridTemplateColumns: {
+                xs: "1fr",
+                lg: "1.1fr 0.9fr",
+              },
+              gap: { xs: 4, md: 6, lg: 8 },
               alignItems: "center",
-              gap: 1,
-              color: "var(--color-pure-black)",
-              transition: "all 0.3s ease",
-              cursor: "default",
-              "&:hover": {
-                color: "#2200ffcc",
-                transform: "scale(1.05)",
-                cursor:"pointer"
-              }
             }}
           >
-            <Box sx={{ display: "flex", alignItems: "center" }}>
-              {company.svg}
-            </Box>
-            <Typography
-              sx={{
-                fontWeight: 800,
-                fontSize: "0.95rem",
-                letterSpacing: "1.5px",
-                textTransform: "uppercase"
+            {/* LEFT CONTENT */}
+            <motion.div
+              initial={{
+                opacity: 0,
+                y: 60,
+              }}
+              whileInView={{
+                opacity: 1,
+                y: 0,
+              }}
+              viewport={{ once: true }}
+              transition={{
+                duration: 1,
               }}
             >
-              {company.name}
-            </Typography>
+              <Typography
+                sx={{
+                  color: "#2563eb",
+                  fontWeight: 900,
+                  letterSpacing: "4px",
+                  textTransform: "uppercase",
+                  mb: 2,
+                  fontSize: "18px",
+                }}
+              >
+                Why Clients Trust Us
+              </Typography>
+
+              <Typography
+                sx={{
+                  color: "#0f172a",
+                  fontWeight: 800,
+                  lineHeight: 1.15,
+                  mb: 4,
+                  maxWidth: "700px",
+                  fontSize: {
+                    xs: "1.8rem",
+                    md: "2.2rem",
+                    lg: "2.5rem",
+                  },
+                }}
+              >
+                Building Long-Term Partnerships Through Proven Results
+              </Typography>
+
+              <Typography
+                sx={{
+                  color: "#475569",
+                  lineHeight: 1.8,
+                  mb: 3,
+                  fontSize: {
+                    xs: "0.9rem",
+                    md: "0.95rem",
+                  },
+                }}
+              >
+                For more than 15 years, we have partnered with
+                organizations across industries to solve complex
+                business challenges, improve operational performance,
+                and accelerate sustainable growth.
+              </Typography>
+
+              <Typography
+                sx={{
+                  color: "#475569",
+                  lineHeight: 1.8,
+                  mb: 3,
+                  fontSize: {
+                    xs: "0.9rem",
+                    md: "0.95rem",
+                  },
+                }}
+              >
+                Our consultants combine strategic insight, industry
+                expertise, and data-driven decision-making to deliver
+                solutions that create measurable business impact.
+              </Typography>
+
+              <Typography
+                sx={{
+                  color: "#475569",
+                  lineHeight: 1.7,
+                  fontSize: {
+                    xs: "0.9rem",
+                    md: "0.95rem",
+                  },
+                }}
+              >
+                Every engagement is tailored to the unique goals of
+                our clients, ensuring practical, scalable, and
+                results-oriented outcomes that drive long-term success.
+              </Typography>
+
+              {/* Bottom Metrics */}
+              <Box
+                sx={{
+                  display: "flex",
+                  flexWrap: "wrap",
+                  gap: { xs: 4, md: 6 },
+                  mt: 5,
+                }}
+              >
+                {[
+                  { value: 500, suffix: "+", label: "Projects" },
+                  { value: 200, suffix: "+", label: "Clients" },
+                  { value: 98, suffix: "%", label: "Success Rate" },
+                ].map((item, index) => (
+                  <Box key={index}>
+                    <Typography
+                      sx={{
+                        color: "var(--color-btn-bg)",
+                        fontWeight: 800,
+                        fontSize: {
+                          xs: "1.8rem",
+                          md: "2.5rem",
+                        },
+                      }}
+                    >
+                      <AnimatedCounter target={item.value} suffix={item.suffix} />
+                    </Typography>
+
+                    <Typography
+                      sx={{
+                        color: "var(--color-pure-black)",
+                        fontWeight: 700,
+                        letterSpacing: "2px"
+                      }}
+                    >
+                      {item.label}
+                    </Typography>
+                  </Box>
+                ))}
+              </Box>
+            </motion.div>
+
+            {/* RIGHT IMAGE */}
+            <motion.div
+              initial={{
+                opacity: 0,
+                x: 80,
+              }}
+              whileInView={{
+                opacity: 1,
+                x: 0,
+              }}
+              viewport={{ once: true }}
+              transition={{
+                duration: 1,
+              }}
+            >
+              <Box
+                sx={{
+                  position: "relative",
+                  maxWidth: "600px",
+                  ml: "auto",
+                  width: "100%",
+                }}
+              >
+                {/* Glow */}
+                <Box
+                  sx={{
+                    position: "absolute",
+                    width: "250px",
+                    height: "250px",
+                    background:
+                      "radial-gradient(circle, rgba(37,99,235,.25), transparent)",
+                    top: "-50px",
+                    right: "-50px",
+                    zIndex: 0,
+                  }}
+                />
+
+                {/* Main Image */}
+                <Box
+                  component="img"
+                  src={aboutus}
+                  alt="Business Consulting"
+                  sx={{
+                    width: "100%",
+                    height: { xs: "auto", md: "380px", lg: "420px" },
+                    borderRadius: "3px",
+                    position: "relative",
+                    zIndex: 2,
+                    objectFit: "cover",
+                    boxShadow:
+                      "0 20px 50px rgba(0,0,0,.15)",
+                    transition: ".5s ease",
+                    "&:hover": {
+                      transform: "scale(1.03)",
+                    },
+                  }}
+                />
+              </Box>
+            </motion.div>
           </Box>
-        ))}
+        </Container>
       </Box>
-    </Box>
-  </Container>
-</Box>
+      {/* Client Success Stories Section */}
+      <Box
+        component="section"
+        id="testimonials-section"
+        sx={{
+          backgroundColor: "var(--color-sub-bg)",
+          py: { xs: 8, lg: 12.5 },
+          minHeight: { xs: "auto", lg: "100vh" },
+          display: "flex",
+          flexDirection: "column",
+          justifyContent: "center",
+          overflow: "hidden",
+          position: "relative"
+        }}
+      >
+        <Container maxWidth="lg">
+          {/* Heading */}
+          <motion.div
+            initial={{ opacity: 0, y: 40 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.8 }}
+          >
+            <Typography
+              sx={{
+                color: "var(--color-pure-black)",
+                textAlign: "center",
+                fontWeight: 900,
+                fontSize: "0.95rem",
+                letterSpacing: "3px",
+                textTransform: "uppercase",
+                mb: 1.5,
+              }}
+            >
+              Client Success Stories
+            </Typography>
+
+            <Typography
+              sx={{
+                color: "var(--color-pure-black)",
+                textAlign: "center",
+                fontWeight: 900,
+                fontSize: { xs: "1.8rem", md: "2.4rem" },
+                mb: 2,
+                lineHeight: 1.1,
+              }}
+            >
+              Real Results. Real Impact.
+            </Typography>
+
+            <Typography
+              sx={{
+                color: "var(--color-pure-black)",
+                textAlign: "center",
+                maxWidth: "550px",
+                mx: "auto",
+                mb: 8,
+                lineHeight: 1.7,
+                fontSize: "0.98rem"
+              }}
+            >
+              See how we've helped leading organizations overcome challenges, drive growth, and achieve measurable results.
+            </Typography>
+          </motion.div>
+
+          {/* Swiper Slider Wrapper with Custom Nav Buttons */}
+          {loadingStories ? (
+            <Box sx={{ display: 'flex', justifyContent: 'center', py: 10 }}>
+              <div className="w-10 h-10 border-4 border-blue-600 border-t-transparent rounded-full animate-spin"></div>
+            </Box>
+          ) : (
+            <Box sx={{ position: "relative", px: { xs: 0, md: 6 } }}>
+
+              {/* Custom Navigation - Left Arrow */}
+              <Box
+                onClick={() => swiperRef.current?.slidePrev()}
+                sx={{
+                  position: "absolute",
+                  left: { xs: "-10px", md: "-40px" },
+                  top: "50%",
+                  transform: "translateY(-50%)",
+                  zIndex: 10,
+                  width: 44,
+                  height: 44,
+                  borderRadius: "50%",
+                  background: "var(--color-btn-bg)",
+                  border: "1px solid rgba(255, 255, 255, 0.15)",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  cursor: "pointer",
+                  color: "#ffffff",
+                  fontSize: "1.2rem",
+                  transition: "all 0.3s ease",
+                  "&:hover": {
+                    background: "rgba(37, 99, 235, 0.2)",
+                    borderColor: "#3b82f6",
+                  },
+                }}
+              >
+                ←
+              </Box>
+
+              {/* Custom Navigation - Right Arrow */}
+              <Box
+                onClick={() => swiperRef.current?.slideNext()}
+                sx={{
+                  position: "absolute",
+                  right: { xs: "-10px", md: "-40px" },
+                  top: "50%",
+                  transform: "translateY(-50%)",
+                  zIndex: 10,
+                  width: 44,
+                  height: 44,
+                  borderRadius: "50%",
+                  background: "var(--color-btn-bg)",
+                  border: "1px solid rgba(255, 255, 255, 0.15)",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  cursor: "pointer",
+                  color: "#ffffff",
+                  fontSize: "1.2rem",
+                  transition: "all 0.3s ease",
+                  "&:hover": {
+                    background: "rgba(37, 99, 235, 0.2)",
+                    borderColor: "#3b82f6",
+                  },
+                }}
+              >
+                →
+              </Box>
+
+              <Swiper
+                modules={[Pagination, Autoplay]}
+                onBeforeInit={(swiper) => {
+                  swiperRef.current = swiper;
+                }}
+                slidesPerView={1}
+                spaceBetween={24}
+                loop={true}
+                centeredSlides={true}
+                speed={800}
+                autoplay={{
+                  delay: 5000,
+                  disableOnInteraction: false,
+                }}
+                pagination={{
+                  clickable: true,
+                  el: ".custom-swiper-pagination"
+                }}
+                breakpoints={{
+                  0: {
+                    slidesPerView: 2,
+                    spaceBetween: 12,
+                  },
+                  768: {
+                    slidesPerView: 2,
+                    spaceBetween: 20,
+                  },
+                  1024: {
+                    slidesPerView: 3,
+                    spaceBetween: 24,
+                  },
+                }}
+                style={{
+                  paddingBottom: "50px",
+                  paddingTop: "30px"
+                }}
+              >
+                {successStories.map((item, index) => (
+                  <SwiperSlide key={index} style={{ height: "auto" }}>
+                    {({ isActive }) => (
+                      <Box
+                        onClick={() => setSelectedTestimonial(item)}
+                        sx={{
+                          height: "100%",
+                          display: "flex",
+                          flexDirection: "column",
+                          justifyContent: "space-between",
+                          background: "linear-gradient(145deg, #fcfcfc, #EDF0FF)",
+                          border: "1px solid rgba(0, 0, 0, 0.15)",
+                          borderRadius: "3px",
+                          p: { xs: 2.5, md: 3.5 },
+                          position: "relative",
+                          opacity: 1,
+                          transform: "none",
+                          boxShadow: "0 4px 12px rgba(0,0,0,0.03)",
+                          textAlign: "left",
+                          cursor: "pointer",
+                          transition: "all 0.3s ease",
+                          "&:hover": {
+                            transform: "translateY(-4px)",
+                            borderColor: "#2563eb",
+                            boxShadow: "0 10px 25px rgba(37, 99, 235, 0.08)",
+                          }
+                        }}
+                      >
+                        <Box>
+                          {/* Review Text */}
+                          <Typography
+                            sx={{
+                              color: "var(--color-pure-black)",
+                              fontSize: { xs: "0.78rem", md: "0.92rem" },
+                              lineHeight: { xs: 1.45, md: 1.7 },
+                              wordBreak: "break-word",
+                              overflowWrap: "break-word",
+                              display: "-webkit-box",
+                              WebkitLineClamp: 3,
+                              WebkitBoxOrient: "vertical",
+                              overflow: "hidden",
+                            }}
+                          >
+                            {highlightReview(item.review)}
+                          </Typography>
+
+                          {/* Read More Link */}
+                          <Typography
+                            sx={{
+                              color: "#2563eb",
+                              fontSize: { xs: "0.72rem", md: "0.82rem" },
+                              fontWeight: 600,
+                              display: "inline-block",
+                              mt: 0.8,
+                              "&:hover": { textDecoration: "underline" }
+                            }}
+                          >
+                            ... Read more
+                          </Typography>
+                        </Box>
+
+                        {/* Client Info Block */}
+                        <Box
+                          sx={{
+                            display: "flex",
+                            alignItems: "center",
+                            gap: 2,
+                            mt: 2,
+                            minWidth: 0,
+                          }}
+                        >
+                          {/* Avatar */}
+                          {renderAvatar(item)}
+
+                          {/* Meta Data */}
+                          <Box sx={{ minWidth: 0, flex: 1 }}>
+                            <Typography
+                              sx={{
+                                color: "var(--color-pure-black)",
+                                fontWeight: 700,
+                                fontSize: { xs: "0.8rem", md: "0.95rem" },
+                                lineHeight: 1.2,
+                                wordBreak: "break-word",
+                                overflowWrap: "break-word",
+                              }}
+                            >
+                              {item.name}
+                            </Typography>
+                            <Typography
+                              sx={{
+                                color: "var(--color-pure-black)",
+                                fontSize: { xs: "0.68rem", md: "0.78rem" },
+                                mt: 0.2,
+                                mb: 0.5,
+                                wordBreak: "break-word",
+                                overflowWrap: "break-word",
+                              }}
+                            >
+                              {item.role}
+                            </Typography>
+                            <Rating
+                              value={5}
+                              readOnly
+                              size="small"
+                              sx={{
+                                fontSize: "0.85rem",
+                                "& .MuiRating-iconFilled": {
+                                  color: "#f59e0b",
+                                }
+                              }}
+                            />
+                          </Box>
+                        </Box>
+                      </Box>
+                    )}
+                  </SwiperSlide>
+                ))}
+              </Swiper>
+
+              {/* Custom Styled Pagination Dots */}
+              <Box
+                className="custom-swiper-pagination"
+                sx={{
+                  display: "flex",
+                  justifyContent: "center",
+                  gap: 1,
+                  mt: 2,
+                  "& .swiper-pagination-bullet": {
+                    width: 8,
+                    height: 8,
+                    backgroundColor: "#4b5563",
+                    opacity: 0.5,
+                    transition: "all 0.3s ease",
+                    cursor: "pointer",
+                  },
+                  "& .swiper-pagination-bullet-active": {
+                    backgroundColor: "#2563eb",
+                    opacity: 1,
+                    width: 20,
+                    borderRadius: "4px"
+                  }
+                }}
+              />
+            </Box>
+          )}
+
+          {/* Trusted By Industry Leaders Logo Strip */}
+          <Box
+            sx={{
+              mt: 10,
+              pt: 6,
+              borderTop: "1px solid rgba(255, 255, 255, 0.08)",
+              textAlign: "center"
+            }}
+          >
+            <Typography
+              sx={{
+                color: "var(--color-pure-black)",
+                fontSize: "0.85rem",
+                fontWeight: 900,
+                letterSpacing: "1.5px",
+                textTransform: "uppercase",
+                mb: 4
+              }}
+            >
+              Trusted by Industry Leaders
+            </Typography>
+
+            <Box
+              sx={{
+                display: "flex",
+                flexWrap: "wrap",
+                justifyContent: "center",
+                alignItems: "center",
+                gap: { xs: 4, md: 8 },
+              }}
+            >
+              {companyLogos.map((company, index) => (
+                <Box
+                  key={index}
+                  sx={{
+                    display: "flex",
+                    alignItems: "center",
+                    gap: 1,
+                    color: "var(--color-pure-black)",
+                    transition: "all 0.3s ease",
+                    cursor: "default",
+                    "&:hover": {
+                      color: "#2200ffcc",
+                      transform: "scale(1.05)",
+                      cursor: "pointer"
+                    }
+                  }}
+                >
+                  <Box sx={{ display: "flex", alignItems: "center" }}>
+                    {company.svg}
+                  </Box>
+                  <Typography
+                    sx={{
+                      fontWeight: 800,
+                      fontSize: "0.95rem",
+                      letterSpacing: "1.5px",
+                      textTransform: "uppercase"
+                    }}
+                  >
+                    {company.name}
+                  </Typography>
+                </Box>
+              ))}
+            </Box>
+          </Box>
+        </Container>
+      </Box>
 
       {/* Testimonial Detail Modal */}
       <Dialog
@@ -1924,42 +1917,6 @@ const stats = [
         )}
       </Dialog>
 
-      {/* Floating Scroll to Top Arrow */}
-      <AnimatePresence>
-        {showScrollTop && (
-          <Box
-            component={motion.div}
-            initial={{ opacity: 0, scale: 0.5, y: 50 }}
-            animate={{ opacity: 1, scale: 1, y: 0 }}
-            exit={{ opacity: 0, scale: 0.5, y: 50 }}
-            onClick={scrollToTop}
-            sx={{
-              position: "fixed",
-              bottom: { xs: 20, md: 30 },
-              right: { xs: 20, md: 30 },
-              zIndex: 999,
-              width: { xs: 40, md: 46 },
-              height: { xs: 40, md: 46 },
-              borderRadius: "50%",
-              backgroundColor: "var(--color-blue)",
-              color: "#ffffff",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              cursor: "pointer",
-              boxShadow: "0 4px 15px rgba(71, 100, 255, 0.4)",
-              transition: "all 0.3s ease",
-              "&:hover": {
-                backgroundColor: "#2563eb",
-                transform: "translateY(-4px)",
-                boxShadow: "0 6px 20px rgba(37, 99, 235, 0.6)",
-              },
-            }}
-          >
-            <KeyboardArrowUp sx={{ fontSize: { xs: "20px", md: "24px" } }} />
-          </Box>
-        )}
-      </AnimatePresence>
     </div>
   );
 }
