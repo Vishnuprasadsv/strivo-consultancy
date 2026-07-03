@@ -178,7 +178,7 @@ const Article = () => {
           initial="hidden" animate="visible" variants={fadeUpVariants}
           className="flex flex-col md:flex-row justify-between items-start md:items-center mb-12 gap-4"
         >
-          <Link to="/Insights" className="text-blue-500 hover:text-white transition-colors flex items-center border border-blue-500/30 rounded-full px-5 py-2 text-sm font-medium hover:border-blue-500">
+          <Link to="/Insights" className="text-blue-400 hover:text-white transition-colors flex items-center border border-blue-500/30 rounded-full px-5 py-2 text-sm font-medium hover:border-blue-500">
             ← Back to Insights
           </Link>
           <div className="text-gray-400 text-sm font-medium flex flex-wrap items-center gap-2">
