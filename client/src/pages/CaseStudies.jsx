@@ -1,4 +1,8 @@
-import React, { useState, useEffect } from "react";
+import React, {
+  useState,
+  useEffect,
+  useRef
+} from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
@@ -20,6 +24,8 @@ const fadeUpVariants = {
 
 const CaseStudies = () => {
   const navigate = useNavigate();
+  const cardsRef = useRef(null);
+  const firstRender = useRef(true);
   const [selectedCategory, setSelectedCategory] = useState("All");
 
   const [caseStudies, setCaseStudies] = useState([]);
@@ -38,11 +44,18 @@ const CaseStudies = () => {
   useEffect(() => {
     fetchCaseStudies();
   }, []);
-  useEffect(() => {
-  window.scrollTo({
-    top: 350,
+ useEffect(() => {
+
+  if (firstRender.current) {
+    firstRender.current = false;
+    return;
+  }
+
+  cardsRef.current?.scrollIntoView({
     behavior: "smooth",
+    block: "start",
   });
+
 }, [currentPage]);
 
   const fetchCaseStudies = async () => {
@@ -98,6 +111,7 @@ const CaseStudies = () => {
         initial="hidden"
         animate="visible"
         variants={fadeUpVariants}
+         ref={cardsRef}
         className="max-w-7xl mx-auto px-6 py-20 text-center"
       >
         <h1 className="text-5xl font-bold mb-6 text-pure-black">
