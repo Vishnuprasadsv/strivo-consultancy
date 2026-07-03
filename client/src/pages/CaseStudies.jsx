@@ -31,10 +31,19 @@ const CaseStudies = () => {
     "Technology",
     "Retail"
   ];
+  const [currentPage, setCurrentPage] = useState(1);
+
+  const cardsPerPage = 6;
 
   useEffect(() => {
     fetchCaseStudies();
   }, []);
+  useEffect(() => {
+  window.scrollTo({
+    top: 350,
+    behavior: "smooth",
+  });
+}, [currentPage]);
 
   const fetchCaseStudies = async () => {
     try {
@@ -61,6 +70,18 @@ const CaseStudies = () => {
       : caseStudies.filter(
         (study) => study.category === selectedCategory
       );
+  const totalPages = Math.ceil(
+    filteredStudies.length / cardsPerPage
+  );
+
+  const startIndex =
+    (currentPage - 1) * cardsPerPage;
+
+  const paginatedStudies =
+    filteredStudies.slice(
+      startIndex,
+      startIndex + cardsPerPage
+    );
 
   if (loading) {
     return (
@@ -94,7 +115,11 @@ const CaseStudies = () => {
           {categories.map((category) => (
             <button
               key={category}
-              onClick={() => setSelectedCategory(category)}
+
+              onClick={() => {
+                setSelectedCategory(category);
+                setCurrentPage(1);
+              }}
               className={`px-4 py-2 rounded-full text-sm transition-all duration-300 hover:scale-105
                 ${selectedCategory === category
                   ? "bg-blue-600 text-white"
@@ -116,14 +141,14 @@ const CaseStudies = () => {
         className="max-w-7xl mx-auto px-6 pb-8"
       >
         <p className="text-black">
-          Showing {filteredStudies.length} case studies
+          Showing {paginatedStudies.length} of {filteredStudies.length} case studies
         </p>
       </motion.div>
 
       {/* Cards */}
       <section className="max-w-7xl mx-auto px-6 pb-20">
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {filteredStudies.map((study, index) => (
+        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 ">
+          {paginatedStudies.map((study, index) => (
             <motion.div
               key={study.title}
               initial={{ opacity: 0, y: 60 }}
@@ -133,7 +158,7 @@ const CaseStudies = () => {
                 delay: index * 0.1,
                 ease: "easeOut",
               }}
-              className="group relative border border-slate-800/80 rounded-2xl overflow-hidden bg-[#0d131f] backdrop-blur-md
+              className="group relative card border border-slate-800/80 overflow-hidden bg-[#0d131f] backdrop-blur-md
                          hover:border-blue-500/50 hover:-translate-y-2 hover:shadow-[0_20px_40px_rgba(59,130,246,0.08)]
                          transition-all duration-500 flex flex-col h-full"
             >
@@ -192,6 +217,74 @@ const CaseStudies = () => {
           ))}
         </div>
 
+        {totalPages > 1 && (
+
+          <div className="flex justify-center items-center gap-3 mt-12">
+
+            <button
+              onClick={() =>
+                setCurrentPage(prev =>
+                  Math.max(prev - 1, 1)
+                )}
+              disabled={currentPage === 1}
+              className="
+px-4 py-2
+rounded-lg
+bg-slate-800
+text-white
+disabled:opacity-40
+hover:bg-blue-600
+transition"
+            >
+              Previous
+            </button>
+
+            {[...Array(totalPages)].map((_, i) => (
+
+              <button
+                key={i}
+                onClick={() =>
+                  setCurrentPage(i + 1)
+                }
+                className={`
+w-10
+h-10
+rounded-lg
+font-medium
+transition
+
+${currentPage === i + 1
+                    ? "bg-blue-600 text-white"
+                    : "bg-slate-800 text-gray-300 hover:bg-blue-600"
+                  }
+`}
+              >
+                {i + 1}
+              </button>
+
+            ))}
+
+            <button
+              onClick={() =>
+                setCurrentPage(prev =>
+                  Math.min(prev + 1, totalPages)
+                )}
+              disabled={currentPage === totalPages}
+              className="
+px-4 py-2
+rounded-lg
+bg-slate-800
+text-white
+disabled:opacity-40
+hover:bg-blue-600
+transition"
+            >
+              Next
+            </button>
+
+          </div>
+
+        )}
         {filteredStudies.length === 0 && (
           <div className="text-center text-gray-500 py-20 font-medium">
             No case studies found for this category.
