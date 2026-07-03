@@ -269,7 +269,7 @@ const Insight = () => {
                       exit="exit"
                       whileHover={{ y: -15, scale: 1.03 }}
                       key={article._id || article.id}
-                      className="relative bg-gradient-to-br from-[#081224] to-[#0f172a] border border-blue-500/10 card overflow-hidden group transition-colors transition-shadow duration-300 ease-out hover:border-blue-500/40 hover:shadow-[0_20px_50px_rgba(37,99,235,0.18)] flex flex-col h-full cursor-pointer"
+                      className="relative bg-gradient-to-br from-[#081224] to-[#0f172a] border border-blue-500/10 rounded-2xl overflow-hidden group transition-colors transition-shadow duration-300 ease-out hover:border-blue-500/40 hover:shadow-[0_20px_50px_rgba(37,99,235,0.18)] flex flex-col h-full cursor-pointer"
                       onClick={() => navigate(`/article/${article._id || article.id}`)}
                     >
                       {/* Top gradient line */}
