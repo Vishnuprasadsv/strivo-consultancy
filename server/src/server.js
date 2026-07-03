@@ -18,9 +18,6 @@ import reviewRoutes from "./routes/reviewRoutes.js";
 
 // Connect to database
 connectDB();
-console.log("CLOUDINARY_CLOUD_NAME:", JSON.stringify(process.env.CLOUDINARY_CLOUD_NAME));
-console.log("CLOUDINARY_API_KEY:", JSON.stringify(process.env.CLOUDINARY_API_KEY));
-console.log("CLOUDINARY_API_SECRET:", JSON.stringify(process.env.CLOUDINARY_API_SECRET));
 
 const app = express();
 

@@ -97,13 +97,13 @@ const Services = () => {
       </motion.section>
 
       {/* Service Cards */}
-      <div style={{ backgroundColor: "var(--color-main-bg)", padding: "4rem 0" }}>
+      <div style={{ backgroundColor: "var(--color-main-bg)", padding: "4rem 0" }} >
         <motion.section
           initial="hidden"
           whileInView="visible"
           viewport={{ once: true }}
           variants={fadeUpVariants}
-          className="max-w-7xl mx-auto px-6"
+          className="max-w-7xl mx-auto px-6 "
         >
           <h2 className="text-4xl font-bold mb-3" style={{ color: "var(--color-pure-black)" }}>
             Our Consulting Services

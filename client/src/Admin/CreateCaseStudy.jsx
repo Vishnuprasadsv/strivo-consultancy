@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { motion } from "framer-motion";
@@ -6,11 +6,14 @@ import {
   FiArrowLeft,
   FiUpload,
 } from "react-icons/fi";
+import AvatarEditor from "react-avatar-editor";
 
 
 const CreateCaseStudy = () => {
 
   const navigate = useNavigate();
+  const [scale, setScale] = useState(1.2);
+  const editorRef = useRef(null);
 
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState({});
@@ -95,7 +98,7 @@ const CreateCaseStudy = () => {
   // -------------------------
 
   const uploadImage = async (file) => {
-   
+
     if (!file) return "";
 
     const data = new FormData();
@@ -160,6 +163,23 @@ const CreateCaseStudy = () => {
 
   };
 
+  const getCroppedAuthorImage = () => {
+
+    const canvas =
+      editorRef.current.getImageScaledToCanvas();
+
+    return new Promise((resolve) => {
+
+      canvas.toBlob((blob) => {
+
+        resolve(blob);
+
+      });
+
+    });
+
+  };
+
   // -------------------------
   // Submit
   // -------------------------
@@ -174,10 +194,11 @@ const CreateCaseStudy = () => {
         formData.coverImage
       );
 
-      const authorImage = await uploadImage(
-        formData.authorImage
-      );
+      const croppedBlob =
+        await getCroppedAuthorImage();
 
+      const authorImage =
+        await uploadImage(croppedBlob);
       await axios.post(
 
         `${import.meta.env.VITE_API_BASE_URL}/api/case-studies`,
@@ -374,35 +395,61 @@ const CreateCaseStudy = () => {
               <label className="block mb-2 text-gray-300">
                 Category *
               </label>
+              <div className="relative">
+                <select
+                  name="category"
+                  value={formData.category}
+                  onChange={handleChange}
+                  className="appearance-none w-full bg-[#1f2937] border border-slate-700 rounded-xl p-3 outline-none focus:border-blue-500"
+                >
 
-              <select
-                name="category"
-                value={formData.category}
-                onChange={handleChange}
-                className="w-full bg-[#1f2937] border border-slate-700 rounded-xl p-3 outline-none focus:border-blue-500"
-              >
+                  <option value="">
+                    Select Category
+                  </option>
 
-                <option value="">
-                  Select Category
-                </option>
+                  <option value="Finance">
+                    Finance
+                  </option>
 
-                <option value="Finance">
-                  Finance
-                </option>
+                  <option value="Healthcare">
+                    Healthcare
+                  </option>
 
-                <option value="Healthcare">
-                  Healthcare
-                </option>
+                  <option value="Technology">
+                    Tech
+                  </option>
 
-                <option value="Technology">
-                  Tech
-                </option>
+                  <option value="Retail">
+                    Retail
+                  </option>
 
-                <option value="Retail">
-                  Retail
-                </option>
-
-              </select>
+                </select>
+                {/* Custom Arrow Icon */}
+                <div
+                  className="
+    pointer-events-none
+    absolute
+    right-3
+    top-1/2
+    -translate-y-1/2
+    text-gray-400
+  "
+                >
+                  <svg
+                    className="w-4 h-4"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2.5}
+                      d="M19 9l-7 7-7-7"
+                    />
+                  </svg>
+                </div>
+              </div>
               {errors.category && (
                 <p className="text-red-500 text-sm mt-1">
                   {errors.category}
@@ -507,13 +554,42 @@ const CreateCaseStudy = () => {
 
               {formData.authorImage && (
 
-                <div className="mt-5 flex justify-center">
+                <div className="mt-6">
 
-                  <img
-                    src={URL.createObjectURL(formData.authorImage)}
-                    alt="Author"
-                    className="w-56 h-56 rounded-full object-cover border-4 border-blue-500 shadow-lg"
-                  />
+                  <div className="flex justify-center">
+
+                    <AvatarEditor
+                      ref={editorRef}
+                      image={formData.authorImage}
+                      width={220}
+                      height={220}
+                      border={20}
+                      borderRadius={110}
+                      color={[0, 0, 0, 0.5]}
+                      scale={scale}
+                    />
+
+                  </div>
+
+                  <div className="mt-6">
+
+                    <label className="text-sm text-gray-400">
+
+                      Zoom Image
+
+                    </label>
+
+                    <input
+                      type="range"
+                      min="1"
+                      max="3"
+                      step="0.1"
+                      value={scale}
+                      onChange={(e) => setScale(parseFloat(e.target.value))}
+                      className="w-full mt-2"
+                    />
+
+                  </div>
 
                 </div>
 

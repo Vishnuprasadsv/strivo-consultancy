@@ -1,10 +1,10 @@
 import React, {
     useState,
-    useEffect
+    useEffect,
+    useRef
 } from "react";
-
 import axios from "axios";
-
+import AvatarEditor from "react-avatar-editor";
 import {
 
     useNavigate,
@@ -20,9 +20,11 @@ import {
 } from "react-icons/fi";
 const EditCaseStudy = () => {
     const { id } = useParams();
-    console.log("Params ID:", id);
-    const navigate = useNavigate();
 
+    const navigate = useNavigate();
+    const editorRef = useRef(null);
+
+    const [scale, setScale] = useState(1.2);
     const [loading, setLoading] = useState(true);
     const [errors, setErrors] = useState({});
 
@@ -55,20 +57,20 @@ const EditCaseStudy = () => {
     });
     useEffect(() => {
 
-   if(id){
+        if (id) {
 
-      fetchStudy();
+            fetchStudy();
 
-   }
+        }
 
-}, [id]);
+    }, [id]);
 
 
     const fetchStudy = async () => {
-     console.log(
-`${import.meta.env.VITE_API_BASE_URL}/api/case-studies/${id}`
-);
-  
+        console.log(
+            `${import.meta.env.VITE_API_BASE_URL}/api/case-studies/${id}`
+        );
+
         try {
 
             const res = await axios.get(
@@ -76,7 +78,7 @@ const EditCaseStudy = () => {
                 `${import.meta.env.VITE_API_BASE_URL}/api/case-studies/${id}`
 
             );
-             console.log(res.data);
+            console.log(res.data);
 
             setFormData(res.data);
 
@@ -153,90 +155,114 @@ const EditCaseStudy = () => {
     }
     const uploadImage = async (file) => {
 
-  if (!file) return "";
+        if (!file) return "";
 
-  const data = new FormData();
+        const data = new FormData();
 
-  data.append("file", file);
+        data.append("file", file);
 
-  data.append(
+        data.append(
 
-    "upload_preset",
+            "upload_preset",
 
-    import.meta.env.VITE_CLOUDINARY_UPLOAD_PRESET
+            import.meta.env.VITE_CLOUDINARY_UPLOAD_PRESET
 
-  );
+        );
 
-  const res = await axios.post(
+        const res = await axios.post(
 
-    `https://api.cloudinary.com/v1_1/${
-      import.meta.env.VITE_CLOUDINARY_CLOUD_NAME
-    }/image/upload`,
+            `https://api.cloudinary.com/v1_1/${import.meta.env.VITE_CLOUDINARY_CLOUD_NAME
+            }/image/upload`,
 
-    data
+            data
 
-  );
+        );
 
-  return res.data.secure_url;
+        return res.data.secure_url;
 
-};
+    };
+    const getCroppedImage = () => {
+
+        if (!editorRef.current)
+
+            return null;
+
+        const canvas =
+
+            editorRef.current
+
+                .getImageScaledToCanvas();
+
+        return new Promise((resolve) => {
+
+            canvas.toBlob(blob => {
+
+                resolve(blob);
+
+            });
+
+        });
+
+    };
     const handleUpdate = async () => {
 
-  try {
+        try {
 
-    let coverImage = formData.coverImage;
+            let coverImage = formData.coverImage;
 
-    let authorImage = formData.authorImage;
+            let authorImage = formData.authorImage;
 
-    if (formData.coverImage instanceof File) {
+            if (formData.coverImage instanceof File) {
 
-      coverImage = await uploadImage(
+                coverImage = await uploadImage(
 
-        formData.coverImage
+                    formData.coverImage
 
-      );
+                );
+
+            }
+
+            if (formData.authorImage instanceof File) {
+
+                const croppedBlob =
+
+                    await getCroppedImage();
+
+                authorImage =
+
+                    await uploadImage(croppedBlob);
+
+            }
+
+            const res = await axios.put(
+
+                `${import.meta.env.VITE_API_BASE_URL}/api/case-studies/${id}`,
+
+                {
+
+                    ...formData,
+
+                    coverImage,
+
+                    authorImage
+
+                }
+
+            );
+
+            alert("Case Study Updated Successfully");
+
+            navigate("/admin/casestudies");
+
+        }
+
+        catch (err) {
+
+            console.log(err);
+
+        }
 
     }
-
-    if (formData.authorImage instanceof File) {
-
-      authorImage = await uploadImage(
-
-        formData.authorImage
-
-      );
-
-    }
-
-    const res = await axios.put(
-
-      `${import.meta.env.VITE_API_BASE_URL}/api/case-studies/${id}`,
-
-      {
-
-        ...formData,
-
-        coverImage,
-
-        authorImage
-
-      }
-
-    );
-
-    alert("Case Study Updated Successfully");
-
-    navigate("/admin/casestudies");
-
-  }
-
-  catch(err){
-
-    console.log(err);
-
-  }
-
-}
     if (loading) {
 
         return (
@@ -540,19 +566,67 @@ const EditCaseStudy = () => {
 
                             {formData.authorImage && (
 
-                                <div className="mt-5 flex justify-center">
+                                <div className="mt-6">
 
-                                    <img
+                                    <div className="flex justify-center">
 
-                                        src={
-                                            typeof formData.authorImage === "string"
-                                                ? formData.authorImage
-                                                : URL.createObjectURL(formData.authorImage)
-                                        }
+                                        <AvatarEditor
 
-                                        className="w-48 h-48 rounded-full object-cover"
+                                            ref={editorRef}
 
-                                    />
+                                            image={
+                                                typeof formData.authorImage === "string"
+                                                    ? formData.authorImage
+                                                    : URL.createObjectURL(formData.authorImage)
+                                            }
+
+                                            width={220}
+
+                                            height={220}
+
+                                            border={25}
+
+                                            borderRadius={110}
+
+                                            scale={scale}
+
+                                            color={[15, 23, 42, 0.8]}
+
+                                        />
+
+                                    </div>
+
+                                    <div className="mt-5">
+
+                                        <p className="text-sm text-gray-400 mb-2">
+
+                                            Adjust Image Position
+
+                                        </p>
+
+                                        <input
+
+                                            type="range"
+
+                                            min="1"
+
+                                            max="3"
+
+                                            step="0.1"
+
+                                            value={scale}
+
+                                            onChange={(e) =>
+
+                                                setScale(parseFloat(e.target.value))
+
+                                            }
+
+                                            className="w-full"
+
+                                        />
+
+                                    </div>
 
                                 </div>
 
