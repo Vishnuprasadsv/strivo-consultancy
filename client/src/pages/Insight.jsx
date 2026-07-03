@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Link, useNavigate } from 'react-router-dom';
 import { Dialog, DialogContent, Typography, Button, Box } from '@mui/material';
@@ -65,7 +65,7 @@ const containerVariants = {
 
 const Insight = () => {
   const navigate = useNavigate();
-
+  const articlesRef = useRef(null);
   // Merged array of default and custom admin articles
   const [articles, setArticles] = useState([]);
 
@@ -135,6 +135,13 @@ const Insight = () => {
   const handleCategoryChange = (categoryName) => {
     setSelectedCategory(categoryName);
     setCurrentPage(1);
+  };
+
+  const scrollToArticles = () => {
+    articlesRef.current?.scrollIntoView({
+      behavior: "smooth",
+      block: "start",
+    });
   };
 
   // Filter articles by category
@@ -217,6 +224,7 @@ const Insight = () => {
 
         {/* Section 3: All Articles */}
         <motion.section
+          ref={articlesRef}
           initial="hidden"
           whileInView="visible"
           viewport={{ once: true, amount: 0.1 }}
@@ -261,7 +269,7 @@ const Insight = () => {
                       exit="exit"
                       whileHover={{ y: -15, scale: 1.03 }}
                       key={article._id || article.id}
-                      className="relative bg-gradient-to-br from-[#081224] to-[#0f172a] border border-blue-500/10 rounded-2xl overflow-hidden group transition-colors transition-shadow duration-300 ease-out hover:border-blue-500/40 hover:shadow-[0_20px_50px_rgba(37,99,235,0.18)] flex flex-col h-full cursor-pointer"
+                      className="relative bg-gradient-to-br from-[#081224] to-[#0f172a] border border-blue-500/10 card overflow-hidden group transition-colors transition-shadow duration-300 ease-out hover:border-blue-500/40 hover:shadow-[0_20px_50px_rgba(37,99,235,0.18)] flex flex-col h-full cursor-pointer"
                       onClick={() => navigate(`/article/${article._id || article.id}`)}
                     >
                       {/* Top gradient line */}
@@ -282,8 +290,31 @@ const Insight = () => {
                       </div>
                       <div className="p-6 flex flex-col flex-grow relative z-20 bg-gradient-to-br from-[#081224]/50 to-[#0f172a]/50">
                         <span className="text-blue-500 text-xs font-semibold mb-2 uppercase">{article.category}</span>
-                        <h3 className="text-xl font-bold text-white mb-3">{article.title}</h3>
-                        <p className="text-gray-400 mb-6 flex-grow">{article.description}</p>
+                        <h3
+                          className="
+  text-xl
+  font-bold
+  text-white
+  mb-3
+  line-clamp-2
+  leading-snug
+  min-h-[56px]
+"
+                        >
+                          {article.title}
+                        </h3>
+                        <p
+                          className="
+  text-gray-400
+  mb-6
+  flex-grow
+  line-clamp-3
+  leading-relaxed
+  min-h-[72px]
+"
+                        >
+                          {article.description}
+                        </p>
 
                         <Link
                           to={`/article/${article._id || article.id}`}
@@ -307,7 +338,10 @@ const Insight = () => {
                 <div className="flex justify-center items-center gap-4 pt-6">
                   <button
                     disabled={currentPage === 1}
-                    onClick={() => setCurrentPage(prev => Math.max(1, prev - 1))}
+                    onClick={() => {
+                      setCurrentPage(prev => Math.max(1, prev - 1));
+                      scrollToArticles();
+                    }}
                     className={`px-4 py-2 rounded-xl text-sm font-semibold border transition-all cursor-pointer ${currentPage === 1
                       ? 'border-white/10 text-pure-black bg-gray-200/5 cursor-not-allowed'
                       : 'border-white/20 text-pure-black hover:bg-gray-200/10 hover:border-white/30'
@@ -322,7 +356,10 @@ const Insight = () => {
                       return (
                         <button
                           key={pageNum}
-                          onClick={() => setCurrentPage(pageNum)}
+                          onClick={() => {
+                            setCurrentPage(pageNum);
+                            scrollToArticles();
+                          }}
                           className={`w-10 h-10 rounded-xl text-sm font-bold border transition-all cursor-pointer ${currentPage === pageNum
                             ? 'bg-blue-400 border-blue-600 text-pure-black shadow-lg shadow-blue-500/20'
                             : 'border-black/10 bg-gray-200/80 text-pure-black hover:bg-gray/10 '
@@ -336,7 +373,10 @@ const Insight = () => {
 
                   <button
                     disabled={currentPage === totalPages}
-                    onClick={() => setCurrentPage(prev => Math.min(totalPages, prev + 1))}
+                    onClick={() => {
+                      setCurrentPage(prev => Math.min(totalPages, prev + 1));
+                      scrollToArticles();
+                    }}
                     className={`px-4 py-2 rounded-xl text-sm font-semibold border transition-all cursor-pointer ${currentPage === totalPages
                       ? 'border-white/10 text-pure-black bg-white/5 cursor-not-allowed'
                       : 'border-white/20 text-pure-black hover:bg-white/10 hover:border-white/30'
