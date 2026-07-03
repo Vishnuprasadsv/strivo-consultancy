@@ -166,6 +166,7 @@ const Contact = () => {
         <div className="max-w-7xl mx-auto px-6 md:px-12 space-y-32">
           {/* Section 1: Hero */}
           <motion.section
+            id="hero-section"
             initial="hidden"
             animate="visible"
             variants={fadeUpVariants}

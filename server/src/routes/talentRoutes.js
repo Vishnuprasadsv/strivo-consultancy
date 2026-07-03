@@ -1,6 +1,6 @@
 import express from 'express';
 import multer from 'multer';
-import { submitTalent, getTalentSubmissions } from '../controllers/talentController.js';
+import { submitTalent, getTalentSubmissions, deleteTalentSubmission } from '../controllers/talentController.js';
 
 const router = express.Router();
 
@@ -16,5 +16,6 @@ router.post("/submit", upload.single("resume"), submitTalent);
 
 
 router.get("/submissions", getTalentSubmissions);
+router.delete("/submissions/:id", deleteTalentSubmission);
 
 export default router;

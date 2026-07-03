@@ -12,7 +12,9 @@ import {
   createJobAPI,
   updateJobAPI,
   deleteJobAPI,
-  getTalentSubmissionsAPI
+  getTalentSubmissionsAPI,
+  deleteApplicationAPI,
+  deleteTalentSubmissionAPI
 } from '../services/allApi';
 
 import WorkIcon from '@mui/icons-material/Work';
@@ -79,6 +81,11 @@ const CareerAdmin = () => {
   const [openTalentModal, setOpenTalentModal] = useState(false);
   const [talentSubmissions, setTalentSubmissions] = useState([]);
   const [loadingTalent, setLoadingTalent] = useState(false);
+  
+  // Pagination & Notification Clear States
+  const [appPage, setAppPage] = useState(1);
+  const [talentPage, setTalentPage] = useState(1);
+  const [clearedNotificationsTime, setClearedNotificationsTime] = useState(null);
 // ella datem fetch chaiyya back end eenu
   const fetchData = async (silent = false) => {
     try {
@@ -179,6 +186,40 @@ const CareerAdmin = () => {
       setApplications(previousApps);
       window.dispatchEvent(new Event('notificationUpdate'));
       toast.error("Failed to refer candidate to HR.");
+    }
+  };
+
+  const handleDeleteApplication = async (appId) => {
+    if (!window.confirm("Are you sure you want to delete this application?")) return;
+    try {
+      const response = await deleteApplicationAPI(appId);
+      if (response.status === 200 && response.data?.success) {
+        toast.success("Application deleted successfully");
+        setAppPage(1);
+        fetchData(true);
+      } else {
+        toast.error("Failed to delete application.");
+      }
+    } catch (error) {
+      console.error("Failed to delete application:", error);
+      toast.error("Failed to delete application.");
+    }
+  };
+
+  const handleDeleteTalent = async (subId) => {
+    if (!window.confirm("Are you sure you want to delete this talent network submission?")) return;
+    try {
+      const response = await deleteTalentSubmissionAPI(subId);
+      if (response.status === 200 && response.data?.success) {
+        toast.success("Talent submission deleted successfully");
+        setTalentPage(1);
+        fetchData(true);
+      } else {
+        toast.error("Failed to delete talent submission.");
+      }
+    } catch (error) {
+      console.error("Failed to delete talent submission:", error);
+      toast.error("Failed to delete talent submission.");
     }
   };
 
@@ -367,13 +408,28 @@ const CareerAdmin = () => {
     }
   });
 
-//  filter
-  const filteredApplications = applications.filter(app => {
-    if (activeFilter === 'pending') {
-      return app.status === 'pending';
-    }
-    return true; // show all
-  });
+//  filter & sort (newest first)
+  const filteredApplications = [...applications]
+    .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
+    .filter(app => {
+      if (activeFilter === 'pending') {
+        return app.status === 'pending';
+      }
+      return true; // show all
+    });
+
+  // Recent Applications Pagination
+  const appsPerPage = 5;
+  const totalAppPages = Math.ceil(filteredApplications.length / appsPerPage) || 1;
+  const currentAppPage = Math.min(appPage, totalAppPages);
+  const paginatedApplications = filteredApplications.slice((currentAppPage - 1) * appsPerPage, currentAppPage * appsPerPage);
+
+  // Talent Submissions Pagination & Sort (newest first)
+  const sortedTalentSubmissions = [...talentSubmissions].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+  const talentPerPage = 5;
+  const totalTalentPages = Math.ceil(sortedTalentSubmissions.length / talentPerPage) || 1;
+  const currentTalentPage = Math.min(talentPage, totalTalentPages);
+  const paginatedTalent = sortedTalentSubmissions.slice((currentTalentPage - 1) * talentPerPage, currentTalentPage * talentPerPage);
 
 
   const getDynamicNotifications = () => {
@@ -418,10 +474,14 @@ const CareerAdmin = () => {
     });
 
 
-    list.sort((a, b) => b.time - a.time);
+    let filteredList = list;
+    if (clearedNotificationsTime) {
+      filteredList = list.filter(item => item.time > clearedNotificationsTime);
+    }
 
-   
-    return list.slice(0, 5).map(item => {
+    filteredList.sort((a, b) => b.time - a.time);
+
+    return filteredList.slice(0, 5).map(item => {
       const diffMs = new Date() - item.time;
       const diffMins = Math.floor(diffMs / 60000);
       let timeStr = "";
@@ -587,7 +647,7 @@ const CareerAdmin = () => {
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-white/5 text-sm">
-                      {filteredApplications.map((app) => {
+                      {paginatedApplications.map((app) => {
                         const statusObj = getStatusDetails(app.status);
                         const appliedDate = new Date(app.createdAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
                         
@@ -658,6 +718,13 @@ const CareerAdmin = () => {
                                 >
                                   <CloseIcon fontSize="small" />
                                 </button>
+                                <button
+                                  onClick={() => handleDeleteApplication(app._id)}
+                                  className="w-8 h-8 rounded-lg bg-red-500/10 hover:bg-red-500/20 text-red-400 flex items-center justify-center transition-colors cursor-pointer border border-red-500/10"
+                                  title="Delete Application"
+                                >
+                                  <DeleteIcon fontSize="small" />
+                                </button>
                               </div>
                             </td>
                           </tr>
@@ -665,6 +732,28 @@ const CareerAdmin = () => {
                       })}
                     </tbody>
                   </table>
+
+                  {totalAppPages > 1 && (
+                    <div className="flex items-center justify-center gap-4 mt-6 pt-4 border-t border-white/5">
+                      <button
+                        disabled={currentAppPage === 1}
+                        onClick={() => setAppPage(p => Math.max(1, p - 1))}
+                        className="px-3 py-1.5 bg-white/5 hover:bg-white/10 disabled:opacity-30 disabled:hover:bg-white/5 text-white text-xs rounded transition-all cursor-pointer font-semibold"
+                      >
+                        Previous
+                      </button>
+                      <span className="text-xs text-white/50">
+                        Page {currentAppPage} of {totalAppPages}
+                      </span>
+                      <button
+                        disabled={currentAppPage === totalAppPages}
+                        onClick={() => setAppPage(p => Math.min(totalAppPages, p + 1))}
+                        className="px-3 py-1.5 bg-white/5 hover:bg-white/10 disabled:opacity-30 disabled:hover:bg-white/5 text-white text-xs rounded transition-all cursor-pointer font-semibold"
+                      >
+                        Next
+                      </button>
+                    </div>
+                  )}
                 </div>
               )}
             </div>
@@ -753,21 +842,33 @@ const CareerAdmin = () => {
                 <h2 className="text-lg font-bold text-white flex items-center gap-2">
                   <NotificationsIcon className="text-blue-400" /> Notifications
                 </h2>
-                <button onClick={() => toast.success("All notifications marked as read")} className="text-xs text-blue-400 hover:text-blue-300 transition-colors border-none bg-transparent cursor-pointer font-semibold">
+                <button
+                  onClick={() => {
+                    setClearedNotificationsTime(new Date());
+                    toast.success("All notifications marked as read");
+                  }}
+                  className="text-xs text-blue-400 hover:text-blue-300 transition-colors border-none bg-transparent cursor-pointer font-semibold"
+                >
                   Mark all as read
                 </button>
               </div>
 
               <div className="flex flex-col gap-4">
-                {recentNotifications.map((notif, index) => (
-                  <div key={index} className="flex items-start gap-3 p-3 bg-white/2.5 border border-white/5 rounded-xl hover:border-white/10 transition-colors">
-                    <span className={`w-2 h-2 rounded-full mt-1.5 shrink-0 ${notif.color}`}></span>
-                    <div className="min-w-0">
-                      <p className="text-sm text-white/80 leading-snug">{notif.text}</p>
-                      <span className="text-xxs text-white/40 block mt-1">{notif.time}</span>
-                    </div>
+                {recentNotifications.length === 0 ? (
+                  <div className="py-8 text-center text-white/30 text-sm border border-dashed border-white/5 rounded-xl bg-black/10">
+                    No new notifications
                   </div>
-                ))}
+                ) : (
+                  recentNotifications.map((notif, index) => (
+                    <div key={index} className="flex items-start gap-3 p-3 bg-white/2.5 border border-white/5 rounded-xl hover:border-white/10 transition-colors">
+                      <span className={`w-2 h-2 rounded-full mt-1.5 shrink-0 ${notif.color}`}></span>
+                      <div className="min-w-0">
+                        <p className="text-sm text-white/80 leading-snug">{notif.text}</p>
+                        <span className="text-xxs text-white/40 block mt-1">{notif.time}</span>
+                      </div>
+                    </div>
+                  ))
+                )}
               </div>
             </div>
 
@@ -1244,7 +1345,7 @@ const CareerAdmin = () => {
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-white/5 text-sm">
-                  {talentSubmissions.map((sub) => {
+                  {paginatedTalent.map((sub) => {
                     const initials = sub.fullName.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2);
                     const submittedDate = new Date(sub.createdAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
                     
@@ -1265,20 +1366,51 @@ const CareerAdmin = () => {
                         <td className="py-4 px-4 text-white/70 font-medium">{sub.category}</td>
                         <td className="py-4 px-4 text-white/60">{submittedDate}</td>
                         <td className="py-4 pl-4 text-right">
-                          <a
-                            href={sub.resumeUrl}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="px-3 py-1.5 bg-emerald-600/10 hover:bg-emerald-600/20 border border-emerald-500/20 text-emerald-400 rounded-lg transition-all font-semibold text-xs inline-flex items-center gap-1 cursor-pointer no-underline"
-                          >
-                            <PictureAsPdfIcon style={{ fontSize: 13 }} /> View Resume
-                          </a>
+                          <div className="flex items-center justify-end gap-2">
+                            <a
+                              href={sub.resumeUrl}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="px-3 py-1.5 bg-emerald-600/10 hover:bg-emerald-600/20 border border-emerald-500/20 text-emerald-400 rounded-lg transition-all font-semibold text-xs inline-flex items-center gap-1 cursor-pointer no-underline"
+                            >
+                              <PictureAsPdfIcon style={{ fontSize: 13 }} /> View Resume
+                            </a>
+                            <button
+                              onClick={() => handleDeleteTalent(sub._id)}
+                              className="w-8 h-8 rounded-lg bg-red-500/10 hover:bg-red-500/20 text-red-400 flex items-center justify-center transition-colors cursor-pointer border border-red-500/10"
+                              title="Delete Talent Submission"
+                            >
+                              <DeleteIcon fontSize="small" />
+                            </button>
+                          </div>
                         </td>
                       </tr>
                     );
                   })}
                 </tbody>
               </table>
+
+              {totalTalentPages > 1 && (
+                <div className="flex items-center justify-center gap-4 mt-6 pt-4 border-t border-white/5">
+                  <button
+                    disabled={currentTalentPage === 1}
+                    onClick={() => setTalentPage(p => Math.max(1, p - 1))}
+                    className="px-3 py-1.5 bg-white/5 hover:bg-white/10 disabled:opacity-30 disabled:hover:bg-white/5 text-white text-xs rounded transition-all cursor-pointer font-semibold"
+                  >
+                    Previous
+                  </button>
+                  <span className="text-xs text-white/50">
+                    Page {currentTalentPage} of {totalTalentPages}
+                  </span>
+                  <button
+                    disabled={currentTalentPage === totalTalentPages}
+                    onClick={() => setTalentPage(p => Math.min(totalTalentPages, p + 1))}
+                    className="px-3 py-1.5 bg-white/5 hover:bg-white/10 disabled:opacity-30 disabled:hover:bg-white/5 text-white text-xs rounded transition-all cursor-pointer font-semibold"
+                  >
+                    Next
+                  </button>
+                </div>
+              )}
             </div>
           )}
         </DialogContent>

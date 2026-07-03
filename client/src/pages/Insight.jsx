@@ -157,8 +157,8 @@ const Insight = () => {
     <div className="bg-sub-bg text-white min-h-screen pt-12 pb-24 font-sans">
       <div className="max-w-7xl mx-auto px-6 md:px-12 space-y-24">
 
-        {/* Section 1: Hero */}
         <motion.section
+          id="hero-section"
           initial="hidden"
           animate="visible"
           variants={fadeUpVariants}

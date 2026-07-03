@@ -18,6 +18,7 @@ const Change = () => {
       
       {/* Section 1: Hero */}
       <motion.section 
+        id="hero-section"
         initial="hidden" animate="visible" variants={fadeUpVariants}
         className="w-full bg-transparent"
       >

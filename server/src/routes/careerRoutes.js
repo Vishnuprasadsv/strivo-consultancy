@@ -6,6 +6,7 @@ import {
   getApplications,
   updateApplicationStatus,
   referApplication,
+  deleteApplication,
   getJobs,
   createJob,
   updateJob,
@@ -29,6 +30,7 @@ router.post("/apply", upload.single("resume"), applyJob);
 router.get("/applications", getApplications);
 router.put("/applications/:id/status", updateApplicationStatus);
 router.put("/applications/:id/refer", referApplication);
+router.delete("/applications/:id", deleteApplication);
 
 
 router.get("/jobs", getJobs);

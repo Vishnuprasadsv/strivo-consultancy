@@ -472,19 +472,7 @@ function Home() {
   const [successStories, setSuccessStories] = useState([]);
   const [loadingStories, setLoadingStories] = useState(true);
   const [selectedTestimonial, setSelectedTestimonial] = useState(null);
-  const [showScrollTop, setShowScrollTop] = useState(false);
 
-  useEffect(() => {
-    const handleScroll = () => {
-      if (window.scrollY > 300) {
-        setShowScrollTop(true);
-      } else {
-        setShowScrollTop(false);
-      }
-    };
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
 
   useEffect(() => {
     const fetchStories = async () => {
@@ -849,11 +837,7 @@ function Home() {
         id="stats-section"
         sx={{
           backgroundColor: "var(--color-main-bg)",
-          py: { xs: 8, lg: 12.5 },
-          minHeight: { xs: "auto", lg: "100vh" },
-          display: "flex",
-          flexDirection: "column",
-          justifyContent: "center",
+          py: { xs: 6, md: 8 },
         }}
       >
         {/* TRUSTED BY SECTION */}
@@ -967,7 +951,7 @@ function Home() {
                   sx={{
                     background: "#f8fafc",
                     border: "1px solid rgba(37,99,235,0.08)",
-                    borderRadius: "24px",
+                    borderRadius: "3px",
                     p: { xs: 2.5, sm: 3, md: 3.5 },
                     textAlign: "center",
                     position: "relative",
@@ -1036,11 +1020,7 @@ function Home() {
         id="expertise-section"
         sx={{
           backgroundColor: "var(--color-sub-bg)",
-          py: { xs: 8, lg: 12.5 },
-          minHeight: { xs: "auto", lg: "100vh" },
-          display: "flex",
-          flexDirection: "column",
-          justifyContent: "center",
+          py: { xs: 6, md: 8 },
         }}
       >
         <Container maxWidth="lg">
@@ -1228,11 +1208,7 @@ function Home() {
         id="trust-section"
         sx={{
           backgroundColor: "var(--color-main-bg)",
-          py: { xs: 8, lg: 12.5 },
-          minHeight: { xs: "auto", lg: "100vh" },
-          display: "flex",
-          flexDirection: "column",
-          justifyContent: "center",
+          py: { xs: 6, md: 8 },
           position: "relative",
           overflow: "hidden",
         }}
@@ -1466,11 +1442,7 @@ function Home() {
         id="testimonials-section"
         sx={{
           backgroundColor: "var(--color-sub-bg)",
-          py: { xs: 8, lg: 12.5 },
-          minHeight: { xs: "auto", lg: "100vh" },
-          display: "flex",
-          flexDirection: "column",
-          justifyContent: "center",
+          py: { xs: 6, md: 8 },
           overflow: "hidden",
           position: "relative"
         }}
@@ -1930,52 +1902,7 @@ function Home() {
         )}
       </Dialog>
 
-      <AnimatePresence>
-        {showScrollTop && (
-          <motion.div
-            initial={{ opacity: 0, scale: 0.8 }}
-            animate={{ opacity: 1, scale: 1 }}
-            exit={{ opacity: 0, scale: 0.8 }}
-            transition={{ duration: 0.2 }}
-            style={{
-              position: "fixed",
-              bottom: "32px",
-              right: "32px",
-              zIndex: 1000,
-            }}
-          >
-            <Box
-              onClick={() => {
-                const target = document.getElementById("hero-section");
-                if (target) {
-                  target.scrollIntoView({ behavior: "smooth" });
-                }
-              }}
-              sx={{
-                width: 50,
-                height: 50,
-                borderRadius: "50%",
-                background: "#4764FF",
-                boxShadow: "0 8px 25px rgba(71, 100, 255, 0.4)",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                cursor: "pointer",
-                transition: "all 0.3s ease",
-                "&:hover": {
-                  background: "#3b55d9",
-                  transform: "translateY(-4px)",
-                  boxShadow: "0 12px 30px rgba(71, 100, 255, 0.6)",
-                },
-              }}
-            >
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#ffffff" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M18 15l-6-6-6 6" />
-              </svg>
-            </Box>
-          </motion.div>
-        )}
-      </AnimatePresence>
+
 
     </div>
   );
