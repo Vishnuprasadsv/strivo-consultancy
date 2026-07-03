@@ -38,6 +38,7 @@ const AdminNavbar = () => {
   const [showDropdown, setShowDropdown] = useState(false);
   const dropdownRef = React.useRef(null);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
   const [lastViewed, setLastViewed] = useState(() => {
     const saved = localStorage.getItem('adminNotificationsLastViewed');
     return saved ? new Date(saved) : new Date(0);
@@ -177,6 +178,7 @@ const AdminNavbar = () => {
     }
   };
   const handleLogout = () => {
+    setShowLogoutConfirm(false);
     localStorage.removeItem('adminToken');
     localStorage.removeItem('adminUser');
     navigate('/admin/login');
@@ -385,7 +387,7 @@ const AdminNavbar = () => {
           </Link>
 
           <button
-            onClick={handleLogout}
+            onClick={() => setShowLogoutConfirm(true)}
             className="relative flex items-center gap-4 px-4 py-3 rounded-xl transition-colors duration-300 group cursor-pointer text-red-400 hover:text-red-300 hover:bg-red-500/10 w-full text-left font-medium"
           >
             <span className="relative z-10 flex items-center justify-center">
@@ -395,6 +397,34 @@ const AdminNavbar = () => {
           </button>
         </div>
       </motion.aside>
+
+      {/* Logout Confirmation Modal */}
+      {showLogoutConfirm && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
+          <motion.div
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            className="bg-[#0a0f1c] border border-white/10 rounded-2xl p-6 max-w-sm w-full shadow-2xl relative"
+          >
+            <h3 className="text-xl font-bold text-white mb-2">Confirm Logout</h3>
+            <p className="text-white/70 mb-6">Are you sure you want to log out of the admin panel?</p>
+            <div className="flex gap-4">
+              <button
+                onClick={() => setShowLogoutConfirm(false)}
+                className="flex-1 px-4 py-2.5 rounded-xl border border-white/20 text-white hover:bg-white/5 transition-colors font-medium"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleLogout}
+                className="flex-1 px-4 py-2.5 rounded-xl bg-red-500 hover:bg-red-600 text-white transition-colors font-bold shadow-lg shadow-red-500/20"
+              >
+                Logout
+              </button>
+            </div>
+          </motion.div>
+        </div>
+      )}
     </>
   );
 };
