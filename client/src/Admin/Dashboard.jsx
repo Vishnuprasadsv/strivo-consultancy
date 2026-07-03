@@ -353,7 +353,7 @@ const Dashboard = () => {
                       paddingAngle={8}
                       dataKey="value"
                       stroke="none"
-                      style={{ filter: 'drop-shadow(0px 0px 15px rgba(245,158,11,0.4))' }}
+                      style={{ filter: 'drop-shadow(0px 0px 15px rgba(245,158,11,0.2))' }}
                     >
                       <Cell fill="url(#gold1)" />
                       <Cell fill="url(#gold2)" />

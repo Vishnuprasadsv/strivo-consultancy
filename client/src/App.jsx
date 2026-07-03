@@ -108,22 +108,22 @@ const AppLayout = () => {
     <div className={`min-h-screen ${isNoFerrofluid ? 'bg-[var(--color-main-bg)] text-[var(--color-pure-black)]' : 'bg-transparent text-white'} flex flex-col relative z-0`}>
       {!isNoFerrofluid && (
         <div className="fixed inset-0 z-[-1] bg-black">
-          <Ferrofluid
-            colors={["#002c9b", "#3673d6", "#7ba0db"]}
-            speed={0.1}
-            scale={2.6}
-            turbulence={0.65}
-            fluidity={0.14}
-            rimWidth={0.2}
-            sharpness={3}
-            shimmer={1}
-            glow={1.6}
-            flowDirection="up"
-            opacity={1}
-            mouseInteraction={true}
-            mouseStrength={1}
-            mouseRadius={0.3}
-          />
+            <Ferrofluid
+    colors={["#a6a8ff","#a8a5ff","#000000"]}
+    speed={0.1}
+    scale={1.8}
+    turbulence={0}
+    fluidity={0.08}
+    rimWidth={0.19}
+    sharpness={2.1}
+    shimmer={1.2}
+    glow={0.5}
+    flowDirection="down"
+    opacity={1}
+    mouseInteraction={false}
+    mouseStrength={1}
+    mouseRadius={0.2}
+  />
           <div className="absolute inset-0 backdrop-blur-[6px] bg-black/40 pointer-events-none" />
         </div>
       )}
