@@ -114,3 +114,11 @@ export const getSubscribersAPI = async () => {
 export const deleteSubscriberAPI = async (id) => {
   return await commonAPI("DELETE", `${SERVER_URL}/api/articles/subscribers/${id}`, "", "");
 };
+
+export const deleteApplicationAPI = async (id) => {
+  return await commonAPI("DELETE", `${SERVER_URL}/api/career/applications/${id}`, "", "");
+};
+
+export const deleteTalentSubmissionAPI = async (id) => {
+  return await commonAPI("DELETE", `${SERVER_URL}/api/talent/submissions/${id}`, "", "");
+};

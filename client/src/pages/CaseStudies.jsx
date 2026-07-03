@@ -72,8 +72,8 @@ const CaseStudies = () => {
 
   return (
     <div className="bg-main-bg text-white min-h-screen">
-      {/* Hero Section */}
       <motion.section
+        id="hero-section"
         initial="hidden"
         animate="visible"
         variants={fadeUpVariants}

@@ -10,6 +10,7 @@ import { fileURLToPath } from 'url';
 import CareerApplication from '../models/CareerApplication.js';
 import Job from '../models/Job.js';
 import TalentSubmission from '../models/TalentSubmission.js';
+import { checkKeywordMatch } from '../utils/resumeParser.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -33,8 +34,8 @@ const transporter = nodemailer.createTransport({
       tls: { rejectUnauthorized: false },
       family: 4,
   auth: {
-    user: process.env.EMAIL_USER,
-    pass: process.env.EMAIL_PASS,
+    user: process.env.EMAIL_USER || process.env.EMAIL,
+    pass: process.env.EMAIL_PASS || process.env.EMAIL_PASSWORD,
   },
 });
 
@@ -42,12 +43,14 @@ const transporter = nodemailer.createTransport({
 
 const sendAckEmail = async (toEmail, name, position) => {
   try {
-    if (!process.env.EMAIL_USER || !process.env.EMAIL_PASS) {
+    const emailUser = process.env.EMAIL_USER || process.env.EMAIL;
+    const emailPass = process.env.EMAIL_PASS || process.env.EMAIL_PASSWORD;
+    if (!emailUser || !emailPass) {
       console.log("Email credentials not set. Skipping acknowledgement email.");
       return;
     }
     const mailOptions = {
-      from: process.env.EMAIL_USER,
+      from: emailUser,
       to: toEmail,
       subject: `Application Received: ${position} at Strivo Consultancy`,
       text: `Dear ${name},\n\nThank you for applying for the ${position} role at Strivo Consultancy. We have successfully received your application and resume. Our team will review your profile and get back to you shortly.\n\nBest regards,\nStrivo Consultancy HR Team`,
@@ -86,17 +89,64 @@ export const applyJob = async (req, res) => {
       return res.status(400).json({ success: false, message: "Missing required fields" });
     }
 
-   
-    const existingApplication = await CareerApplication.findOne({ email, appliedPosition });
-    if (existingApplication) {
+    // Fetch all applications for this position
+    const allApplications = await CareerApplication.find({ appliedPosition });
+
+    const cleanStr = (s) => s ? s.trim().toLowerCase().replace(/\s+/g, " ") : "";
+    const newNameClean = cleanStr(fullName);
+    const newMobileClean = mobile.replace(/\D/g, "").slice(-10);
+    const newEmailClean = cleanStr(email);
+
+    // Logging helper
+    const logPath = path.join(process.cwd(), "debug_career.log");
+    const logToFile = (msg) => fs.appendFileSync(logPath, msg + "\n");
+
+    logToFile(`\n=== Career Application Check: ${new Date().toISOString()} ===`);
+    logToFile(`Position: "${appliedPosition}"`);
+    logToFile(`Submitting: Name="${fullName}" (Cleaned: "${newNameClean}"), Mobile="${mobile}" (Cleaned: "${newMobileClean}"), Email="${email}" (Cleaned: "${newEmailClean}")`);
+    logToFile(`Total applications for this position in DB: ${allApplications.length}`);
+
+    // Check 1: Check if email already applied for this position
+    const duplicateEmail = allApplications.find(app => cleanStr(app.email) === newEmailClean);
+    if (duplicateEmail) {
+      logToFile(`MATCH BLOCKED (Email match): DB record email="${duplicateEmail.email}"`);
       return res.status(400).json({
         success: false,
-        message: `You have already applied for the ${appliedPosition} role. We will contact you soon.`
+        message: `You have already applied for the ${appliedPosition} role.`
       });
     }
 
+    // Check 2: Check if different email, but mobile number and name match for this position
+    const duplicateApp = allApplications.find(app => {
+      const dbNameClean = cleanStr(app.fullName);
+      const dbMobileClean = app.mobile ? app.mobile.replace(/\D/g, "").slice(-10) : "";
+      const nameMatches = dbNameClean === newNameClean;
+      const mobileMatches = dbMobileClean === newMobileClean;
+      
+      logToFile(`Comparing DB app ID=${app._id}: Name="${app.fullName}" (Cleaned: "${dbNameClean}", Match=${nameMatches}), Mobile="${app.mobile}" (Cleaned: "${dbMobileClean}", Match=${mobileMatches})`);
+      
+      return nameMatches && mobileMatches;
+    });
+    if (duplicateApp) {
+      logToFile(`MATCH BLOCKED (Name+Mobile match): DB record Name="${duplicateApp.fullName}", Mobile="${duplicateApp.mobile}"`);
+      return res.status(400).json({
+        success: false,
+        message: `An application with this name and mobile number has already been submitted for the ${appliedPosition} role.`
+      });
+    }
+    logToFile("ALLOW SUBMISSION: No duplicate application matches found.");
+
     if (!req.file) {
       return res.status(400).json({ success: false, message: "Please upload your resume" });
+    }
+
+    // Requirement 2: Check resume keyword compatibility
+    const hasKeywords = await checkKeywordMatch(req.file);
+    if (!hasKeywords) {
+      return res.status(400).json({
+        success: false,
+        message: "Job role doesn't match your resume or you are not eligible for this role."
+      });
     }
 
     let resumeUrl;
@@ -165,13 +215,15 @@ export const getApplications = async (req, res) => {
 
 const sendReferralEmail = async (application) => {
   try {
-    const hrEmail = process.env.NOTIFY_EMAIL || 'hr@strivoConsultancy.com';
-    if (!process.env.EMAIL_USER || !process.env.EMAIL_PASS) {
+    const hrEmail = process.env.NOTIFY_EMAIL || 'hrstrivo@gmail.com';
+    const emailUser = process.env.EMAIL_USER || process.env.EMAIL;
+    const emailPass = process.env.EMAIL_PASS || process.env.EMAIL_PASSWORD;
+    if (!emailUser || !emailPass) {
       console.log("Email credentials not set. Skipping referral email.");
       return;
     }
     const mailOptions = {
-      from: process.env.EMAIL_USER,
+      from: emailUser,
       to: hrEmail,
       subject: `[Candidate Referral] ${application.fullName} - ${application.appliedPosition}`,
       text: `Dear HR Team,\n\nWe have referred a candidate for the position of ${application.appliedPosition}.\n\nCandidate Details:\n- Full Name: ${application.fullName}\n- Email: ${application.email}\n- Mobile: ${application.mobile}\n- Position: ${application.appliedPosition}\n\nView Resume: ${application.resumeUrl}\n\nPlease review their application and take necessary actions.\n\nBest regards,\nStrivo Admin Portal`,
@@ -317,6 +369,23 @@ export const deleteJob = async (req, res) => {
     return res.status(200).json({ success: true, message: "Job deleted successfully" });
   } catch (error) {
     console.error("Error in deleteJob:", error);
+    return res.status(500).json({ success: false, message: "Internal server error" });
+  }
+};
+
+
+export const deleteApplication = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const application = await CareerApplication.findByIdAndDelete(id);
+    
+    if (!application) {
+      return res.status(404).json({ success: false, message: "Application not found" });
+    }
+    
+    return res.status(200).json({ success: true, message: "Application deleted successfully" });
+  } catch (error) {
+    console.error("Error in deleteApplication:", error);
     return res.status(500).json({ success: false, message: "Internal server error" });
   }
 };

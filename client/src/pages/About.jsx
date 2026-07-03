@@ -162,6 +162,7 @@ const itemVariants = {
       </Container>
     </Box> */}
     <Box
+  id="hero-section"
   sx={{
     backgroundColor: "transparent",
     color: "#fff",

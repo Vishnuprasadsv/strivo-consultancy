@@ -22,7 +22,9 @@ import BeachAccessIcon from "@mui/icons-material/BeachAccess";
 import TrendingUpIcon from "@mui/icons-material/TrendingUp";
 import { useState } from "react";
 import CloudUploadOutlinedIcon from "@mui/icons-material/CloudUploadOutlined";
+import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
 import careerVideo from "../assets/career.mp4";
+import perfectFitImg from "../assets/perfect-fit.jpg";
 import { toast } from "sonner";
 import { applyJobAPI, submitTalentAPI, getJobsAPI } from "../services/allApi";
 import {
@@ -39,6 +41,7 @@ import {
 function Career() {
 
   const [openApplyModal, setOpenApplyModal] = useState(false);
+  const [isDescExpanded, setIsDescExpanded] = useState(false);
   const [selectedJob, setSelectedJob] = useState({
     title: "",
     description: "",
@@ -106,6 +109,7 @@ function Career() {
     setResumeFile(null);
     setApplyForm({ fullName: "", email: "", mobile: "" });
     setApplyCountryCode("+91");
+    setIsDescExpanded(false);
     setApplyErrors({});
     setOpenApplyModal(true);
   };
@@ -204,7 +208,7 @@ function Career() {
 
   const fieldStyle = {
     "& .MuiOutlinedInput-root": {
-      borderRadius: "14px",
+      borderRadius: "3px",
       background: "var(--color-main-bg)",
       transition: "all 0.3s ease",
 
@@ -291,6 +295,7 @@ function Career() {
     <div>
 
       <Box
+        id="hero-section"
         sx={{
           minHeight: "100vh",
           position: "relative",
@@ -335,7 +340,7 @@ function Career() {
             right: "10%",
             width: 240,
             height: 240,
-            borderRadius: "32px",
+            borderRadius: "3px",
             overflow: "hidden",
             backdropFilter: "blur(30px)",
             background:
@@ -371,7 +376,7 @@ function Career() {
               sx={{
                 width: 44,
                 height: 44,
-                borderRadius: "14px",
+                borderRadius: "3px",
                 background: "rgba(37, 99, 235, 0.2)",
                 border: "1px solid rgba(37, 99, 235, 0.4)",
                 display: "flex",
@@ -385,7 +390,7 @@ function Career() {
               sx={{
                 px: 1.5,
                 py: 0.5,
-                borderRadius: "20px",
+                borderRadius: "3px",
                 background: "rgba(16, 185, 129, 0.1)",
                 border: "1px solid rgba(16, 185, 129, 0.25)",
                 display: "flex",
@@ -600,7 +605,7 @@ function Career() {
             bottom: 40,
             left: "50%",
             transform: "translateX(-50%)",
-            color: "var(--color-pure-black)",
+            color: "#ffffff",
             cursor: "pointer",
           }}
         >
@@ -612,7 +617,7 @@ function Career() {
       <Box
         id="why-join-us"
         sx={{
-          py: { xs: 10, md: 18 },
+          py: { xs: 6, md: 8 },
           background: "var(--color-main-bg)",
           position: "relative",
         }}
@@ -664,7 +669,7 @@ function Career() {
                 <Box
                   sx={{
                     position: "relative",
-                    borderRadius: "32px",
+                    borderRadius: "3px",
                     overflow: "hidden",
                     backdropFilter: "blur(20px)",
                     border: "1px solid var(--color-border-color)",
@@ -812,7 +817,7 @@ function Career() {
       <Box
         id="life-at-strivo"
         sx={{
-          py: { xs: 10, md: 14 },
+          py: { xs: 6, md: 8 },
           background: "var(--color-sub-bg)",
         }}
       >
@@ -963,7 +968,7 @@ function Career() {
       <Box
         id="open-positions"
         sx={{
-          py: { xs: 8, md: 12 },
+          py: { xs: 6, md: 8 },
           background: "var(--color-main-bg)",
         }}
       >
@@ -1020,505 +1025,508 @@ function Career() {
             </Typography>
           </Box>
 
-          <MotionBox whileHover={{ y: -5 }} sx={{ mb: 3 }}>
-            <Box
-              sx={{
-                minHeight: 250,
-                p: 4,
-                borderRadius: "24px",
-                background: "var(--color-sub-bg)",
-                border: "1px solid var(--color-border-color)",
-                backdropFilter: "blur(20px)",
-                transition: "all .3s ease",
-
-                "&:hover": {
-                  border: "1px solid rgba(37,99,235,.4)",
-                  boxShadow: "0 0 40px rgba(37,99,235,.15)",
-                },
-
-                display: "flex",
-                flexDirection: {
-                  xs: "column",
-                  md: "row",
-                },
-                justifyContent: "space-between",
-                alignItems: {
-                  xs: "flex-start",
-                  md: "center",
-                },
-                gap: 3,
-              }}
-            >
-              <Box maxWidth="750px">
-                <Typography
-                  sx={{
-                    color: "var(--color-pure-black)",
-                    fontSize: "1.35rem",
-                    fontWeight: 700,
-                    mb: 1,
-                  }}
-                >
-                  Frontend Developer
-                </Typography>
-
-                <Typography
-                  sx={{
-                    color: "var(--color-pure-black)",
-                    lineHeight: 1.8,
-                    mb: expandedJobs["frontend"] ? 1.5 : 0.5,
-                    display: "-webkit-box",
-                    WebkitLineClamp: expandedJobs["frontend"] ? "none" : 3,
-                    WebkitBoxOrient: "vertical",
-                    overflow: "hidden",
-                  }}
-                >
-                  Build modern web applications using React,
-                  Material UI, and JavaScript. Collaborate with
-                  designers and backend teams to deliver fast,
-                  responsive, and user-centric digital experiences.
-                </Typography>
-                <Button
-                  onClick={() => toggleExpandJob("frontend")}
-                  sx={{
-                    textTransform: "none",
-                    color: "#2563EB",
-                    p: 0,
-                    minWidth: "auto",
-                    fontWeight: 600,
-                    fontSize: "0.85rem",
-                    mb: 2.5,
-                    display: "inline-block",
-                    "&:hover": { background: "transparent", textDecoration: "underline" }
-                  }}
-                >
-                  {expandedJobs["frontend"] ? "Read less" : "Read more"}
-                </Button>
-
-                <Stack sx={{
-                  "& .MuiChip-root": {
-                    color: "var(--color-pure-black)",
-                    background: "rgba(37,99,235,0.15)",
-                    border: "1px solid rgba(37,99,235,0.3)",
-                    fontWeight: 500,
-                  }
-                }} direction="row" spacing={2} flexWrap="wrap" useFlexGap>
-                  <Chip label="Technology" />
-                  <Chip label="Remote" />
-                  <Chip label="Full Time" />
-                </Stack>
-              </Box>
-
-              <Button
-
-                onClick={() =>
-                  handleApplyClick(
-                    "Frontend Developer",
-                    "Build modern web applications using React, Material UI, and JavaScript. Collaborate with designers and backend teams to deliver fast, responsive, and user-centric digital experiences."
-                  )
-                }
-                variant="contained"
+          <Box sx={{ maxWidth: "900px", mx: "auto" }}>
+            <MotionBox whileHover={{ y: -5 }} sx={{ mb: 3 }}>
+              <Box
                 sx={{
-                  background: "#2563EB",
+                  minHeight: 250,
+                  p: 4,
                   borderRadius: "3px",
-                  px: 4,
-                  minWidth: 150,
-                  height: 50,
-                  textTransform: "none",
-                  fontWeight: 600,
+                  background: "var(--color-sub-bg)",
+                  border: "1px solid var(--color-border-color)",
+                  backdropFilter: "blur(20px)",
+                  transition: "all .3s ease",
+
+                  "&:hover": {
+                    border: "1px solid rgba(37,99,235,.4)",
+                    boxShadow: "0 0 40px rgba(37,99,235,.15)",
+                  },
+
+                  display: "flex",
+                  flexDirection: {
+                    xs: "column",
+                    md: "row",
+                  },
+                  justifyContent: "space-between",
+                  alignItems: {
+                    xs: "flex-start",
+                    md: "center",
+                  },
+                  gap: 3,
                 }}
               >
-                Apply Now
-              </Button>
-            </Box>
-          </MotionBox>
-
-
-          <MotionBox whileHover={{ y: -5 }} sx={{ mb: 3 }}>
-            <Box
-              sx={{
-                minHeight: 250,
-                p: 4,
-                borderRadius: "24px",
-                background: "var(--color-sub-bg)",
-                border: "1px solid var(--color-border-color)",
-                backdropFilter: "blur(20px)",
-                transition: "all .3s ease",
-
-                "&:hover": {
-                  border: "1px solid rgba(37,99,235,.4)",
-                  boxShadow: "0 0 40px rgba(37,99,235,.15)",
-                },
-
-                display: "flex",
-                flexDirection: {
-                  xs: "column",
-                  md: "row",
-                },
-                justifyContent: "space-between",
-                alignItems: {
-                  xs: "flex-start",
-                  md: "center",
-                },
-                gap: 3,
-              }}
-            >
-              <Box maxWidth="750px">
-                <Typography
-                  sx={{
-                    color: "var(--color-pure-black)",
-                    fontSize: "1.35rem",
-                    fontWeight: 700,
-                    mb: 1,
-                  }}
-                >
-                  UI/UX Designer
-                </Typography>
-
-                <Typography
-                  sx={{
-                    color: "var(--color-pure-black)",
-                    lineHeight: 1.8,
-                    mb: expandedJobs["uiux"] ? 1.5 : 0.5,
-                    display: "-webkit-box",
-                    WebkitLineClamp: expandedJobs["uiux"] ? "none" : 3,
-                    WebkitBoxOrient: "vertical",
-                    overflow: "hidden",
-                  }}
-                >
-                  Create intuitive interfaces, wireframes,
-                  and prototypes that enhance user engagement
-                  and provide seamless digital experiences
-                  across web and mobile platforms.
-                </Typography>
-                <Button
-                  onClick={() => toggleExpandJob("uiux")}
-                  sx={{
-                    textTransform: "none",
-                    color: "#2563EB",
-                    p: 0,
-                    minWidth: "auto",
-                    fontWeight: 600,
-                    fontSize: "0.85rem",
-                    mb: 2.5,
-                    display: "inline-block",
-                    "&:hover": { background: "transparent", textDecoration: "underline" }
-                  }}
-                >
-                  {expandedJobs["uiux"] ? "Read less" : "Read more"}
-                </Button>
-
-                <Stack sx={{
-                  "& .MuiChip-root": {
-                    color: "var(--color-pure-black)",
-                    background: "rgba(37,99,235,0.15)",
-                    border: "1px solid rgba(37,99,235,0.3)",
-                    fontWeight: 500,
-                  }
-                }} direction="row" spacing={2} flexWrap="wrap" useFlexGap>
-                  <Chip label="Design" />
-                  <Chip label="Kochi" />
-                  <Chip label="Full Time" />
-                </Stack>
-              </Box>
-
-              <Button
-                onClick={() =>
-                  handleApplyClick(
-                    "UI/UX Designer",
-                    "Create intuitive interfaces, wireframes and prototypes that enhance user engagement and provide seamless digital experiences across web and mobile platforms."
-                  )
-                }
-                variant="contained"
-                sx={{
-                  background: "#2563EB",
-                  borderRadius: "3px",
-                  px: 4,
-                  minWidth: 150,
-                  height: 50,
-                  textTransform: "none",
-                  fontWeight: 600,
-                }}
-              >
-                Apply Now
-              </Button>
-            </Box>
-          </MotionBox>
-
-
-          <MotionBox whileHover={{ y: -5 }}>
-            <Box
-              sx={{
-                minHeight: 250,
-                p: 4,
-                borderRadius: "24px",
-                background: "var(--color-sub-bg)",
-                border: "1px solid var(--color-border-color)",
-                backdropFilter: "blur(20px)",
-                transition: "all .3s ease",
-
-                "&:hover": {
-                  border: "1px solid rgba(37,99,235,.4)",
-                  boxShadow: "0 0 40px rgba(37,99,235,.15)",
-                },
-
-                display: "flex",
-                flexDirection: {
-                  xs: "column",
-                  md: "row",
-                },
-                justifyContent: "space-between",
-                alignItems: {
-                  xs: "flex-start",
-                  md: "center",
-                },
-                gap: 3,
-              }}
-            >
-              <Box maxWidth="750px">
-                <Typography
-                  sx={{
-                    color: "var(--color-pure-black)",
-                    fontSize: "1.35rem",
-                    fontWeight: 700,
-                    mb: 1,
-                  }}
-                >
-                  Business Consultant
-                </Typography>
-
-                <Typography
-                  sx={{
-                    color: "var(--color-pure-black)",
-                    lineHeight: 1.8,
-                    mb: expandedJobs["consultant"] ? 1.5 : 0.5,
-                    display: "-webkit-box",
-                    WebkitLineClamp: expandedJobs["consultant"] ? "none" : 3,
-                    WebkitBoxOrient: "vertical",
-                    overflow: "hidden",
-                  }}
-                >
-                  Work closely with clients to analyze business
-                  challenges, identify growth opportunities, and
-                  deliver strategic solutions that drive measurable
-                  outcomes and transformation.
-                </Typography>
-                <Button
-                  onClick={() => toggleExpandJob("consultant")}
-                  sx={{
-                    textTransform: "none",
-                    color: "#2563EB",
-                    p: 0,
-                    minWidth: "auto",
-                    fontWeight: 600,
-                    fontSize: "0.85rem",
-                    mb: 2.5,
-                    display: "inline-block",
-                    "&:hover": { background: "transparent", textDecoration: "underline" }
-                  }}
-                >
-                  {expandedJobs["consultant"] ? "Read less" : "Read more"}
-                </Button>
-
-                <Stack sx={{
-                  "& .MuiChip-root": {
-                    color: "var(--color-pure-black)",
-                    background: "rgba(37,99,235,0.15)",
-                    border: "1px solid rgba(37,99,235,0.3)",
-                    fontWeight: 500,
-                  }
-                }} direction="row" spacing={2} flexWrap="wrap" useFlexGap>
-                  <Chip label="Consulting" />
-                  <Chip label="Dubai" />
-                  <Chip label="Full Time" />
-                </Stack>
-              </Box>
-
-              <Button
-
-                onClick={() =>
-                  handleApplyClick(
-                    "Business Consultant",
-                    "Work closely with clients to analyze business challenges, identify growth opportunities, and deliver strategic solutions that drive measurable outcomes and transformation."
-                  )
-                }
-                variant="contained"
-                sx={{
-                  background: "#2563EB",
-                  borderRadius: "3px",
-                  px: 4,
-                  minWidth: 150,
-                  height: 50,
-                  textTransform: "none",
-                  fontWeight: 600,
-                }}
-              >
-                Apply Now
-              </Button>
-            </Box>
-          </MotionBox>
-
-
-          {dynamicJobs.length > 0 && (
-            <Box sx={{ mt: 3 }}>
-
-              {dynamicJobs.slice((currentPage - 1) * jobsPerPage, currentPage * jobsPerPage).map((job) => (
-                <MotionBox key={job._id} whileHover={{ y: -5 }} sx={{ mb: 3 }}>
-                  <Box
-                    sx={{
-                      minHeight: 250,
-                      p: 4,
-                      borderRadius: "24px",
-                      background: "var(--color-sub-bg)",
-                      border: "1px solid var(--color-border-color)",
-                      backdropFilter: "blur(20px)",
-                      transition: "all .3s ease",
-
-                      "&:hover": {
-                        border: "1px solid rgba(37,99,235,.4)",
-                        boxShadow: "0 0 40px rgba(37,99,235,.15)",
-                      },
-
-                      display: "flex",
-                      flexDirection: {
-                        xs: "column",
-                        md: "row",
-                      },
-                      justifyContent: "space-between",
-                      alignItems: {
-                        xs: "flex-start",
-                        md: "center",
-                      },
-                      gap: 3,
-                    }}
-                  >
-                    <Box maxWidth="750px">
-                      <Typography
-                        sx={{
-                          color: "var(--color-pure-black)",
-                          fontSize: "1.35rem",
-                          fontWeight: 700,
-                          mb: 1,
-                        }}
-                      >
-                        {job.title}
-                      </Typography>
-
-                      <Typography
-                        sx={{
-                          color: "var(--color-pure-black)",
-                          lineHeight: 1.8,
-                          mb: expandedJobs[job._id] ? 1.5 : 0.5,
-                          display: "-webkit-box",
-                          WebkitLineClamp: expandedJobs[job._id] ? "none" : 3,
-                          WebkitBoxOrient: "vertical",
-                          overflow: "hidden",
-                        }}
-                      >
-                        {job.description}
-                      </Typography>
-                      <Button
-                        onClick={() => toggleExpandJob(job._id)}
-                        sx={{
-                          textTransform: "none",
-                          color: "#2563EB",
-                          p: 0,
-                          minWidth: "auto",
-                          fontWeight: 600,
-                          fontSize: "0.85rem",
-                          mb: 2.5,
-                          display: "inline-block",
-                          "&:hover": { background: "transparent", textDecoration: "underline" }
-                        }}
-                      >
-                        {expandedJobs[job._id] ? "Read less" : "Read more"}
-                      </Button>
-
-                      <Stack sx={{
-                        "& .MuiChip-root": {
-                          color: "var(--color-pure-black)",
-                          background: "rgba(37,99,235,0.15)",
-                          border: "1px solid rgba(37,99,235,0.3)",
-                          fontWeight: 500,
-                        }
-                      }} direction="row" spacing={2} flexWrap="wrap" useFlexGap>
-                        <Chip label={job.department} />
-                        <Chip label={job.location} />
-                        <Chip label={job.jobType || "Full Time"} />
-                      </Stack>
-                    </Box>
-
-                    <Button
-                      onClick={() =>
-                        handleApplyClick(
-                          job.title,
-                          job.description
-                        )
-                      }
-                      variant="contained"
-                      sx={{
-                        background: "#2563EB",
-                        borderRadius: "3px",
-                        px: 4,
-                        minWidth: 150,
-                        height: 50,
-                        textTransform: "none",
-                        fontWeight: 600,
-                      }}
-                    >
-                      Apply Now
-                    </Button>
-                  </Box>
-                </MotionBox>
-              ))}
-
-
-              {dynamicJobs.length > jobsPerPage && (
-                <Box sx={{ display: "flex", justifyContent: "center", alignItems: "center", gap: 2, mt: 5 }}>
-                  <Button
-                    disabled={currentPage === 1}
-                    onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
-                    variant="outlined"
+                <Box maxWidth="750px">
+                  <Typography
                     sx={{
                       color: "var(--color-pure-black)",
-                      borderColor: "rgba(255, 255, 255, 0.15)",
-                      borderRadius: "3px",
-                      textTransform: "none",
-                      px: 3,
-                      "&:hover": { borderColor: "#2563EB", background: "rgba(37, 99, 235, 0.1)" },
-                      "&.Mui-disabled": { color: "rgba(255, 255, 255, 0.2)", borderColor: "rgba(255, 255, 255, 0.05)" }
+                      fontSize: "1.35rem",
+                      fontWeight: 700,
+                      mb: 1,
                     }}
                   >
-                    Previous
-                  </Button>
-                  <Typography sx={{ color: "rgba(255, 255, 255, 0.5)", fontSize: "0.9rem" }}>
-                    Page {currentPage} of {Math.ceil(dynamicJobs.length / jobsPerPage)}
+                    Frontend Developer
+                  </Typography>
+
+                  <Typography
+                    sx={{
+                      color: "var(--color-pure-black)",
+                      lineHeight: 1.8,
+                      mb: expandedJobs["frontend"] ? 1.5 : 0.5,
+                      display: "-webkit-box",
+                      WebkitLineClamp: expandedJobs["frontend"] ? "none" : 3,
+                      WebkitBoxOrient: "vertical",
+                      overflow: "hidden",
+                    }}
+                  >
+                    Build modern web applications using React,
+                    Material UI, and JavaScript. Collaborate with
+                    designers and backend teams to deliver fast,
+                    responsive, and user-centric digital experiences.
                   </Typography>
                   <Button
-                    disabled={currentPage === Math.ceil(dynamicJobs.length / jobsPerPage)}
-                    onClick={() => setCurrentPage(prev => Math.min(prev + 1, Math.ceil(dynamicJobs.length / jobsPerPage)))}
-                    variant="outlined"
+                    onClick={() => toggleExpandJob("frontend")}
                     sx={{
-                      color: "var(--color-pure-black)",
-                      borderColor: "rgba(255, 255, 255, 0.15)",
-                      borderRadius: "3px",
                       textTransform: "none",
-                      px: 3,
-                      "&:hover": { borderColor: "#2563EB", background: "rgba(37, 99, 235, 0.1)" },
-                      "&.Mui-disabled": { color: "rgba(255, 255, 255, 0.2)", borderColor: "rgba(255, 255, 255, 0.05)" }
+                      color: "#2563EB",
+                      p: 0,
+                      minWidth: "auto",
+                      fontWeight: 600,
+                      fontSize: "0.85rem",
+                      mb: 2.5,
+                      display: "inline-block",
+                      "&:hover": { background: "transparent", textDecoration: "underline" }
                     }}
                   >
-                    Next
+                    {expandedJobs["frontend"] ? "Read less" : "Read more"}
                   </Button>
+
+                  <Stack sx={{
+                    "& .MuiChip-root": {
+                      color: "var(--color-pure-black)",
+                      background: "rgba(37,99,235,0.15)",
+                      border: "1px solid rgba(37,99,235,0.3)",
+                      fontWeight: 500,
+                    }
+                  }} direction="row" spacing={2} flexWrap="wrap" useFlexGap>
+                    <Chip label="Technology" />
+                    <Chip label="Remote" />
+                    <Chip label="Full Time" />
+                  </Stack>
                 </Box>
-              )}
-            </Box>
-          )}
+
+                <Button
+
+                  onClick={() =>
+                    handleApplyClick(
+                      "Frontend Developer",
+                      "Build modern web applications using React, Material UI, and JavaScript. Collaborate with designers and backend teams to deliver fast, responsive, and user-centric digital experiences."
+                    )
+                  }
+                  variant="contained"
+                  sx={{
+                    background: "#2563EB",
+                    borderRadius: "3px",
+                    px: 4,
+                    minWidth: 150,
+                    height: 50,
+                    textTransform: "none",
+                    fontWeight: 600,
+                  }}
+                >
+                  Apply Now
+                </Button>
+              </Box>
+            </MotionBox>
+
+
+            <MotionBox whileHover={{ y: -5 }} sx={{ mb: 3 }}>
+              <Box
+                sx={{
+                  minHeight: 250,
+                  p: 4,
+                  borderRadius: "3px",
+                  background: "var(--color-sub-bg)",
+                  border: "1px solid var(--color-border-color)",
+                  backdropFilter: "blur(20px)",
+                  transition: "all .3s ease",
+
+                  "&:hover": {
+                    border: "1px solid rgba(37,99,235,.4)",
+                    boxShadow: "0 0 40px rgba(37,99,235,.15)",
+                  },
+
+                  display: "flex",
+                  flexDirection: {
+                    xs: "column",
+                    md: "row",
+                  },
+                  justifyContent: "space-between",
+                  alignItems: {
+                    xs: "flex-start",
+                    md: "center",
+                  },
+                  gap: 3,
+                }}
+              >
+                <Box maxWidth="750px">
+                  <Typography
+                    sx={{
+                      color: "var(--color-pure-black)",
+                      fontSize: "1.35rem",
+                      fontWeight: 700,
+                      mb: 1,
+                    }}
+                  >
+                    UI/UX Designer
+                  </Typography>
+
+                  <Typography
+                    sx={{
+                      color: "var(--color-pure-black)",
+                      lineHeight: 1.8,
+                      mb: expandedJobs["uiux"] ? 1.5 : 0.5,
+                      display: "-webkit-box",
+                      WebkitLineClamp: expandedJobs["uiux"] ? "none" : 3,
+                      WebkitBoxOrient: "vertical",
+                      overflow: "hidden",
+                    }}
+                  >
+                    Create intuitive interfaces, wireframes,
+                    and prototypes that enhance user engagement
+                    and provide seamless digital experiences
+                    across web and mobile platforms.
+                  </Typography>
+                  <Button
+                    onClick={() => toggleExpandJob("uiux")}
+                    sx={{
+                      textTransform: "none",
+                      color: "#2563EB",
+                      p: 0,
+                      minWidth: "auto",
+                      fontWeight: 600,
+                      fontSize: "0.85rem",
+                      mb: 2.5,
+                      display: "inline-block",
+                      "&:hover": { background: "transparent", textDecoration: "underline" }
+                    }}
+                  >
+                    {expandedJobs["uiux"] ? "Read less" : "Read more"}
+                  </Button>
+
+                  <Stack sx={{
+                    "& .MuiChip-root": {
+                      color: "var(--color-pure-black)",
+                      background: "rgba(37,99,235,0.15)",
+                      border: "1px solid rgba(37,99,235,0.3)",
+                      fontWeight: 500,
+                    }
+                  }} direction="row" spacing={2} flexWrap="wrap" useFlexGap>
+                    <Chip label="Design" />
+                    <Chip label="Kochi" />
+                    <Chip label="Full Time" />
+                  </Stack>
+                </Box>
+
+                <Button
+                  onClick={() =>
+                    handleApplyClick(
+                      "UI/UX Designer",
+                      "Create intuitive interfaces, wireframes and prototypes that enhance user engagement and provide seamless digital experiences across web and mobile platforms."
+                    )
+                  }
+                  variant="contained"
+                  sx={{
+                    background: "#2563EB",
+                    borderRadius: "3px",
+                    px: 4,
+                    minWidth: 150,
+                    height: 50,
+                    textTransform: "none",
+                    fontWeight: 600,
+                  }}
+                >
+                  Apply Now
+                </Button>
+              </Box>
+            </MotionBox>
+
+
+            <MotionBox whileHover={{ y: -5 }}>
+              <Box
+                sx={{
+                  minHeight: 250,
+                  p: 4,
+                  borderRadius: "3px",
+                  background: "var(--color-sub-bg)",
+                  border: "1px solid var(--color-border-color)",
+                  backdropFilter: "blur(20px)",
+                  transition: "all .3s ease",
+
+                  "&:hover": {
+                    border: "1px solid rgba(37,99,235,.4)",
+                    boxShadow: "0 0 40px rgba(37,99,235,.15)",
+                  },
+
+                  display: "flex",
+                  flexDirection: {
+                    xs: "column",
+                    md: "row",
+                  },
+                  justifyContent: "space-between",
+                  alignItems: {
+                    xs: "flex-start",
+                    md: "center",
+                  },
+                  gap: 3,
+                }}
+              >
+                <Box maxWidth="750px">
+                  <Typography
+                    sx={{
+                      color: "var(--color-pure-black)",
+                      fontSize: "1.35rem",
+                      fontWeight: 700,
+                      mb: 1,
+                    }}
+                  >
+                    Business Consultant
+                  </Typography>
+
+                  <Typography
+                    sx={{
+                      color: "var(--color-pure-black)",
+                      lineHeight: 1.8,
+                      mb: expandedJobs["consultant"] ? 1.5 : 0.5,
+                      display: "-webkit-box",
+                      WebkitLineClamp: expandedJobs["consultant"] ? "none" : 3,
+                      WebkitBoxOrient: "vertical",
+                      overflow: "hidden",
+                    }}
+                  >
+                    Work closely with clients to analyze business
+                    challenges, identify growth opportunities, and
+                    deliver strategic solutions that drive measurable
+                    outcomes and transformation.
+                  </Typography>
+                  <Button
+                    onClick={() => toggleExpandJob("consultant")}
+                    sx={{
+                      textTransform: "none",
+                      color: "#2563EB",
+                      p: 0,
+                      minWidth: "auto",
+                      fontWeight: 600,
+                      fontSize: "0.85rem",
+                      mb: 2.5,
+                      display: "inline-block",
+                      "&:hover": { background: "transparent", textDecoration: "underline" }
+                    }}
+                  >
+                    {expandedJobs["consultant"] ? "Read less" : "Read more"}
+                  </Button>
+
+                  <Stack sx={{
+                    "& .MuiChip-root": {
+                      color: "var(--color-pure-black)",
+                      background: "rgba(37,99,235,0.15)",
+                      border: "1px solid rgba(37,99,235,0.3)",
+                      fontWeight: 500,
+                    }
+                  }} direction="row" spacing={2} flexWrap="wrap" useFlexGap>
+                    <Chip label="Consulting" />
+                    <Chip label="Dubai" />
+                    <Chip label="Full Time" />
+                  </Stack>
+                </Box>
+
+                <Button
+
+                  onClick={() =>
+                    handleApplyClick(
+                      "Business Consultant",
+                      "Work closely with clients to analyze business challenges, identify growth opportunities, and deliver strategic solutions that drive measurable outcomes and transformation."
+                    )
+                  }
+                  variant="contained"
+                  sx={{
+                    background: "#2563EB",
+                    borderRadius: "3px",
+                    px: 4,
+                    minWidth: 150,
+                    height: 50,
+                    textTransform: "none",
+                    fontWeight: 600,
+                  }}
+                >
+                  Apply Now
+                </Button>
+              </Box>
+            </MotionBox>
+
+
+            {dynamicJobs.length > 0 && (
+              <Box sx={{ mt: 3 }}>
+
+                {dynamicJobs.slice((currentPage - 1) * jobsPerPage, currentPage * jobsPerPage).map((job) => (
+                  <MotionBox key={job._id} whileHover={{ y: -5 }} sx={{ mb: 3 }}>
+                    <Box
+                      sx={{
+                        minHeight: 250,
+                        p: 4,
+                        borderRadius: "3px",
+                        background: "var(--color-sub-bg)",
+                        border: "1px solid var(--color-border-color)",
+                        backdropFilter: "blur(20px)",
+                        transition: "all .3s ease",
+
+                        "&:hover": {
+                          border: "1px solid rgba(37,99,235,.4)",
+                          boxShadow: "0 0 40px rgba(37,99,235,.15)",
+                        },
+
+                        display: "flex",
+                        flexDirection: {
+                          xs: "column",
+                          md: "row",
+                        },
+                        justifyContent: "space-between",
+                        alignItems: {
+                          xs: "flex-start",
+                          md: "center",
+                        },
+                        gap: 3,
+                      }}
+                    >
+                      <Box maxWidth="750px">
+                        <Typography
+                          sx={{
+                            color: "var(--color-pure-black)",
+                            fontSize: "1.35rem",
+                            fontWeight: 700,
+                            mb: 1,
+                          }}
+                        >
+                          {job.title}
+                        </Typography>
+
+                        <Typography
+                          sx={{
+                            color: "var(--color-pure-black)",
+                            lineHeight: 1.8,
+                            mb: expandedJobs[job._id] ? 1.5 : 0.5,
+                            display: "-webkit-box",
+                            WebkitLineClamp: expandedJobs[job._id] ? "none" : 3,
+                            WebkitBoxOrient: "vertical",
+                            overflow: "hidden",
+                          }}
+                        >
+                          {job.description}
+                        </Typography>
+                        <Button
+                          onClick={() => toggleExpandJob(job._id)}
+                          sx={{
+                            textTransform: "none",
+                            color: "#2563EB",
+                            p: 0,
+                            minWidth: "auto",
+                            fontWeight: 600,
+                            fontSize: "0.85rem",
+                            mb: 2.5,
+                            display: "inline-block",
+                            "&:hover": { background: "transparent", textDecoration: "underline" }
+                          }}
+                        >
+                          {expandedJobs[job._id] ? "Read less" : "Read more"}
+                        </Button>
+
+                        <Stack sx={{
+                          "& .MuiChip-root": {
+                            color: "var(--color-pure-black)",
+                            background: "rgba(37,99,235,0.15)",
+                            border: "1px solid rgba(37,99,235,0.3)",
+                            fontWeight: 500,
+                          }
+                        }} direction="row" spacing={2} flexWrap="wrap" useFlexGap>
+                          <Chip label={job.department} />
+                          <Chip label={job.location} />
+                          <Chip label={job.jobType || "Full Time"} />
+                        </Stack>
+                      </Box>
+
+                      <Button
+                        onClick={() =>
+                          handleApplyClick(
+                            job.title,
+                            job.description
+                          )
+                        }
+                        variant="contained"
+                        sx={{
+                          background: "#2563EB",
+                          borderRadius: "3px",
+                          px: 4,
+                          minWidth: 150,
+                          height: 50,
+                          textTransform: "none",
+                          fontWeight: 600,
+                        }}
+                      >
+                        Apply Now
+                      </Button>
+                    </Box>
+                  </MotionBox>
+                ))}
+
+
+                {dynamicJobs.length > jobsPerPage && (
+                  <Box sx={{ display: "flex", justifyContent: "center", alignItems: "center", gap: 2, mt: 5 }}>
+                    <Button
+                      disabled={currentPage === 1}
+                      onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
+                      variant="outlined"
+                      sx={{
+                        color: "var(--color-pure-black)",
+                        borderColor: "rgba(255, 255, 255, 0.15)",
+                        borderRadius: "3px",
+                        textTransform: "none",
+                        px: 3,
+                        "&:hover": { borderColor: "#2563EB", background: "rgba(37, 99, 235, 0.1)" },
+                        "&.Mui-disabled": { color: "rgba(255, 255, 255, 0.2)", borderColor: "rgba(255, 255, 255, 0.05)" }
+                      }}
+                    >
+                      Previous
+                    </Button>
+                    <Typography sx={{ color: "rgba(255, 255, 255, 0.5)", fontSize: "0.9rem" }}>
+                      Page {currentPage} of {Math.ceil(dynamicJobs.length / jobsPerPage)}
+                    </Typography>
+                    <Button
+                      disabled={currentPage === Math.ceil(dynamicJobs.length / jobsPerPage)}
+                      onClick={() => setCurrentPage(prev => Math.min(prev + 1, Math.ceil(dynamicJobs.length / jobsPerPage)))}
+                      variant="outlined"
+                      sx={{
+                        color: "var(--color-pure-black)",
+                        borderColor: "rgba(255, 255, 255, 0.15)",
+                        borderRadius: "3px",
+                        textTransform: "none",
+                        px: 3,
+                        "&:hover": { borderColor: "#2563EB", background: "rgba(37, 99, 235, 0.1)" },
+                        "&.Mui-disabled": { color: "rgba(255, 255, 255, 0.2)", borderColor: "rgba(255, 255, 255, 0.05)" }
+                      }}
+                    >
+                      Next
+                    </Button>
+                  </Box>
+                )}
+              </Box>
+            )}
+          </Box>
         </Container>
       </Box>
 
       <Box
+        id="perfect-fit"
         sx={{
-          py: { xs: 8, md: 12 },
+          py: { xs: 6, md: 8 },
           px: 2,
           background: "var(--color-sub-bg)",
         }}
@@ -1526,70 +1534,124 @@ function Career() {
         <Container maxWidth="lg">
           <Box
             sx={{
-              textAlign: "center",
-              p: { xs: 4, md: 6 },
-              borderRadius: "30px",
-
-              background: "var(--color-main-bg)",
-
+              borderRadius: "3px",
+              background: "var(--color-black)",
               backdropFilter: "blur(20px)",
-
-              border: "1px solid var(--color-border-color)",
-
-              boxShadow:
-                "0 0 40px rgba(37,99,235,0.08)",
+              border: "1px solid rgba(255, 255, 255, 0.08)",
+              boxShadow: "0 20px 40px rgba(0,0,0,0.3)",
+              overflow: "hidden",
+              display: "flex",
+              flexDirection: { xs: "column", sm: "row" },
             }}
           >
-            <Typography
+            {/* Left Side: Content */}
+            <Box
               sx={{
-                color: "var(--color-pure-black)",
-                fontWeight: 700,
-                fontSize: {
-                  xs: "1.6rem",
-                  md: "2.2rem",
-                },
-                mb: 2,
+                flex: { xs: "1 1 100%", sm: "1 1 50%" },
+                width: { xs: "100%", sm: "50%" },
+                display: "flex",
+                flexDirection: "column",
+                justifyContent: "center",
+                alignItems: "flex-start",
+                p: { xs: 4, sm: 6, md: 8 },
+                textAlign: "left",
+                boxSizing: "border-box",
               }}
             >
-              Don't See a Perfect Fit?
-            </Typography>
+              {/* Tagline */}
+              <Box sx={{ display: "flex", alignItems: "center", gap: 1.5, mb: 2 }}>
+                <Box sx={{ width: "3px", height: "18px", backgroundColor: "#2563EB" }} />
+                <Typography
+                  sx={{
+                    color: "#2563EB",
+                    fontWeight: 700,
+                    letterSpacing: "1px",
+                    textTransform: "uppercase",
+                    fontSize: "0.85rem",
+                  }}
+                >
+                  WE'RE ALWAYS GROWING
+                </Typography>
+              </Box>
 
-            <Typography
+              {/* Heading */}
+              <Typography
+                sx={{
+                  color: "#ffffff",
+                  fontWeight: 800,
+                  lineHeight: 1.2,
+                  fontSize: {
+                    xs: "1.8rem",
+                    md: "2.4rem",
+                  },
+                  mb: 2.5,
+                }}
+              >
+                Don't See a<br />Perfect Fit?
+              </Typography>
+
+              {/* Line Divider */}
+              <Box sx={{ width: "45px", height: "3px", backgroundColor: "#2563EB", mb: 4 }} />
+
+              {/* Description */}
+              <Typography
+                sx={{
+                  color: "#9CA3AF",
+                  lineHeight: 1.8,
+                  fontSize: "0.95rem",
+                  maxWidth: "480px",
+                  mb: 5,
+                }}
+              >
+                We are always looking for exceptional talent to join our team.
+                Send us your resume and we'll reach out when a relevant position
+                becomes available.
+              </Typography>
+
+              {/* CTA Button */}
+              <Button
+                variant="contained"
+                onClick={() => {
+                  setTalentCountryCode("+91");
+                  setOpenResumeModal(true);
+                }}
+                sx={{
+                  background: "#2563EB",
+                  px: 4,
+                  py: 1.6,
+                  borderRadius: "3px",
+                  textTransform: "none",
+                  fontWeight: 600,
+                  fontSize: "0.95rem",
+                  "&:hover": {
+                    background: "#1D4ED8",
+                  },
+                }}
+              >
+                Submit Your Resume
+              </Button>
+            </Box>
+
+            {/* Right Side: Image */}
+            <Box
               sx={{
-                color: "var(--color-pure-black)",
-                maxWidth: "700px",
-                mx: "auto",
-                lineHeight: 1.8,
-                mb: 4,
+                flex: { xs: "1 1 100%", sm: "1 1 50%" },
+                width: { xs: "100%", sm: "50%" },
+                display: "flex",
               }}
             >
-              We are always looking for exceptional
-              talent to join our team. Send us your
-              resume and we'll reach out when a
-              relevant position becomes available.
-            </Typography>
-
-            <Button
-              variant="contained"
-              onClick={() => {
-                setTalentCountryCode("+91");
-                setOpenResumeModal(true);
-              }}
-              sx={{
-                background: "#2563EB",
-                px: 5,
-                py: 1.5,
-                borderRadius: "3px",
-                textTransform: "none",
-                fontWeight: 600,
-
-                "&:hover": {
-                  background: "#1D4ED8",
-                },
-              }}
-            >
-              Submit Your Resume
-            </Button>
+              <Box
+                component="img"
+                src={perfectFitImg}
+                alt="Strivo Team"
+                sx={{
+                  width: "100%",
+                  height: "100%",
+                  minHeight: { xs: "300px", sm: "100%" },
+                  objectFit: "cover",
+                }}
+              />
+            </Box>
           </Box>
         </Container>
       </Box>
@@ -1606,7 +1668,7 @@ function Career() {
             backdropFilter: "blur(8px)",
           },
           "& .MuiDialog-paper": {
-            borderRadius: "24px",
+            borderRadius: "3px",
             background: "var(--color-main-bg)",
             border: "1px solid var(--color-border-color)",
             boxShadow: "0 25px 50px -12px rgba(0, 0, 0, 0.5)",
@@ -1629,7 +1691,7 @@ function Career() {
               sx={{
                 p: 1.5,
                 mb: 2,
-                borderRadius: "12px",
+                borderRadius: "3px",
                 background: "var(--color-sub-bg)",
                 border: "1px solid rgba(255, 255, 255, 0.08)",
               }}
@@ -1637,9 +1699,35 @@ function Career() {
               <Typography variant="subtitle2" sx={{ color: "#2563EB", fontWeight: 600, mb: 0.5 }}>
                 Job Description:
               </Typography>
-              <Typography sx={{ color: "var(--color-pure-black)", fontSize: "0.85rem", lineHeight: 1.5 }}>
+              <Typography
+                sx={{
+                  color: "var(--color-pure-black)",
+                  fontSize: "0.85rem",
+                  lineHeight: 1.5,
+                  display: "-webkit-box",
+                  WebkitLineClamp: isDescExpanded ? "none" : 3,
+                  WebkitBoxOrient: "vertical",
+                  overflow: "hidden",
+                }}
+              >
                 {selectedJob.description}
               </Typography>
+              <Button
+                onClick={() => setIsDescExpanded(!isDescExpanded)}
+                sx={{
+                  textTransform: "none",
+                  color: "#2563EB",
+                  p: 0,
+                  minWidth: "auto",
+                  fontWeight: 600,
+                  fontSize: "0.8rem",
+                  mt: 0.5,
+                  display: "inline-block",
+                  "&:hover": { background: "transparent", textDecoration: "underline" }
+                }}
+              >
+                {isDescExpanded ? "Read less" : "Read more"}
+              </Button>
             </Box>
           )}
           <Stack spacing={1.5}>
@@ -1665,46 +1753,56 @@ function Career() {
               helperText={applyErrors.email}
               sx={fieldStyle}
             />
-            <TextField
-              fullWidth
-              size="small"
-              label="Mobile Number"
-              name="mobile"
-              value={applyForm.mobile}
-              onChange={handleApplyChange}
-              error={!!applyErrors.mobile}
-              helperText={applyErrors.mobile}
-              sx={fieldStyle}
-              InputLabelProps={{ shrink: true }}
-              InputProps={{
-                startAdornment: (
-                  <InputAdornment position="start">
-                    <select
-                      value={applyCountryCode}
-                      onChange={(e) => setApplyCountryCode(e.target.value)}
-                      style={{
-                        border: "none",
-                        background: "transparent",
-                        fontSize: "0.85rem",
-                        color: "var(--color-pure-black)",
-                        outline: "none",
-                        cursor: "pointer",
-                        marginRight: "4px",
-                        paddingRight: "8px",
-                      }}
-                    >
-                      <option value="+91">+91 (IN)</option>
-                      <option value="+1">+1 (US)</option>
-                      <option value="+44">+44 (UK)</option>
-                      <option value="+971">+971 (AE)</option>
-                      <option value="+65">+65 (SG)</option>
-                      <option value="+61">+61 (AU)</option>
-                      <option value="+49">+49 (DE)</option>
-                    </select>
-                  </InputAdornment>
-                ),
-              }}
-            />
+            <Stack spacing={0.5} sx={{ width: "100%", textAlign: "left" }}>
+              <Typography sx={{ color: "var(--color-pure-black)", fontWeight: 500, fontSize: "0.85rem", ml: 1 }}>
+                Mobile Number
+              </Typography>
+              <Box sx={{ display: "flex", gap: 1.5, width: "100%" }}>
+                <Select
+                  size="small"
+                  value={applyCountryCode}
+                  onChange={(e) => setApplyCountryCode(e.target.value)}
+                  sx={{
+                    borderRadius: "3px",
+                    background: "var(--color-main-bg)",
+                    width: "90px",
+                    flexShrink: 0,
+                    color: "var(--color-pure-black)",
+                    "& .MuiOutlinedInput-notchedOutline": {
+                      borderColor: "var(--color-border-color)",
+                    },
+                    "&:hover .MuiOutlinedInput-notchedOutline": {
+                      borderColor: "#2563EB",
+                    },
+                    "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+                      borderColor: "#2563EB",
+                    },
+                    "& .MuiSvgIcon-root": {
+                      color: "var(--color-pure-black)",
+                    }
+                  }}
+                >
+                  <MenuItem value="+91">+91</MenuItem>
+                  <MenuItem value="+1">+1</MenuItem>
+                  <MenuItem value="+44">+44</MenuItem>
+                  <MenuItem value="+971">+971</MenuItem>
+                  <MenuItem value="+65">+65</MenuItem>
+                  <MenuItem value="+61">+61</MenuItem>
+                  <MenuItem value="+49">+49</MenuItem>
+                </Select>
+                <TextField
+                  fullWidth
+                  size="small"
+                  placeholder="(555) 000-0000"
+                  name="mobile"
+                  value={applyForm.mobile}
+                  onChange={handleApplyChange}
+                  error={!!applyErrors.mobile}
+                  helperText={applyErrors.mobile}
+                  sx={fieldStyle}
+                />
+              </Box>
+            </Stack>
             <Button
               component="label"
               sx={{
@@ -1776,7 +1874,7 @@ function Career() {
             backdropFilter: "blur(8px)",
           },
           "& .MuiDialog-paper": {
-            borderRadius: "24px",
+            borderRadius: "3px",
             background: "var(--color-main-bg)",
             border: "1px solid var(--color-border-color)",
             boxShadow: "0 25px 50px -12px rgba(0, 0, 0, 0.5)",
@@ -1785,7 +1883,7 @@ function Career() {
         }}
       >
         <DialogTitle component="div" sx={{ textAlign: "center", pt: 3.5, pb: 1, px: { xs: 2.5, sm: 4 } }}>
-          <Box sx={{ width: 50, height: 50, mx: "auto", mb: 1.5, borderRadius: "16px", background: "rgba(37,99,235,.12)", display: "flex", alignItems: "center", justifyContent: "center" }}>
+          <Box sx={{ width: 50, height: 50, mx: "auto", mb: 1.5, borderRadius: "3px", background: "rgba(37,99,235,.12)", display: "flex", alignItems: "center", justifyContent: "center" }}>
             <CloudUploadOutlinedIcon sx={{ fontSize: 26, color: "#2563EB" }} />
           </Box>
           <Typography fontWeight={700} sx={{ mb: 0.5, fontSize: { xs: "1.25rem", sm: "1.5rem" } }}>Join Our Talent Network</Typography>
@@ -1808,46 +1906,56 @@ function Career() {
               error={!!talentErrors.email} helperText={talentErrors.email}
               sx={fieldStyle}
             />
-            <TextField
-              fullWidth
-              size="small"
-              label="Mobile Number"
-              name="mobile"
-              value={talentForm.mobile}
-              onChange={handleTalentChange}
-              error={!!talentErrors.mobile}
-              helperText={talentErrors.mobile}
-              sx={fieldStyle}
-              InputLabelProps={{ shrink: true }}
-              InputProps={{
-                startAdornment: (
-                  <InputAdornment position="start">
-                    <select
-                      value={talentCountryCode}
-                      onChange={(e) => setTalentCountryCode(e.target.value)}
-                      style={{
-                        border: "none",
-                        background: "transparent",
-                        fontSize: "0.85rem",
-                        color: "var(--color-pure-black)",
-                        outline: "none",
-                        cursor: "pointer",
-                        marginRight: "4px",
-                        paddingRight: "8px",
-                      }}
-                    >
-                      <option value="+91">+91 (IN)</option>
-                      <option value="+1">+1 (US)</option>
-                      <option value="+44">+44 (UK)</option>
-                      <option value="+971">+971 (AE)</option>
-                      <option value="+65">+65 (SG)</option>
-                      <option value="+61">+61 (AU)</option>
-                      <option value="+49">+49 (DE)</option>
-                    </select>
-                  </InputAdornment>
-                ),
-              }}
-            />
+            <Stack spacing={0.5} sx={{ width: "100%", textAlign: "left" }}>
+              <Typography sx={{ color: "var(--color-pure-black)", fontWeight: 500, fontSize: "0.85rem", ml: 1 }}>
+                Mobile Number
+              </Typography>
+              <Box sx={{ display: "flex", gap: 1.5, width: "100%" }}>
+                <Select
+                  size="small"
+                  value={talentCountryCode}
+                  onChange={(e) => setTalentCountryCode(e.target.value)}
+                  sx={{
+                    borderRadius: "3px",
+                    background: "var(--color-main-bg)",
+                    width: "90px",
+                    flexShrink: 0,
+                    color: "var(--color-pure-black)",
+                    "& .MuiOutlinedInput-notchedOutline": {
+                      borderColor: "var(--color-border-color)",
+                    },
+                    "&:hover .MuiOutlinedInput-notchedOutline": {
+                      borderColor: "#2563EB",
+                    },
+                    "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+                      borderColor: "#2563EB",
+                    },
+                    "& .MuiSvgIcon-root": {
+                      color: "var(--color-pure-black)",
+                    }
+                  }}
+                >
+                  <MenuItem value="+91">+91</MenuItem>
+                  <MenuItem value="+1">+1</MenuItem>
+                  <MenuItem value="+44">+44</MenuItem>
+                  <MenuItem value="+971">+971</MenuItem>
+                  <MenuItem value="+65">+65</MenuItem>
+                  <MenuItem value="+61">+61</MenuItem>
+                  <MenuItem value="+49">+49</MenuItem>
+                </Select>
+                <TextField
+                  fullWidth
+                  size="small"
+                  placeholder="(555) 000-0000"
+                  name="mobile"
+                  value={talentForm.mobile}
+                  onChange={handleTalentChange}
+                  error={!!talentErrors.mobile}
+                  helperText={talentErrors.mobile}
+                  sx={fieldStyle}
+                />
+              </Box>
+            </Stack>
             <TextField
               select fullWidth size="small" label="Category" name="category"
               value={talentForm.category} onChange={handleTalentChange}
