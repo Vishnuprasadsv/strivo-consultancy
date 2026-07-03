@@ -59,10 +59,16 @@ const sendAckEmail = async (toEmail, name) => {
   }
 };
 
-const streamUpload = (file) => {
+const streamUpload = (file, applicantName) => {
   return new Promise((resolve, reject) => {
+    const cleanName = applicantName ? applicantName.replace(/[^a-zA-Z0-9]/g, '_').toLowerCase() : 'applicant';
+    const fileName = `${cleanName}_resume_${Date.now()}`;
     const stream = cloudinary.uploader.upload_stream(
-      { resource_type: "auto", folder: "strivo_resumes" },
+      { 
+        resource_type: "auto", 
+        folder: "strivo_resumes",
+        public_id: fileName
+      },
       (error, result) => {
         if (result) resolve(result);
         else reject(error);
@@ -93,8 +99,7 @@ export const submitTalent = async (req, res) => {
     const newEmailClean = cleanStr(email);
 
     // Logging helper
-    const logPath = path.join(process.cwd(), "debug_talent.log");
-    const logToFile = (msg) => fs.appendFileSync(logPath, msg + "\n");
+    const logToFile = (msg) => console.log(msg);
 
     logToFile(`\n=== Talent Submission Check: ${new Date().toISOString()} ===`);
     logToFile(`Submitting: Name="${fullName}" (Cleaned: "${newNameClean}"), Mobile="${mobile}" (Cleaned: "${newMobileClean}"), Email="${email}" (Cleaned: "${newEmailClean}")`);
@@ -145,21 +150,14 @@ export const submitTalent = async (req, res) => {
 
     let resumeUrl;
     try {
-      const result = await streamUpload(req.file);
+      const result = await streamUpload(req.file, fullName);
       resumeUrl = result.secure_url;
     } catch (cloudinaryError) {
-      console.warn("Cloudinary upload failed, falling back to local storage:", cloudinaryError.message);
-      
-      const uploadsDir = path.join(process.cwd(), "uploads");
-      if (!fs.existsSync(uploadsDir)) {
-        fs.mkdirSync(uploadsDir, { recursive: true });
-      }
-      
-      const filename = `${Date.now()}-${req.file.originalname.replace(/\s+/g, "_")}`;
-      const filePath = path.join(uploadsDir, filename);
-      fs.writeFileSync(filePath, req.file.buffer);
-      
-      resumeUrl = `${req.protocol}://${req.get("host")}/uploads/${filename}`;
+      console.error("Cloudinary upload failed:", cloudinaryError);
+      return res.status(500).json({ 
+        success: false, 
+        message: "Failed to upload resume to Cloudinary. Please try again later." 
+      });
     }
 
   
