@@ -277,72 +277,50 @@ const EditCaseStudy = () => {
 
     }
     return (
-
-        <div className="min-h-screen md:ml-64 pt-28 px-6 pb-12">
-
+        <div className="min-h-screen md:ml-64 pt-28 px-6 pb-12 bg-sub text-[var(--color-paragraph)]">
             <motion.div
-
                 initial={{ opacity: 0, y: 15 }}
-
                 animate={{ opacity: 1, y: 0 }}
-
                 className="max-w-6xl mx-auto"
-
             >
                 {/* ================= Header ================= */}
-
                 <div className="flex justify-between items-start mb-10">
-
                     <div>
-
                         <button
                             onClick={() => navigate(-1)}
-                            className="flex items-center gap-2 text-gray-400 hover:text-white transition mb-5"
+                            className="flex items-center gap-2 text-[var(--color-paragraph)] opacity-60 hover:opacity-100 transition mb-5 cursor-pointer font-semibold"
                         >
                             <FiArrowLeft />
                             Back to Case Studies
                         </button>
-
-                        <h1 className="text-4xl font-bold">
-
+                        <h1 style={{ fontSize: 'var(--text-sub-heading)', fontWeight: 'var(--font-semibold)', color: 'var(--color-black)', margin: 0 }}>
                             Edit Case Study
-
                         </h1>
-
-                        <p className="text-gray-400 mt-3">
-                            Create a professional case study showcasing your
-                            successful consultancy project.
+                        <p style={{ fontSize: 'var(--text-small)', color: 'var(--color-paragraph)', opacity: 0.6, margin: '2px 0 0 0' }}>
+                            Create a professional case study showcasing your successful consultancy project.
                         </p>
-
                     </div>
-
                 </div>
 
                 {/* ================= Basic Information ================= */}
-
-                <div className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl shadow-xl p-8">
-
-                    <h2 className="text-2xl font-semibold mb-8">
+                <div className="card p-8 shadow-card relative overflow-hidden mb-8">
+                    <h2 style={{ fontSize: 'var(--text-paragraph)', fontWeight: 'var(--font-bold)', color: 'var(--color-black)', margin: '0 0 20px 0' }}>
                         Basic Information
                     </h2>
 
                     <div className="grid md:grid-cols-2 gap-6">
-
                         {/* Title */}
-
                         <div>
-
-                            <label className="block mb-2 text-gray-300">
+                            <label className="block mb-2 text-[var(--color-paragraph)] opacity-80 font-medium text-sm">
                                 Case Study Title *
                             </label>
-
                             <input
                                 type="text"
                                 name="title"
                                 value={formData.title}
                                 onChange={handleChange}
                                 placeholder="Digital Transformation for ABC Manufacturing"
-                                className="w-full bg-[#1f2937] border border-slate-700 rounded-xl p-3 outline-none focus:border-blue-500"
+                                className="w-full bg-[var(--color-sub-bg)] border border-[var(--color-border)] rounded-[var(--radius-sm)] p-3 outline-none text-[var(--color-paragraph)] focus:border-[var(--color-primary)] transition"
                             />
                             {errors.title && (
                                 <p className="text-red-500 text-sm mt-1">
@@ -352,20 +330,17 @@ const EditCaseStudy = () => {
                         </div>
 
                         {/* Author Name */}
-
                         <div>
-
-                            <label className="block mb-2 text-gray-300">
+                            <label className="block mb-2 text-[var(--color-paragraph)] opacity-80 font-medium text-sm">
                                 Author Name *
                             </label>
-
                             <input
                                 type="text"
                                 name="author"
                                 value={formData.author}
                                 onChange={handleChange}
                                 placeholder="John Smith"
-                                className="w-full bg-[#1f2937] border border-slate-700 rounded-xl p-3 outline-none focus:border-blue-500"
+                                className="w-full bg-[var(--color-sub-bg)] border border-[var(--color-border)] rounded-[var(--radius-sm)] p-3 outline-none text-[var(--color-paragraph)] focus:border-[var(--color-primary)] transition"
                             />
                             {errors.author && (
                                 <p className="text-red-500 text-sm mt-1">
@@ -375,20 +350,17 @@ const EditCaseStudy = () => {
                         </div>
 
                         {/* Author Role */}
-
                         <div>
-
-                            <label className="block mb-2 text-gray-300">
+                            <label className="block mb-2 text-[var(--color-paragraph)] opacity-80 font-medium text-sm">
                                 Author Role *
                             </label>
-
                             <input
                                 type="text"
                                 name="authorRole"
                                 value={formData.authorRole}
                                 onChange={handleChange}
                                 placeholder="Senior Business Consultant"
-                                className="w-full bg-[#1f2937] border border-slate-700 rounded-xl p-3 outline-none focus:border-blue-500"
+                                className="w-full bg-[var(--color-sub-bg)] border border-[var(--color-border)] rounded-[var(--radius-sm)] p-3 outline-none text-[var(--color-paragraph)] focus:border-[var(--color-primary)] transition"
                             />
                             {errors.authorRole && (
                                 <p className="text-red-500 text-sm mt-1">
@@ -398,20 +370,17 @@ const EditCaseStudy = () => {
                         </div>
 
                         {/* Project Duration */}
-
                         <div>
-
-                            <label className="block mb-2 text-gray-300">
+                            <label className="block mb-2 text-[var(--color-paragraph)] opacity-80 font-medium text-sm">
                                 Project Duration *
                             </label>
-
                             <input
                                 type="text"
                                 name="duration"
                                 value={formData.duration}
                                 onChange={handleChange}
                                 placeholder="6 Months"
-                                className="w-full bg-[#1f2937] border border-slate-700 rounded-xl p-3 outline-none focus:border-blue-500"
+                                className="w-full bg-[var(--color-sub-bg)] border border-[var(--color-border)] rounded-[var(--radius-sm)] p-3 outline-none text-[var(--color-paragraph)] focus:border-[var(--color-primary)] transition"
                             />
                             {errors.duration && (
                                 <p className="text-red-500 text-sm mt-1">
@@ -421,81 +390,59 @@ const EditCaseStudy = () => {
                         </div>
 
                         {/* Category */}
-
                         <div className="md:col-span-2">
-
-                            <label className="block mb-2 text-gray-300">
+                            <label className="block mb-2 text-[var(--color-paragraph)] opacity-80 font-medium text-sm">
                                 Category *
                             </label>
-
-                            <select
-                                name="category"
-                                value={formData.category}
-                                onChange={handleChange}
-                                className="w-full bg-[#1f2937] border border-slate-700 rounded-xl p-3 outline-none focus:border-blue-500"
-                            >
-
-                                <option value="">
-                                    Select Category
-                                </option>
-
-                                <option value="Finance">
-                                    Finance
-                                </option>
-
-                                <option value="Healthcare">
-                                    Healthcare
-                                </option>
-
-                                <option value="Technology">
-                                    Tech
-                                </option>
-
-                                <option value="Retail">
-                                    Retail
-                                </option>
-
-                            </select>
+                            <div className="relative">
+                                <select
+                                    name="category"
+                                    value={formData.category}
+                                    onChange={handleChange}
+                                    className="appearance-none w-full bg-[var(--color-sub-bg)] border border-[var(--color-border)] rounded-[var(--radius-sm)] p-3 outline-none text-[var(--color-paragraph)] focus:border-[var(--color-primary)] transition cursor-pointer"
+                                >
+                                    <option value="" className="bg-[var(--color-main-bg)]">Select Category</option>
+                                    <option value="Finance" className="bg-[var(--color-main-bg)]">Finance</option>
+                                    <option value="Healthcare" className="bg-[var(--color-main-bg)]">Healthcare</option>
+                                    <option value="Technology" className="bg-[var(--color-main-bg)]">Technology</option>
+                                    <option value="Retail" className="bg-[var(--color-main-bg)]">Retail</option>
+                                </select>
+                                {/* Custom Arrow Icon */}
+                                <div className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-[var(--color-paragraph)] opacity-60">
+                                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M19 9l-7 7-7-7" />
+                                    </svg>
+                                </div>
+                            </div>
                             {errors.category && (
                                 <p className="text-red-500 text-sm mt-1">
                                     {errors.category}
                                 </p>
                             )}
                         </div>
-
                     </div>
-
                 </div>
+
                 {/* ================= Media Upload ================= */}
-
-                <div className="mt-8 bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl shadow-xl p-8">
-
-                    <h2 className="text-2xl font-semibold mb-8">
+                <div className="card p-8 shadow-card relative overflow-hidden mb-8">
+                    <h2 style={{ fontSize: 'var(--text-paragraph)', fontWeight: 'var(--font-bold)', color: 'var(--color-black)', margin: '0 0 20px 0' }}>
                         Media
                     </h2>
 
                     <div className="grid lg:grid-cols-2 gap-8">
-
                         {/* Cover Image */}
-
                         <div>
-
-                            <label className="block mb-3 text-gray-300">
+                            <label className="block mb-3 text-[var(--color-paragraph)] opacity-80 font-medium text-sm">
                                 Cover Image *
                             </label>
-
-                            <label className="border-2 border-dashed border-slate-600 hover:border-blue-500 transition rounded-2xl h-64 flex flex-col items-center justify-center cursor-pointer">
-
-                                <FiUpload className="text-5xl text-blue-500 mb-4" />
-
-                                <p className="text-gray-300 font-medium">
+                            <label className="border-2 border-dashed border-[var(--color-border)] hover:border-[var(--color-primary)] transition rounded-[var(--radius-sm)] h-64 flex flex-col items-center justify-center cursor-pointer">
+                                <FiUpload className="text-5xl text-[var(--color-primary)] mb-4" />
+                                <p className="text-[var(--color-paragraph)] opacity-80 font-medium">
                                     Click to Upload Cover Image
                                 </p>
-
-                                <p className="text-sm text-gray-500 mt-2">
+                                <p className="text-sm text-[var(--color-paragraph)] opacity-60 mt-2">
                                     JPG, PNG or WEBP
                                 </p>
-
                                 <input
                                     hidden
                                     type="file"
@@ -510,47 +457,30 @@ const EditCaseStudy = () => {
                             </label>
 
                             {formData.coverImage && (
-
                                 <div className="mt-5">
-
                                     <img
-
-                                        src={
-                                            typeof formData.coverImage === "string"
-                                                ? formData.coverImage
-                                                : URL.createObjectURL(formData.coverImage)
-                                        }
-
-                                        className="w-full h-64 rounded-xl object-cover"
-
+                                        src={typeof formData.coverImage === 'string' ? formData.coverImage : URL.createObjectURL(formData.coverImage)}
+                                        alt="Cover"
+                                        className="w-full h-64 object-cover border border-[var(--color-border)]"
+                                        style={{ borderRadius: 'var(--radius-sm)' }}
                                     />
-
                                 </div>
-
                             )}
-
                         </div>
 
                         {/* Author Image */}
-
                         <div>
-
-                            <label className="block mb-3 text-gray-300">
+                            <label className="block mb-3 text-[var(--color-paragraph)] opacity-80 font-medium text-sm">
                                 Author Image *
                             </label>
-
-                            <label className="border-2 border-dashed border-slate-600 hover:border-blue-500 transition rounded-2xl h-64 flex flex-col items-center justify-center cursor-pointer">
-
-                                <FiUpload className="text-5xl text-blue-500 mb-4" />
-
-                                <p className="text-gray-300 font-medium">
+                            <label className="border-2 border-dashed border-[var(--color-border)] hover:border-[var(--color-primary)] transition rounded-[var(--radius-sm)] h-64 flex flex-col items-center justify-center cursor-pointer">
+                                <FiUpload className="text-5xl text-[var(--color-primary)] mb-4" />
+                                <p className="text-[var(--color-paragraph)] opacity-80 font-medium">
                                     Click to Upload Author Image
                                 </p>
-
-                                <p className="text-sm text-gray-500 mt-2">
+                                <p className="text-sm text-[var(--color-paragraph)] opacity-60 mt-2">
                                     JPG, PNG or WEBP
                                 </p>
-
                                 <input
                                     hidden
                                     type="file"
@@ -565,103 +495,59 @@ const EditCaseStudy = () => {
                             </label>
 
                             {formData.authorImage && (
-
                                 <div className="mt-6">
-
                                     <div className="flex justify-center">
-
                                         <AvatarEditor
-
                                             ref={editorRef}
-
-                                            image={
-                                                typeof formData.authorImage === "string"
-                                                    ? formData.authorImage
-                                                    : URL.createObjectURL(formData.authorImage)
-                                            }
-
+                                            image={formData.authorImage}
                                             width={220}
-
                                             height={220}
-
-                                            border={25}
-
+                                            border={20}
                                             borderRadius={110}
-
+                                            color={[242, 244, 246, 0.6]}
                                             scale={scale}
-
-                                            color={[15, 23, 42, 0.8]}
-
                                         />
-
                                     </div>
 
-                                    <div className="mt-5">
-
-                                        <p className="text-sm text-gray-400 mb-2">
-
-                                            Adjust Image Position
-
-                                        </p>
-
+                                    <div className="mt-6">
+                                        <label className="text-sm text-[var(--color-paragraph)] opacity-60">
+                                            Zoom Image
+                                        </label>
                                         <input
-
                                             type="range"
-
                                             min="1"
-
                                             max="3"
-
                                             step="0.1"
-
                                             value={scale}
-
-                                            onChange={(e) =>
-
-                                                setScale(parseFloat(e.target.value))
-
-                                            }
-
-                                            className="w-full"
-
+                                            onChange={(e) => setScale(parseFloat(e.target.value))}
+                                            className="w-full mt-2 accent-[var(--color-primary)] cursor-pointer"
                                         />
-
                                     </div>
-
                                 </div>
-
                             )}
-
                         </div>
-
                     </div>
-
                 </div>
+
                 {/* ================= Case Study Content ================= */}
-
-                <div className="mt-8 bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl shadow-xl p-8">
-
-                    <h2 className="text-2xl font-semibold mb-8">
+                <div className="card p-8 shadow-card relative overflow-hidden mb-8">
+                    <h2 style={{ fontSize: 'var(--text-paragraph)', fontWeight: 'var(--font-bold)', color: 'var(--color-black)', margin: '0 0 20px 0' }}>
                         Case Study Content
                     </h2>
 
                     <div className="space-y-8">
-
                         {/* Summary */}
-
                         <div>
-
-                            <label className="block mb-3 text-gray-300">
+                            <label className="block mb-3 text-[var(--color-paragraph)] opacity-80 font-medium text-sm">
                                 Summary of Case Study *
                             </label>
-
                             <textarea
                                 rows={5}
                                 name="summary"
                                 value={formData.summary}
                                 onChange={handleChange}
                                 placeholder="Provide a concise overview of the project, the client’s objectives, and the overall outcome."
-                                className="w-full bg-[#1f2937] border border-slate-700 rounded-xl p-4 outline-none focus:border-blue-500 resize-none"
+                                className="w-full bg-[var(--color-sub-bg)] border border-[var(--color-border)] rounded-[var(--radius-sm)] p-4 outline-none text-[var(--color-paragraph)] focus:border-[var(--color-primary)] transition resize-none"
                             />
                             {errors.summary && (
                                 <p className="text-red-500 text-sm mt-1">
@@ -671,20 +557,17 @@ const EditCaseStudy = () => {
                         </div>
 
                         {/* Business Challenges */}
-
                         <div>
-
-                            <label className="block mb-3 text-gray-300">
+                            <label className="block mb-3 text-[var(--color-paragraph)] opacity-80 font-medium text-sm">
                                 Business Challenges *
                             </label>
-
                             <textarea
                                 rows={6}
                                 name="challenges"
                                 value={formData.challenges}
                                 onChange={handleChange}
                                 placeholder="Describe the challenges, pain points, and business problems faced by the client before the project."
-                                className="w-full bg-[#1f2937] border border-slate-700 rounded-xl p-4 outline-none focus:border-blue-500 resize-none"
+                                className="w-full bg-[var(--color-sub-bg)] border border-[var(--color-border)] rounded-[var(--radius-sm)] p-4 outline-none text-[var(--color-paragraph)] focus:border-[var(--color-primary)] transition resize-none"
                             />
                             {errors.challenges && (
                                 <p className="text-red-500 text-sm mt-1">
@@ -694,20 +577,17 @@ const EditCaseStudy = () => {
                         </div>
 
                         {/* Results & Impact */}
-
                         <div>
-
-                            <label className="block mb-3 text-gray-300">
+                            <label className="block mb-3 text-[var(--color-paragraph)] opacity-80 font-medium text-sm">
                                 Results & Impact *
                             </label>
-
                             <textarea
                                 rows={6}
                                 name="results"
                                 value={formData.results}
                                 onChange={handleChange}
                                 placeholder="Describe the improvements, measurable outcomes, ROI, business growth, and overall impact after implementing the solution."
-                                className="w-full bg-[#1f2937] border border-slate-700 rounded-xl p-4 outline-none focus:border-blue-500 resize-none"
+                                className="w-full bg-[var(--color-sub-bg)] border border-[var(--color-border)] rounded-[var(--radius-sm)] p-4 outline-none text-[var(--color-paragraph)] focus:border-[var(--color-primary)] transition resize-none"
                             />
                             {errors.results && (
                                 <p className="text-red-500 text-sm mt-1">
@@ -715,72 +595,53 @@ const EditCaseStudy = () => {
                                 </p>
                             )}
                         </div>
-
                     </div>
-
                 </div>
+
                 {/* ================= Author Information ================= */}
-
-                <div className="mt-8 bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl shadow-xl p-8">
-
-                    <h2 className="text-2xl font-semibold mb-8">
+                <div className="card p-8 shadow-card relative overflow-hidden mb-8">
+                    <h2 style={{ fontSize: 'var(--text-paragraph)', fontWeight: 'var(--font-bold)', color: 'var(--color-black)', margin: '0 0 20px 0' }}>
                         Author Information
                     </h2>
 
                     <div className="grid md:grid-cols-2 gap-6">
-
                         {/* Author Website */}
-
                         <div>
-
-                            <label className="block mb-2 text-gray-300">
+                            <label className="block mb-2 text-[var(--color-paragraph)] opacity-80 font-medium text-sm">
                                 Author Website
                             </label>
-
                             <input
                                 type="url"
                                 name="authorWebsite"
                                 value={formData.authorWebsite}
                                 onChange={handleChange}
                                 placeholder="https://www.yourwebsite.com"
-                                className="w-full bg-[#1f2937] border border-slate-700 rounded-xl p-3 outline-none focus:border-blue-500"
+                                className="w-full bg-[var(--color-sub-bg)] border border-[var(--color-border)] rounded-[var(--radius-sm)] p-3 outline-none text-[var(--color-paragraph)] focus:border-[var(--color-primary)] transition"
                             />
-
                         </div>
-
                     </div>
-
                 </div>
 
                 {/* ================= Action Buttons ================= */}
-
                 <div className="flex justify-end gap-4 mt-10">
                     <button
-                        className="px-6 py-3 rounded-xl border border-slate-600"
-
-
+                        type="button"
                         onClick={() => navigate(-1)}
-
+                        className="px-8 py-3 border border-[var(--color-border)] text-[var(--color-paragraph)] hover:bg-[var(--color-sub-bg)] transition font-semibold cursor-pointer"
+                        style={{ borderRadius: 'var(--radius-sm)' }}
                     >
-
                         Cancel
-
                     </button>
-
                     <button
-
+                        type="button"
                         onClick={handleUpdate}
-                        className="bg-blue-600 hover:bg-blue-700 px-8 py-3 rounded-xl"
-
+                        className="btn px-8 py-3 border-none cursor-pointer w-full sm:w-auto justify-center"
+                        style={{ fontWeight: 'var(--font-semibold)' }}
                     >
-
                         Update Case Study
-
                     </button>
-
                 </div>
             </motion.div>
-
         </div>
 
     );

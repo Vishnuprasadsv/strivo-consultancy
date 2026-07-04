@@ -129,7 +129,7 @@ const CaseStudies = () => {
     }
 
     return (
-        <div className="min-h-screen md:ml-64 pt-28 px-6 pb-10">
+        <div className="min-h-screen md:ml-64 pt-28 px-6 pb-10 bg-sub text-[var(--color-paragraph)]">
 
             <motion.div
                 initial={{ opacity: 0, y: 15 }}
@@ -139,22 +139,22 @@ const CaseStudies = () => {
 
                 {/* Header */}
 
-                <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8">
+                <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8 pb-6 border-b border-[var(--color-border)]">
 
                     <div>
-                        <h1 className="text-3xl sm:text-4xl font-bold">
+                        <h1 style={{ fontSize: 'var(--text-sub-heading)', fontWeight: 'var(--font-semibold)', color: 'var(--color-black)', margin: 0 }}>
                             Case Studies
                         </h1>
 
-                        <p className="text-gray-400 mt-2 text-sm sm:text-base">
-                            Showcase successful client projects and
-                            business outcomes.
+                        <p style={{ fontSize: 'var(--text-small)', color: 'var(--color-paragraph)', opacity: 0.6, margin: '2px 0 0 0' }}>
+                            Showcase successful client projects and business outcomes.
                         </p>
                     </div>
 
                     <button
                         onClick={() => navigate("/admin/create-case-study")}
-                        className="bg-blue-600 hover:bg-blue-700 px-4 sm:px-6 py-2 sm:py-3 rounded-xl flex items-center gap-2 text-sm sm:text-base w-full sm:w-auto justify-center"
+                        className="btn px-5 py-2.5 flex items-center gap-2 cursor-pointer border-none w-full sm:w-auto justify-center"
+                        style={{ fontWeight: 'var(--font-medium)' }}
                     >
                         <FiPlus />
                         Create Case Study
