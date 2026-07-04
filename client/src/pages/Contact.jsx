@@ -160,10 +160,10 @@ const Contact = () => {
       item.code.includes(searchQuery)
   );
   return (
-    <div className="flex flex-col min-h-screen font-sans overflow-hidden bg-main-bg">
+    <div className="flex flex-col min-h-screen font-sans overflow-hidden bg-main">
       {/* Wrapper for Sections 1 & 2 */}
       <div className="w-full  pt-12 pb-24 flex-grow">
-        <div className="max-w-7xl mx-auto px-6 md:px-12 space-y-32">
+        <div className="max-w-7xl mx-auto px-6 md:px-12 space-y-32 ">
           {/* Section 1: Hero */}
           <motion.section
             id="hero-section"
@@ -173,8 +173,8 @@ const Contact = () => {
             className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center text-pure-black"
           >
             <div className="space-y-6">
-              <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold leading-tight text-pure-black">Let's Start a Conversation</h1>
-              <p className="text-pure-black text-lg leading-relaxed max-w-lg">
+              <h1 className="main-heading md:text-5xl lg:text-6xl leading-tight">Let's Start a Conversation</h1>
+              <p className="paragraph leading-relaxed max-w-lg">
                 Whether you're looking to scale your infrastructure, optimize workflows, or explore new technological frontiers, our team of experts is ready to assist. Reach out to discuss how Premium Enterprise can accelerate your growth.
               </p>
             </div>
@@ -486,7 +486,7 @@ ${agreePolicy
         </div>
       </div>
       {/* FAQ Accordion Section */}
-      <div className="w-full bg-sub-bg py-24">
+      <div className="w-full bg-sub py-24">
         <div className="max-w-7xl mx-auto px-6 md:px-12">
           <motion.section
             initial="hidden"
@@ -496,8 +496,8 @@ ${agreePolicy
             className="flex flex-col items-center text-pure-black"
           >
             <div className="text-center mb-10">
-              <h2 className="text-3xl font-bold mb-3">Frequently Asked Questions</h2>
-              <p className="text-pure-black">Quick answers to common inquiries before you reach out.</p>
+              <h2 className="sub-heading mb-3">Frequently Asked Questions</h2>
+              <p className="paragraph ">Quick answers to common inquiries before you reach out.</p>
             </div>
             <div className="w-full max-w-3xl space-y-3">
               {[
@@ -511,13 +511,14 @@ ${agreePolicy
                   disableGutters
                   sx={{
                     backgroundColor: 'var(--color-main-bg)',
-                    color: 'var(--color-pure-black)',
+                    
                     borderRadius: '8px !important',
                     '&:before': { display: 'none' },
                     boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)',
                     mb: '12px',
                     border: '1px solid var(--color-border-color)'
                   }}
+                  className="paragraph"
                 >
                   <AccordionSummary
                     expandIcon={<ExpandMoreIcon sx={{ color: 'var(--color-pure-black)' }} />}
@@ -532,7 +533,7 @@ ${agreePolicy
                   >
                     {faq.q}
                   </AccordionSummary>
-                  <AccordionDetails sx={{ px: 3, pb: 3, color: 'var(--color-pure-black)', lineHeight: 1.6 }}>
+                  <AccordionDetails sx={{ px: 3, pb: 3 }} className="paragraph">
                     {faq.a}
                   </AccordionDetails>
                 </Accordion>
