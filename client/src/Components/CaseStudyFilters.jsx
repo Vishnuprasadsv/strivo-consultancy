@@ -181,5 +181,7 @@ const CaseStudyFilters = ({
   );
 };
 
+export default CaseStudyFilters;
+
 
               
