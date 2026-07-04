@@ -528,6 +528,10 @@ function Home() {
           alignItems: "center",
           overflow: "hidden",
           backgroundColor: "var(--color-black)",
+          backgroundImage: `linear-gradient(to right, rgba(0, 0, 0, 0.95) 0%, rgba(0, 0, 0, 0.85) 40%, rgba(0, 0, 0, 0.5) 100%), url(${homeHero})`,
+          backgroundSize: "cover",
+          backgroundPosition: "center",
+          backgroundRepeat: "no-repeat",
         }}
       >
         {/* Decorative Radial Glow */}
@@ -556,13 +560,11 @@ function Home() {
         >
           <Box
             sx={{
-              display: "grid",
-              gridTemplateColumns: {
-                xs: "1fr",
-                lg: "1.15fr 0.85fr",
-              },
-              alignItems: "center",
-              gap: { xs: 4, lg: 6 },
+              display: "flex",
+              flexDirection: "column",
+              justifyContent: "center",
+              alignItems: "flex-start",
+              maxWidth: { xs: "100%", md: "80%" },
             }}
           >
             {/* LEFT CONTENT */}
@@ -573,28 +575,20 @@ function Home() {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.8 }}
               >
-                <Typography
+                <Box
+                  component='h1'
+                  className='main-heading'
                   sx={{
-                    color: "#fff",
                     fontFamily: "var(--font-primary)",
-                    fontWeight: "var(--font-bold)",
-                    fontSize:"var(--text-main-heading)",
-                    lineHeight: 1.15,
                     letterSpacing: "-0.5px",
                     mb: 2,
                     textAlign: "left",
-                    // fontSize: {
-                    //   xs: "2rem",
-                    //   sm: "2.4rem",
-                    //   md: "2.6rem",
-                    //   lg: "2.8rem",
-                    // },
                   }}
                 >
                   Empowering Enterprise Growth
                   <br />
                   through Strategic Innovation
-                </Typography>
+                </Box>
               </motion.div>
 
               <motion.div
@@ -605,17 +599,17 @@ function Home() {
                   duration: 0.6,
                 }}
               >
-                <Typography
+                <Box
+                  component="p"
+                  className="paragraph"
                   sx={{
-                    color: "#cbd5e1",
-                    fontSize:"var(--text-paragraph)",
-                    lineHeight: 1.7,
-                    maxWidth: "520px",
+                    maxWidth: "720px",
+                    color: "white",
                     mb: 3,
                   }}
                 >
                   We partner with ambitious leaders to solve complex challenges, optimize operations, and drive sustainable growth in an ever-evolving global landscape.
-                </Typography>
+                </Box>
               </motion.div>
 
               <motion.div
@@ -680,124 +674,14 @@ function Home() {
                         width: { xs: "100%", sm: "auto" }
                       }}
                     >
-                      Learn More
+                      About Us
                     </Button>
                   </motion.div>
                 </Stack>
               </motion.div>
             </Box>
 
-            {/* RIGHT IMAGE */}
 
-            <Box
-              sx={{
-                display: {
-                  xs: "none",
-                  lg: "block",
-                },
-                position: "relative",
-                maxHeight: "360px",
-                width: "100%",
-              }}
-            >
-              <motion.div
-                initial={{
-                  opacity: 0,
-                  x: 30,
-                  scale: 0.97,
-                }}
-                animate={{
-                  opacity: 1,
-                  x: 0,
-                  scale: 1,
-                }}
-                transition={{
-                  duration: 0.8,
-                }}
-              >
-                <Box
-                  component="img"
-                  src={homeHero}
-                  alt="Meeting"
-                  sx={{
-                    width: "100%",
-                    height: "340px",
-                    borderRadius: "16px",
-                    boxShadow: "0 20px 50px rgba(0,0,0,.55)",
-                    objectFit: "cover",
-                    border: "1px solid rgba(255, 255, 255, 0.08)",
-                    transition: "all .5s ease",
-                    "&:hover": {
-                      transform: "scale(1.01)",
-                    },
-                  }}
-                />
-              </motion.div>
-
-              {/* Floating Glassmorphic Badge */}
-
-              <motion.div
-                animate={{
-                  y: [0, -8, 0],
-                  boxShadow: [
-                    "0 10px 30px rgba(0, 0, 0, 0.5), 0 0 0px rgba(37, 99, 235, 0)",
-                    "0 15px 35px rgba(0, 0, 0, 0.6), 0 0 20px rgba(37, 99, 235, 0.25)",
-                    "0 10px 30px rgba(0, 0, 0, 0.5), 0 0 0px rgba(37, 99, 235, 0)"
-                  ]
-                }}
-                transition={{
-                  duration: 4,
-                  repeat: Infinity,
-                  ease: "easeInOut"
-                }}
-                style={{
-                  position: "absolute",
-                  bottom: "-10px",
-                  left: "-10px",
-                  zIndex: 3,
-                  borderRadius: "16px"
-                }}
-              >
-                <Box
-                  sx={{
-                    background: "rgba(10, 17, 32, 0.85)",
-                    backdropFilter: "blur(12px)",
-                    border: "1px solid rgba(59, 130, 246, 0.25)",
-                    borderRadius: "16px",
-                    p: "16px 20px",
-                    minWidth: "210px",
-                    display: "flex",
-                    alignItems: "center",
-                    gap: 2,
-                    textAlign: "left"
-                  }}
-                >
-                  <Box
-                    sx={{
-                      width: 40,
-                      height: 40,
-                      borderRadius: "12px",
-                      background: "rgba(37, 99, 235, 0.12)",
-                      border: "1px solid rgba(37, 99, 235, 0.3)",
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      color: "#3b82f6",
-                    }}
-                  >
-                    <WorkspacePremium sx={{ fontSize: "1.3rem" }} />
-                  </Box>
-                  <Box>
-                    <Typography sx={{ color: "#fff", fontWeight: 800, fontSize: "1.3rem", lineHeight: 1.1 }}>
-                      15+
-                    </Typography>
-                    <Typography sx={{ color: "#94a3b8", fontSize: "0.75rem", mt: 0.5, fontWeight: 500, letterSpacing: "0.5px" }}>
-                      Years Experience
-                    </Typography>
-                  </Box>
-                </Box>
-              </motion.div>
-            </Box>
           </Box>
         </Container>
       </Box>
@@ -850,18 +734,17 @@ function Home() {
               overflow: "hidden",
             }}
           >
-            <Typography
-              variant="h4"
+            <Box
+              component="h2"
+              className="sub-heading"
               sx={{
                 textAlign: "center",
-                color: "var(--color-pure-black)",
-                letterSpacing: "3px",
-                fontWeight: 600,
+                letterSpacing: "1px",
                 mb: 6,
               }}
             >
-              TRUSTED BY INDUSTRY LEADERS
-            </Typography>
+              Trusted By Industary Leaders
+            </Box>
 
             <motion.div
               animate={{
@@ -1039,24 +922,23 @@ function Home() {
               duration: 1,
             }}
           >
-            <Typography
+            <Box
+            component="h2"
+            className='sub-heading'
               sx={{
-                color: "var(--color-sub-heading)",
-                fontSize:"var(--text-sub-heading)",
                 textAlign: "center",
-                fontWeight: 700,
                 mb: 2,
               }}
             >
               Our Core Expertise
-            </Typography>
+            </Box>
 
-            <Typography
+            <Box
+            component='p'
+            className='paragraph'
               sx={{
-                color: "var(--color-paragraph)",
                 textAlign: "center",
-                fontSize:"var(--text-paragraph)",
-                maxWidth: "700px",
+                maxWidth: "800px",
                 mx: "auto",
                 mb: 8,
                 lineHeight: 1.8,
@@ -1065,7 +947,7 @@ function Home() {
               Comprehensive solutions designed to elevate
               your enterprise across every critical
               dimension.
-            </Typography>
+            </Box>
           </motion.div>
 
           {/* Cards */}
@@ -1247,83 +1129,57 @@ function Home() {
                 duration: 1,
               }}
             >
-              <Typography
-                sx={{
-                  color: "var(--color-paragraph)",
-                  fontWeight: 900,
-                  letterSpacing: "1.3px",
-                  textTransform: "uppercase",
-                  mb: 2,
-                  fontSize: "18px",
-                }}
+              <Box
+                component="p"
+                className="pre-heading"
               >
                 Why Clients Trust Us
-              </Typography>
+              </Box>
 
-              <Typography
+              <Box
+                component="h2"
+                className="sub-heading"
                 sx={{
-                  color: "var(--color-sub-heading)",
-                  fontWeight: 800,
-                  lineHeight: 1.15,
                   mb: 4,
                   maxWidth: "700px",
-                  fontSize: {
-                    xs: "1.8rem",
-                    md: "2.2rem",
-                    lg: "2.5rem",
-                  },
                 }}
               >
                 Building Long-Term Partnerships Through Proven Results
-              </Typography>
+              </Box>
 
-              <Typography
+              <Box
+                component="p"
+                className="paragraph"
                 sx={{
-                  color: "#475569",
-                  lineHeight: 1.8,
                   mb: 3,
-                  fontSize: {
-                    xs: "0.9rem",
-                    md: "0.95rem",
-                  },
                 }}
               >
                 For more than 15 years, we have partnered with
                 organizations across industries to solve complex
                 business challenges, improve operational performance,
                 and accelerate sustainable growth.
-              </Typography>
+              </Box>
 
-              <Typography
+              <Box
+                component="p"
+                className="paragraph"
                 sx={{
-                  color: "#475569",
-                  lineHeight: 1.8,
                   mb: 3,
-                  fontSize: {
-                    xs: "0.9rem",
-                    md: "0.95rem",
-                  },
                 }}
               >
                 Our consultants combine strategic insight, industry
                 expertise, and data-driven decision-making to deliver
                 solutions that create measurable business impact.
-              </Typography>
+              </Box>
 
-              <Typography
-                sx={{
-                  color: "#475569",
-                  lineHeight: 1.7,
-                  fontSize: {
-                    xs: "0.9rem",
-                    md: "0.95rem",
-                  },
-                }}
+              <Box
+                component="p"
+                className="paragraph"
               >
                 Every engagement is tailored to the unique goals of
                 our clients, ensuring practical, scalable, and
                 results-oriented outcomes that drive long-term success.
-              </Typography>
+              </Box>
 
               {/* Bottom Metrics */}
               <Box
@@ -1448,46 +1304,39 @@ function Home() {
             viewport={{ once: true }}
             transition={{ duration: 0.8 }}
           >
-            <Typography
+            <Box
+              component="p"
+              className="pre-heading"
               sx={{
-                color: "var(--color-pure-black)",
                 textAlign: "center",
-                fontWeight: 900,
-                fontSize: "0.95rem",
-                letterSpacing: "3px",
-                textTransform: "uppercase",
-                mb: 1.5,
+                display: "block",
               }}
             >
               Client Success Stories
-            </Typography>
+            </Box>
 
-            <Typography
+            <Box
+              component="h2"
+              className="sub-heading"
               sx={{
-                color: "var(--color-pure-black)",
                 textAlign: "center",
-                fontWeight: 900,
-                fontSize: { xs: "1.8rem", md: "2.4rem" },
                 mb: 2,
-                lineHeight: 1.1,
               }}
             >
               Real Results. Real Impact.
-            </Typography>
+            </Box>
 
-            <Typography
+            <Box
+              component="p"
+              className="paragraph"
               sx={{
-                color: "var(--color-pure-black)",
-                textAlign: "center",
-                maxWidth: "550px",
+                maxWidth: "950px",
                 mx: "auto",
                 mb: 8,
-                lineHeight: 1.7,
-                fontSize: "0.98rem"
               }}
             >
               See how we've helped leading organizations overcome challenges, drive growth, and achieve measurable results.
-            </Typography>
+            </Box>
           </motion.div>
 
           {/* Swiper Slider Wrapper with Custom Nav Buttons */}
@@ -1627,7 +1476,7 @@ function Home() {
                           {/* Review Text */}
                           <Typography
                             sx={{
-                              color: "var(--color-pure-black)",
+                              color: "var(--color-paragraph)",
                               fontSize: { xs: "0.78rem", md: "0.92rem" },
                               lineHeight: { xs: 1.45, md: 1.7 },
                               wordBreak: "break-word",
@@ -1673,7 +1522,7 @@ function Home() {
                           <Box sx={{ minWidth: 0, flex: 1 }}>
                             <Typography
                               sx={{
-                                color: "var(--color-pure-black)",
+                                color: "var(--color-paragraph)",
                                 fontWeight: 700,
                                 fontSize: { xs: "0.8rem", md: "0.95rem" },
                                 lineHeight: 1.2,
@@ -1685,7 +1534,7 @@ function Home() {
                             </Typography>
                             <Typography
                               sx={{
-                                color: "var(--color-pure-black)",
+                                color: "var(--color-paragraph)",
                                 fontSize: { xs: "0.68rem", md: "0.78rem" },
                                 mt: 0.2,
                                 mb: 0.5,
@@ -1750,17 +1599,15 @@ function Home() {
               textAlign: "center"
             }}
           >
-            <Typography
+            <Box
+              component="h2"
+              className="sub-heading"
               sx={{
-                color: "var(--color-sub-heading)",
-                fontSize: "var(--text-sub-heading)",
-                fontWeight: "var(--font-bold)",
-                letterSpacing: "1.5px",
                 mb: 4
               }}
             >
               Trusted By Industry Leaders
-            </Typography>
+            </Box>
 
             <Box
               sx={{
