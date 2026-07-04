@@ -221,12 +221,12 @@ const AdminNavbar = () => {
         initial={{ y: -100, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         transition={{ duration: 0.6, ease: "easeOut" }}
-        className="fixed top-0 left-0 md:left-64 right-0 h-20 bg-white/5 backdrop-blur-xl border-b border-white/10 z-40 flex items-center justify-between px-4 md:px-8"
+        className="fixed top-0 left-0 md:left-64 right-0 h-20 bg-white/80 backdrop-blur-xl border-b border-[var(--color-border)] z-40 flex items-center justify-between px-4 md:px-8"
       >
         <div className="flex items-center gap-4">
           {/* Mobile Hamburger Menu */}
           <button
-            className="md:hidden text-white/70 hover:text-white"
+            className="md:hidden text-[var(--color-paragraph)] opacity-70 hover:opacity-100 transition-opacity cursor-pointer border-none bg-transparent"
             onClick={() => setIsMobileMenuOpen(true)}
           >
             <MenuIcon />
@@ -241,12 +241,12 @@ const AdminNavbar = () => {
           <div className="relative" ref={dropdownRef}>
             <button
               onClick={handleToggleDropdown}
-              className="relative text-white/70 hover:text-white transition-colors cursor-pointer border-none bg-transparent"
+              className="relative text-[var(--color-paragraph)] opacity-70 hover:opacity-100 transition-all cursor-pointer border-none bg-transparent flex items-center justify-center"
               title="Notifications"
             >
               <NotificationsIcon />
               {notificationCount > 0 && (
-                <span className="absolute -top-1.5 -right-1.5 min-w-[18px] h-[18px] px-1 bg-blue-600 text-white rounded-full flex items-center justify-center text-[10px] font-bold border border-black">
+                <span className="absolute -top-1.5 -right-1.5 min-w-[18px] h-[18px] px-1 bg-blue-600 text-white rounded-full flex items-center justify-center text-[10px] font-bold border border-white">
                   {notificationCount}
                 </span>
               )}
@@ -291,15 +291,15 @@ const AdminNavbar = () => {
             )}
           </div>
 
-          <div className="flex items-center gap-3 cursor-pointer pl-4 border-l border-white/10">
+          <div className="flex items-center gap-3 cursor-pointer pl-4 border-l border-[var(--color-border)]">
             <div className="text-right hidden md:block">
-              {adminUser?.username && <p className="text-sm font-medium text-white">{adminUser.username}</p>}
-              {adminUser?.role && <p className="text-xs text-white/50">{adminUser.role}</p>}
+              {adminUser?.username && <p className="text-sm font-medium text-[var(--color-black)]">{adminUser.username}</p>}
+              {adminUser?.role && <p className="text-xs text-[var(--color-paragraph)] opacity-60">{adminUser.role}</p>}
             </div>
             {adminUser?.profileImage ? (
-              <img src={adminUser.profileImage} alt="Profile" className="w-10 h-10 rounded-full object-cover border-2 border-blue-500/30" />
+              <img src={adminUser.profileImage} alt="Profile" className="w-10 h-10 rounded-full object-cover border border-[var(--color-border)]" />
             ) : (
-              <AccountCircleIcon className="text-white/70 w-10 h-10" style={{ fontSize: '40px' }} />
+              <AccountCircleIcon className="text-slate-400 w-10 h-10" style={{ fontSize: '40px' }} />
             )}
           </div>
         </div>
