@@ -576,17 +576,19 @@ function Home() {
                 <Typography
                   sx={{
                     color: "#fff",
-                    fontWeight: 900,
+                    fontFamily: "var(--font-primary)",
+                    fontWeight: "var(--font-bold)",
+                    fontSize:"var(--text-main-heading)",
                     lineHeight: 1.15,
                     letterSpacing: "-0.5px",
                     mb: 2,
                     textAlign: "left",
-                    fontSize: {
-                      xs: "2rem",
-                      sm: "2.4rem",
-                      md: "2.6rem",
-                      lg: "2.8rem",
-                    },
+                    // fontSize: {
+                    //   xs: "2rem",
+                    //   sm: "2.4rem",
+                    //   md: "2.6rem",
+                    //   lg: "2.8rem",
+                    // },
                   }}
                 >
                   Empowering Enterprise Growth
@@ -606,13 +608,10 @@ function Home() {
                 <Typography
                   sx={{
                     color: "#cbd5e1",
+                    fontSize:"var(--text-paragraph)",
                     lineHeight: 1.7,
                     maxWidth: "520px",
                     mb: 3,
-                    fontSize: {
-                      xs: "0.85rem",
-                      md: "0.92rem",
-                    },
                   }}
                 >
                   We partner with ambitious leaders to solve complex challenges, optimize operations, and drive sustainable growth in an ever-evolving global landscape.
@@ -1042,14 +1041,11 @@ function Home() {
           >
             <Typography
               sx={{
-                color: "var(--color-pure-black)",
+                color: "var(--color-sub-heading)",
+                fontSize:"var(--text-sub-heading)",
                 textAlign: "center",
                 fontWeight: 700,
                 mb: 2,
-                fontSize: {
-                  xs: "1.8rem",
-                  md: "2.2rem",
-                },
               }}
             >
               Our Core Expertise
@@ -1057,16 +1053,13 @@ function Home() {
 
             <Typography
               sx={{
-                color: "var(--color-pure-black)",
+                color: "var(--color-paragraph)",
                 textAlign: "center",
+                fontSize:"var(--text-paragraph)",
                 maxWidth: "700px",
                 mx: "auto",
                 mb: 8,
                 lineHeight: 1.8,
-                fontSize: {
-                  xs: "0.9rem",
-                  md: "0.95rem",
-                },
               }}
             >
               Comprehensive solutions designed to elevate
@@ -1176,10 +1169,10 @@ function Home() {
 
                     <Typography
                       sx={{
-                        color: "var(--color-pure-black)",
+                        color: "var(--color-paragraph)",
                         fontWeight: 700,
                         mb: { xs: 1, md: 2 },
-                        fontSize: { xs: "1rem", md: "1.25rem" },
+                        fontSize:"var(--text-paragraph)",
                       }}
                     >
                       {service.title}
@@ -1189,9 +1182,9 @@ function Home() {
 
                     <Typography
                       sx={{
-                        color: "var(--color-pure-black)",
+                        color: "var(--color-paragraph)",
                         lineHeight: { xs: 1.45, md: 1.8 },
-                        fontSize: { xs: "0.8rem", md: "0.95rem" },
+                        fontSize: "var(--text-paragraph)",
                       }}
                     >
                       {service.description}
@@ -1256,9 +1249,9 @@ function Home() {
             >
               <Typography
                 sx={{
-                  color: "#2563eb",
+                  color: "var(--color-paragraph)",
                   fontWeight: 900,
-                  letterSpacing: "4px",
+                  letterSpacing: "1.3px",
                   textTransform: "uppercase",
                   mb: 2,
                   fontSize: "18px",
@@ -1269,7 +1262,7 @@ function Home() {
 
               <Typography
                 sx={{
-                  color: "#0f172a",
+                  color: "var(--color-sub-heading)",
                   fontWeight: 800,
                   lineHeight: 1.15,
                   mb: 4,
@@ -1759,15 +1752,14 @@ function Home() {
           >
             <Typography
               sx={{
-                color: "var(--color-pure-black)",
-                fontSize: "0.85rem",
-                fontWeight: 900,
+                color: "var(--color-sub-heading)",
+                fontSize: "var(--text-sub-heading)",
+                fontWeight: "var(--font-bold)",
                 letterSpacing: "1.5px",
-                textTransform: "uppercase",
                 mb: 4
               }}
             >
-              Trusted by Industry Leaders
+              Trusted By Industry Leaders
             </Typography>
 
             <Box
@@ -1786,7 +1778,7 @@ function Home() {
                     display: "flex",
                     alignItems: "center",
                     gap: 1,
-                    color: "var(--color-pure-black)",
+                    color: "var(--color-black)",
                     transition: "all 0.3s ease",
                     cursor: "default",
                     "&:hover": {

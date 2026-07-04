@@ -18,7 +18,7 @@
   /* Text Colors */
   --color-heading: #4764FF;
   --color-sub-heading: #4764FF;
-  --color-paragraph: #6B7280;
+  --color-paragraph: #1f1f1f;
   --color-navlink: #7D8FFF;
   --color-black: #131111;
   --color-white: #FFFFFF;
@@ -36,8 +36,8 @@
   --color-danger: #EF4444;
 
   /* Font Sizes */
-  --text-main-heading: 42px;
-  --text-sub-heading: 28px;
+  --text-main-heading: 48px;
+  --text-sub-heading: 38px;
   --text-paragraph: 16px;
   --text-small: 14px;
   --text-caption: 12px;
@@ -47,7 +47,7 @@
   --font-normal: 400;
   --font-medium: 500;
   --font-semibold: 600;
-  --font-bold: 700;
+  --font-bold: 900;
 
   /* Border Radius */
   --radius-sm: 3px;
@@ -290,4 +290,9 @@ a,
 .MuiCardActionArea-root,
 .clickable-card {
   cursor: pointer !important;
+}
+html,
+body,
+#root {
+  font-family: "Poppins", sans-serif;
 }
