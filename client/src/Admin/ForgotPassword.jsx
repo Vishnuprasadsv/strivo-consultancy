@@ -140,10 +140,6 @@ const ForgotPassword = () => {
         transition={{ duration: 0.6, ease: "easeOut" }}
         className="w-full max-w-md card p-8 relative overflow-hidden"
       >
-        <div className="flex flex-col items-center gap-4 mb-8">
-          <img src={logo} alt="Strivo Logo" className="h-10 object-contain" />
-        </div>
-
         <AnimatePresence mode="wait">
           {step === 1 && (
             <motion.div
@@ -156,7 +152,7 @@ const ForgotPassword = () => {
               <div className="text-center mb-8">
                 <h2 
                   className="mb-2 block text-center"
-                  style={{ fontSize: 'var(--text-sub-heading)',  color: 'var(--color-black)' }}
+                  style={{ fontSize: 'var(--text-sub-heading)', fontWeight: 'var(--font-normal)', color: 'var(--color-black)' }}
                 >
                   RESET PASSWORD
                 </h2>
