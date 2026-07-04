@@ -59,13 +59,13 @@ const Login = () => {
             animate={{ opacity: 1 }}
             transition={{ delay: 0.3 }}
             className="mb-2 block text-center"
-            style={{ fontSize: 'var(--text-sub-heading)', fontWeight: 'var(--font-normal)', color: 'var(--color-black)' }}
+            style={{ fontSize: 'var( --text-sub-heading)', color: 'var(--color-black)' }}
           >
             ADMIN PORTAL
           </motion.h2>
           <p 
             className="opacity-70 block text-center"
-            style={{ fontSize: 'var(--text-small)', fontWeight: 'var(--font-normal)', color: 'var(--color-paragraph)' }}
+            style={{ fontSize: 'var(--text-medium)', fontWeight: 'var(--font-normal)', color: 'var(--color-paragraph)' }}
           >
             Secure access to Strivo management
           </p>
