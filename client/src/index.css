@@ -18,7 +18,8 @@
   /* Text Colors */
   --color-heading: #4764FF;
   --color-sub-heading: #4764FF;
-  --color-paragraph: #1f1f1f;
+  --color-paragraph: #454545;
+  --color-sub-paragraph: #E0E0E0;
   --color-navlink: #7D8FFF;
   --color-black: #131111;
   --color-white: #FFFFFF;
@@ -36,7 +37,7 @@
   --color-danger: #EF4444;
 
   /* Font Sizes */
-  --text-main-heading: 48px;
+  --text-main-heading: 58px;
   --text-sub-heading: 38px;
   --text-paragraph: 16px;
   --text-small: 14px;
@@ -45,8 +46,8 @@
   /* Font Weights */
   --font-light: 300;
   --font-normal: 400;
-  --font-medium: 500;
-  --font-semibold: 600;
+  --font-medium: 600;
+  --font-semibold: 700;
   --font-bold: 900;
 
   /* Border Radius */
@@ -147,7 +148,17 @@
   .paragraph {
     font-size: var(--text-paragraph);
     color: var(--color-paragraph);
+    font-weight: var(--font-medium);
     line-height: 1.7;
+  }
+  .pre-heading{
+    font-size: 18px;
+    font-weight: var(--font-bold);
+    color: var(--color-black);
+    text-transform: uppercase;
+    letter-spacing: 1.3px;
+    margin-bottom: 10px;
+    display: inline-block;
   }
 
 /* buttons */
@@ -156,8 +167,8 @@
     background-color: var(--color-btn-bg);
     color: var(--color-btn-text);
 
-    min-width: 140px;
-    height: 48px;
+    min-width: 130px;
+    height: 42px;
 
     border-radius: var(--radius-sm);
 
