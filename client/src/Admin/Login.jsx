@@ -42,66 +42,86 @@ const Login = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center relative z-10 px-4">
+    <div className="min-h-screen flex items-center justify-center relative z-10 px-4 bg-sub">
       <motion.div 
         initial={{ opacity: 0, y: 30 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6, ease: "easeOut" }}
-        className="w-full max-w-md bg-white/5 backdrop-blur-xl border border-white/10 rounded-3xl p-8 shadow-2xl relative overflow-hidden"
+        className="w-full max-w-md card p-8 relative overflow-hidden"
       >
-        {/* Glow effect */}
-        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-3/4 h-32 bg-blue-600/30 blur-[60px] -z-10 rounded-full pointer-events-none"></div>
-
         <div className="flex flex-col items-center gap-4 mb-8">
           <img src={logo1} alt="Strivo Logo" className="h-10 object-contain" />
         </div>
 
-        <div className="text-center mb-10">
+        <div className="text-center mb-8">
           <motion.h2 
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 0.3 }}
-            className="text-3xl font-bold text-white mb-2"
+            className="mb-2 block text-center"
+            style={{ fontSize: 'var(--text-sub-heading)', fontWeight: 'var(--font-normal)', color: 'var(--color-black)' }}
           >
-            Admin Portal
+            ADMIN PORTAL
           </motion.h2>
-          <p className="text-white/60 text-sm">Secure access to Strivo management</p>
+          <p 
+            className="opacity-70 block text-center"
+            style={{ fontSize: 'var(--text-small)', fontWeight: 'var(--font-normal)', color: 'var(--color-paragraph)' }}
+          >
+            Secure access to Strivo management
+          </p>
         </div>
 
         <form onSubmit={handleLogin} className="space-y-6">
           <div className="space-y-2">
-            <label className="text-sm font-medium text-white/80 ml-1">Username</label>
+            <label 
+              className="ml-1 block"
+              style={{ fontSize: 'var(--text-small)', fontWeight: 'var(--font-medium)', color: 'var(--color-paragraph)' }}
+            >
+              USERNAME
+            </label>
             <div className="relative">
               <input 
                 type="text" 
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
                 placeholder="Enter your username"
-                className="w-full bg-black/40 border border-white/10 rounded-xl px-4 py-3 text-white placeholder:text-white/30 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-transparent transition-all"
+                className="input placeholder:text-[var(--color-paragraph)] placeholder:opacity-40 transition-all"
+                style={{ fontSize: 'var(--text-paragraph)', color: 'var(--color-paragraph)' }}
               />
             </div>
           </div>
 
           <div className="space-y-2">
-            <label className="text-sm font-medium text-white/80 ml-1">Password</label>
+            <label 
+              className="ml-1 block"
+              style={{ fontSize: 'var(--text-small)', fontWeight: 'var(--font-medium)', color: 'var(--color-paragraph)' }}
+            >
+              PASSWORD
+            </label>
             <div className="relative">
               <input 
                 type={showPassword ? "text" : "password"} 
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 placeholder="••••••••"
-                className="w-full bg-black/40 border border-white/10 rounded-xl px-4 py-3 pr-12 text-white placeholder:text-white/30 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-transparent transition-all"
+                className="input pr-12 placeholder:text-[var(--color-paragraph)] placeholder:opacity-40 transition-all"
+                style={{ fontSize: 'var(--text-paragraph)', color: 'var(--color-paragraph)' }}
               />
               <button
                 type="button"
                 onClick={() => setShowPassword(!showPassword)}
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-white/50 hover:text-white transition-colors cursor-pointer"
+                className="absolute right-3 top-1/2 -translate-y-1/2 opacity-50 hover:opacity-85 transition-opacity cursor-pointer bg-transparent border-none p-0 flex items-center justify-center"
+                style={{ color: 'var(--color-paragraph)' }}
               >
                 {showPassword ? <VisibilityOff fontSize="small" /> : <Visibility fontSize="small" />}
               </button>
             </div>
             <div className="flex justify-end pt-1">
-              <Link to="/admin/forgot-password" className="text-xs text-blue-400 hover:text-blue-300 transition-colors">
+              <Link 
+                to="/admin/forgot-password" 
+                className="hover:underline transition-colors block text-right"
+                style={{ fontSize: 'var(--text-caption)', fontWeight: 'var(--font-medium)', color: 'var(--color-primary)' }}
+              >
                 Forgot Password?
               </Link>
             </div>
@@ -112,7 +132,7 @@ const Login = () => {
             whileTap={{ scale: 0.98 }}
             disabled={isLoading}
             type="submit"
-            className="w-full bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white font-medium py-3.5 rounded-xl shadow-lg shadow-blue-900/20 transition-all flex items-center justify-center gap-2"
+            className="btn w-full flex items-center justify-center gap-2"
           >
             {isLoading ? (
               <span className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin"></span>
