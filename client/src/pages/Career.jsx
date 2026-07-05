@@ -25,6 +25,10 @@ import CloudUploadOutlinedIcon from "@mui/icons-material/CloudUploadOutlined";
 import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
 import careerVideo from "../assets/career.mp4";
 import perfectFitImg from "../assets/perfect-fit.jpg";
+import cultureImg from "../assets/culture.jpg";
+import growthImg from "../assets/growth.jpg";
+import collaborationImg from "../assets/collaboration.jpg";
+import successImg from "../assets/purpose.jpg";
 import { toast } from "sonner";
 import { applyJobAPI, submitTalentAPI, getJobsAPI } from "../services/allApi";
 import {
@@ -39,6 +43,39 @@ import {
 } from "@mui/material";
 
 function Career() {
+
+  const [activeTab, setActiveTab] = useState(0);
+
+  const lifeAtStrivoTabs = [
+    {
+      id: 'culture',
+      label: 'Culture',
+      title: 'Experience The Strivo Culture',
+      description: 'Join a team driven by innovation, collaboration, and a passion for delivering meaningful outcomes. At Strivo, we foster an inclusive and dynamic environment where every voice matters. We believe that true excellence stems from diverse perspectives coming together to solve complex challenges. Enjoy a vibrant workspace, engaging team events, and a culture that actively promotes work-life balance and overall well-being.',
+      image: cultureImg,
+    },
+    {
+      id: 'growth',
+      label: 'Growth',
+      title: 'Continuous Learning & Mentorship',
+      description: 'We nurture your talent with dedicated mentorship, tailored growth tracks, and structured pathways designed to unlock your full potential. Our comprehensive training programs provide you with the tools and resources needed to stay ahead of industry trends. Whether you are aiming to refine your technical skills or step into a leadership role, Strivo provides the support and opportunities necessary to accelerate your career trajectory.',
+      image: growthImg,
+    },
+    {
+      id: 'collaboration',
+      label: 'Collaboration',
+      title: 'Global Team Collaboration',
+      description: 'Partner with domain experts worldwide. Share knowledge, build synergies, and co-create high-impact solutions for international clients. Our collaborative approach breaks down silos and encourages cross-functional teamwork, ensuring that the best ideas always rise to the top. By working alongside talented professionals from diverse backgrounds, you will gain invaluable insights and contribute to projects that make a real difference on a global scale.',
+      image: collaborationImg,
+    },
+    {
+      id: 'success',
+      label: 'Success',
+      title: 'Celebrating Team & Client Success',
+      description: 'We drive outstanding business value and celebrate milestones together. Your contributions are recognized, rewarded, and amplified across the organization. At Strivo, we understand that our success is built on the hard work and dedication of our team members. We take pride in acknowledging individual achievements and celebrating team victories, fostering a culture of appreciation and mutual respect that motivates us all to strive for greatness.',
+      image: successImg,
+    }
+  ];
 
   const [openApplyModal, setOpenApplyModal] = useState(false);
   const [isDescExpanded, setIsDescExpanded] = useState(false);
@@ -297,25 +334,27 @@ function Career() {
       <Box
         id="hero-section"
         sx={{
-          minHeight: "100vh",
-          position: "relative",
+          height: { xs: "500px", md: "640px" },
+          position: "sticky",
+          top: 0,
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
           overflow: "hidden",
-          background: "transparent",
+          background: "var(--color-primary)",
+          zIndex: 0,
         }}
       >
-        {/* Main Glow */}
+        {/* Main Glow (Using a lighter shade for contrast against primary bg) */}
         <Box
           sx={{
             position: "absolute",
             width: 700,
             height: 700,
             borderRadius: "50%",
-            background: "var(--color-primary)",
+            background: "var(--color-white)",
             filter: "blur(250px)",
-            opacity: 0.08,
+            opacity: 0.15,
             top: "50%",
             left: "50%",
             transform: "translate(-50%,-50%)",
@@ -323,145 +362,6 @@ function Career() {
         />
 
 
-        <MotionBox
-          animate={{
-            y: [0, -25, 0],
-            rotate: [0, 8, 0],
-            scale: [1, 1.02, 1],
-          }}
-          transition={{
-            duration: 8,
-            repeat: Infinity,
-            ease: "easeInOut",
-          }}
-          sx={{
-            position: "absolute",
-            top: "14%",
-            right: "10%",
-            width: 240,
-            height: 240,
-            borderRadius: "3px",
-            overflow: "hidden",
-            backdropFilter: "blur(30px)",
-            background:
-              "linear-gradient(135deg, rgba(71,100,255,.15), rgba(255,255,255,.02))",
-            border: "1px solid rgba(255,255,255,.08)",
-            boxShadow:
-              "0 40px 100px rgba(0,0,0,.6), inset 0 0 30px rgba(255,255,255,.03)",
-            display: "flex",
-            flexDirection: "column",
-            justifyContent: "space-between",
-            p: 3,
-            zIndex: 1,
-            display: { xs: "none", md: "flex" },
-
-            "&::before": {
-              content: '""',
-              position: "absolute",
-              width: 140,
-              height: 140,
-              borderRadius: "50%",
-              background: "var(--color-primary)",
-              filter: "blur(60px)",
-              top: "-20px",
-              right: "-20px",
-              opacity: 0.35,
-              zIndex: -1,
-            },
-          }}
-        >
-
-          <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", width: "100%" }}>
-            <Box
-              sx={{
-                width: 44,
-                height: 44,
-                borderRadius: "3px",
-                background: "rgba(71, 100, 255, 0.2)",
-                border: "1px solid rgba(71, 100, 255, 0.4)",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-              }}
-            >
-              <TrendingUpIcon sx={{ color: "#60A5FA", fontSize: 22 }} />
-            </Box>
-            <Box
-              sx={{
-                px: 1.5,
-                py: 0.5,
-                borderRadius: "3px",
-                background: "rgba(16, 185, 129, 0.1)",
-                border: "1px solid rgba(16, 185, 129, 0.25)",
-                display: "flex",
-                alignItems: "center",
-                gap: 1,
-                backgroundColor: "var(--color-sub-bg)"
-              }}
-            >
-              <Box
-                component={motion.div}
-                animate={{ scale: [1, 1.4, 1], opacity: [0.5, 1, 0.5] }}
-                transition={{ duration: 2, repeat: Infinity }}
-                sx={{ width: 6, height: 6, borderRadius: "50%", backgroundColor: "var(--color-sub-bg: #EDF0FF)" }}
-              />
-              <Typography sx={{ color: "#34D399", fontSize: "0.7rem", fontWeight: 600 }}>
-                Hiring
-              </Typography>
-            </Box>
-          </Box>
-
-          <Box sx={{ backgroundColor: "var(--color-sub-bg: #EDF0FF)" }}>
-            <Typography sx={{ color: "#ffffff", fontWeight: 700, fontSize: "1.15rem", mb: 0.5 }}>
-              Join Our Team
-            </Typography>
-            <Typography sx={{ color: "#94A3B8", fontSize: "0.78rem", lineHeight: 1.4, mb: 1.5 }}>
-              We are looking for passionate innovators to build the future.
-            </Typography>
-
-            <Typography
-              sx={{
-                color: "#60A5FA",
-                fontSize: "0.78rem",
-                fontWeight: 600,
-                display: "flex",
-                alignItems: "center",
-                gap: 0.5,
-                cursor: "pointer",
-                "&:hover": { color: "#93C5FD" }
-              }}
-              onClick={() => scrollToSection('open-positions')}
-            >
-              View Openings &rarr;
-            </Typography>
-          </Box>
-        </MotionBox>
-
-
-
-        <MotionBox
-          animate={{
-            y: [0, 40, 0],
-            x: [0, 20, 0],
-          }}
-          transition={{
-            duration: 10,
-            repeat: Infinity,
-            ease: "easeInOut",
-          }}
-          sx={{
-            position: "absolute",
-            bottom: "18%",
-            left: "8%",
-            width: 160,
-            height: 160,
-            borderRadius: "50%",
-            background:
-              "radial-gradient(circle, rgba(37,99,235,.8), rgba(37,99,235,.05))",
-            filter: "blur(15px)",
-            display: { xs: "none", md: "block" },
-          }}
-        />
 
         <Container maxWidth="lg">
           <MotionBox
@@ -478,11 +378,13 @@ function Career() {
           >
             <Typography
               sx={{
-                color: "#2563EB",
-                letterSpacing: "4px",
-                fontWeight: 700,
+                color: "var(--color-white)",
+                letterSpacing: "3px",
+                fontWeight: 600,
                 textTransform: "uppercase",
-                mb: 3,
+                fontSize: "var(--text-small)",
+                mb: 2,
+                opacity: 0.9,
               }}
             >
               Careers At Strivo
@@ -490,34 +392,28 @@ function Career() {
 
             <Typography
               sx={{
-                color: "#fff",
-                fontWeight: 800,
-                lineHeight: 1.1,
-                mb: 4,
+                color: "var(--color-white)",
+                fontWeight: "var(--font-semibold)",
+                lineHeight: 1.2,
+                mb: 3,
                 fontSize: {
-                  xs: "2rem",
-                  sm: "2.8rem",
-                  md: "3.5rem",
-                  lg: "3.8rem",
+                  xs: "1.8rem",
+                  md: "2.8rem",
                 },
               }}
             >
-              Build The
-              <br />
-              Future With Us
+              Build The Future With Us
             </Typography>
 
             <Typography
               sx={{
-                color: "#94A3B8",
-                maxWidth: "700px",
+                color: "var(--color-white)",
+                maxWidth: "650px",
                 mx: "auto",
-                lineHeight: 1.7,
-                mb: 6,
-                fontSize: {
-                  xs: "0.95rem",
-                  md: "1.1rem",
-                },
+                lineHeight: 1.6,
+                mb: 5,
+                opacity: 0.85,
+                fontSize: "var(--text-paragraph)",
               }}
             >
               Join a team of innovators, consultants, and technology
@@ -533,59 +429,56 @@ function Career() {
             >
               <Stack
                 direction={{ xs: "column", sm: "row" }}
-                spacing={3}
+                spacing={2}
+                justifyContent="center"
                 alignItems="center"
               >
-
-                <Stack
-                  direction={{ xs: "column", sm: "row" }}
-                  spacing={3}
-                  justifyContent="center"
-                  alignItems="center"
+                <Button
+                  variant="contained"
+                  onClick={() => scrollToSection('open-positions')}
+                  sx={{
+                    px: 2.5,
+                    height: "42px",
+                    minWidth: "130px",
+                    background: "var(--color-white)",
+                    color: "var(--color-primary)",
+                    borderRadius: "var(--radius-sm)",
+                    fontWeight: "var(--font-bold)",
+                    textTransform: "none",
+                    fontSize: "var(--text-small)",
+                    boxShadow: "var(--shadow-button)",
+                    border: "1px solid transparent",
+                    "&:hover": {
+                      background: "var(--color-sub-bg)",
+                      transform: "translateY(-2px)",
+                    },
+                  }}
                 >
-                  <Button
-                    variant="contained"
-                    onClick={() => scrollToSection('open-positions')}
-                    sx={{
-                      minWidth: 230,
-                      height: 60,
-                      background: "#2563EB",
-                      borderRadius: "3px",
-                      fontWeight: 700,
-                      textTransform: "none",
-                      boxShadow: "0 15px 40px rgba(37,99,235,.35)",
+                  Explore Open Roles
+                </Button>
 
-                      "&:hover": {
-                        background: "#1D4ED8",
-                        transform: "translateY(-4px)",
-                      },
-                    }}
-                  >
-                    Explore Open Roles
-                  </Button>
-
-                  <Button
-                    variant="outlined"
-                    onClick={() => scrollToSection('life-at-strivo')}
-                    sx={{
-                      minWidth: 230,
-                      height: 60,
-                      borderRadius: "3px",
-                      borderColor: "rgba(255,255,255,.15)",
-                      color: "#fff",
-                      textTransform: "none",
-                      fontWeight: 700,
-
-                      "&:hover": {
-                        borderColor: "#2563EB",
-                        background: "rgba(37,99,235,.08)",
-                      },
-                    }}
-                  >
-                    Life At Strivo
-                  </Button>
-                </Stack>
-
+                <Button
+                  variant="outlined"
+                  onClick={() => scrollToSection('life-at-strivo')}
+                  sx={{
+                    px: 2.5,
+                    height: "42px",
+                    minWidth: "130px",
+                    borderRadius: "var(--radius-sm)",
+                    borderColor: "rgba(255,255,255,.4)",
+                    color: "var(--color-white)",
+                    textTransform: "none",
+                    fontWeight: "var(--font-bold)",
+                    fontSize: "var(--text-small)",
+                    border: "1px solid rgba(255,255,255,.4)",
+                    "&:hover": {
+                      borderColor: "var(--color-white)",
+                      background: "rgba(255,255,255,.1)",
+                    },
+                  }}
+                >
+                  Life At Strivo
+                </Button>
               </Stack>
             </Box>
 
@@ -594,7 +487,7 @@ function Career() {
 
 
         <MotionBox
-          animate={{ y: [0, 12, 0] }}
+          animate={{ y: [0, 10, 0] }}
           transition={{
             duration: 1.5,
             repeat: Infinity,
@@ -602,14 +495,14 @@ function Career() {
           onClick={() => scrollToSection('why-join-us')}
           sx={{
             position: "absolute",
-            bottom: 40,
+            bottom: 30,
             left: "50%",
             transform: "translateX(-50%)",
-            color: "#ffffff",
+            color: "var(--color-white)",
             cursor: "pointer",
           }}
         >
-          <KeyboardArrowDownIcon sx={{ fontSize: 40 }} />
+          <KeyboardArrowDownIcon sx={{ fontSize: 36 }} />
         </MotionBox>
       </Box>
 
@@ -620,196 +513,168 @@ function Career() {
           py: { xs: 6, md: 8 },
           background: "var(--color-main-bg)",
           position: "relative",
+          zIndex: 10,
         }}
       >
-        <Container maxWidth="xl">
+        <Container maxWidth="md" sx={{ display: "flex", alignItems: "center" }}>
           <Box
             sx={{
-              display: "flex",
-              flexDirection: {
-                xs: "column",
-                md: "row",
-              },
-              alignItems: "center",
-              justifyContent: "space-between",
-              gap: {
-                xs: 8,
-                md: 12,
-              },
+              display: "grid",
+              gridTemplateColumns: { xs: "1fr", md: "0.9fr 1.3fr 0.9fr 0.9fr" },
+              gridTemplateRows: { xs: "auto", md: "repeat(2, 220px)" },
+              width: "100%",
+              boxShadow: "0 10px 40px rgba(0,0,0,0.08)",
+              borderRadius: "3px",
+              overflow: "hidden",
             }}
           >
+            {/* Top Left */}
             <Box
               sx={{
-                flex: 1,
-                width: "100%",
-                position: "relative",
+                gridColumn: { xs: "1", md: "1 / 2" },
+                gridRow: { xs: "auto", md: "1 / 2" },
+                bgcolor: "var(--color-primary)",
+                color: "var(--color-white)",
+                p: { xs: 2.5, md: 3 },
+                display: "flex",
+                flexDirection: "column",
+                justifyContent: "center",
               }}
             >
-              <MotionBox
-                initial={{ opacity: 0, x: -100 }}
-                whileInView={{ opacity: 1, x: 0 }}
-                transition={{ duration: 0.8 }}
-                viewport={{ once: true }}
+              <Typography sx={{ fontWeight: 700, fontSize: "1.2rem", mb: 1 }}>Great People</Typography>
+              <Typography
+                sx={{
+                  fontSize: "0.85rem",
+                  lineHeight: 1.5,
+                  opacity: 0.9,
+                  textAlign: "left",
+                }}
               >
-
-                <Box
-                  sx={{
-                    position: "absolute",
-                    width: "80%",
-                    height: "80%",
-                    background: "var(--color-primary)",
-                    filter: "blur(120px)",
-                    opacity: 0.15,
-                    top: "50%",
-                    left: "50%",
-                    transform: "translate(-50%, -50%)",
-                  }}
-                />
-
-                <Box
-                  sx={{
-                    position: "relative",
-                    borderRadius: "3px",
-                    overflow: "hidden",
-                    backdropFilter: "blur(20px)",
-                    border: "1px solid var(--color-border)",
-                    background: "var(--color-sub-bg)",
-                  }}
-                >
-                  <Box
-                    component="img"
-                    src="https://images.unsplash.com/photo-1522202176988-66273c2fd55f"
-                    alt="Team"
-                    sx={{
-                      width: "100%",
-                      height: {
-                        xs: 350,
-                        md: 600,
-                      },
-                      objectFit: "cover",
-                      display: "block",
-                    }}
-                  />
-                </Box>
-              </MotionBox>
+                Work with talented and passionate people who inspire and support you every day.
+              </Typography>
             </Box>
 
-
+            {/* Bottom Left */}
             <Box
               sx={{
-                flex: 1,
-                width: "100%",
-                maxWidth: "650px",
+                gridColumn: { xs: "1", md: "1 / 2" },
+                gridRow: { xs: "auto", md: "2 / 3" },
+                bgcolor: "var(--color-main-bg)",
+                color: "var(--color-black)",
+                p: { xs: 2.5, md: 3 },
+                display: "flex",
+                flexDirection: "column",
+                justifyContent: "center",
               }}
             >
-              <MotionBox
-                initial={{ opacity: 0, x: 100 }}
-                whileInView={{ opacity: 1, x: 0 }}
-                transition={{ duration: 0.8 }}
-                viewport={{ once: true }}
+              <Typography sx={{ fontWeight: 700, fontSize: "1.1rem", mb: 1, lineHeight: 1.2 }}>Growth<br />Opportunities</Typography>
+              <Typography
+                sx={{
+                  fontSize: "0.85rem",
+                  lineHeight: 1.5,
+                  color: "var(--color-paragraph)",
+                  textAlign: "left",
+                }}
               >
-                <Typography
-                  sx={{
-                    color: "#2563EB",
-                    fontWeight: 700,
-                    letterSpacing: "4px",
-                    textTransform: "uppercase",
-                    mb: 2,
-                  }}
-                >
-                  Why Join Us
-                </Typography>
+                We encourage continuous learning and provide the resources you need to grow your career.
+              </Typography>
+            </Box>
 
-                <Typography
-                  sx={{
-                    color: "var(--color-pure-black)",
-                    fontWeight: 700,
-                    lineHeight: 1.1,
-                    mb: 4,
-                    fontSize: {
-                      xs: "1.8rem",
-                      sm: "2.2rem",
-                      md: "2.5rem",
-                    },
-                  }}
-                >
-                  A Place Where
-                  <br />
-                  Talent Thrives
-                </Typography>
+            {/* Middle Image */}
+            <Box
+              sx={{
+                gridColumn: { xs: "1", md: "2 / 3" },
+                gridRow: { xs: "auto", md: "1 / 3" },
+              }}
+            >
+              <Box
+                component="img"
+                src="/team-fun.png"
+                alt="Aesthetic Office Collaboration"
+                sx={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }}
+              />
+            </Box>
 
-                <Typography
-                  sx={{
-                    color: "var(--color-pure-black)",
-                    lineHeight: 1.7,
-                    fontSize: "0.95rem",
-                    mb: 6,
-                  }}
-                >
-                  We empower ambitious professionals to solve
-                  complex business challenges, collaborate globally,
-                  and accelerate their growth through continuous
-                  learning, innovation, and mentorship.
-                </Typography>
+            {/* Top Right */}
+            <Box
+              sx={{
+                gridColumn: { xs: "1", md: "3 / 5" },
+                gridRow: { xs: "auto", md: "1 / 2" },
+                bgcolor: "var(--color-white)",
+                p: { xs: 3, md: 4 },
+                display: "flex",
+                flexDirection: "column",
+                justifyContent: "center",
+              }}
+            >
+              <Typography sx={{ fontWeight: 800, fontSize: { xs: "1.8rem", md: "2.1rem" }, lineHeight: 1.2, mb: 1.5, color: "var(--color-black)", textTransform: "uppercase" }}>
+                WHY<br />
+                CHOOSE<br />
+                <span style={{ color: "var(--color-primary)" }}>US?</span>
+              </Typography>
+              <Typography
+                sx={{
+                  fontSize: "0.9rem",
+                  lineHeight: 1.5,
+                  color: "var(--color-paragraph)",
+                  maxWidth: "350px",
+                  textAlign: "left",
+                }}
+              >
+                Everyday we work hard to make life of our clients better and happier.
+              </Typography>
+            </Box>
 
-                <Stack spacing={3}>
-                  {[
-                    "Culture of Excellence",
-                    "Global Impact Projects",
-                    "Learning & Mentorship",
-                    "Innovation First Mindset",
-                    "Flexible Work Environment",
-                  ].map((item, index) => (
-                    <MotionBox
-                      key={index}
-                      initial={{
-                        opacity: 0,
-                        x: 40,
-                      }}
-                      whileInView={{
-                        opacity: 1,
-                        x: 0,
-                      }}
-                      transition={{
-                        delay: index * 0.15,
-                      }}
-                      viewport={{ once: true }}
-                    >
-                      <Stack
-                        direction="row"
-                        spacing={2}
-                        alignItems="center"
-                      >
-                        <Box
-                          sx={{
-                            width: 34,
-                            height: 34,
-                            borderRadius: "50%",
-                            background:
-                              "rgba(37,99,235,0.15)",
-                            color: "black",
-                            display: "flex",
-                            alignItems: "center",
-                            justifyContent: "center",
-                          }}
-                        >
-                          ✓
-                        </Box>
+            {/* Bottom Right 1 */}
+            <Box
+              sx={{
+                gridColumn: { xs: "1", md: "3 / 4" },
+                gridRow: { xs: "auto", md: "2 / 3" },
+                bgcolor: "#eef3f9",
+                color: "var(--color-black)",
+                p: { xs: 2.5, md: 3 },
+                display: "flex",
+                flexDirection: "column",
+                justifyContent: "center",
+              }}
+            >
+              <Typography sx={{ fontWeight: 700, fontSize: "1.1rem", mb: 1 }}>Make an Impact</Typography>
+              <Typography
+                sx={{
+                  fontSize: "0.85rem",
+                  lineHeight: 1.5,
+                  color: "var(--color-paragraph)",
+                  textAlign: "left",
+                }}
+              >
+                Be part of meaningful projects that solve real problems and create lasting value.
+              </Typography>
+            </Box>
 
-                        <Typography
-                          sx={{
-                            color: "var(--color-pure-black)",
-                            fontSize: "1.05rem",
-                            fontWeight: 500,
-                          }}
-                        >
-                          {item}
-                        </Typography>
-                      </Stack>
-                    </MotionBox>
-                  ))}
-                </Stack>
-              </MotionBox>
+            {/* Bottom Right 2 */}
+            <Box
+              sx={{
+                gridColumn: { xs: "1", md: "4 / 5" },
+                gridRow: { xs: "auto", md: "2 / 3" },
+                bgcolor: "#11161d",
+                color: "var(--color-white)",
+                p: { xs: 2.5, md: 3 },
+                display: "flex",
+                flexDirection: "column",
+                justifyContent: "center",
+              }}
+            >
+              <Typography sx={{ fontWeight: 700, fontSize: "1.1rem", mb: 1, lineHeight: 1.2 }}>Support &<br />Well-being</Typography>
+              <Typography
+                sx={{
+                  fontSize: "0.85rem",
+                  lineHeight: 1.5,
+                  opacity: 0.8,
+                  textAlign: "left",
+                }}
+              >
+                We care about your well-being and offer a healthy, flexible and inclusive environment.
+              </Typography>
             </Box>
           </Box>
         </Container>
@@ -817,27 +682,30 @@ function Career() {
       <Box
         id="life-at-strivo"
         sx={{
-          py: { xs: 6, md: 8 },
+          height: { xs: "auto", md: "640px" },
+          display: "flex",
+          alignItems: "center",
+          py: { xs: 4, md: 0 },
           background: "var(--color-sub-bg)",
+          position: "relative",
+          zIndex: 10,
         }}
       >
-        <Container maxWidth="lg">
-
-          {/* Content */}
-
+        <Container maxWidth="md" sx={{ width: "100%" }}>
           <Box
             sx={{
-              textAlign: "center",
-              mb: 6,
+              textAlign: "left",
+              mb: 2,
             }}
           >
             <Typography
               sx={{
-                color: "#2563EB",
-                fontWeight: 700,
-                letterSpacing: 4,
+                color: "var(--color-black)",
+                fontWeight: "var(--font-bold)",
+                fontSize: "13px",
+                letterSpacing: 2,
                 textTransform: "uppercase",
-                mb: 2,
+                mb: 0.5,
               }}
             >
               Life At Strivo
@@ -845,134 +713,144 @@ function Career() {
 
             <Typography
               sx={{
-                color: "var(--color-pure-black)",
-                fontWeight: 700,
-                lineHeight: 1.1,
-                mb: 3,
+                color: "var(--color-primary)",
+                fontWeight: "var(--font-semibold)",
+                lineHeight: 1.3,
                 fontSize: {
-                  xs: "2rem",
-                  md: "3rem",
+                  xs: "1.8rem",
+                  md: "var(--text-sub-heading)",
                 },
               }}
             >
-              More Than A Workplace.
-              <br />
-              A Place To Grow.
-            </Typography>
-
-            <Typography
-              sx={{
-                color: "var(--color-pure-black)",
-                maxWidth: "700px",
-                mx: "auto",
-                lineHeight: 1.7,
-                fontSize: "0.95rem",
-              }}
-            >
-              At Strivo, we foster innovation,
-              collaboration, and continuous learning.
-              Every project is an opportunity to create
-              impact, develop new skills, and shape the future.
+              Our Culture & Workspace
             </Typography>
           </Box>
 
-
-
-          <Box
+          {/* Interactive Tabs Row */}
+          <Stack
+            direction="row"
+            spacing={{ xs: 1.5, sm: 3 }}
             sx={{
-              position: "relative",
-              overflow: "hidden",
-
-              borderRadius: "32px",
-
-              border:
-                "1px solid rgba(255,255,255,.08)",
-
-              boxShadow:
-                "0 30px 80px rgba(0,0,0,.45)",
-
-              height: {
-                xs: 260,
-                md: 550,
-              },
+              mb: 3,
+              width: "100%",
+              overflowX: "auto",
+              pb: 0.5,
+              "&::-webkit-scrollbar": { display: "none" }
             }}
           >
-            <video
-              autoPlay
-              muted
-              loop
-              playsInline
-              style={{
-                width: "100%",
-                height: "100%",
-                objectFit: "cover",
-              }}
-            >
-              <source
-                src={careerVideo}
-                type="video/mp4"
-              />
-            </video>
-
-
-
-            <Box
-              sx={{
-                position: "absolute",
-                inset: 0,
-
-                background:
-                  "linear-gradient(to top,rgba(0,0,0,.75),rgba(0,0,0,.15))",
-
-                display: "flex",
-                flexDirection: "column",
-                justifyContent: "flex-end",
-
-                p: {
-                  xs: 3,
-                  md: 6,
-                },
-              }}
-            >
-              <Typography
+            {lifeAtStrivoTabs.map((tab, idx) => (
+              <Box
+                key={tab.id}
+                onClick={() => setActiveTab(idx)}
                 sx={{
-                  color: "white",
-                  fontWeight: 700,
-                  mb: 1,
-
-                  fontSize: {
-                    xs: "1.3rem",
-                    md: "2.2rem",
-                  },
+                  flex: 1,
+                  minWidth: { xs: "90px", sm: "auto" },
+                  textAlign: "center",
+                  pb: 1,
+                  cursor: "pointer",
+                  borderBottom: activeTab === idx ? "3px solid var(--color-primary)" : "1px solid var(--color-border)",
+                  transition: "all 0.3s ease",
                 }}
               >
-                Experience The Strivo Culture
+                <Typography
+                  sx={{
+                    fontSize: { xs: "0.85rem", sm: "0.95rem" },
+                    fontWeight: activeTab === idx ? "var(--font-semibold)" : "var(--font-medium)",
+                    color: activeTab === idx ? "var(--color-primary)" : "var(--color-paragraph)",
+                    whiteSpace: "nowrap",
+                    transition: "color 0.3s ease",
+                    "&:hover": {
+                      color: "var(--color-primary)",
+                    }
+                  }}
+                >
+                  {tab.label}
+                </Typography>
+              </Box>
+            ))}
+          </Stack>
+
+          {/* Tab Content Display */}
+          <Box sx={{ display: "flex", gap: { xs: 3, md: 8 }, alignItems: "center", width: "100%" }}>
+            {/* Left side: Media (approx 40% width) */}
+            <Box sx={{ flex: 4 }}>
+              {activeTab === 0 ? (
+                <Box
+                  component="video"
+                  autoPlay
+                  muted
+                  loop
+                  playsInline
+                  src={careerVideo}
+                  sx={{
+                    width: "100%",
+                    height: { xs: "180px", sm: "240px", md: "320px" },
+                    objectFit: "cover",
+                    borderRadius: "var(--radius-sm)",
+                    boxShadow: "var(--shadow-card)",
+                    display: "block",
+                  }}
+                />
+              ) : (
+                <Box
+                  component="img"
+                  src={lifeAtStrivoTabs[activeTab].image}
+                  alt={lifeAtStrivoTabs[activeTab].label}
+                  sx={{
+                    width: "100%",
+                    height: { xs: "180px", sm: "240px", md: "320px" },
+                    objectFit: "cover",
+                    borderRadius: "var(--radius-sm)",
+                    boxShadow: "var(--shadow-card)",
+                    display: "block",
+                  }}
+                />
+              )}
+            </Box>
+
+            {/* Right side: Content (approx 60% width) */}
+            <Box sx={{ flex: 6, display: "flex", flexDirection: "column", justifyContent: "center" }}>
+              {/* Title */}
+              <Typography
+                sx={{
+                  color: "var(--color-black)",
+                  fontWeight: "var(--font-normal)",
+                  fontSize: { xs: "1rem", sm: "1.25rem", md: "1.85rem" },
+                  lineHeight: 1.2,
+                  mb: { xs: 1, md: 2 },
+                }}
+              >
+                {lifeAtStrivoTabs[activeTab].title}
               </Typography>
 
+              {/* Description */}
               <Typography
                 sx={{
-                  color: "white",
-                  maxWidth: "650px",
+                  color: "var(--color-paragraph)",
+                  fontSize: { xs: "12px", sm: "14px", md: "15px" },
                   lineHeight: 1.8,
+                  textAlign: "justify",
+                  textJustify: "inter-word",
+                  hyphens: "auto",
                 }}
               >
-                Join a team driven by innovation,
-                collaboration, and a passion for
-                delivering meaningful outcomes.
+                {lifeAtStrivoTabs[activeTab].description}
               </Typography>
             </Box>
           </Box>
-
         </Container>
       </Box>
       <Box
         id="open-positions"
         sx={{
-          py: { xs: 6, md: 8 },
+          minHeight: { xs: "auto", md: "640px" },
+          py: { xs: 8, md: 4 },
           background: "var(--color-main-bg)",
+          position: "relative",
+          zIndex: 10,
         }}
       >
-        <Container maxWidth="xl">
+        <Container maxWidth="md">
           {/* Heading */}
           <Box
             sx={{
@@ -982,7 +860,7 @@ function Career() {
           >
             <Typography
               sx={{
-                color: "var(--color-primary)",
+                color: "var(--color-black)",
                 fontWeight: 700,
                 letterSpacing: 4,
                 textTransform: "uppercase",
@@ -994,19 +872,17 @@ function Career() {
 
             <Typography
               sx={{
-                color: "var(--color-black)",
-                fontWeight: 700,
-                lineHeight: 1.1,
+                color: "var(--color-primary)",
+                fontWeight: "var(--font-semibold)",
+                lineHeight: 1.3,
                 mb: 3,
                 fontSize: {
-                  xs: "2rem",
-                  md: "2.8rem",
+                  xs: "1.8rem",
+                  md: "var(--text-sub-heading)",
                 },
               }}
             >
-              Find Your Next
-              <br />
-              Opportunity
+              Find Your Next Opportunity
             </Typography>
 
             <Typography
@@ -1025,12 +901,12 @@ function Career() {
             </Typography>
           </Box>
 
-          <Box sx={{ maxWidth: "900px", mx: "auto" }}>
+          <Box sx={{ width: "100%", mx: "auto" }}>
             <MotionBox whileHover={{ y: -5 }} sx={{ mb: 3 }}>
               <Box
                 sx={{
-                  minHeight: 250,
-                  p: 4,
+                  minHeight: { xs: "auto", md: 250 },
+                  p: { xs: 2.5, sm: 3, md: 4 },
                   borderRadius: "3px",
                   background: "var(--color-sub-bg)",
                   border: "1px solid var(--color-border)",
@@ -1049,13 +925,13 @@ function Career() {
                   },
                   justifyContent: "space-between",
                   alignItems: {
-                    xs: "flex-start",
+                    xs: "stretch",
                     md: "center",
                   },
                   gap: 3,
                 }}
               >
-                <Box maxWidth="750px">
+                <Box sx={{ maxWidth: "750px", width: "100%", minWidth: 0 }}>
                   <Typography
                     sx={{
                       color: "var(--color-black)",
@@ -1076,6 +952,9 @@ function Career() {
                       WebkitLineClamp: expandedJobs["frontend"] ? "none" : 3,
                       WebkitBoxOrient: "vertical",
                       overflow: "hidden",
+                      textAlign: "justify",
+                      textJustify: "inter-word",
+                      hyphens: "auto",
                     }}
                   >
                     Build modern web applications using React,
@@ -1100,18 +979,30 @@ function Career() {
                     {expandedJobs["frontend"] ? "Read less" : "Read more"}
                   </Button>
 
-                  <Stack sx={{
-                    "& .MuiChip-root": {
-                      color: "var(--color-paragraph)",
-                      background: "rgba(71,100,255,0.15)",
-                      border: "1px solid rgba(71,100,255,0.3)",
-                      fontWeight: 500,
-                    }
-                  }} direction="row" spacing={2} flexWrap="wrap" useFlexGap>
+                  <Box
+                    sx={{
+                      display: "flex",
+                      flexWrap: "wrap",
+                      gap: 1.5,
+                      "& .MuiChip-root": {
+                        color: "var(--color-paragraph)",
+                        background: "rgba(71,100,255,0.15)",
+                        border: "1px solid rgba(71,100,255,0.3)",
+                        fontWeight: 500,
+                        maxWidth: "100%",
+                        height: "auto",
+                        "& .MuiChip-label": {
+                          whiteSpace: "normal",
+                          display: "block",
+                          py: 0.5,
+                        }
+                      }
+                    }}
+                  >
                     <Chip label="Technology" />
                     <Chip label="Remote" />
                     <Chip label="Full Time" />
-                  </Stack>
+                  </Box>
                 </Box>
 
                 <Button
@@ -1125,14 +1016,17 @@ function Career() {
                   variant="contained"
                   sx={{
                     background: "var(--color-primary)",
-                    borderRadius: "3px",
-                    px: 4,
-                    minWidth: 150,
-                    height: 50,
+                    borderRadius: "var(--radius-sm)",
+                    px: 3,
+                    minWidth: "130px",
+                    height: "42px",
                     textTransform: "none",
-                    fontWeight: 600,
+                    fontWeight: "var(--font-bold)",
+                    whiteSpace: "nowrap",
+                    boxShadow: "var(--shadow-button)",
                     "&:hover": {
                       background: "var(--color-primary-hover)",
+                      transform: "translateY(-2px)",
                     }
                   }}
                 >
@@ -1145,8 +1039,8 @@ function Career() {
             <MotionBox whileHover={{ y: -5 }} sx={{ mb: 3 }}>
               <Box
                 sx={{
-                  minHeight: 250,
-                  p: 4,
+                  minHeight: { xs: "auto", md: 250 },
+                  p: { xs: 2.5, sm: 3, md: 4 },
                   borderRadius: "3px",
                   background: "var(--color-sub-bg)",
                   border: "1px solid var(--color-border)",
@@ -1165,13 +1059,13 @@ function Career() {
                   },
                   justifyContent: "space-between",
                   alignItems: {
-                    xs: "flex-start",
+                    xs: "stretch",
                     md: "center",
                   },
                   gap: 3,
                 }}
               >
-                <Box maxWidth="750px">
+                <Box sx={{ maxWidth: "750px", width: "100%", minWidth: 0 }}>
                   <Typography
                     sx={{
                       color: "var(--color-black)",
@@ -1192,6 +1086,9 @@ function Career() {
                       WebkitLineClamp: expandedJobs["uiux"] ? "none" : 3,
                       WebkitBoxOrient: "vertical",
                       overflow: "hidden",
+                      textAlign: "justify",
+                      textJustify: "inter-word",
+                      hyphens: "auto",
                     }}
                   >
                     Create intuitive interfaces, wireframes,
@@ -1216,18 +1113,30 @@ function Career() {
                     {expandedJobs["uiux"] ? "Read less" : "Read more"}
                   </Button>
 
-                  <Stack sx={{
-                    "& .MuiChip-root": {
-                      color: "var(--color-paragraph)",
-                      background: "rgba(71,100,255,0.15)",
-                      border: "1px solid rgba(71,100,255,0.3)",
-                      fontWeight: 500,
-                    }
-                  }} direction="row" spacing={2} flexWrap="wrap" useFlexGap>
+                  <Box
+                    sx={{
+                      display: "flex",
+                      flexWrap: "wrap",
+                      gap: 1.5,
+                      "& .MuiChip-root": {
+                        color: "var(--color-paragraph)",
+                        background: "rgba(71,100,255,0.15)",
+                        border: "1px solid rgba(71,100,255,0.3)",
+                        fontWeight: 500,
+                        maxWidth: "100%",
+                        height: "auto",
+                        "& .MuiChip-label": {
+                          whiteSpace: "normal",
+                          display: "block",
+                          py: 0.5,
+                        }
+                      }
+                    }}
+                  >
                     <Chip label="Design" />
                     <Chip label="Kochi" />
                     <Chip label="Full Time" />
-                  </Stack>
+                  </Box>
                 </Box>
 
                 <Button
@@ -1240,14 +1149,17 @@ function Career() {
                   variant="contained"
                   sx={{
                     background: "var(--color-primary)",
-                    borderRadius: "3px",
-                    px: 4,
-                    minWidth: 150,
-                    height: 50,
+                    borderRadius: "var(--radius-sm)",
+                    px: 3,
+                    minWidth: "130px",
+                    height: "42px",
                     textTransform: "none",
-                    fontWeight: 600,
+                    fontWeight: "var(--font-bold)",
+                    whiteSpace: "nowrap",
+                    boxShadow: "var(--shadow-button)",
                     "&:hover": {
                       background: "var(--color-primary-hover)",
+                      transform: "translateY(-2px)",
                     }
                   }}
                 >
@@ -1260,8 +1172,8 @@ function Career() {
             <MotionBox whileHover={{ y: -5 }}>
               <Box
                 sx={{
-                  minHeight: 250,
-                  p: 4,
+                  minHeight: { xs: "auto", md: 250 },
+                  p: { xs: 2.5, sm: 3, md: 4 },
                   borderRadius: "3px",
                   background: "var(--color-sub-bg)",
                   border: "1px solid var(--color-border)",
@@ -1280,13 +1192,13 @@ function Career() {
                   },
                   justifyContent: "space-between",
                   alignItems: {
-                    xs: "flex-start",
+                    xs: "stretch",
                     md: "center",
                   },
                   gap: 3,
                 }}
               >
-                <Box maxWidth="750px">
+                <Box sx={{ maxWidth: "750px", width: "100%", minWidth: 0 }}>
                   <Typography
                     sx={{
                       color: "var(--color-black)",
@@ -1307,6 +1219,9 @@ function Career() {
                       WebkitLineClamp: expandedJobs["consultant"] ? "none" : 3,
                       WebkitBoxOrient: "vertical",
                       overflow: "hidden",
+                      textAlign: "justify",
+                      textJustify: "inter-word",
+                      hyphens: "auto",
                     }}
                   >
                     Work closely with clients to analyze business
@@ -1331,18 +1246,30 @@ function Career() {
                     {expandedJobs["consultant"] ? "Read less" : "Read more"}
                   </Button>
 
-                  <Stack sx={{
-                    "& .MuiChip-root": {
-                      color: "var(--color-paragraph)",
-                      background: "rgba(71,100,255,0.15)",
-                      border: "1px solid rgba(71,100,255,0.3)",
-                      fontWeight: 500,
-                    }
-                  }} direction="row" spacing={2} flexWrap="wrap" useFlexGap>
+                  <Box
+                    sx={{
+                      display: "flex",
+                      flexWrap: "wrap",
+                      gap: 1.5,
+                      "& .MuiChip-root": {
+                        color: "var(--color-paragraph)",
+                        background: "rgba(71,100,255,0.15)",
+                        border: "1px solid rgba(71,100,255,0.3)",
+                        fontWeight: 500,
+                        maxWidth: "100%",
+                        height: "auto",
+                        "& .MuiChip-label": {
+                          whiteSpace: "normal",
+                          display: "block",
+                          py: 0.5,
+                        }
+                      }
+                    }}
+                  >
                     <Chip label="Consulting" />
                     <Chip label="Dubai" />
                     <Chip label="Full Time" />
-                  </Stack>
+                  </Box>
                 </Box>
 
                 <Button
@@ -1356,14 +1283,17 @@ function Career() {
                   variant="contained"
                   sx={{
                     background: "var(--color-primary)",
-                    borderRadius: "3px",
-                    px: 4,
-                    minWidth: 150,
-                    height: 50,
+                    borderRadius: "var(--radius-sm)",
+                    px: 3,
+                    minWidth: "130px",
+                    height: "42px",
                     textTransform: "none",
-                    fontWeight: 600,
+                    fontWeight: "var(--font-bold)",
+                    whiteSpace: "nowrap",
+                    boxShadow: "var(--shadow-button)",
                     "&:hover": {
                       background: "var(--color-primary-hover)",
+                      transform: "translateY(-2px)",
                     }
                   }}
                 >
@@ -1380,8 +1310,8 @@ function Career() {
                   <MotionBox key={job._id} whileHover={{ y: -5 }} sx={{ mb: 3 }}>
                     <Box
                       sx={{
-                        minHeight: 250,
-                        p: 4,
+                        minHeight: { xs: "auto", md: 250 },
+                        p: { xs: 2.5, sm: 3, md: 4 },
                         borderRadius: "3px",
                         background: "var(--color-sub-bg)",
                         border: "1px solid var(--color-border)",
@@ -1400,13 +1330,13 @@ function Career() {
                         },
                         justifyContent: "space-between",
                         alignItems: {
-                          xs: "flex-start",
+                          xs: "stretch",
                           md: "center",
                         },
                         gap: 3,
                       }}
                     >
-                      <Box maxWidth="750px">
+                      <Box sx={{ maxWidth: "750px", width: "100%", minWidth: 0 }}>
                         <Typography
                           sx={{
                             color: "var(--color-black)",
@@ -1427,6 +1357,9 @@ function Career() {
                             WebkitLineClamp: expandedJobs[job._id] ? "none" : 3,
                             WebkitBoxOrient: "vertical",
                             overflow: "hidden",
+                            textAlign: "justify",
+                            textJustify: "inter-word",
+                            hyphens: "auto",
                           }}
                         >
                           {job.description}
@@ -1448,18 +1381,30 @@ function Career() {
                           {expandedJobs[job._id] ? "Read less" : "Read more"}
                         </Button>
 
-                        <Stack sx={{
-                          "& .MuiChip-root": {
-                            color: "var(--color-paragraph)",
-                            background: "rgba(71,100,255,0.15)",
-                            border: "1px solid rgba(71,100,255,0.3)",
-                            fontWeight: 500,
-                          }
-                        }} direction="row" spacing={2} flexWrap="wrap" useFlexGap>
+                        <Box
+                          sx={{
+                            display: "flex",
+                            flexWrap: "wrap",
+                            gap: 1.5,
+                            "& .MuiChip-root": {
+                              color: "var(--color-paragraph)",
+                              background: "rgba(71,100,255,0.15)",
+                              border: "1px solid rgba(71,100,255,0.3)",
+                              fontWeight: 500,
+                              maxWidth: "100%",
+                              height: "auto",
+                              "& .MuiChip-label": {
+                                whiteSpace: "normal",
+                                display: "block",
+                                py: 0.5,
+                              }
+                            }
+                          }}
+                        >
                           <Chip label={job.department} />
                           <Chip label={job.location} />
                           <Chip label={job.jobType || "Full Time"} />
-                        </Stack>
+                        </Box>
                       </Box>
 
                       <Button
@@ -1472,14 +1417,17 @@ function Career() {
                         variant="contained"
                         sx={{
                           background: "var(--color-primary)",
-                          borderRadius: "3px",
-                          px: 4,
-                          minWidth: 150,
-                          height: 50,
+                          borderRadius: "var(--radius-sm)",
+                          px: 3,
+                          minWidth: "130px",
+                          height: "42px",
                           textTransform: "none",
-                          fontWeight: 600,
+                          fontWeight: "var(--font-bold)",
+                          whiteSpace: "nowrap",
+                          boxShadow: "var(--shadow-button)",
                           "&:hover": {
                             background: "var(--color-primary-hover)",
+                            transform: "translateY(-2px)",
                           }
                         }}
                       >
@@ -1537,12 +1485,17 @@ function Career() {
       <Box
         id="perfect-fit"
         sx={{
+          height: { xs: "auto", md: "640px" },
+          display: "flex",
+          alignItems: "center",
           py: { xs: 6, md: 8 },
           px: 2,
           background: "var(--color-sub-bg)",
+          position: "relative",
+          zIndex: 10,
         }}
       >
-        <Container maxWidth="lg">
+        <Container maxWidth="md">
           <Box
             sx={{
               borderRadius: "3px",
@@ -1564,18 +1517,18 @@ function Career() {
                 flexDirection: "column",
                 justifyContent: "center",
                 alignItems: "flex-start",
-                p: { xs: 4, sm: 6, md: 8 },
+                p: { xs: 4, sm: 5, md: 5 },
                 textAlign: "left",
                 boxSizing: "border-box",
               }}
             >
               {/* Tagline */}
-              <Box sx={{ display: "flex", alignItems: "center", gap: 1.5, mb: 2 }}>
+              <Box sx={{ display: "flex", alignItems: "center", gap: 1.5, mb: 1.5 }}>
                 <Box sx={{ width: "3px", height: "18px", backgroundColor: "var(--color-primary)" }} />
                 <Typography
                   sx={{
                     color: "var(--color-primary)",
-                    fontWeight: 700,
+                    fontWeight: "var(--font-semibold)",
                     letterSpacing: "1px",
                     textTransform: "uppercase",
                     fontSize: "0.85rem",
@@ -1588,30 +1541,33 @@ function Career() {
               {/* Heading */}
               <Typography
                 sx={{
-                  color: "#ffffff",
-                  fontWeight: 800,
+                  color: "var(--color-white)",
+                  fontWeight: "var(--font-semibold)",
                   lineHeight: 1.2,
                   fontSize: {
                     xs: "1.8rem",
                     md: "2.4rem",
                   },
-                  mb: 2.5,
+                  mb: 2,
                 }}
               >
                 Don't See a<br />Perfect Fit?
               </Typography>
 
               {/* Line Divider */}
-              <Box sx={{ width: "45px", height: "3px", backgroundColor: "var(--color-primary)", mb: 4 }} />
+              <Box sx={{ width: "45px", height: "3px", backgroundColor: "var(--color-primary)", mb: 2.5 }} />
 
               {/* Description */}
               <Typography
                 sx={{
-                  color: "#9CA3AF",
+                  color: "rgba(255,255,255,0.7)",
                   lineHeight: 1.8,
                   fontSize: "0.95rem",
                   maxWidth: "480px",
-                  mb: 5,
+                  mb: 3.5,
+                  textAlign: "justify",
+                  textJustify: "inter-word",
+                  hyphens: "auto",
                 }}
               >
                 We are always looking for exceptional talent to join our team.
@@ -1628,14 +1584,17 @@ function Career() {
                 }}
                 sx={{
                   background: "var(--color-primary)",
-                  px: 4,
-                  py: 1.6,
-                  borderRadius: "3px",
+                  px: 2.5,
+                  height: "42px",
+                  minWidth: "130px",
+                  borderRadius: "var(--radius-sm)",
                   textTransform: "none",
-                  fontWeight: 600,
+                  fontWeight: "var(--font-bold)",
                   fontSize: "0.95rem",
+                  boxShadow: "var(--shadow-button)",
                   "&:hover": {
                     background: "var(--color-primary-hover)",
+                    transform: "translateY(-2px)",
                   },
                 }}
               >
@@ -1858,12 +1817,11 @@ function Career() {
             disabled={applyLoading}
             sx={{
               background: "var(--color-primary)",
-              px: 4, py: 1.2, borderRadius: "3px", textTransform: "none", fontWeight: 600,
-              boxShadow: "0 10px 30px rgba(71,100,255,.35)",
+              px: 4, height: "42px", minWidth: "130px", borderRadius: "var(--radius-sm)", textTransform: "none", fontWeight: "var(--font-bold)",
+              boxShadow: "var(--shadow-button)",
               transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
               "&:hover": {
                 background: "var(--color-primary-hover)",
-                boxShadow: "0 10px 35px rgba(71,100,255,.55)",
                 transform: "translateY(-2px)"
               },
             }}
@@ -2022,12 +1980,11 @@ function Career() {
             disabled={talentLoading}
             sx={{
               background: "var(--color-primary)",
-              px: 4, py: 1.2, borderRadius: "3px", textTransform: "none", fontWeight: 600,
-              boxShadow: "0 10px 30px rgba(71,100,255,.35)",
+              px: 4, height: "42px", minWidth: "130px", borderRadius: "var(--radius-sm)", textTransform: "none", fontWeight: "var(--font-bold)",
+              boxShadow: "var(--shadow-button)",
               transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
               "&:hover": {
                 background: "var(--color-primary-hover)",
-                boxShadow: "0 10px 35px rgba(71,100,255,.55)",
                 transform: "translateY(-2px)"
               },
             }}
