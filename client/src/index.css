@@ -20,7 +20,7 @@
   --color-sub-heading: #4764FF;
   --color-paragraph: #454545;
   --color-sub-paragraph: #E0E0E0;
-  --color-navlink: #7D8FFF;
+  --color-navlink: #4764FF;
   --color-black: #131111;
   --color-white: #FFFFFF;
 
@@ -143,6 +143,15 @@
     color: var(--color-sub-heading);
     font-weight: var(--font-semibold);
     line-height: 1.3;
+  }
+
+  @media (max-width: 768px) {
+    .main-heading {
+      font-size: 38px;
+    }
+    .sub-heading {
+      font-size: 28px;
+    }
   }
 
   .paragraph {

@@ -58,7 +58,7 @@ const Navbar = () => {
       >
         <div className="max-w-[110rem] mx-auto px-8 flex items-center justify-between h-20">
           <motion.div variants={itemVariants} className="flex items-center gap-2">
-            <img src={logo} alt="Strivo Logo" className="h-10 w-auto" />
+            <img src={logo} alt="Strivo Logo" className="h-12 w-auto" />
           </motion.div>
 
           <ul className="flex items-center gap-6">

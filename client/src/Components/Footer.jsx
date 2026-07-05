@@ -74,7 +74,7 @@ const Footer = () => {
           animate={{ opacity: 1, scale: 1 }}
           exit={{ opacity: 0, scale: 0.8 }}
           transition={{ duration: 0.2 }}
-          className="fixed bottom-8 right-8 z-[1000]"
+          className="fixed bottom-6 right-6 md:bottom-8 md:right-8 z-[1000]"
         >
           <div
             onClick={() => {
@@ -85,9 +85,9 @@ const Footer = () => {
                 window.scrollTo({ top: 0, behavior: "smooth" });
               }
             }}
-            className="w-[50px] h-[50px] rounded-full bg-[#4764FF] shadow-[0_8px_25px_rgba(71,100,255,0.4)] flex items-center justify-center cursor-pointer transition-all duration-300 ease-in-out hover:bg-[#3b55d9] hover:-translate-y-1 hover:shadow-[0_12px_30px_rgba(71,100,255,0.6)]"
+            className="w-10 h-10 md:w-[50px] md:h-[50px] rounded-full bg-(--color-primary) shadow-[0_8px_25px_rgba(71,100,255,0.4)] flex items-center justify-center cursor-pointer transition-all duration-300 ease-in-out hover:bg-[#3b55d9] hover:-translate-y-1 hover:shadow-[0_12px_30px_rgba(71,100,255,0.6)]"
           >
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#ffffff" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+            <svg className="w-5 h-5 md:w-6 md:h-6" viewBox="0 0 24 24" fill="none" stroke="#ffffff" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
               <path d="M18 15l-6-6-6 6" />
             </svg>
           </div>
