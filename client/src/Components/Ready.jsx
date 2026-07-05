@@ -14,7 +14,7 @@ function Ready() {
   return (
     <div className="w-full bg-[var(--color-main-bg)]">
       <div className="max-w-[960px] md:max-w-full mx-auto py-6 md:py-8 px-4 sm:px-6 md:px-12 lg:px-20">
-        <div className="bg-white border border-black/5 rounded-[20px] relative overflow-hidden shadow-[0_15px_35px_rgba(0,0,0,0.03)] p-5 sm:p-6 md:p-10 lg:p-16 text-center w-full sm:max-w-[540px] md:max-w-full mx-auto md:h-[500px] flex flex-col justify-center">
+        <div className="bg-[var(--color-main-bg)] relative overflow-hidden shadow-[0_15px_35px_rgba(0,0,0,0.03)] p-5 sm:p-6 md:p-10 lg:p-16 text-center w-full sm:max-w-[540px] md:max-w-full mx-auto md:h-[500px] flex flex-col justify-center">
           {/* Glow Effects */}
           <div
             className="absolute -top-[150px] left-1/2 -translate-x-1/2 w-[350px] md:w-[600px] lg:w-[800px] pointer-events-none z-10"
@@ -26,7 +26,7 @@ function Ready() {
           />
 
           {/* Animated Rotating Globe Graphic in Background */}
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[300px] md:w-[450px] lg:w-[550px] h-[300px] md:h-[450px] lg:h-[550px] flex items-center justify-center pointer-events-none opacity-25 z-10">
+          {/* <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[300px] md:w-[450px] lg:w-[550px] h-[300px] md:h-[450px] lg:h-[550px] flex items-center justify-center pointer-events-none opacity-25 z-10">
             <motion.div
               animate={{ rotate: 360 }}
               transition={{ duration: 50, repeat: Infinity, ease: "linear" }}
@@ -55,21 +55,21 @@ function Ready() {
                 <circle cx="245" cy="235" r="8" fill="#3b82f6" opacity="0.25" />
               </svg>
             </motion.div>
-          </div>
+          </div> */}
 
           <div className="relative z-20 max-w-[700px] md:max-w-[1000px] lg:max-w-[1200px] mx-auto w-full">
             {/* Subheading */}
-            <p className="text-[#3b82f6] font-bold text-[11px] sm:text-[12px] md:text-[12px] lg:text-[14px] tracking-[3px] md:tracking-[5px] uppercase mb-3 mt-7 md:mb-4">
+            <p className="pre-heading text-primary tracking-[3px] md:tracking-[5px] mb-3 mt-7 md:mb-4">
               Let's Build What's Next
             </p>
 
             {/* Heading */}
-            <h2 className="text-[#0f172a] font-extrabold text-[22px] sm:text-[32px] md:text-[36px] lg:text-[42px] leading-tight mb-3 md:mb-6">
-              Ready to <span className="text-[#2563eb]">Transform</span> Your Business?
+            <h2 className="sub-heading text-black leading-tight mb-3 md:mb-6">
+              Ready to <span className="text-primary">Transform</span> Your Business?
             </h2>
 
             {/* Description */}
-            <p className="text-[#475569] text-[13px] md:text-[14px] lg:text-[15px] leading-relaxed max-w-[520px] md:max-w-[700px] lg:max-w-[800px] mx-auto mb-6 md:mb-10">
+            <p className="paragraph max-w-[520px] md:max-w-[700px] lg:max-w-[1000px] mx-auto mb-6 md:mb-10">
               Partner with experienced consultants to unlock growth opportunities,
               streamline operations, and build long-term success.
             </p>
@@ -82,10 +82,10 @@ function Ready() {
                   <TrendingUp className="w-4 h-4 sm:w-5 sm:h-5 md:w-5 lg:w-6 md:h-5 lg:h-6" />
                 </div>
                 <div>
-                  <h3 className="text-[#0f172a] font-bold text-[13px] sm:text-[14px] md:text-[14px] lg:text-[15px] mb-1 sm:mb-2 md:mb-2">
+                  <h3 className="paragraph mb-1 sm:mb-2 md:mb-2">
                     Drive Growth
                   </h3>
-                  <p className="text-[#475569] text-[12px] md:text-[13px] lg:text-[14px] leading-relaxed">
+                  <p className="paragraph text-gray-500 leading-relaxed">
                     Identify new opportunities and accelerate results.
                   </p>
                 </div>
@@ -97,10 +97,10 @@ function Ready() {
                   <Settings className="w-4 h-4 sm:w-5 sm:h-5 md:w-5 lg:w-6 md:h-5 lg:h-6" />
                 </div>
                 <div>
-                  <h3 className="text-[#0f172a] font-bold text-[13px] sm:text-[14px] md:text-[14px] lg:text-[15px] mb-1 sm:mb-2 md:mb-2">
+                  <h3 className="paragraph mb-1 sm:mb-2 md:mb-2">
                     Optimize Operations
                   </h3>
-                  <p className="text-[#475569] text-[12px] md:text-[13px] lg:text-[14px] leading-relaxed">
+                  <p className="paragraph text-gray-500 leading-relaxed">
                     Streamline processes and improve efficiency.
                   </p>
                 </div>
@@ -112,10 +112,10 @@ function Ready() {
                   <WorkspacePremium className="w-4 h-4 sm:w-5 sm:h-5 md:w-5 lg:w-6 md:h-5 lg:h-6" />
                 </div>
                 <div>
-                  <h3 className="text-[#0f172a] font-bold text-[13px] sm:text-[14px] md:text-[14px] lg:text-[15px] mb-1 sm:mb-2 md:mb-2">
+                  <h3 className="paragraph mb-1 sm:mb-2 md:mb-2">
                     Build Lasting Success
                   </h3>
-                  <p className="text-[#475569] text-[12px] md:text-[13px] lg:text-[14px] leading-relaxed">
+                  <p className="paragraph text-gray-500 leading-relaxed">
                     Create sustainable value and long-term impact.
                   </p>
                 </div>
@@ -126,15 +126,15 @@ function Ready() {
             <div className="flex flex-col items-center mt-2 md:mt-4">
               <button
                 onClick={() => navigate("/contact")}
-                className="pl-5 pr-8 py-2 md:py-2.5 md:pl-6 md:pr-10 md:text-[14px] lg:text-[15px] rounded-[3px] font-bold text-[14px] text-white bg-gradient-to-r from-blue-700 to-blue-600 hover:from-blue-800 hover:to-blue-700 shadow-[0_8px_25px_rgba(37,99,235,0.18)] hover:shadow-[0_12px_30px_rgba(37,99,235,0.25)] hover:-translate-y-0.5 transition-all duration-300 flex items-center gap-3 md:gap-3 cursor-pointer"
+                className="btn gap-3 p-4"
               >
-                <div className="w-[22px] h-[22px] md:w-[20px] md:h-[20px] rounded-full bg-white/15 flex items-center justify-center">
+                <div className="w-[22px] h-[22px] md:w-[20px] md:h-[20px] rounded-full flex items-center justify-center">
                   <ArrowForward className="text-[12px] sm:text-[14px] md:text-[12px] text-white" />
                 </div>
                 Contact Us
               </button>
 
-              <p className="text-[#475569] text-[12.5px] md:text-[13px] mt-4 max-w-[180px] md:max-w-none leading-relaxed">
+              <p className="paragraph font-light text-[12.5px] md:text-[13px] mt-4 max-w-[180px] md:max-w-none leading-relaxed">
                 Let's start a conversation about your goals.
               </p>
             </div>

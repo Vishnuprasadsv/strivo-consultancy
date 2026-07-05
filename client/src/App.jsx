@@ -211,22 +211,7 @@ const AppLayout = () => {
 
       <ConditionalFooter />
 
-      {showScrollButton && (
-        <button
-          onClick={scrollToTop}
-          className="fixed bottom-6 right-6 z-[9999] p-3 text-white shadow-lg transition-all duration-300 hover:scale-105 active:scale-95 cursor-pointer flex items-center justify-center"
-          style={{
-            backgroundColor: 'var(--color-primary)',
-            borderRadius: 'var(--radius-sm)',
-            border: 'none',
-          }}
-          title="Scroll to Top"
-        >
-          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" style={{ width: '18px', height: '18px' }}>
-            <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 15.75l7.5-7.5 7.5 7.5" />
-          </svg>
-        </button>
-      )}
+
     </div>
   );
 };

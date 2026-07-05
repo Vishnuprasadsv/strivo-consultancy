@@ -114,18 +114,18 @@ const CaseStudies = () => {
          ref={cardsRef}
         className="max-w-7xl mx-auto px-6 py-20 text-center"
       >
-        <h1 className="text-5xl font-bold mb-6 text-pure-black">
+        <h1 className="main-heading ">
           Proven Results for Industry Leaders
         </h1>
 
-        <p className="text-black max-w-3xl mx-auto mb-10">
+        <p className="paragraph mt-[20px]">
           Explore how we partner with forward-thinking organizations
           to drive transformation, optimize operations, and achieve
           sustainable growth.
         </p>
 
         {/* Category Buttons */}
-        <div className="flex flex-wrap justify-center gap-3">
+        <div className="flex flex-wrap justify-center gap-3 mt-[50px]">
           {categories.map((category) => (
             <button
               key={category}
@@ -154,7 +154,7 @@ const CaseStudies = () => {
         variants={fadeUpVariants}
         className="max-w-7xl mx-auto px-6 pb-8"
       >
-        <p className="text-black">
+        <p className="paragraph">
           Showing {paginatedStudies.length} of {filteredStudies.length} case studies
         </p>
       </motion.div>
@@ -172,9 +172,9 @@ const CaseStudies = () => {
                 delay: index * 0.1,
                 ease: "easeOut",
               }}
-              className="group relative card border border-slate-800/80 overflow-hidden bg-[#0d131f] backdrop-blur-md
-                         hover:border-blue-500/50 hover:-translate-y-2 hover:shadow-[0_20px_40px_rgba(59,130,246,0.08)]
-                         transition-all duration-500 flex flex-col h-full"
+              className="group relative card border border-white-800/80 overflow-hidden bg-(--color-sub-bg) backdrop-blur-md
+                         hover:border-white-500/50 hover:-translate-y-2 hover:shadow-[0_20px_40px_rgba(59,130,246,0.08)]
+                         transition-all duration-500 flex flex-col h-full shadow-md/30"
             >
               {/* Image Header with Container */}
               <div className="relative overflow-hidden aspect-[16/10] bg-[#070b13] flex items-center justify-center">
@@ -192,12 +192,12 @@ const CaseStudies = () => {
               {/* Card Body */}
               <div className="p-6 flex flex-col flex-grow">
                 {/* Truncated Title (2 lines max) */}
-                <h3 className="text-xl font-bold text-white mb-3 group-hover:text-blue-400 transition-colors duration-300 leading-snug line-clamp-2">
+                <h3 className="text-xl font-bold text-(--color-sub-heading) mb-3 group-hover:text-blue-400 transition-colors duration-300 leading-snug line-clamp-2">
                   {study.title}
                 </h3>
 
                 {/* Truncated Summary (3 lines max) */}
-                <p className="text-gray-400 text-sm leading-relaxed mb-6 flex-grow line-clamp-3">
+                <p className="text-(--color-paragraph) text-sm leading-relaxed mb-6 flex-grow line-clamp-3">
                   {study.summary}
                 </p>
 
@@ -208,7 +208,7 @@ const CaseStudies = () => {
                       navigate(`/case-study-details/${study._id}`);
                       window.scrollTo(0, 0);
                     }}
-                    className="inline-flex items-center gap-2 text-sm font-semibold text-blue-400 hover:text-blue-300 group/btn transition-colors"
+                    className="inline-flex items-center gap-2 text-sm font-semibold text-(--color-sub-heading) hover:text-blue-300 group/btn transition-colors"
                   >
                     View Project
                     <svg
@@ -242,15 +242,18 @@ const CaseStudies = () => {
                 )}
               disabled={currentPage === 1}
               className="
-px-4 py-2
-rounded-lg
-bg-slate-800
+w-10 h-10
+flex items-center justify-center
+rounded-full
+bg-primary
 text-white
 disabled:opacity-40
-hover:bg-blue-600
+hover:bg-blue-700
 transition"
             >
-              Previous
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M15 18l-6-6 6-6" />
+              </svg>
             </button>
 
             {[...Array(totalPages)].map((_, i) => (
@@ -263,13 +266,13 @@ transition"
                 className={`
 w-10
 h-10
-rounded-lg
-font-medium
+rounded-full
+font-bold
 transition
 
 ${currentPage === i + 1
-                    ? "bg-blue-600 text-white"
-                    : "bg-slate-800 text-gray-300 hover:bg-blue-600"
+                    ? "text-primary font-bold bg-transparent"
+                    : "text-black font-bold bg-transparent hover:text-primary"
                   }
 `}
               >
@@ -285,15 +288,18 @@ ${currentPage === i + 1
                 )}
               disabled={currentPage === totalPages}
               className="
-px-4 py-2
-rounded-lg
-bg-slate-800
+w-10 h-10
+flex items-center justify-center
+rounded-full
+bg-primary
 text-white
 disabled:opacity-40
-hover:bg-blue-600
+hover:bg-blue-700
 transition"
             >
-              Next
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M9 18l6-6-6-6" />
+              </svg>
             </button>
 
           </div>
@@ -315,11 +321,11 @@ transition"
       >
         <div className="w-[100vw] bg-sub-bg overflow-hidden">
           <div className="max-w-7xl mx-auto px-6 py-20 text-center">
-            <h2 className="text-4xl font-bold mb-4 text-pure-black">
+            <h2 className="sub-heading mb-4 ">
               Global Impact
             </h2>
 
-            <p className="text-black mb-14">
+            <p className="paragraph mb-14">
               Quantifiable results delivered across industries.
             </p>
 
@@ -340,11 +346,11 @@ transition"
                     delay: index * 0.15,
                   }}
                 >
-                  <h3 className="text-5xl font-bold text-blue-500">
+                  <h3 className="sub-heading font-bold">
                     {item.value}
                   </h3>
 
-                  <p className="text-black mt-2">
+                  <p className="paragraph mt-2">
                     {item.label}
                   </p>
                 </motion.div>

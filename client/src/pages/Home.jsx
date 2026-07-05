@@ -551,11 +551,12 @@ function Home() {
 
         {/* Main Content */}
 
-        <Container
-          maxWidth="xl"
+        <Box
+          className="max-w-[110rem] mx-auto px-8"
           sx={{
             position: "relative",
             zIndex: 2,
+            width: "100%",
           }}
         >
           <Box
@@ -683,7 +684,7 @@ function Home() {
 
 
           </Box>
-        </Container>
+        </Box>
       </Box>
 
       {/* Animated downward arrow below hero image */}
@@ -1361,7 +1362,7 @@ function Home() {
                   borderRadius: "50%",
                   background: "var(--color-btn-bg)",
                   border: "1px solid rgba(255, 255, 255, 0.15)",
-                  display: "flex",
+                  display: { xs: "none", md: "flex" },
                   alignItems: "center",
                   justifyContent: "center",
                   cursor: "pointer",
@@ -1391,7 +1392,7 @@ function Home() {
                   borderRadius: "50%",
                   background: "var(--color-btn-bg)",
                   border: "1px solid rgba(255, 255, 255, 0.15)",
-                  display: "flex",
+                  display: { xs: "none", md: "flex" },
                   alignItems: "center",
                   justifyContent: "center",
                   cursor: "pointer",
@@ -1423,7 +1424,18 @@ function Home() {
                 }}
                 pagination={{
                   clickable: true,
-                  el: ".custom-swiper-pagination"
+                  el: ".custom-swiper-pagination",
+                  type: "custom",
+                  renderCustom: function (swiper, current, total) {
+                    const activeIndex = (current - 1) % 3;
+                    let html = "";
+                    for (let i = 0; i < 3; i++) {
+                      html += `<span class="swiper-pagination-bullet ${
+                        activeIndex === i ? "swiper-pagination-bullet-active" : ""
+                      }"></span>`;
+                    }
+                    return html;
+                  }
                 }}
                 breakpoints={{
                   0: {
@@ -1561,32 +1573,40 @@ function Home() {
                     )}
                   </SwiperSlide>
                 ))}
-              </Swiper>
 
-              {/* Custom Styled Pagination Dots */}
-              <Box
-                className="custom-swiper-pagination"
-                sx={{
-                  display: "flex",
-                  justifyContent: "center",
-                  gap: 1,
-                  mt: 2,
-                  "& .swiper-pagination-bullet": {
-                    width: 8,
-                    height: 8,
-                    backgroundColor: "#4b5563",
-                    opacity: 0.5,
-                    transition: "all 0.3s ease",
-                    cursor: "pointer",
-                  },
-                  "& .swiper-pagination-bullet-active": {
-                    backgroundColor: "#2563eb",
-                    opacity: 1,
-                    width: 20,
-                    borderRadius: "4px"
-                  }
-                }}
-              />
+                {/* Custom Styled Pagination Dots */}
+                <Box
+                  className="custom-swiper-pagination"
+                  sx={{
+                    display: "flex",
+                    justifyContent: "center",
+                    alignItems: "center",
+                    gap: 1,
+                    mt: { xs: 2, md: 3 },
+                    "& .swiper-pagination-bullet": {
+                      width: "6px",
+                      height: "6px",
+                      "@media (min-width: 900px)": {
+                        width: "8px",
+                        height: "8px",
+                      },
+                      backgroundColor: "#4b5563",
+                      opacity: 0.5,
+                      transition: "all 0.3s ease",
+                      cursor: "pointer",
+                    },
+                    "& .swiper-pagination-bullet-active": {
+                      backgroundColor: "#2563eb",
+                      opacity: 1,
+                      width: "16px",
+                      "@media (min-width: 900px)": {
+                        width: "20px",
+                      },
+                      borderRadius: "4px"
+                    }
+                  }}
+                />
+              </Swiper>
             </Box>
           )}
 

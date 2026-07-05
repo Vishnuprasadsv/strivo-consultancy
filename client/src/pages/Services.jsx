@@ -197,8 +197,8 @@ const Services = () => {
     flex items-center justify-center
     text-primary
     transition-all duration-300
-    group-hover:bg-[#2F6BFF]
-    group-hover:text-white mb-5
+    group-hover:bg-primary
+    group-hover:!text-white mb-5
   "
                   >
                     {service.icon}
