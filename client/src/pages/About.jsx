@@ -58,22 +58,22 @@ function Aboutus() {
 
 const featureData = [
   {
-    icon: <ShieldIcon sx={{ color: "var(--color-blue)", fontSize: 20 }} />,
+    icon: <ShieldIcon sx={{ color: "var(--color-primary)", fontSize: 20 }} />,
     title: "Integrity",
     desc: "Uncompromising honesty in our analysis and advice.",
   },
   {
-    icon: <LightbulbIcon sx={{ color: "var(--color-blue)", fontSize: 20 }} />,
+    icon: <LightbulbIcon sx={{ color: "var(--color-primary)", fontSize: 20 }} />,
     title: "Innovation",
     desc: "Challenging the status quo to find superior solutions.",
   },
   {
-    icon: <TrendingUpIcon sx={{ color: "var(--color-blue)", fontSize: 20 }} />,
+    icon: <TrendingUpIcon sx={{ color: "var(--color-primary)", fontSize: 20 }} />,
     title: "Impact",
     desc: "Measuring success exclusively by client outcomes.",
   },
   {
-    icon: <GroupIcon sx={{ color: "var(--color-blue)", fontSize: 20 }} />,
+    icon: <GroupIcon sx={{ color: "var(--color-primary)", fontSize: 20 }} />,
     title: "Collaboration",
     desc: "Partnering deeply with clients to ensure lasting capability.",
   },
@@ -105,62 +105,6 @@ const itemVariants = {
 
   return (
     <div>
-       {/* <Box
-      sx={{
-        backgroundColor: "#000",
-        color: "#fff",
-        minHeight: "80vh",
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-      }}
-    >
-      <Container maxWidth="lg">
-        <Box
-          sx={{
-            textAlign: "center",
-            maxWidth: "1200px",
-            mx: "auto",
-          }}
-        >
-          <Typography
-            sx={{
-              fontWeight: 700,
-              lineHeight: 1.1,
-              mb: 5,
-              letterSpacing: "-1px",
-              fontSize: {
-                xs: "2.5rem",
-                sm: "3.5rem",
-                md: "5rem",
-                lg: "6rem",
-              },
-            }}
-          >
-            Precision Strategy for the Modern Enterprise.
-          </Typography>
-
-          <Typography
-            sx={{
-              color: "#d1d5db",
-              maxWidth: "1000px",
-              mx: "auto",
-              lineHeight: 1.7,
-              fontWeight: 400,
-              fontSize: {
-                xs: "1.1rem",
-                sm: "1.3rem",
-                md: "1.8rem",
-              },
-            }}
-          >
-            We bridge the gap between visionary thinking and operational
-            excellence. Discover the story, people, and values that drive our
-            relentless pursuit of impact.
-          </Typography>
-        </Box>
-      </Container>
-    </Box> */}
     <Box
   id="hero-section"
   sx={{
@@ -189,43 +133,26 @@ const itemVariants = {
       >
         {/* Heading */}
         <motion.div variants={itemVariants}>
-          <Typography
-            sx={{
-              fontWeight: 700,
-              lineHeight: 1.15,
-              mb: 4,
-              letterSpacing: "-0.5px",
-              fontSize: {
-                xs: "2.2rem",
-                sm: "2.8rem",
-                md: "3.2rem",
-                lg: "3.8rem",
-              },
-            }}
+          <Box
+            component="h1"
+            className="main-heading"
+            sx={{ mb: 4 }}
           >
             Precision Strategy for the Modern Enterprise.
-          </Typography>
+          </Box>
         </motion.div>
 
         {/* Description */}
         <motion.div variants={itemVariants}>
-          <Typography
-            sx={{
-              color: "#cbd5e1",
-              maxWidth: "800px",
-              mx: "auto",
-              lineHeight: 1.75,
-              fontWeight: 400,
-              fontSize: {
-                xs: "0.95rem",
-                md: "1.05rem",
-              },
-            }}
+          <Box
+            component="p"
+            className="paragraph"
+            sx={{ maxWidth: "800px", mx: "auto", color:"var(--color-white)" }}
           >
             We bridge the gap between visionary thinking and operational
             excellence. Discover the story, people, and values that drive our
             relentless pursuit of impact.
-          </Typography>
+          </Box>
         </motion.div>
       </Box>
     </motion.div>
@@ -298,67 +225,42 @@ const itemVariants = {
           },
         }}
       >
-        <Typography
-          sx={{
-            color: "var(--color-pure-black)",
-            fontWeight: 900,
-            letterSpacing: "3px",
-            mb: 2,
-            textTransform: "uppercase",
-            fontSize: "0.95rem",
-          }}
+        <Box
+          component="span"
+          className="pre-heading"
+          sx={{ mb: 2 }}
         >
           Our Story
-        </Typography>
+        </Box>
 
-        <Typography
-          sx={{
-            fontWeight: 700,
-            color: "var(--color-pure-black)",
-            mb: 4,
-            lineHeight: 1.2,
-            fontSize: {
-              xs: "1.8rem",
-              sm: "2.2rem",
-              md: "2.5rem",
-            },
-          }}
+        <Box
+          component="h2"
+          className="sub-heading"
+          sx={{ mb: 4 }}
         >
           Architects of Corporate Transformation
-        </Typography>
+        </Box>
 
-        <Typography
-          sx={{
-            color: "var(--color-pure-black)",
-            mb: 3,
-            lineHeight: 1.8,
-            fontSize: {
-              xs: "0.9rem",
-              md: "0.95rem",
-            },
-          }}
+        <Box
+          component="p"
+          className="paragraph"
+          sx={{ mb: 3 }}
         >
           Founded on the principle that true innovation requires deep
           analytical rigor, our consultancy began as a boutique advisory
           firm for technology pioneers. Today, we are a global partnership
           serving Fortune 500 leaders across industries.
-        </Typography>
+        </Box>
 
-        <Typography
-          sx={{
-            color: "var(--color-pure-black)",
-            lineHeight: 1.8,
-            fontSize: {
-              xs: "0.9rem",
-              md: "0.95rem",
-            },
-          }}
+        <Box
+          component="p"
+          className="paragraph"
         >
           Our journey is defined by a commitment to disciplined analysis,
           strategic thinking, and bold execution. We partner with clients
           to embed new capabilities, drive sustainable growth, and build
           resilient organizations prepared for the future.
-        </Typography>
+        </Box>
       </Box>
     </Box>
   </Container>
@@ -450,12 +352,12 @@ const itemVariants = {
                   transition: "all 0.3s ease",
                 }}
               >
-                <RocketLaunchIcon sx={{ color: "var(--color-blue)", transition: "all 0.3s ease" }} />
+                <RocketLaunchIcon sx={{ color: "var(--color-primary)", transition: "all 0.3s ease" }} />
               </Box>
 
               <Typography
                 sx={{
-                  color: "var(--color-pure-black)",
+                  color: "var(--color-paragraph)",
                   fontWeight: 700,
                   fontSize: {
                     xs: "1.1rem",
@@ -469,7 +371,7 @@ const itemVariants = {
 
               <Typography
                 sx={{
-                  color: "var(--color-pure-black)",
+                  color: "var(--color-paragraph)",
                   fontSize: {
                     xs: "0.85rem",
                     md: "0.92rem",
@@ -556,12 +458,12 @@ const itemVariants = {
                   transition: "all 0.3s ease",
                 }}
               >
-                <VisibilityIcon sx={{ color: "var(--color-blue)", transition: "all 0.3s ease" }} />
+                <VisibilityIcon sx={{ color: "var(--color-primary)", transition: "all 0.3s ease" }} />
               </Box>
 
               <Typography
                 sx={{
-                  color: "var(--color-pure-black)",
+                  color: "var(--color-paragraph)",
                   fontWeight: 700,
                   fontSize: {
                     xs: "1.1rem",
@@ -575,7 +477,7 @@ const itemVariants = {
 
               <Typography
                 sx={{
-                  color: "var(--color-pure-black)",
+                  color: "var(--color-paragraph)",
                   fontSize: {
                     xs: "0.85rem",
                     md: "0.92rem",
@@ -678,7 +580,7 @@ const itemVariants = {
 
                 <Typography
                   sx={{
-                    color: "var(--color-pure-black)",
+                    color: "var(--color-paragraph)",
                     fontWeight: 600,
                     fontSize: { xs: "0.95rem", md: "1.1rem" },
                     mb: 1,
@@ -689,7 +591,7 @@ const itemVariants = {
 
                 <Typography
                   sx={{
-                    color: "var(--color-pure-black)",
+                    color: "var(--color-paragraph)",
                     fontSize: { xs: "0.8rem", md: "0.9rem" },
                     lineHeight: 1.7,
                     textAlign: "left",
@@ -723,32 +625,28 @@ const itemVariants = {
       >
         {/* Heading */}
         <Box textAlign="center" mb={5}>
-          <Typography
+          <Box
+          component="h2"
+          className='sub-heading'
             sx={{
-              color: "var(--color-pure-black)",
               textAlign: 'center',
-              fontWeight: 700,
-              fontSize: {
-                xs: "1.8rem",
-                md: "2.2rem",
-              },
               mb: 1,
             }}
           >
             Executive Leadership
-          </Typography>
+          </Box>
 
-          <Typography
+          <Box
+          component="p"
+          className='paragraph'
             sx={{
-              color: "var(--color-pure-black)",
-              fontSize: "0.95rem",
               textAlign: 'center',
               mt: 1,
               mb: 2,
             }}
           >
             Guided by decades of industry experience.
-          </Typography>
+          </Box>
         </Box>
 
         {/* Cards */}
@@ -765,11 +663,10 @@ const itemVariants = {
           {leaders.map((leader, index) => (
             <Box
               key={index}
+              className="card"
               sx={{
-                bgcolor: "var(--color-sub-bg)",
-                p: { xs: 1.5, sm: 2 },
-                borderRadius: "6px",
                 cursor: "pointer",
+                backgroundColor: "var(--color-sub-bg)",
                 transition: "all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94)",
                 position: "relative",
                 overflow: "hidden",
@@ -830,7 +727,7 @@ const itemVariants = {
               {/* Content */}
               <Typography
                 sx={{
-                  color: "var(--color-pure-black)",
+                  color: "var(--color-paragraph)",
                   fontWeight: 700,
                   fontSize: { xs: "14px", sm: "16px" },
                   mb: 0.5,
@@ -841,7 +738,7 @@ const itemVariants = {
 
               <Typography
                 sx={{
-                  color: "var(--color-pure-black)",
+                  color: "var(--color-paragraph)",
                   fontSize: { xs: "11px", sm: "13px" },
                   fontWeight: 600,
                   mb: 1.5,
@@ -852,7 +749,7 @@ const itemVariants = {
 
               <Typography
                 sx={{
-                  color: "var(--color-pure-black)",
+                  color: "var(--color-paragraph)",
                   fontSize: { xs: "11px", sm: "13px" },
                   lineHeight: 1.7,
                   textAlign: "left",

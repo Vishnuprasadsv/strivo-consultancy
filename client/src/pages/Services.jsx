@@ -75,18 +75,18 @@ const Services = () => {
         initial="hidden"
         animate="visible"
         variants={fadeUpVariants}
-        className="max-w-7xl mx-auto px-6 py-16"
+        className="max-w-[110rem] mx-auto px-8 py-16"
       >
         <div className="grid lg:grid-cols-2 gap-10 items-center">
           <div>
-            <h1 className="text-5xl font-bold leading-tight">
+            <h1 className="text-main-heading font-bold text-heading leading-tight">
               Expert Precision for
-              <span className="block text-blue-500">
+              <span className="block text-white">
                 Complex Challenges
               </span>
             </h1>
 
-            <p className="text-gray-400 mt-6 leading-8">
+            <p className="paragraph text-white mt-6">
               We architect scalable solutions for enterprise growth.
               Discover our comprehensive suite of consulting services
               designed to optimize operations, drive digital
@@ -99,7 +99,7 @@ const Services = () => {
             <img
               src={heroImage}
               alt="Services"
-              className="w-full h-[400px] object-cover rounded-2xl"
+              className="w-full h-[400px] object-cover rounded-[3px]"
             />
           </div>
         </div>
@@ -115,17 +115,11 @@ const Services = () => {
           className="max-w-7xl mx-auto px-6 "
         >
           <div className="text-center max-w-3xl mx-auto mb-14">
-            <h2
-              className="text-4xl font-bold mb-4"
-              style={{ color: "var(--color-pure-black)" }}
-            >
+            <h2 className="sub-heading mb-4">
               Our Consulting Services
             </h2>
 
-            <p
-              className="text-lg leading-7"
-              style={{ color: "var(--color-pure-black)" }}
-            >
+            <p className="paragraph">
               We provide comprehensive consulting across strategy,
               operations, digital transformation, and change management.
             </p>
@@ -201,7 +195,7 @@ const Services = () => {
     border border-[#e2e8f0]
     bg-blue-50
     flex items-center justify-center
-    text-[#2F6BFF]
+    text-primary
     transition-all duration-300
     group-hover:bg-[#2F6BFF]
     group-hover:text-white mb-5
@@ -213,8 +207,8 @@ const Services = () => {
 
                   <h3
                     className="
-      text-2xl
-      font-bold
+      text-pparagrah
+      font-[var(--font-semibold)]
       text-black
       mb-4
       transition-colors
@@ -228,7 +222,7 @@ const Services = () => {
 
                   <p
                     className="
-      text-gray-600
+      text-paragraph
       leading-7
       line-clamp-3
       "
@@ -249,11 +243,11 @@ const Services = () => {
         <section className="max-w-[89%] mx-auto px-6 pt-16 pb-16">
 
           {/* Section Heading & Subheading */}
-          <div className="mb-12">
-            <h2 className="text-4xl font-bold mb-3" style={{ color: "var(--color-pure-black)" }}>
+          <div className="mb-12 text-center">
+            <h2 className="sub-heading mb-3">
               Detailed Service Breakdown
             </h2>
-            <p style={{ color: "var(--color-pure-black)", opacity: 0.8 }}>
+            <p className="paragraph">
               Explore the custom methodologies, processes, and core deliverables we provide for each service area.
             </p>
           </div>
@@ -267,7 +261,7 @@ const Services = () => {
                 backgroundColor: "var(--color-main-bg)",
                 color: "var(--color-pure-black)",
                 border: "1px solid rgba(5, 0, 0, 0.135)",
-                borderRadius: "8px",
+                borderRadius: "3px",
               }}
               initial={{ opacity: 0, y: 60 }}
               whileInView={{ opacity: 1, y: 0 }}
@@ -280,15 +274,15 @@ const Services = () => {
               className="grid lg:grid-cols-2 gap-8 border rounded-xl p-8 mb-8"
             >
               <div>
-                <h3 className="text-3xl font-bold mb-4">
+                <h3 className="sub-heading">
                   {service.title}
                 </h3>
 
-                <p className="mb-6">
+                <p className="paragraph">
                   {service.description}
                 </p>
 
-                <ul className="space-y-3">
+                <ul className="space-y-3 paragraph text-gray-600">
                   <li>✔ Comprehensive assessment and diagnostics</li>
                   <li>✔ Customized implementation roadmap</li>
                   <li>✔ Ongoing support and optimization</li>

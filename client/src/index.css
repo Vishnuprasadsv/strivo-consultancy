@@ -191,7 +191,6 @@
 /* cards */
 
   .card {
-    background: white;
     border-radius: var(--radius-sm);
     border: 1px solid var(--color-border);
     box-shadow: var(--shadow-card);
