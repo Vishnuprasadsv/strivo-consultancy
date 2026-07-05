@@ -191,8 +191,8 @@ const Insight = () => {
               <span className="inline-block px-3 py-1 bg-[#1F2937] text-gray-300 text-xs font-semibold uppercase tracking-wider rounded-md mb-6 w-max">
                 Featured
               </span>
-              <h2 className="text-3xl font-bold text-white mb-4">{featuredArticle.title}</h2>
-              <p className="text-gray-400 mb-6 line-clamp-3">
+              <h2 className="sub-heading  text-white mb-4">{featuredArticle.title}</h2>
+              <p className="pharagraph text-gray-400 mb-6 line-clamp-3">
                 {featuredArticle.description}
               </p>
               <div className="flex items-center justify-between mt-auto">
@@ -323,7 +323,7 @@ const Insight = () => {
                             // Prevent card click navigation from colliding
                             e.stopPropagation();
                           }}
-                          className="text-blue-500 font-medium flex items-center hover:text-white transition-colors w-max group"
+                          className="text-blue-500 font-medium flex items-center hover:text-[#454545] transition-colors w-max group"
                         >
                           Read Article <span className="ml-1 group-hover:translate-x-1 transition-transform">→</span>
                         </Link>

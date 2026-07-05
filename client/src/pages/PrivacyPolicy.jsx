@@ -15,11 +15,11 @@ const fadeUp = {
 
 const PrivacyPolicy = () => {
     return (
-        <div className="min-h-screen bg-[var(--color-main-bg)] text-[var(--color-pure-black)]">
+        <div className="min-h-screen  text-[var(--color-pure-black)]">
 
             {/* Hero */}
 
-            <section className="pt-32 pb-16 px-6">
+            <section className="pt-32 pb-16 px-6 bg-main">
 
                 <motion.div
                     initial="hidden"
@@ -46,14 +46,13 @@ const PrivacyPolicy = () => {
 
                     </div>
 
-                    <h1 className="text-5xl font-bold mb-5">
+                    <h1 className="main-heading mb-5">
 
                         Your Privacy Matters
 
                     </h1>
 
-                    <p className="
-          text-[var(--color-pure-black)]
+                    <p className=" paragraph
           max-w-3xl
           mx-auto
           leading-8">
@@ -65,7 +64,7 @@ const PrivacyPolicy = () => {
 
                     </p>
 
-                    <p className="text-sm text-[var(--color-pure-black)] mt-5">
+                    <p className="paragraph mt-5">
 
                         Last Updated: July 2026
 
@@ -77,7 +76,7 @@ const PrivacyPolicy = () => {
 
             {/* Content */}
 
-            <section className="pb-24 px-6">
+            <section className="pb-24 px-6 bg-sub p-8">
 
                 <div className="max-w-5xl mx-auto space-y-6">
 
@@ -88,8 +87,8 @@ const PrivacyPolicy = () => {
                         initial="hidden"
                         whileInView="visible"
                         viewport={{ once: true }}
-                        className="
-            bg-[var(--color-sub-bg)]
+                        className=" card
+            
             border
             border-gray-200
             rounded-2xl
@@ -99,7 +98,7 @@ const PrivacyPolicy = () => {
 
                             <SecurityIcon className="text-blue-500" />
 
-                            <h2 className="text-2xl font-bold">
+                            <h2 className="sub-heading ">
 
                                 Information We Collect
 
@@ -107,16 +106,15 @@ const PrivacyPolicy = () => {
 
                         </div>
 
-                        <p className="text-[var(--color-pure-black)] leading-8">
+                        <p className="paragraph leading-8">
 
                             We may collect:
 
                         </p>
 
-                        <ul className="
+                        <ul className=" paragraph
             mt-4
             space-y-2
-            text-[var(--color-pure-black)]
             list-disc
             pl-6">
 
@@ -144,7 +142,7 @@ const PrivacyPolicy = () => {
                         whileInView="visible"
                         viewport={{ once: true }}
                         className="
-            bg-[var(--color-sub-bg)]
+            card
             border
             border-gray-200
             rounded-2xl
@@ -154,7 +152,7 @@ const PrivacyPolicy = () => {
 
                             <StorageIcon className="text-blue-500" />
 
-                            <h2 className="text-2xl font-bold">
+                            <h2 className="sub-heading">
 
                                 How We Use Information
 
@@ -164,7 +162,7 @@ const PrivacyPolicy = () => {
 
                         <ul className="
             space-y-3
-            text-[var(--color-pure-black)]
+            paragraph
             list-disc
             pl-6">
 
@@ -190,7 +188,7 @@ const PrivacyPolicy = () => {
                         whileInView="visible"
                         viewport={{ once: true }}
                         className="
-            bg-[var(--color-sub-bg)]
+            card
             border
             border-gray-200
             rounded-2xl
@@ -200,7 +198,7 @@ const PrivacyPolicy = () => {
 
                             <LockIcon className="text-blue-500" />
 
-                            <h2 className="text-2xl font-bold">
+                            <h2 className="sub-heading">
 
                                 Data Protection
 
@@ -208,7 +206,7 @@ const PrivacyPolicy = () => {
 
                         </div>
 
-                        <p className="text-[var(--color-pure-black)] leading-8">
+                        <p className="paragraph leading-8">
 
                             We implement security measures to
                             protect your information against
@@ -217,7 +215,7 @@ const PrivacyPolicy = () => {
 
                         </p>
 
-                        <p className="text-[var(--color-pure-black)] leading-8 mt-4">
+                        <p className="paragraph leading-8 mt-4">
 
                             We never sell your personal information
                             to third parties.
@@ -234,18 +232,18 @@ const PrivacyPolicy = () => {
                         whileInView="visible"
                         viewport={{ once: true }}
                         className="
-            bg-[var(--color-sub-bg)]
+            card
             border
             border-gray-200
             rounded-2xl
             p-8"
                     >
 
-                        <h2 className="text-2xl font-bold text-[var(--color-pure-black)] mb-4">
+                        <h2 className="sub-heading mb-4">
                             Questions?
                         </h2>
 
-                        <p className="text-[var(--color-pure-black)] leading-7">
+                        <p className="paragraph leading-7">
                             If you have any questions regarding this Privacy Policy,
                             our team will be happy to assist you.
                         </p>
