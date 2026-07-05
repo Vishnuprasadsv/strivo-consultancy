@@ -81,7 +81,7 @@ const AdminNavbar = () => {
           getReviewsAPI()
         ]);
 
-     
+
       // Applications
 
       let applicationNotifications = [];
@@ -117,25 +117,25 @@ const AdminNavbar = () => {
 
       if (inquiryRes.status === 200) {
 
-  inquiryNotifications = inquiryRes.data.map(
+        inquiryNotifications = inquiryRes.data.map(
 
-    inquiry => ({
+          inquiry => ({
 
-      id: inquiry._id,
+            id: inquiry._id,
 
-      type: "inquiry",
+            type: "inquiry",
 
-      text:
-        `${inquiry.fullName} requested ${inquiry.service}`,
+            text:
+              `${inquiry.fullName} requested ${inquiry.service}`,
 
-      time:
-        new Date(inquiry.createdAt)
+            time:
+              new Date(inquiry.createdAt)
 
-    })
+          })
 
-  );
+        );
 
-}
+      }
 
 
       // Reviews
@@ -231,7 +231,7 @@ const AdminNavbar = () => {
           >
             <MenuIcon />
           </button>
-          
+
           {/* Search - Removed as per user request */}
           <div></div>
         </div>
@@ -291,8 +291,8 @@ const AdminNavbar = () => {
             )}
           </div>
 
-          <div className="flex items-center gap-3 cursor-pointer pl-4 border-l border-[var(--color-border)]">
-            <div className="text-right hidden md:block">
+          <Link to="/admin/profile" className="flex items-center gap-3 cursor-pointer pl-4 border-l border-[var(--color-border)]">
+            <div className="text-right hidden md:block text-left">
               {adminUser?.username && <p className="text-sm font-medium text-[var(--color-black)]">{adminUser.username}</p>}
               {adminUser?.role && <p className="text-xs text-[var(--color-paragraph)] opacity-60">{adminUser.role}</p>}
             </div>
@@ -301,13 +301,13 @@ const AdminNavbar = () => {
             ) : (
               <AccountCircleIcon className="text-slate-400 w-10 h-10" style={{ fontSize: '40px' }} />
             )}
-          </div>
+          </Link>
         </div>
       </motion.nav>
 
       {/* Mobile Overlay */}
       {isMobileMenuOpen && (
-        <div 
+        <div
           className="fixed inset-0 bg-black/60 backdrop-blur-sm z-40 md:hidden"
           onClick={() => setIsMobileMenuOpen(false)}
         />
@@ -318,7 +318,7 @@ const AdminNavbar = () => {
         initial={{ x: -300, opacity: 0 }}
         animate={{ x: 0, opacity: 1 }}
         transition={{ duration: 0.6, ease: "easeOut" }}
-        className={`fixed top-0 left-0 h-screen w-64 bg-[#0a0f1c]/95 md:bg-white/5 backdrop-blur-xl border-r border-white/10 z-50 flex flex-col transition-transform duration-300 ${isMobileMenuOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'}`}
+        className={`fixed top-0 left-0 h-screen w-64 bg-[var(--color-btn-bg)] backdrop-blur-xl border-r border-white/10 z-50 flex flex-col transition-transform duration-300 ${isMobileMenuOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'}`}
       >
         {/* Mobile Close Button */}
         <button 
@@ -330,7 +330,7 @@ const AdminNavbar = () => {
 
         {/* Logo Section */}
         <div className="flex flex-col items-center justify-center py-6 gap-2">
-          <img src={logo} alt="Strivo Logo" className="h-10 w-auto" />
+          <img src={logo} alt="Strivo Logo" className="h-10 w-auto brightness-0 invert" />
         </div>
 
         <div className="mx-6 border-b border-white/10 mb-6"></div>
@@ -344,7 +344,7 @@ const AdminNavbar = () => {
                 key={link.name}
                 to={link.path}
                 onClick={() => setIsMobileMenuOpen(false)}
-                className={`relative flex items-center gap-4 px-4 py-3 rounded-xl transition-colors duration-300 group cursor-pointer ${isActive ? 'text-blue-500 font-medium' : 'text-white/70 hover:text-white hover:bg-white/5'
+                className={`relative flex items-center px-4 py-3 rounded-xl transition-colors duration-300 group cursor-pointer ${isActive ? 'text-white font-bold bg-white/10' : 'text-white hover:bg-white/5 font-bold'
                   }`}
               >
                 {isActive && (
@@ -355,9 +355,6 @@ const AdminNavbar = () => {
                     transition={{ type: "spring", stiffness: 350, damping: 30 }}
                   />
                 )}
-                <span className="relative z-10 flex items-center justify-center">
-                  {link.icon}
-                </span>
                 <span className="relative z-10">{link.name}</span>
               </Link>
             );
@@ -369,7 +366,7 @@ const AdminNavbar = () => {
           <Link
             to="/admin/profile"
             onClick={() => setIsMobileMenuOpen(false)}
-            className={`relative flex items-center gap-4 px-4 py-3 rounded-xl transition-colors duration-300 group cursor-pointer ${location.pathname === '/admin/profile' ? 'text-blue-500 font-medium' : 'text-white/70 hover:text-white hover:bg-white/5'
+            className={`relative flex items-center px-4 py-3 rounded-xl transition-colors duration-300 group cursor-pointer ${location.pathname === '/admin/profile' ? 'text-white font-bold bg-white/10' : 'text-white hover:bg-white/5 font-bold'
               }`}
           >
             {location.pathname === '/admin/profile' && (
@@ -380,19 +377,13 @@ const AdminNavbar = () => {
                 transition={{ type: "spring", stiffness: 350, damping: 30 }}
               />
             )}
-            <span className="relative z-10 flex items-center justify-center">
-              <AccountCircleIcon />
-            </span>
             <span className="relative z-10">Profile</span>
           </Link>
 
           <button
             onClick={() => setShowLogoutConfirm(true)}
-            className="relative flex items-center gap-4 px-4 py-3 rounded-xl transition-colors duration-300 group cursor-pointer text-red-400 hover:text-red-300 hover:bg-red-500/10 w-full text-left font-medium"
+            className="relative flex items-center px-4 py-3 rounded-xl transition-colors duration-300 group cursor-pointer text-white hover:bg-white/5 w-full text-left font-bold"
           >
-            <span className="relative z-10 flex items-center justify-center">
-              <LogoutIcon />
-            </span>
             <span className="relative z-10">Logout</span>
           </button>
         </div>
@@ -404,20 +395,20 @@ const AdminNavbar = () => {
           <motion.div
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
-            className="bg-[#0a0f1c] border border-white/10 rounded-2xl p-6 max-w-sm w-full shadow-2xl relative"
+            className="bg-[var(--color-main-bg)] border border-[var(--color-border)] rounded-[var(--radius-sm)] p-6 max-w-sm w-full shadow-2xl relative"
           >
-            <h3 className="text-xl font-bold text-white mb-2">Confirm Logout</h3>
-            <p className="text-white/70 mb-6">Are you sure you want to log out of the admin panel?</p>
+            <h3 className="text-lg font-bold text-[var(--color-black)] mb-2">Confirm Logout</h3>
+            <p className="text-[var(--color-paragraph)] opacity-80 text-sm mb-6">Are you sure you want to log out of the admin panel?</p>
             <div className="flex gap-4">
               <button
                 onClick={() => setShowLogoutConfirm(false)}
-                className="flex-1 px-4 py-2.5 rounded-xl border border-white/20 text-white hover:bg-white/5 transition-colors font-medium"
+                className="flex-1 px-4 py-2.5 border border-[var(--color-border)] rounded-[var(--radius-sm)] text-[var(--color-paragraph)] hover:bg-[var(--color-sub-bg)] bg-transparent transition-colors font-medium cursor-pointer"
               >
                 Cancel
               </button>
               <button
                 onClick={handleLogout}
-                className="flex-1 px-4 py-2.5 rounded-xl bg-red-500 hover:bg-red-600 text-white transition-colors font-bold shadow-lg shadow-red-500/20"
+                className="flex-1 px-4 py-2.5 border-none rounded-[var(--radius-sm)] bg-[var(--color-primary)] hover:bg-blue-600 text-white transition-colors font-semibold cursor-pointer shadow-md shadow-blue-500/10"
               >
                 Logout
               </button>

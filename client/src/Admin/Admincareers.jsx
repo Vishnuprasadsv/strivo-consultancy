@@ -516,8 +516,8 @@ const CareerAdmin = () => {
         className="max-w-7xl mx-auto pb-12"
       >
   
-        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-8 pb-6 border-b border-[var(--color-border)] gap-4">
-          <div>
+        <div className="flex flex-col sm:flex-row justify-between items-center sm:items-center mb-8 pb-6 border-b border-[var(--color-border)] gap-4">
+          <div className="flex flex-col items-center text-center sm:items-start sm:text-left">
             <h1 style={{ fontSize: 'var(--text-sub-heading)', fontWeight: 'var(--font-semibold)', color: 'var(--color-black)', margin: 0 }}>
               Career Admin Dashboard
             </h1>
@@ -527,7 +527,7 @@ const CareerAdmin = () => {
           </div>
           <button
             onClick={handleOpenCreateModal}
-            className="btn px-5 py-2.5 flex items-center gap-2 cursor-pointer border-none"
+            className="btn px-5 py-2.5 flex items-center justify-center gap-2 cursor-pointer border-none w-full sm:w-auto"
             style={{ fontWeight: 'var(--font-medium)' }}
           >
             <AddIcon fontSize="small" /> Create New Job
@@ -622,7 +622,8 @@ const CareerAdmin = () => {
                 </div>
               ) : (
                 <div className="overflow-x-auto">
-                  <table className="w-full text-left border-collapse min-w-[700px] table-fixed">
+                  {/* Table view for desktop / tablet */}
+                  <table className="w-full text-left border-collapse min-w-[700px] table-fixed hidden md:table">
                     <thead>
                       <tr className="border-b border-[var(--color-border)] text-[var(--color-paragraph)] opacity-50 text-xs font-semibold uppercase tracking-wider">
                         <th className="pb-3 pr-4 font-semibold w-1/3 min-w-[200px]">Candidate & Position</th>
@@ -731,12 +732,108 @@ const CareerAdmin = () => {
                     </tbody>
                   </table>
 
+                  {/* Card view for mobile screens (text and buttons aligned to center) */}
+                  <div className="flex flex-col gap-4 md:hidden">
+                    {paginatedApplications.map((app) => {
+                      const statusObj = getStatusDetails(app.status);
+                      const appliedDate = new Date(app.createdAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+                      
+                      return (
+                        <div key={app._id} className="border border-[var(--color-border)] rounded-[var(--radius-sm)] p-5 bg-[var(--color-sub-bg)]/20 hover:bg-[var(--color-sub-bg)]/40 transition-colors flex flex-col items-center text-center gap-3">
+                          <div>
+                            <p style={{ fontSize: 'var(--text-paragraph)', fontWeight: 'var(--font-semibold)', color: 'var(--color-black)', margin: 0 }}>
+                              {app.fullName}
+                            </p>
+                            <p style={{ fontSize: 'var(--text-small)', fontWeight: 'var(--font-medium)', color: 'var(--color-primary)', margin: '2px 0 0 0' }}>
+                              {app.appliedPosition}
+                            </p>
+                            <p style={{ fontSize: 'var(--text-small)', color: 'var(--color-paragraph)', opacity: 0.8, margin: '2px 0 0 0' }}>
+                              {app.email}
+                            </p>
+                            <p className="text-xs text-[var(--color-paragraph)] opacity-60 mt-1">
+                              Applied: {appliedDate}
+                            </p>
+                          </div>
+
+                          <div>
+                            <span className={`px-3 py-1 rounded-full text-xs font-semibold ${statusObj.className}`}>
+                              {statusObj.label}
+                            </span>
+                          </div>
+
+                          <div className="flex items-center justify-center gap-1 mt-1">
+                            <a
+                              href={app.resumeUrl}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="hover:underline inline-flex items-center gap-1 cursor-pointer bg-[var(--color-main-bg)] border border-[var(--color-border)] px-3 py-1.5 rounded-[var(--radius-sm)]"
+                              style={{ fontSize: 'var(--text-small)', fontWeight: 'var(--font-semibold)', color: 'var(--color-primary)' }}
+                            >
+                              <PictureAsPdfIcon style={{ fontSize: 14 }} /> View Resume
+                            </a>
+                          </div>
+
+                          <div className="flex flex-wrap items-center justify-center gap-2.5 mt-2">
+                            <button
+                              onClick={() => handleViewApplication(app)}
+                              className="w-10 h-10 flex items-center justify-center transition-colors cursor-pointer border border-[var(--color-border)] bg-[var(--color-main-bg)] text-[var(--color-paragraph)] opacity-70 hover:opacity-100"
+                              style={{ borderRadius: 'var(--radius-sm)' }}
+                              title="View Details"
+                            >
+                              <VisibilityIcon fontSize="small" />
+                            </button>
+                            <button
+                              onClick={() => handleUpdateStatus(app._id, 'reviewed')}
+                              className="w-10 h-10 flex items-center justify-center transition-colors cursor-pointer border border-yellow-500/20 bg-yellow-500/5 text-yellow-600 hover:bg-yellow-500/10"
+                              style={{ borderRadius: 'var(--radius-sm)' }}
+                              title="Move to Under Review"
+                            >
+                              <SendIcon fontSize="small" style={{ transform: 'rotate(-45deg)' }} />
+                            </button>
+                            <button
+                              onClick={() => handleReferToHR(app._id)}
+                              className="w-10 h-10 flex items-center justify-center transition-colors cursor-pointer border border-purple-500/20 bg-purple-500/5 text-purple-600 hover:bg-purple-500/10"
+                              style={{ borderRadius: 'var(--radius-sm)' }}
+                              title="Refer to HR"
+                            >
+                              <SendIcon fontSize="small" />
+                            </button>
+                            <button
+                              onClick={() => handleUpdateStatus(app._id, 'accepted')}
+                              className="w-10 h-10 flex items-center justify-center transition-colors cursor-pointer border border-emerald-500/20 bg-emerald-500/5 text-emerald-600 hover:bg-emerald-500/10"
+                              style={{ borderRadius: 'var(--radius-sm)' }}
+                              title="Approve Profile"
+                            >
+                              <CheckIcon fontSize="small" />
+                            </button>
+                            <button
+                              onClick={() => handleUpdateStatus(app._id, 'rejected')}
+                              className="w-10 h-10 flex items-center justify-center transition-colors cursor-pointer border border-red-500/20 bg-red-500/5 text-red-600 hover:bg-red-500/10"
+                              style={{ borderRadius: 'var(--radius-sm)' }}
+                              title="Reject Application"
+                            >
+                              <CloseIcon fontSize="small" />
+                            </button>
+                            <button
+                              onClick={() => handleDeleteApplication(app._id)}
+                              className="w-10 h-10 flex items-center justify-center transition-colors cursor-pointer border border-red-500/20 bg-red-500/5 text-red-600 hover:bg-red-500/10"
+                              style={{ borderRadius: 'var(--radius-sm)' }}
+                              title="Delete Application"
+                            >
+                              <DeleteIcon fontSize="small" />
+                            </button>
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+
                   {totalAppPages > 1 && (
                     <div className="flex items-center justify-center gap-4 mt-6 pt-4 border-t border-[var(--color-border)]">
                       <button
                         disabled={currentAppPage === 1}
                         onClick={() => setAppPage(p => Math.max(1, p - 1))}
-                        className="px-3 py-1.5 border border-[var(--color-border)] hover:bg-[var(--color-sub-bg)] text-[var(--color-paragraph)] text-xs rounded-[var(--radius-sm)] transition-all cursor-pointer font-semibold"
+                        className="px-3 py-1.5 border border-[var(--color-border)] hover:bg-[var(--color-sub-bg)] text-[var(--color-paragraph)] text-xs rounded-[var(--radius-sm)] transition-all cursor-pointer font-semibold bg-transparent"
                       >
                         Previous
                       </button>
@@ -746,7 +843,7 @@ const CareerAdmin = () => {
                       <button
                         disabled={currentAppPage === totalAppPages}
                         onClick={() => setAppPage(p => Math.min(totalAppPages, p + 1))}
-                        className="px-3 py-1.5 border border-[var(--color-border)] hover:bg-[var(--color-sub-bg)] text-[var(--color-paragraph)] text-xs rounded-[var(--radius-sm)] transition-all cursor-pointer font-semibold"
+                        className="px-3 py-1.5 border border-[var(--color-border)] hover:bg-[var(--color-sub-bg)] text-[var(--color-paragraph)] text-xs rounded-[var(--radius-sm)] transition-all cursor-pointer font-semibold bg-transparent"
                       >
                         Next
                       </button>
