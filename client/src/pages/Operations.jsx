@@ -13,17 +13,17 @@ const Operations = () => {
   }, []);
 
   return (
-     <div className="bg-main  min-h-screen  font-sans">
-    
-          {/* Section 1: Hero */}
-          <motion.section
-            id="hero-section"
-            initial="hidden" animate="visible" variants={fadeUpVariants}
-           className="w-full bg-main"
-          >
-           
-    <div className="max-w-7xl mx-auto px-6 md:px-12 py-8 md:py-12">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
+    <div className="bg-main  min-h-screen  font-sans">
+
+      {/* Section 1: Hero */}
+      <motion.section
+        id="hero-section"
+        initial="hidden" animate="visible" variants={fadeUpVariants}
+        className="w-full bg-main"
+      >
+
+        <div className="max-w-7xl mx-auto px-6 md:px-12 py-8 md:py-12">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
             <div className="space-y-8">
               <h1 className="main-heading">Architecting Operational Excellence</h1>
               <p className="paragraph">
@@ -155,15 +155,41 @@ const Operations = () => {
         <div className="max-w-7xl mx-auto px-6 md:px-12 text-center">
           <span className="pre-heading inline-block px-3 py-1 rounded-full bg-white border border-[#374151] uppercase tracking-[3px] mb-4">4-Step Optimization Process</span>
           <h2 className="sub-heading mb-16">Operations Methodology</h2>
-          <div className="flex flex-col lg:flex-row gap-6 relative">
-            <div className="hidden lg:block absolute top-1/2 left-[10%] right-[10%] h-[2px] bg-[#8C8C8C] -translate-y-1/2 z-0"></div>
+          <div className="relative flex flex-col lg:flex-row gap-6 isolate">
+            <div
+              className="
+    hidden lg:block
+    absolute
+    top-[48px]
+    left-[10%]
+    right-[10%]
+    h-[2px]
+    bg-gray-400
+    z-0
+  "
+            />
             {[
               { num: 1, title: 'Operational Audit', items: ['Process Mapping', 'Inefficiency Identification', 'Cost Analysis'] },
               { num: 2, title: 'Solution Design', items: ['Workflow Redesign', 'Automation Planning', 'Resource Allocation'] },
               { num: 3, title: 'Implementation', items: ['System Integration', 'Change Management', 'Training & Rollout'] },
               { num: 4, title: 'Optimization', items: ['Performance Tracking', 'KPI Monitoring', 'Continuous Tuning'] }
             ].map((step) => (
-              <div key={step.num} className="card flex-1 relative z-10 hover:-translate-y-1 hover:shadow-[0_10px_25px_-5px_rgba(37,99,235,0.1)] transition-all duration-200 text-left">
+              <div
+                key={step.num}
+                className="
+    card
+    flex-1
+    relative
+    z-20
+    bg-white
+    
+    shadow-md
+    hover:-translate-y-1
+    transition-all
+    duration-200
+    text-left
+  "
+              >
                 <div className="w-12 h-12 rounded-full bg-blue-600 text-white flex items-center justify-center text-xl font-semibold mb-6 shadow-[0_0_15px_rgba(37,99,235,0.5)]">{step.num}</div>
                 <h3 className="text-xl font-semibold text-blue-500 mb-2">{step.title}</h3>
                 <ul className="paragraph space-y-1 list-disc list-inside">
