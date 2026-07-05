@@ -155,15 +155,41 @@ const Change = () => {
         <div className="max-w-7xl mx-auto px-6 md:px-12 text-center">
           <span className="pre-heading inline-block px-3 py-1 rounded-full bg-white border border-[#374151] uppercase tracking-[3px] mb-4">4-Step Change Process</span>
           <h2 className="sub-heading mb-16">Change Methodology</h2>
-          <div className="flex flex-col lg:flex-row gap-6 relative">
-            <div className="hidden lg:block absolute top-1/2 left-[10%] right-[10%] h-[2px] bg-[#8C8C8C] -translate-y-1/2 z-0"></div>
+          <div className="relative flex flex-col lg:flex-row gap-6 isolate">
+            <div
+              className="
+    hidden lg:block
+    absolute
+    top-[48px]
+    left-[10%]
+    right-[10%]
+    h-[2px]
+    bg-gray-400
+    z-0
+  "
+            />
             {[
               { num: 1, title: 'Change Readiness Assessment' },
               { num: 2, title: 'Leadership & Communication Design' },
               { num: 3, title: 'Adoption & Training Rollout' },
               { num: 4, title: 'Sustainment & Measurement' }
             ].map((step) => (
-              <div key={step.num} className="card flex-1 relative z-10 hover:-translate-y-1 hover:shadow-[0_10px_25px_-5px_rgba(37,99,235,0.1)] transition-all duration-200 text-left">
+              <div
+                key={step.num}
+                className="
+    card
+    flex-1
+    relative
+    z-20
+    bg-white
+    
+    shadow-md
+    hover:-translate-y-1
+    transition-all
+    duration-200
+    text-left
+  "
+              >
                 <div className="w-12 h-12 rounded-full bg-blue-600 text-white flex items-center justify-center text-xl font-semibold mb-6 shadow-[0_0_15px_rgba(37,99,235,0.5)]">{step.num}</div>
                 <h3 className="text-xl font-semibold text-blue-500 mb-2">{step.title}</h3>
               </div>
