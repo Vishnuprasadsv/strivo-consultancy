@@ -314,17 +314,18 @@ const CaseStudyDetails = () => {
                                 />
                             </div>
                             <div>
+                                <p className=" text-white text-3xl font-bold mt-2">
+                                   {study.author} 
+                                </p>
                                 <a
                                     href={study.authorWebsite}
                                     target="_blank"
                                     rel="noopener noreferrer"
-                                    className="text-3xl font-bold hover:text-blue-500 transition"
+                                    className="text-sm font-bold hover:text-blue-500 transition"
                                 >
-                                   {study.author}
+                                   {study.authorWebsite}
                                 </a>
-                                <p className="paragraph text-blue-500 mt-2">
-                                    {study.authorWebsite}
-                                </p>
+                                
                                 <p className="paragraph text-white mt-4">
                                     {study.authorRole}
                                 </p>
