@@ -70,10 +70,10 @@ const renderContent = (contentString) => {
     }
 
     return (
-     
-  <p key={idx} className="paragraph mb-6">
-    {trimmed}
-  </p>
+
+      <p key={idx} className="paragraph mb-6">
+        {trimmed}
+      </p>
 
     );
   });
@@ -193,10 +193,29 @@ const Article = () => {
               <div className="flex justify-between items-start flex-col lg:flex-row gap-8">
                 <div className="max-w-4xl">
                   <span className="pre-heading inline-block px-3 py-1 border border-blue-500/30 tracking-wider rounded-full mb-6">{article.category}</span>
-                  <h1 className="main-heading md:text-5xl lg:text-6xl leading-tight mb-6">
+                  <motion.h1
+                    className="
+    main-heading
+    text-4xl
+    sm:text-5xl
+    md:text-6xl
+    lg:text-7xl
+    leading-tight
+    mb-6
+  "
+                  >
                     {article.title}
-                  </h1>
-                  <div className="flex flex-wrap gap-3 mt-6">
+                  </motion.h1>
+                  <div className="
+flex
+flex-col
+sm:flex-row
+sm:flex-wrap
+gap-2
+sm:gap-6
+text-gray-400
+text-sm
+">
                     {tags.map((tag) => (
                       <span
                         key={tag}

@@ -13,7 +13,7 @@ const Operations = () => {
   }, []);
 
   return (
-    <div className="bg-main  min-h-screen  font-sans">
+    <div className="bg-main w-full py-8 md:py-16 min-h-screen font-sans">
 
       {/* Section 1: Hero */}
       <motion.section
@@ -25,7 +25,7 @@ const Operations = () => {
         <div className="max-w-7xl mx-auto px-6 md:px-12 py-8 md:py-12">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
             <div className="space-y-8">
-              <h1 className="main-heading">Architecting Operational Excellence</h1>
+              <h1 className="main-heading text-4xl sm:text-5xl md:text-6xl lg:text-7xl leading-tight mb-6">Architecting Operational Excellence</h1>
               <p className="paragraph">
                 We help organizations simplify complexity, remove inefficiencies, and build resilient operating models that sustain growth and accelerate execution.
               </p>
