@@ -51,14 +51,14 @@ const CaseStudyTable = ({ caseStudies, onStatusChange }) => {
         className="
           hidden
           lg:grid
-          lg:grid-cols-[90px_3fr_2fr_1.5fr_1.2fr_140px_110px]
+          lg:grid-cols-[70px_3.5fr_2fr_1.3fr_115px_120px_90px]
           items-center
-          px-6
-          py-4
+          px-5
+          py-3
           text-[var(--color-paragraph)]
           opacity-50
-          text-[11px]
-          font-bold
+          text-xs
+          font-semibold
           uppercase
           tracking-wider
           border-b
@@ -71,7 +71,7 @@ const CaseStudyTable = ({ caseStudies, onStatusChange }) => {
         <div>Category</div>
         <div className="text-center">Status</div>
         <div className="text-center">Published</div>
-        <div className="text-right pr-4">Actions</div>
+        <div className="text-right pr-2">Actions</div>
       </div>
 
       {/* Table Rows */}
@@ -81,11 +81,11 @@ const CaseStudyTable = ({ caseStudies, onStatusChange }) => {
             key={study._id}
             className="
               flex flex-col lg:grid
-              lg:grid-cols-[90px_3fr_2fr_1.5fr_1.2fr_140px_110px]
+              lg:grid-cols-[70px_3.5fr_2fr_1.3fr_115px_120px_90px]
               items-start lg:items-center
               gap-4 lg:gap-0
-              px-6
-              py-6 lg:py-4.5
+              px-5
+              py-5 lg:py-2.5
               hover:bg-[var(--color-sub-bg)]/40
               transition-colors
               duration-200
@@ -96,11 +96,11 @@ const CaseStudyTable = ({ caseStudies, onStatusChange }) => {
               <div className="font-mono text-[11px] text-[var(--color-paragraph)] opacity-70">
                 #{study._id.slice(-6).toUpperCase()}
               </div>
-              <div className="flex gap-2">
+              <div className="flex gap-1.5">
                 <button
                   title="Edit Case Study"
                   onClick={() => navigate(`/admin/edit-case-study/${study._id}`)}
-                  className="w-8 h-8 flex items-center justify-center transition-colors cursor-pointer border border-[var(--color-border)] bg-[var(--color-main-bg)] text-[var(--color-paragraph)] opacity-70 hover:opacity-100"
+                  className="w-7 h-7 flex items-center justify-center transition-colors cursor-pointer border border-[var(--color-border)] bg-[var(--color-main-bg)] text-[var(--color-paragraph)] opacity-70 hover:opacity-100"
                   style={{ borderRadius: 'var(--radius-sm)' }}
                 >
                   <FiEdit2 size={13} />
@@ -108,7 +108,7 @@ const CaseStudyTable = ({ caseStudies, onStatusChange }) => {
                 <button
                   title="Delete Case Study"
                   onClick={() => deleteCaseStudy(study._id)}
-                  className="w-8 h-8 flex items-center justify-center transition-colors cursor-pointer border border-red-500/20 bg-red-500/5 text-red-600 hover:bg-red-500/10"
+                  className="w-7 h-7 flex items-center justify-center transition-colors cursor-pointer border border-red-500/20 bg-red-500/5 text-red-600 hover:bg-red-500/10"
                   style={{ borderRadius: 'var(--radius-sm)' }}
                 >
                   <FiTrash2 size={13} />
@@ -121,11 +121,11 @@ const CaseStudyTable = ({ caseStudies, onStatusChange }) => {
             </div>
 
             {/* Case Study Details */}
-            <div className="flex items-center gap-3.5 min-w-0 pr-4">
+            <div className="flex items-center gap-3 min-w-0 pr-2">
               <img
                 src={study.coverImage || "https://via.placeholder.com/80"}
                 alt={study.title}
-                className="w-12 h-12 object-cover flex-shrink-0 border border-[var(--color-border)]"
+                className="w-10 h-10 object-cover flex-shrink-0 border border-[var(--color-border)]"
                 style={{ borderRadius: 'var(--radius-sm)' }}
               />
               <div className="min-w-0">
@@ -145,12 +145,12 @@ const CaseStudyTable = ({ caseStudies, onStatusChange }) => {
             <div className="grid grid-cols-2 gap-4 w-full lg:hidden mt-2">
               <div>
                 <p className="text-[10px] text-[var(--color-paragraph)] opacity-60 uppercase mb-1">Author</p>
-                <p className="font-medium text-sm text-[var(--color-black)] truncate">{study.author}</p>
-                <p className="text-xs text-[var(--color-paragraph)] opacity-60 mt-0.5 truncate">{study.authorRole}</p>
+                <p className="font-semibold text-xs text-[var(--color-black)] truncate">{study.author}</p>
+                <p className="text-[10px] text-[var(--color-paragraph)] opacity-60 mt-0.5 truncate">{study.authorRole}</p>
               </div>
               <div>
                 <p className="text-[10px] text-[var(--color-paragraph)] opacity-60 uppercase mb-1">Category</p>
-                <div className="flex items-center gap-2 text-sm text-[var(--color-paragraph)] opacity-80">
+                <div className="flex items-center gap-2 text-xs text-[var(--color-paragraph)] opacity-80">
                   <span className={`w-2 h-2 rounded-full flex-shrink-0 ${categoryColor[study.category] || "bg-slate-500"}`}></span>
                   <span className="truncate">{study.category}</span>
                 </div>
@@ -158,17 +158,17 @@ const CaseStudyTable = ({ caseStudies, onStatusChange }) => {
             </div>
 
             {/* Desktop Author */}
-            <div className="hidden lg:block min-w-0 pr-4">
-              <p className="font-medium text-sm text-[var(--color-black)] truncate">
+            <div className="hidden lg:block min-w-0 pr-2">
+              <p className="font-semibold text-xs text-[var(--color-black)] truncate">
                 {study.author}
               </p>
-              <p className="text-xs text-[var(--color-paragraph)] opacity-60 mt-0.5 truncate">
+              <p className="text-[10px] text-[var(--color-paragraph)] opacity-60 mt-0.5 truncate">
                 {study.authorRole}
               </p>
             </div>
 
             {/* Desktop Category */}
-            <div className="hidden lg:flex items-center gap-2 text-sm text-[var(--color-paragraph)] opacity-80">
+            <div className="hidden lg:flex items-center gap-2 text-xs text-[var(--color-paragraph)] opacity-80 pr-2">
               <span
                 className={`w-2 h-2 rounded-full flex-shrink-0 ${
                   categoryColor[study.category] || "bg-slate-500"
@@ -180,7 +180,7 @@ const CaseStudyTable = ({ caseStudies, onStatusChange }) => {
             {/* Status (Interactive Select Dropdown) */}
             <div className="flex flex-col lg:flex-row justify-start lg:justify-center items-start lg:items-center w-full lg:w-auto">
               <p className="text-[10px] text-[var(--color-paragraph)] opacity-60 uppercase mb-1 lg:hidden">Status</p>
-              <div className="relative inline-block w-[120px] lg:w-[110px]">
+              <div className="relative inline-block w-[110px]">
                 <select
                   value={study.status}
                   onChange={(e) => handleStatusChange(study._id, e.target.value)}
@@ -219,7 +219,7 @@ const CaseStudyTable = ({ caseStudies, onStatusChange }) => {
             </div>
 
             {/* Publication Date */}
-            <div className="hidden lg:block text-center text-sm text-[var(--color-paragraph)] opacity-70">
+            <div className="hidden lg:block text-center text-xs text-[var(--color-paragraph)] opacity-70">
               {study.publicationDate
                 ? new Date(study.publicationDate).toLocaleDateString(undefined, {
                     year: 'numeric',
@@ -230,10 +230,10 @@ const CaseStudyTable = ({ caseStudies, onStatusChange }) => {
             </div>
 
             {/* Desktop Actions */}
-            <div className="hidden lg:flex justify-end gap-2 pr-2">
+            <div className="hidden lg:flex justify-end gap-1.5 pr-2">
               <button
                 title="Edit Case Study"
-                className="w-8 h-8 flex items-center justify-center transition-colors cursor-pointer border border-[var(--color-border)] bg-[var(--color-main-bg)] text-[var(--color-paragraph)] opacity-70 hover:opacity-100"
+                className="w-7 h-7 flex items-center justify-center transition-colors cursor-pointer border border-[var(--color-border)] bg-[var(--color-main-bg)] text-[var(--color-paragraph)] opacity-70 hover:opacity-100"
                 style={{ borderRadius: 'var(--radius-sm)' }}
                 onClick={() => navigate(`/admin/edit-case-study/${study._id}`)}
               >
@@ -243,7 +243,7 @@ const CaseStudyTable = ({ caseStudies, onStatusChange }) => {
               <button
                 title="Delete Case Study"
                 onClick={() => deleteCaseStudy(study._id)}
-                className="w-8 h-8 flex items-center justify-center transition-colors cursor-pointer border border-red-500/20 bg-red-500/5 text-red-600 hover:bg-red-500/10"
+                className="w-7 h-7 flex items-center justify-center transition-colors cursor-pointer border border-red-500/20 bg-red-500/5 text-red-600 hover:bg-red-500/10"
                 style={{ borderRadius: 'var(--radius-sm)' }}
               >
                 <FiTrash2 size={13} />
@@ -254,7 +254,7 @@ const CaseStudyTable = ({ caseStudies, onStatusChange }) => {
       </div>
 
       {/* Footer */}
-      <div className="flex justify-between items-center px-6 py-4.5 border-t border-[var(--color-border)] bg-[var(--color-sub-bg)]/40">
+      <div className="flex justify-between items-center px-5 py-3 border-t border-[var(--color-border)] bg-[var(--color-sub-bg)]/40">
         <p className="text-[var(--color-paragraph)] opacity-50 text-xs">
           Showing <span className="text-[var(--color-black)] font-semibold">{caseStudies.length}</span> case studies
         </p>

@@ -43,6 +43,12 @@ export const registerAdmin = async (req, res) => {
   const { username, email, role, password } = req.body;
 
   try {
+    // Check if any admin is already registered in the system
+    const count = await Admin.countDocuments({});
+    if (count > 0) {
+      return res.status(400).json({ message: 'Multiple admin registration not allowed' });
+    }
+
     const adminExists = await Admin.findOne({ username });
 
     if (adminExists) {
@@ -52,7 +58,7 @@ export const registerAdmin = async (req, res) => {
     const admin = await Admin.create({
       username,
       email,
-      role,
+      role: role || 'Administrator',
       password,
     });
 
@@ -69,6 +75,18 @@ export const registerAdmin = async (req, res) => {
     } else {
       res.status(400).json({ message: 'Invalid admin data' });
     }
+  } catch (error) {
+    res.status(500).json({ message: 'Server error', error: error.message });
+  }
+};
+
+// @desc    Check if any admin is already registered
+// @route   GET /api/admin/check-registered
+// @access  Public
+export const checkAdminRegistered = async (req, res) => {
+  try {
+    const count = await Admin.countDocuments({});
+    res.json({ registered: count > 0 });
   } catch (error) {
     res.status(500).json({ message: 'Server error', error: error.message });
   }

@@ -122,41 +122,41 @@ const Profile = () => {
   if (!adminUser) return null;
 
   return (
-    <div className="min-h-screen pt-20 pb-2 px-4 relative z-10 md:ml-64 bg-sub">
+    <div className="min-h-screen pt-24 pb-4 px-4 relative z-10 md:ml-56 bg-sub">
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        className="max-w-lg mx-auto card p-5 shadow-card relative overflow-hidden"
+        className="max-w-md mx-auto card p-4 shadow-card relative overflow-hidden"
       >
-        <div className="text-center mb-3 pb-2 border-b border-[var(--color-border)] flex flex-col items-center">
-          <h3 style={{ fontSize: 'var(--text-sub-heading)', fontWeight: 'var(--font-normal)', color: 'var(--color-black)', margin: 0 }}>
+        <div className="text-center mb-2 pb-1.5 border-b border-[var(--color-border)] flex flex-col items-center">
+          <h1 style={{ fontSize: '26px', fontWeight: 'var(--font-semibold)', color: 'var(--color-black)', margin: 0 }}>
             Admin Profile
-          </h3>
-          <p style={{ fontSize: 'var(--text-small)', color: 'var(--color-paragraph)', opacity: 0.6, margin: '2px 0 0 0' }}>
+          </h1>
+          <p style={{ fontSize: 'var(--text-caption)', color: 'var(--color-paragraph)', opacity: 0.6, margin: '2px 0 0 0' }}>
             Manage your profile details and security
           </p>
         </div>
 
         {/* Profile Info Section */}
-        <div className="flex flex-col items-center justify-center mb-4">
-          <div className="relative mb-2 group cursor-pointer" onClick={handleImageClick}>
+        <div className="flex flex-col items-center justify-center mb-3">
+          <div className="relative mb-1.5 group cursor-pointer" onClick={handleImageClick}>
             {isUploading ? (
-              <div className="w-16 h-16 flex items-center justify-center border border-[var(--color-border)] bg-black/5" style={{ borderRadius: 'var(--radius-sm)' }}>
-                <div className="w-5 h-5 border-2 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
+              <div className="w-14 h-14 flex items-center justify-center border border-[var(--color-border)] bg-black/5" style={{ borderRadius: 'var(--radius-sm)' }}>
+                <div className="w-4 h-4 border-2 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
               </div>
             ) : adminUser.profileImage ? (
               <img
                 src={adminUser.profileImage}
                 alt="Profile"
-                className="w-16 h-16 object-cover border border-[var(--color-border)] transition-colors"
+                className="w-14 h-14 object-cover border border-[var(--color-border)] transition-colors"
                 style={{ borderRadius: 'var(--radius-sm)' }}
               />
             ) : (
-              <AccountCircleIcon className="text-slate-400 w-16 h-16 transition-colors" style={{ fontSize: '64px' }} />
+              <AccountCircleIcon className="text-slate-400 w-14 h-14 transition-colors" style={{ fontSize: '56px' }} />
             )}
 
             <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity" style={{ borderRadius: 'var(--radius-sm)' }}>
-              <EditIcon className="text-white" fontSize="small" />
+              <EditIcon className="text-white" style={{ fontSize: 16 }} />
             </div>
 
             <input
@@ -170,17 +170,17 @@ const Profile = () => {
 
           <div className="text-center">
             {adminUser.username && (
-              <h2 style={{ fontSize: 'var(--text-paragraph)', fontWeight: 'var(--font-medium)', color: 'var(--color-black)', margin: 0 }}>
+              <h2 style={{ fontSize: 'var(--text-small)', fontWeight: 'var(--font-medium)', color: 'var(--color-black)', margin: 0 }}>
                 {adminUser.username}
               </h2>
             )}
             {adminUser.role && (
-              <p style={{ fontSize: 'var(--text-small)', fontWeight: 'var(--font-semibold)', color: 'var(--color-primary)', margin: '2px 0 0 0' }}>
+              <p style={{ fontSize: 'var(--text-caption)', fontWeight: 'var(--font-semibold)', color: 'var(--color-primary)', margin: '1px 0 0 0' }}>
                 {adminUser.role}
               </p>
             )}
             {adminUser.email && (
-              <p style={{ fontSize: 'var(--text-small)', fontWeight: 'var(--font-normal)', color: 'var(--color-paragraph)', opacity: 0.7, margin: '2px 0 0 0' }}>
+              <p style={{ fontSize: 'var(--text-caption)', fontWeight: 'var(--font-normal)', color: 'var(--color-paragraph)', opacity: 0.7, margin: '1px 0 0 0' }}>
                 {adminUser.email}
               </p>
             )}
@@ -188,16 +188,16 @@ const Profile = () => {
         </div>
 
         {/* Change Password Section */}
-        <div className="mt-3">
-          <h3 style={{ fontSize: 'var(--text-paragraph)', fontWeight: 'var(--font-medium)', color: 'var(--color-black)', margin: '0 0 10px 0', textAlign: 'center' }}>
+        <div className="mt-2.5">
+          <h3 style={{ fontSize: 'var(--text-small)', fontWeight: 'var(--font-medium)', color: 'var(--color-black)', margin: '0 0 6px 0', textAlign: 'center' }}>
             Change Password
           </h3>
-          <form onSubmit={handlePasswordSubmit} className="flex flex-col gap-3.5 max-w-md mx-auto">
-            <div className="flex flex-col gap-2.5">
+          <form onSubmit={handlePasswordSubmit} className="flex flex-col gap-2.5 max-w-md mx-auto">
+            <div className="flex flex-col gap-1.5">
               <div>
                 <label
                   className="mb-1 block text-left"
-                  style={{ fontSize: 'var(--text-small)', fontWeight: 'var(--font-medium)', color: 'var(--color-paragraph)' }}
+                  style={{ fontSize: 'var(--text-caption)', fontWeight: 'var(--font-medium)', color: 'var(--color-paragraph)' }}
                 >
                   Current Password
                 </label>
@@ -206,8 +206,7 @@ const Profile = () => {
                   name="currentPassword"
                   value={passwordData.currentPassword}
                   onChange={handlePasswordChange}
-                  className="input placeholder:text-[var(--color-paragraph)] placeholder:opacity-40 transition-all"
-                  style={{ fontSize: 'var(--text-paragraph)', color: 'var(--color-paragraph)' }}
+                  className="input py-2 px-3 placeholder:text-[var(--color-paragraph)] placeholder:opacity-40 transition-all text-xs h-9 w-full bg-[var(--color-sub-bg)] border border-[var(--color-border)] rounded-[var(--radius-sm)]"
                   placeholder="Current password"
                 />
               </div>
@@ -215,7 +214,7 @@ const Profile = () => {
               <div>
                 <label
                   className="mb-1 block text-left"
-                  style={{ fontSize: 'var(--text-small)', fontWeight: 'var(--font-medium)', color: 'var(--color-paragraph)' }}
+                  style={{ fontSize: 'var(--text-caption)', fontWeight: 'var(--font-medium)', color: 'var(--color-paragraph)' }}
                 >
                   New Password
                 </label>
@@ -224,8 +223,7 @@ const Profile = () => {
                   name="newPassword"
                   value={passwordData.newPassword}
                   onChange={handlePasswordChange}
-                  className="input placeholder:text-[var(--color-paragraph)] placeholder:opacity-40 transition-all"
-                  style={{ fontSize: 'var(--text-paragraph)', color: 'var(--color-paragraph)' }}
+                  className="input py-2 px-3 placeholder:text-[var(--color-paragraph)] placeholder:opacity-40 transition-all text-xs h-9 w-full bg-[var(--color-sub-bg)] border border-[var(--color-border)] rounded-[var(--radius-sm)]"
                   placeholder="New password"
                 />
               </div>
@@ -233,7 +231,7 @@ const Profile = () => {
               <div>
                 <label
                   className="mb-1 block text-left"
-                  style={{ fontSize: 'var(--text-small)', fontWeight: 'var(--font-medium)', color: 'var(--color-paragraph)' }}
+                  style={{ fontSize: 'var(--text-caption)', fontWeight: 'var(--font-medium)', color: 'var(--color-paragraph)' }}
                 >
                   Confirm New Password
                 </label>
@@ -242,18 +240,17 @@ const Profile = () => {
                   name="confirmNewPassword"
                   value={passwordData.confirmNewPassword}
                   onChange={handlePasswordChange}
-                  className="input placeholder:text-[var(--color-paragraph)] placeholder:opacity-40 transition-all"
-                  style={{ fontSize: 'var(--text-paragraph)', color: 'var(--color-paragraph)' }}
+                  className="input py-2 px-3 placeholder:text-[var(--color-paragraph)] placeholder:opacity-40 transition-all text-xs h-9 w-full bg-[var(--color-sub-bg)] border border-[var(--color-border)] rounded-[var(--radius-sm)]"
                   placeholder="Confirm new password"
                 />
               </div>
             </div>
 
-            <div className="flex justify-center mt-1">
+            <div className="flex justify-center mt-0.5">
               <button
                 type="submit"
                 disabled={isChangingPassword}
-                className="btn px-6 w-full sm:w-auto"
+                className="btn px-5 text-xs h-9 w-full justify-center"
               >
                 {isChangingPassword ? 'Updating...' : 'Change Password'}
               </button>

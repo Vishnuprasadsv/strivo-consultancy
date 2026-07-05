@@ -23,6 +23,11 @@ const CaseStudies = () => {
     const [sortBy, setSortBy] = useState("Latest First");
     const [loading, setLoading] = useState(true);
     const [caseStudies, setCaseStudies] = useState([]);
+    const [currentPage, setCurrentPage] = useState(1);
+
+    useEffect(() => {
+        setCurrentPage(1);
+    }, [search, status, industry, sortBy]);
 
     useEffect(() => {
         fetchCaseStudies();
@@ -128,38 +133,37 @@ const CaseStudies = () => {
         );
     }
 
-    return (
-        <div className="min-h-screen md:ml-64 pt-28 px-6 pb-10 bg-sub text-[var(--color-paragraph)]">
+    const itemsPerPage = 5;
+    const indexOfLastStudy = currentPage * itemsPerPage;
+    const indexOfFirstStudy = indexOfLastStudy - itemsPerPage;
+    const currentStudies = filteredStudies.slice(indexOfFirstStudy, indexOfLastStudy);
+    const totalPages = Math.ceil(filteredStudies.length / itemsPerPage);
 
+    return (
+        <div className="min-h-screen pt-24 px-4 sm:px-8 pb-8 relative z-10 md:ml-56 bg-sub">
             <motion.div
                 initial={{ opacity: 0, y: 15 }}
                 animate={{ opacity: 1, y: 0 }}
                 className="max-w-7xl mx-auto"
             >
-
                 {/* Header */}
-
-                <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8 pb-6 border-b border-[var(--color-border)]">
-
-                    <div>
-                        <h1 style={{ fontSize: 'var(--text-sub-heading)', fontWeight: 'var(--font-semibold)', color: 'var(--color-black)', margin: 0 }}>
+                <div className="flex flex-col sm:flex-row justify-between items-center sm:items-center gap-4 mb-6 pb-5 border-b border-[var(--color-border)]">
+                    <div className="flex flex-col items-center text-center sm:items-start sm:text-left">
+                        <h1 style={{ fontSize: '26px', fontWeight: 'var(--font-semibold)', color: 'var(--color-black)', margin: 0 }}>
                             Case Studies
                         </h1>
-
                         <p style={{ fontSize: 'var(--text-small)', color: 'var(--color-paragraph)', opacity: 0.6, margin: '2px 0 0 0' }}>
                             Showcase successful client projects and business outcomes.
                         </p>
                     </div>
-
                     <button
                         onClick={() => navigate("/admin/create-case-study")}
-                        className="btn px-5 py-2.5 flex items-center gap-2 cursor-pointer border-none w-full sm:w-auto justify-center"
+                        className="btn px-4 py-2 flex items-center justify-center gap-2 cursor-pointer border-none w-full sm:w-auto h-10 text-sm"
                         style={{ fontWeight: 'var(--font-medium)' }}
                     >
                         <FiPlus />
                         Create Case Study
                     </button>
-
                 </div>
 
                 {/* Stats */}
@@ -181,8 +185,30 @@ const CaseStudies = () => {
                 {/* Table */}
 
                 <CaseStudyTable
-                    caseStudies={filteredStudies}
+                    caseStudies={currentStudies}
                 />
+
+                {totalPages > 1 && (
+                    <div className="flex items-center justify-center gap-4 mt-6 pt-4 border-t border-[var(--color-border)]">
+                        <button
+                            disabled={currentPage === 1}
+                            onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
+                            className="px-3 py-1.5 border border-[var(--color-border)] hover:bg-[var(--color-sub-bg)] text-[var(--color-paragraph)] text-xs rounded-[var(--radius-sm)] transition-all cursor-pointer font-semibold bg-[var(--color-main-bg)] disabled:opacity-40"
+                        >
+                            Previous
+                        </button>
+                        <span className="text-xs text-[var(--color-paragraph)] opacity-60">
+                            Page {currentPage} of {totalPages}
+                        </span>
+                        <button
+                            disabled={currentPage === totalPages}
+                            onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
+                            className="px-3 py-1.5 border border-[var(--color-border)] hover:bg-[var(--color-sub-bg)] text-[var(--color-paragraph)] text-xs rounded-[var(--radius-sm)] transition-all cursor-pointer font-semibold bg-[var(--color-main-bg)] disabled:opacity-40"
+                        >
+                            Next
+                        </button>
+                    </div>
+                )}
 
             </motion.div>
         </div>

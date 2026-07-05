@@ -221,7 +221,7 @@ const AdminNavbar = () => {
         initial={{ y: -100, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         transition={{ duration: 0.6, ease: "easeOut" }}
-        className="fixed top-0 left-0 md:left-64 right-0 h-20 bg-white/80 backdrop-blur-xl border-b border-[var(--color-border)] z-40 flex items-center justify-between px-4 md:px-8"
+        className="fixed top-0 left-0 md:left-56 right-0 h-20 bg-white/80 backdrop-blur-xl border-b border-[var(--color-border)] z-40 flex items-center justify-between px-4 md:px-8"
       >
         <div className="flex items-center gap-4">
           {/* Mobile Hamburger Menu */}
@@ -318,10 +318,10 @@ const AdminNavbar = () => {
         initial={{ x: -300, opacity: 0 }}
         animate={{ x: 0, opacity: 1 }}
         transition={{ duration: 0.6, ease: "easeOut" }}
-        className={`fixed top-0 left-0 h-screen w-64 bg-[var(--color-btn-bg)] backdrop-blur-xl border-r border-white/10 z-50 flex flex-col transition-transform duration-300 ${isMobileMenuOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'}`}
+        className={`fixed top-0 left-0 h-screen w-56 bg-[var(--color-btn-bg)] backdrop-blur-xl border-r border-white/10 z-50 flex flex-col transition-transform duration-300 ${isMobileMenuOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'}`}
       >
         {/* Mobile Close Button */}
-        <button 
+        <button
           className="md:hidden absolute top-4 right-4 text-white/50 hover:text-white"
           onClick={() => setIsMobileMenuOpen(false)}
         >
