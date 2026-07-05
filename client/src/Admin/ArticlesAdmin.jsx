@@ -237,13 +237,13 @@ const ArticlesAdmin = () => {
 
 
   return (
-    <div className="min-h-screen pt-28 pb-12 px-4 sm:px-8 relative z-10 md:ml-64 bg-sub">
+    <div className="min-h-screen pt-24 pb-8 px-4 sm:px-8 relative z-10 md:ml-56 bg-sub">
       <div className="max-w-6xl mx-auto space-y-8">
-        
+
         {/* Header Section */}
         <div className="card p-6 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 shadow-card">
           <div>
-            <h1 style={{ fontSize: 'var(--text-sub-heading)', fontWeight: 'var(--font-semibold)', color: 'var(--color-black)', margin: 0 }}>
+            <h1 style={{ fontSize: '26px', fontWeight: 'var(--font-semibold)', color: 'var(--color-black)', margin: 0 }}>
               Articles & Insights
             </h1>
             <p style={{ fontSize: 'var(--text-small)', color: 'var(--color-paragraph)', opacity: 0.6, margin: '2px 0 0 0' }}>
@@ -264,17 +264,15 @@ const ArticlesAdmin = () => {
         <div className="flex gap-6 border-b border-[var(--color-border)] pb-1">
           <button
             onClick={() => setActiveTab('articles')}
-            className={`pb-3 text-sm font-semibold border-b-2 transition-all duration-300 cursor-pointer ${
-              activeTab === 'articles' ? 'border-[var(--color-primary)] text-[var(--color-primary)]' : 'border-transparent text-[var(--color-paragraph)] opacity-60 hover:opacity-100'
-            }`}
+            className={`pb-3 text-sm font-semibold border-b-2 transition-all duration-300 cursor-pointer ${activeTab === 'articles' ? 'border-[var(--color-primary)] text-[var(--color-primary)]' : 'border-transparent text-[var(--color-paragraph)] opacity-60 hover:opacity-100'
+              }`}
           >
             Articles ({articlesList.length})
           </button>
           <button
             onClick={() => setActiveTab('subscribers')}
-            className={`pb-3 text-sm font-semibold border-b-2 transition-all duration-300 cursor-pointer ${
-              activeTab === 'subscribers' ? 'border-[var(--color-primary)] text-[var(--color-primary)]' : 'border-transparent text-[var(--color-paragraph)] opacity-60 hover:opacity-100'
-            }`}
+            className={`pb-3 text-sm font-semibold border-b-2 transition-all duration-300 cursor-pointer ${activeTab === 'subscribers' ? 'border-[var(--color-primary)] text-[var(--color-primary)]' : 'border-transparent text-[var(--color-paragraph)] opacity-60 hover:opacity-100'
+              }`}
           >
             Newsletter Subscribers ({subscribersList.length})
           </button>
@@ -296,67 +294,116 @@ const ArticlesAdmin = () => {
                 No articles added yet. Click "Add New Article" to write your first post!
               </div>
             ) : (
-              <div className="overflow-x-auto">
-                <table className="w-full text-left border-collapse min-w-[700px]">
-                  <thead>
-                    <tr className="border-b border-[var(--color-border)] text-[var(--color-paragraph)] opacity-50 text-xs font-semibold uppercase tracking-wider">
-                      <th className="pb-3 pr-4 font-semibold w-[80px]">Cover</th>
-                      <th className="pb-3 px-4 font-semibold w-1/3">Title</th>
-                      <th className="pb-3 px-4 font-semibold w-[120px]">Category</th>
-                      <th className="pb-3 px-4 font-semibold">Short Preview</th>
-                      <th className="pb-3 pl-4 font-semibold text-right w-[150px]">Actions</th>
-                    </tr>
-                  </thead>
-                  <tbody className="divide-y divide-[var(--color-border)] text-sm">
-                    {articlesList.map((art) => (
-                      <tr key={art._id} className="hover:bg-[var(--color-sub-bg)]/40 transition-colors">
-                        <td className="py-4 pr-4">
-                          <img
-                            src={art.imageUrl}
-                            alt="Cover"
-                            className="w-12 h-12 object-cover border border-[var(--color-border)]"
-                            style={{ borderRadius: 'var(--radius-sm)' }}
-                            onError={(e) => {
-                              e.target.src = "https://images.unsplash.com/photo-1488590528505-98d2b5aba04b?q=80&w=200";
-                            }}
-                          />
-                        </td>
-                        <td className="py-4 px-4 font-semibold text-[var(--color-black)] max-w-[250px] truncate">
-                          {art.title}
-                        </td>
-                        <td className="py-4 px-4">
-                          <span className="px-2 py-0.5 rounded-full text-[10px] font-semibold bg-blue-500/10 text-blue-600 border border-blue-500/20 uppercase">
+              <>
+                {/* Desktop View */}
+                <div className="hidden md:block overflow-x-auto">
+                  <table className="w-full text-left border-collapse min-w-[700px]">
+                    <thead>
+                      <tr className="border-b border-[var(--color-border)] text-[var(--color-paragraph)] opacity-50 text-xs font-semibold uppercase tracking-wider">
+                        <th className="pb-3 pr-4 font-semibold w-[80px]">Cover</th>
+                        <th className="pb-3 px-4 font-semibold w-1/3">Title</th>
+                        <th className="pb-3 px-4 font-semibold w-[120px]">Category</th>
+                        <th className="pb-3 px-4 font-semibold">Short Preview</th>
+                        <th className="pb-3 pl-4 font-semibold text-right w-[150px]">Actions</th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-[var(--color-border)] text-sm">
+                      {articlesList.slice(0, 5).map((art) => (
+                        <tr key={art._id} className="hover:bg-[var(--color-sub-bg)]/40 transition-colors">
+                          <td className="py-4 pr-4">
+                            <img
+                              src={art.imageUrl}
+                              alt="Cover"
+                              className="w-12 h-12 object-cover border border-[var(--color-border)]"
+                              style={{ borderRadius: 'var(--radius-sm)' }}
+                              onError={(e) => {
+                                e.target.src = "https://images.unsplash.com/photo-1488590528505-98d2b5aba04b?q=80&w=200";
+                              }}
+                            />
+                          </td>
+                          <td className="py-4 px-4 font-semibold text-[var(--color-black)] max-w-[250px] truncate">
+                            {art.title}
+                          </td>
+                          <td className="py-4 px-4">
+                            <span className="px-2 py-0.5 rounded-full text-[10px] font-semibold bg-blue-500/10 text-blue-600 border border-blue-500/20 uppercase">
+                              {art.category}
+                            </span>
+                          </td>
+                          <td className="py-4 px-4 text-[var(--color-paragraph)] opacity-70 max-w-[200px] truncate">
+                            {art.description}
+                          </td>
+                          <td className="py-4 pl-4 text-right">
+                            <div className="flex justify-end gap-2">
+                              <button
+                                onClick={() => handleOpenEditModal(art)}
+                                className="p-2 flex items-center justify-center transition-colors cursor-pointer border border-[var(--color-border)] bg-[var(--color-main-bg)] text-[var(--color-paragraph)] opacity-70 hover:opacity-100"
+                                style={{ borderRadius: 'var(--radius-sm)' }}
+                                title="Edit Article"
+                              >
+                                <EditIcon fontSize="small" />
+                              </button>
+                              <button
+                                onClick={() => handleDeleteArticle(art._id)}
+                                className="p-2 flex items-center justify-center transition-colors cursor-pointer border border-red-500/20 bg-red-500/5 text-red-600 hover:bg-red-500/10"
+                                style={{ borderRadius: 'var(--radius-sm)' }}
+                                title="Delete Article"
+                              >
+                                <DeleteIcon fontSize="small" />
+                              </button>
+                            </div>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+
+                {/* Mobile Card View */}
+                <div className="block md:hidden space-y-4">
+                  {articlesList.slice(0, 5).map((art) => (
+                    <div key={art._id} className="border border-[var(--color-border)] rounded-[var(--radius-sm)] p-4 bg-[var(--color-sub-bg)]/20 hover:bg-[var(--color-sub-bg)]/40 transition-colors flex flex-col gap-3">
+                      <div className="flex gap-3">
+                        <img
+                          src={art.imageUrl}
+                          alt="Cover"
+                          className="w-14 h-14 object-cover border border-[var(--color-border)] rounded-[var(--radius-sm)] shrink-0"
+                          onError={(e) => {
+                            e.target.src = "https://images.unsplash.com/photo-1488590528505-98d2b5aba04b?q=80&w=200";
+                          }}
+                        />
+                        <div className="flex-1 min-w-0">
+                          <span className="inline-block px-2 py-0.5 rounded-full text-[9px] font-semibold bg-blue-500/10 text-blue-600 border border-blue-500/20 uppercase mb-1">
                             {art.category}
                           </span>
-                        </td>
-                        <td className="py-4 px-4 text-[var(--color-paragraph)] opacity-70 max-w-[200px] truncate">
-                          {art.description}
-                        </td>
-                        <td className="py-4 pl-4 text-right">
-                          <div className="flex justify-end gap-2">
-                            <button
-                              onClick={() => handleOpenEditModal(art)}
-                              className="p-2 flex items-center justify-center transition-colors cursor-pointer border border-[var(--color-border)] bg-[var(--color-main-bg)] text-[var(--color-paragraph)] opacity-70 hover:opacity-100"
-                              style={{ borderRadius: 'var(--radius-sm)' }}
-                              title="Edit Article"
-                            >
-                              <EditIcon fontSize="small" />
-                            </button>
-                            <button
-                              onClick={() => handleDeleteArticle(art._id)}
-                              className="p-2 flex items-center justify-center transition-colors cursor-pointer border border-red-500/20 bg-red-500/5 text-red-600 hover:bg-red-500/10"
-                              style={{ borderRadius: 'var(--radius-sm)' }}
-                              title="Delete Article"
-                            >
-                              <DeleteIcon fontSize="small" />
-                            </button>
-                          </div>
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
+                          <h3 className="text-sm font-semibold text-[var(--color-black)] leading-snug truncate">
+                            {art.title}
+                          </h3>
+                          <p className="text-xs text-[var(--color-paragraph)] opacity-60 line-clamp-2 mt-1">
+                            {art.description}
+                          </p>
+                        </div>
+                      </div>
+
+                      <div className="flex justify-end gap-2 pt-2 border-t border-[var(--color-border)]/50">
+                        <button
+                          onClick={() => handleOpenEditModal(art)}
+                          className="px-3 py-1.5 flex items-center justify-center gap-1.5 transition-colors cursor-pointer border border-[var(--color-border)] bg-[var(--color-main-bg)] text-[var(--color-paragraph)] opacity-80 hover:opacity-100 text-xs font-semibold"
+                          style={{ borderRadius: 'var(--radius-sm)' }}
+                        >
+                          <EditIcon style={{ fontSize: 14 }} /> Edit
+                        </button>
+                        <button
+                          onClick={() => handleDeleteArticle(art._id)}
+                          className="px-3 py-1.5 flex items-center justify-center gap-1.5 transition-colors cursor-pointer border border-red-500/20 bg-red-500/5 text-red-600 hover:bg-red-500/10 text-xs font-semibold"
+                          style={{ borderRadius: 'var(--radius-sm)' }}
+                        >
+                          <DeleteIcon style={{ fontSize: 14 }} /> Delete
+                        </button>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </>
             )}
           </div>
         ) : (
@@ -375,77 +422,116 @@ const ArticlesAdmin = () => {
                 No active newsletter subscribers registered yet.
               </div>
             ) : (
-              <div className="overflow-x-auto">
-                <table className="w-full text-left border-collapse min-w-[500px]">
-                  <thead>
-                    <tr className="border-b border-[var(--color-border)] text-[var(--color-paragraph)] opacity-50 text-xs font-semibold uppercase tracking-wider">
-                      <th className="pb-3 px-4 font-semibold">Email Address</th>
-                      <th className="pb-3 px-4 font-semibold w-[220px]">Subscribed On</th>
-                      <th className="pb-3 pl-4 font-semibold text-right w-[150px]">Actions</th>
-                    </tr>
-                  </thead>
-                  <tbody className="divide-y divide-[var(--color-border)] text-sm">
-                    {subscribersList.map((sub) => (
-                      <tr key={sub._id} className="hover:bg-[var(--color-sub-bg)]/40 transition-colors">
-                        <td className="py-4 px-4 font-medium text-[var(--color-black)]">
+              <>
+                {/* Desktop View */}
+                <div className="hidden md:block overflow-x-auto">
+                  <table className="w-full text-left border-collapse min-w-[500px]">
+                    <thead>
+                      <tr className="border-b border-[var(--color-border)] text-[var(--color-paragraph)] opacity-50 text-xs font-semibold uppercase tracking-wider">
+                        <th className="pb-3 px-4 font-semibold">Email Address</th>
+                        <th className="pb-3 px-4 font-semibold w-[220px]">Subscribed On</th>
+                        <th className="pb-3 pl-4 font-semibold text-right w-[150px]">Actions</th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-[var(--color-border)] text-sm">
+                      {subscribersList.map((sub) => (
+                        <tr key={sub._id} className="hover:bg-[var(--color-sub-bg)]/40 transition-colors">
+                          <td className="py-4 px-4 font-medium text-[var(--color-black)]">
+                            {sub.email}
+                          </td>
+                          <td className="py-4 px-4 text-[var(--color-paragraph)] opacity-70">
+                            {new Date(sub.createdAt).toLocaleDateString('en-US', {
+                              month: 'short',
+                              day: 'numeric',
+                              year: 'numeric',
+                              hour: '2-digit',
+                              minute: '2-digit'
+                            })}
+                          </td>
+                          <td className="py-4 pl-4 text-right">
+                            <button
+                              onClick={() => handleDeleteSubscriber(sub._id)}
+                              className="p-2 flex items-center justify-center transition-colors cursor-pointer border border-red-500/20 bg-red-500/5 text-red-600 hover:bg-red-500/10"
+                              style={{ borderRadius: 'var(--radius-sm)' }}
+                              title="Remove Subscriber"
+                            >
+                              <DeleteIcon fontSize="small" />
+                            </button>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+
+                {/* Mobile Card View */}
+                <div className="block md:hidden space-y-4">
+                  {subscribersList.map((sub) => (
+                    <div key={sub._id} className="border border-[var(--color-border)] rounded-[var(--radius-sm)] p-4 bg-[var(--color-sub-bg)]/20 hover:bg-[var(--color-sub-bg)]/40 transition-colors flex flex-col gap-3">
+                      <div>
+                        <p className="text-sm font-semibold text-[var(--color-black)] break-all">
                           {sub.email}
-                        </td>
-                        <td className="py-4 px-4 text-[var(--color-paragraph)] opacity-70">
-                          {new Date(sub.createdAt).toLocaleDateString('en-US', {
+                        </p>
+                        <p className="text-xs text-[var(--color-paragraph)] opacity-50 mt-1">
+                          Subscribed: {new Date(sub.createdAt).toLocaleDateString('en-US', {
                             month: 'short',
                             day: 'numeric',
                             year: 'numeric',
                             hour: '2-digit',
                             minute: '2-digit'
                           })}
-                        </td>
-                        <td className="py-4 pl-4 text-right">
-                          <button
-                            onClick={() => handleDeleteSubscriber(sub._id)}
-                            className="p-2 flex items-center justify-center transition-colors cursor-pointer border border-red-500/20 bg-red-500/5 text-red-600 hover:bg-red-500/10"
-                            style={{ borderRadius: 'var(--radius-sm)' }}
-                            title="Remove Subscriber"
-                          >
-                            <DeleteIcon fontSize="small" />
-                          </button>
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
+                        </p>
+                      </div>
+
+                      <div className="flex justify-end pt-2 border-t border-[var(--color-border)]/50">
+                        <button
+                          onClick={() => handleDeleteSubscriber(sub._id)}
+                          className="px-3 py-1.5 flex items-center justify-center gap-1.5 transition-colors cursor-pointer border border-red-500/20 bg-red-500/5 text-red-600 hover:bg-red-500/10 text-xs font-semibold"
+                          style={{ borderRadius: 'var(--radius-sm)' }}
+                        >
+                          <DeleteIcon style={{ fontSize: 14 }} /> Remove
+                        </button>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </>
             )}
           </div>
         )}
 
-      {/* CREATE & EDIT ARTICLE MODAL DIALOG */}
-      <Dialog
-        open={openFormModal}
-        onClose={() => setOpenFormModal(false)}
-        maxWidth="md"
-        fullWidth
-        sx={{
-          "& .MuiDialog-container": {
-            backdropFilter: "blur(4px)",
-            background: "rgba(0, 0, 0, 0.15)",
-          },
-          "& .MuiDialog-paper": {
-            background: "var(--color-main-bg) !important",
-            color: "var(--color-paragraph) !important",
-            borderRadius: "var(--radius-sm)",
-            border: "1px solid var(--color-border)",
-            boxShadow: "var(--shadow-card)",
-            p: 2
-          }
-        }}
-      >
-        <DialogTitle sx={{ fontWeight: 700, fontSize: "1.3rem", pb: 2, borderBottom: "1px solid var(--color-border)", color: "var(--color-black)" }}>
-          {isEditing ? "Modify Article" : "Publish New Article"}
-        </DialogTitle>
-        
-        <form onSubmit={handleSaveArticle}>
-          <DialogContent sx={{ display: "flex", flexDirection: "column", gap: 3, pt: 3 }}>
-            
+        {/* CREATE & EDIT ARTICLE MODAL DIALOG */}
+        <Dialog
+          open={openFormModal}
+          onClose={() => setOpenFormModal(false)}
+          maxWidth="md"
+          fullWidth
+          scroll="paper"
+          component="form"
+          onSubmit={handleSaveArticle}
+          sx={{
+            "& .MuiDialog-container": {
+              backdropFilter: "blur(4px)",
+              background: "rgba(0, 0, 0, 0.15)",
+            },
+            "& .MuiDialog-paper": {
+              background: "var(--color-main-bg) !important",
+              color: "var(--color-paragraph) !important",
+              borderRadius: "var(--radius-sm)",
+              border: "1px solid var(--color-border)",
+              boxShadow: "var(--shadow-card)",
+              maxHeight: "90vh",
+              display: "flex",
+              flexDirection: "column"
+            }
+          }}
+        >
+          <DialogTitle sx={{ fontWeight: 700, fontSize: "1.3rem", px: 3, pt: 3, pb: 2, borderBottom: "1px solid var(--color-border)", color: "var(--color-black)" }}>
+            {isEditing ? "Modify Article" : "Publish New Article"}
+          </DialogTitle>
+
+          <DialogContent sx={{ display: "flex", flexDirection: "column", gap: 3, px: 3, py: 2.5 }}>
+
             {/* Title & Category Row */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               <div className="md:col-span-2">
@@ -607,7 +693,7 @@ const ArticlesAdmin = () => {
 
           </DialogContent>
 
-          <DialogActions sx={{ px: 3, pb: 2, pt: 3, borderTop: "1px solid var(--color-border)" }}>
+          <DialogActions sx={{ px: 3, pb: 2.5, pt: 2, borderTop: "1px solid var(--color-border)" }}>
             <Button
               onClick={() => setOpenFormModal(false)}
               sx={{ color: "var(--color-paragraph)", opacity: 0.6, "&:hover": { opacity: 1 }, textTransform: "none", fontWeight: 600 }}
@@ -632,11 +718,10 @@ const ArticlesAdmin = () => {
               {isEditing ? "Save Changes" : "Publish Article"}
             </Button>
           </DialogActions>
-        </form>
-      </Dialog>
+        </Dialog>
+      </div>
     </div>
-  </div>
-);
+  );
 };
 
 export default ArticlesAdmin;

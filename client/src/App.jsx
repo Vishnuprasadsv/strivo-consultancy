@@ -36,6 +36,7 @@ const TermsAndConditions = lazy(() => import('./pages/TermsAndConditions'));
 
 // Admin Pages
 const Login = lazy(() => import('./Admin/Login'));
+const Register = lazy(() => import('./Admin/Register'));
 const ForgotPassword = lazy(() => import('./Admin/ForgotPassword'));
 const ResetPassword = lazy(() => import('./Admin/ResetPassword'));
 const Dashboard = lazy(() => import('./Admin/Dashboard'));
@@ -185,6 +186,7 @@ const AppLayout = () => {
                 {/* Admin Routes */}
                 <Route path="/admin" element={<Login />} />
                 <Route path="/admin/login" element={<Login />} />
+                <Route path="/admin/register" element={<Register />} />
                 <Route path="/admin/forgot-password" element={<ForgotPassword />} />
                 <Route path="/admin/reset-password" element={<ResetPassword />} />
                 <Route path="/admin/dashboard" element={<Dashboard />} />

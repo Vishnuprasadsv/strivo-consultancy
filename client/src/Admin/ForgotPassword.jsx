@@ -15,7 +15,7 @@ const ForgotPassword = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [resetToken, setResetToken] = useState('');
-  
+
   const [isLoading, setIsLoading] = useState(false);
   const [timer, setTimer] = useState(300); // 5 minutes in seconds
 
@@ -94,7 +94,7 @@ const ForgotPassword = () => {
         email,
         otp: otpValue,
       });
-      
+
       setResetToken(response.data.resetToken);
       toast.success('OTP verified successfully!');
       setStep(3);
@@ -122,7 +122,7 @@ const ForgotPassword = () => {
         resetToken,
         newPassword,
       });
-      
+
       toast.success('Password changed successfully! Please login with your new password.');
       navigate('/admin/login');
     } catch (error) {
@@ -134,12 +134,16 @@ const ForgotPassword = () => {
 
   return (
     <div className="min-h-screen flex items-center justify-center relative z-10 px-4 bg-sub">
-      <motion.div 
+      <motion.div
         initial={{ opacity: 0, y: 30 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6, ease: "easeOut" }}
         className="w-full max-w-md card p-8 relative overflow-hidden"
       >
+        <div className="flex flex-col items-center gap-4 mb-8">
+          <img src={logo} alt="Strivo Logo" className="h-10 object-contain" />
+        </div>
+
         <AnimatePresence mode="wait">
           {step === 1 && (
             <motion.div
@@ -148,17 +152,18 @@ const ForgotPassword = () => {
               animate={{ opacity: 1, x: 0 }}
               exit={{ opacity: 0, x: 20 }}
               transition={{ duration: 0.3 }}
+              className="w-full"
             >
               <div className="text-center mb-8">
-                <h2 
+                <h2
                   className="mb-2 block text-center"
-                  style={{ fontSize: 'var(--text-sub-heading)', fontWeight: 'var(--font-normal)', color: 'var(--color-black)' }}
+                  style={{ fontSize: 'var(--text-card-heading)', fontWeight: 'var(--font-semibold)', color: 'var(--color-black)' }}
                 >
                   RESET PASSWORD
                 </h2>
-                <p 
+                <p
                   className="opacity-70 block text-center"
-                  style={{ fontSize: 'var(--text-medium)', fontWeight: 'var(--font-normal)', color: 'var(--color-paragraph)' }}
+                  style={{ fontSize: 'var(--text-paragraph)', fontWeight: 'var(--font-normal)', color: 'var(--color-paragraph)' }}
                 >
                   Enter your email ID to receive an OTP
                 </p>
@@ -166,24 +171,20 @@ const ForgotPassword = () => {
 
               <form onSubmit={handleSendOtp} className="space-y-6">
                 <div className="space-y-2">
-                  <label 
+                  <label
                     className="ml-1 block"
                     style={{ fontSize: 'var(--text-small)', fontWeight: 'var(--font-medium)', color: 'var(--color-paragraph)' }}
                   >
                     EMAIL ID
                   </label>
                   <div className="relative">
-                    <FiMail 
-                      className="absolute left-4 top-1/2 -translate-y-1/2" 
-                      style={{ color: 'var(--color-paragraph)', opacity: 0.5 }}
-                    />
-                    <input 
-                      type="email" 
+                    <input
+                      type="email"
                       required
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
                       placeholder="Enter your email address"
-                      className="input pl-11 placeholder:text-[var(--color-paragraph)] placeholder:opacity-40 transition-all"
+                      className="input placeholder:text-[var(--color-paragraph)] placeholder:opacity-40 transition-all"
                       style={{ fontSize: 'var(--text-paragraph)', color: 'var(--color-paragraph)' }}
                     />
                   </div>
@@ -211,25 +212,26 @@ const ForgotPassword = () => {
               animate={{ opacity: 1, x: 0 }}
               exit={{ opacity: 0, x: 20 }}
               transition={{ duration: 0.3 }}
+              className="w-full"
             >
               <div className="text-center mb-8">
-                <h2 
+                <h2
                   className="mb-2 block text-center"
-                  style={{ fontSize: 'var(--text-sub-heading)', fontWeight: 'var(--font-normal)', color: 'var(--color-black)' }}
+                  style={{ fontSize: 'var(--text-card-heading)', fontWeight: 'var(--font-semibold)', color: 'var(--color-black)' }}
                 >
                   Enter OTP
                 </h2>
-                <p 
+                <p
                   className="opacity-70 block text-center"
                   style={{ fontSize: 'var(--text-small)', fontWeight: 'var(--font-normal)', color: 'var(--color-paragraph)' }}
                 >
-                  We sent a 6-digit code to <br/>
+                  We sent a 6-digit code to <br />
                   <span style={{ fontWeight: 'var(--font-bold)', color: 'var(--color-black)' }}>{email}</span>
                 </p>
               </div>
 
               <form onSubmit={handleVerifyOtp} className="space-y-8">
-                <div className="flex justify-between gap-2">
+                <div className="grid grid-cols-6 gap-2 w-full max-w-xs mx-auto">
                   {otp.map((digit, index) => (
                     <input
                       key={index}
@@ -239,7 +241,7 @@ const ForgotPassword = () => {
                       value={digit}
                       onChange={(e) => handleOtpChange(index, e.target.value)}
                       onKeyDown={(e) => handleOtpKeyDown(index, e)}
-                      className="w-12 h-14 text-center text-xl font-bold transition-all border"
+                      className="w-full h-14 text-center text-xl font-bold transition-all border"
                       style={{ borderRadius: 'var(--radius-sm)', border: '1px solid var(--color-border)', backgroundColor: 'var(--color-white)', color: 'var(--color-black)' }}
                     />
                   ))}
@@ -247,7 +249,7 @@ const ForgotPassword = () => {
 
                 <div className="text-center">
                   {timer > 0 ? (
-                    <p 
+                    <p
                       className="opacity-70 text-center"
                       style={{ fontSize: 'var(--text-small)', fontWeight: 'var(--font-normal)', color: 'var(--color-paragraph)' }}
                     >
@@ -287,15 +289,16 @@ const ForgotPassword = () => {
               animate={{ opacity: 1, x: 0 }}
               exit={{ opacity: 0, x: 20 }}
               transition={{ duration: 0.3 }}
+              className="w-full"
             >
               <div className="text-center mb-8">
-                <h2 
+                <h2
                   className="mb-2 block text-center"
-                  style={{ fontSize: 'var(--text-sub-heading)', fontWeight: 'var(--font-normal)', color: 'var(--color-black)' }}
+                  style={{ fontSize: 'var(--text-card-heading)', fontWeight: 'var(--font-semibold)', color: 'var(--color-black)' }}
                 >
                   Create New Password
                 </h2>
-                <p 
+                <p
                   className="opacity-70 block text-center"
                   style={{ fontSize: 'var(--text-small)', fontWeight: 'var(--font-normal)', color: 'var(--color-paragraph)' }}
                 >
@@ -305,18 +308,18 @@ const ForgotPassword = () => {
 
               <form onSubmit={handleResetPassword} className="space-y-5">
                 <div className="space-y-2">
-                  <label 
+                  <label
                     className="ml-1 block"
                     style={{ fontSize: 'var(--text-small)', fontWeight: 'var(--font-medium)', color: 'var(--color-paragraph)' }}
                   >
                     NEW PASSWORD
                   </label>
                   <div className="relative">
-                    <FiLock 
-                      className="absolute left-4 top-1/2 -translate-y-1/2" 
+                    <FiLock
+                      className="absolute left-4 top-1/2 -translate-y-1/2"
                       style={{ color: 'var(--color-paragraph)', opacity: 0.5 }}
                     />
-                    <input 
+                    <input
                       type={showPassword ? "text" : "password"}
                       required
                       value={newPassword}
@@ -337,18 +340,18 @@ const ForgotPassword = () => {
                 </div>
 
                 <div className="space-y-2">
-                  <label 
+                  <label
                     className="ml-1 block"
                     style={{ fontSize: 'var(--text-small)', fontWeight: 'var(--font-medium)', color: 'var(--color-paragraph)' }}
                   >
                     CONFIRM PASSWORD
                   </label>
                   <div className="relative">
-                    <FiLock 
-                      className="absolute left-4 top-1/2 -translate-y-1/2" 
+                    <FiLock
+                      className="absolute left-4 top-1/2 -translate-y-1/2"
                       style={{ color: 'var(--color-paragraph)', opacity: 0.5 }}
                     />
-                    <input 
+                    <input
                       type={showConfirmPassword ? "text" : "password"}
                       required
                       value={confirmPassword}
@@ -385,8 +388,8 @@ const ForgotPassword = () => {
         </AnimatePresence>
 
         <div className="text-center mt-6">
-          <Link 
-            to="/admin/login" 
+          <Link
+            to="/admin/login"
             className="hover:underline transition-colors"
             style={{ fontSize: 'var(--text-small)', fontWeight: 'var(--font-medium)', color: 'var(--color-primary)' }}
           >

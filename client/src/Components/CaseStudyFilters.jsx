@@ -12,12 +12,12 @@ const CaseStudyFilters = ({
   setSortBy,
 }) => {
   return (
-    <div className="card p-5 mb-8 shadow-card">
-      <div className="grid xl:grid-cols-[1.6fr_1fr_1fr_1fr_1fr_auto] lg:grid-cols-3 md:grid-cols-2 gap-4">
+    <div className="card p-4 mb-6 shadow-card">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         
         {/* Search */}
         <div className="relative">
-          <FiSearch className="absolute left-4 top-1/2 -translate-y-1/2 text-[var(--color-paragraph)] opacity-60 text-lg" />
+          <FiSearch className="absolute left-4 top-1/2 -translate-y-1/2 text-[var(--color-paragraph)] opacity-60 text-base" />
           <input
             type="text"
             placeholder="Search case studies..."
@@ -29,9 +29,10 @@ const CaseStudyFilters = ({
               border
               border-[var(--color-border)]
               rounded-[var(--radius-sm)]
-              py-3
-              pl-12
+              py-2.5
+              pl-11
               pr-4
+              text-sm
               text-[var(--color-paragraph)]
               placeholder-gray-400
               outline-none
@@ -54,8 +55,9 @@ const CaseStudyFilters = ({
               border-[var(--color-border)]
               rounded-[var(--radius-sm)]
               pl-4
-              pr-12
-              py-3
+              pr-10
+              py-2.5
+              text-sm
               text-[var(--color-paragraph)]
               outline-none
               focus:border-[var(--color-primary)]
@@ -99,8 +101,9 @@ const CaseStudyFilters = ({
               border-[var(--color-border)]
               rounded-[var(--radius-sm)]
               pl-4
-              pr-12
-              py-3
+              pr-10
+              py-2.5
+              text-sm
               text-[var(--color-paragraph)]
               outline-none
               focus:border-[var(--color-primary)]
@@ -144,8 +147,9 @@ const CaseStudyFilters = ({
               border-[var(--color-border)]
               rounded-[var(--radius-sm)]
               pl-4
-              pr-12
-              py-3
+              pr-10
+              py-2.5
+              text-sm
               text-[var(--color-paragraph)]
               outline-none
               focus:border-[var(--color-primary)]

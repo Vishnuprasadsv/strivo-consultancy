@@ -247,23 +247,23 @@ const CreateCaseStudy = () => {
   };
 
   return (
-    <div className="min-h-screen md:ml-64 pt-28 px-6 pb-12 bg-sub text-[var(--color-paragraph)]">
+    <div className="min-h-screen pt-24 px-4 sm:px-8 pb-8 relative z-10 md:ml-56 bg-sub">
       <motion.div
         initial={{ opacity: 0, y: 15 }}
         animate={{ opacity: 1, y: 0 }}
         className="max-w-6xl mx-auto"
       >
         {/* ================= Header ================= */}
-        <div className="flex justify-between items-start mb-10">
+        <div className="flex justify-between items-start mb-6">
           <div>
             <button
               onClick={() => navigate(-1)}
-              className="flex items-center gap-2 text-[var(--color-paragraph)] opacity-60 hover:opacity-100 transition mb-5 cursor-pointer font-semibold"
+              className="flex items-center gap-2 text-[var(--color-paragraph)] opacity-60 hover:opacity-100 transition mb-4 cursor-pointer font-semibold text-sm"
             >
               <FiArrowLeft />
               Back to Case Studies
             </button>
-            <h1 style={{ fontSize: 'var(--text-sub-heading)', fontWeight: 'var(--font-semibold)', color: 'var(--color-black)', margin: 0 }}>
+            <h1 style={{ fontSize: '26px', fontWeight: 'var(--font-semibold)', color: 'var(--color-black)', margin: 0 }}>
               Create Case Study
             </h1>
             <p style={{ fontSize: 'var(--text-small)', color: 'var(--color-paragraph)', opacity: 0.6, margin: '2px 0 0 0' }}>
@@ -273,15 +273,15 @@ const CreateCaseStudy = () => {
         </div>
 
         {/* ================= Basic Information ================= */}
-        <div className="card p-8 shadow-card relative overflow-hidden mb-8">
-          <h2 style={{ fontSize: 'var(--text-paragraph)', fontWeight: 'var(--font-bold)', color: 'var(--color-black)', margin: '0 0 20px 0' }}>
+        <div className="card p-5 shadow-card relative overflow-hidden mb-6">
+          <h2 style={{ fontSize: 'var(--text-paragraph)', fontWeight: 'var(--font-bold)', color: 'var(--color-black)', margin: '0 0 15px 0' }}>
             Basic Information
           </h2>
 
-          <div className="grid md:grid-cols-2 gap-6">
+          <div className="grid md:grid-cols-2 gap-4">
             {/* Title */}
             <div>
-              <label className="block mb-2 text-[var(--color-paragraph)] opacity-80 font-medium text-sm">
+              <label className="block mb-1.5 text-[var(--color-paragraph)] opacity-80 font-medium text-sm">
                 Case Study Title *
               </label>
               <input
@@ -290,10 +290,10 @@ const CreateCaseStudy = () => {
                 value={formData.title}
                 onChange={handleChange}
                 placeholder="Digital Transformation for ABC Manufacturing"
-                className="w-full bg-[var(--color-sub-bg)] border border-[var(--color-border)] rounded-[var(--radius-sm)] p-3 outline-none text-[var(--color-paragraph)] focus:border-[var(--color-primary)] transition"
+                className="w-full bg-[var(--color-sub-bg)] border border-[var(--color-border)] rounded-[var(--radius-sm)] py-2.5 px-3 outline-none text-sm text-[var(--color-paragraph)] focus:border-[var(--color-primary)] transition"
               />
               {errors.title && (
-                <p className="text-red-500 text-sm mt-1">
+                <p className="text-red-500 text-xs mt-1">
                   {errors.title}
                 </p>
               )}
@@ -301,7 +301,7 @@ const CreateCaseStudy = () => {
 
             {/* Author Name */}
             <div>
-              <label className="block mb-2 text-[var(--color-paragraph)] opacity-80 font-medium text-sm">
+              <label className="block mb-1.5 text-[var(--color-paragraph)] opacity-80 font-medium text-sm">
                 Author Name *
               </label>
               <input
@@ -310,10 +310,10 @@ const CreateCaseStudy = () => {
                 value={formData.author}
                 onChange={handleChange}
                 placeholder="John Smith"
-                className="w-full bg-[var(--color-sub-bg)] border border-[var(--color-border)] rounded-[var(--radius-sm)] p-3 outline-none text-[var(--color-paragraph)] focus:border-[var(--color-primary)] transition"
+                className="w-full bg-[var(--color-sub-bg)] border border-[var(--color-border)] rounded-[var(--radius-sm)] py-2.5 px-3 outline-none text-sm text-[var(--color-paragraph)] focus:border-[var(--color-primary)] transition"
               />
               {errors.author && (
-                <p className="text-red-500 text-sm mt-1">
+                <p className="text-red-500 text-xs mt-1">
                   {errors.author}
                 </p>
               )}
@@ -321,7 +321,7 @@ const CreateCaseStudy = () => {
 
             {/* Author Role */}
             <div>
-              <label className="block mb-2 text-[var(--color-paragraph)] opacity-80 font-medium text-sm">
+              <label className="block mb-1.5 text-[var(--color-paragraph)] opacity-80 font-medium text-sm">
                 Author Role *
               </label>
               <input
@@ -330,10 +330,10 @@ const CreateCaseStudy = () => {
                 value={formData.authorRole}
                 onChange={handleChange}
                 placeholder="Senior Business Consultant"
-                className="w-full bg-[var(--color-sub-bg)] border border-[var(--color-border)] rounded-[var(--radius-sm)] p-3 outline-none text-[var(--color-paragraph)] focus:border-[var(--color-primary)] transition"
+                className="w-full bg-[var(--color-sub-bg)] border border-[var(--color-border)] rounded-[var(--radius-sm)] py-2.5 px-3 outline-none text-sm text-[var(--color-paragraph)] focus:border-[var(--color-primary)] transition"
               />
               {errors.authorRole && (
-                <p className="text-red-500 text-sm mt-1">
+                <p className="text-red-500 text-xs mt-1">
                   {errors.authorRole}
                 </p>
               )}
@@ -341,7 +341,7 @@ const CreateCaseStudy = () => {
 
             {/* Project Duration */}
             <div>
-              <label className="block mb-2 text-[var(--color-paragraph)] opacity-80 font-medium text-sm">
+              <label className="block mb-1.5 text-[var(--color-paragraph)] opacity-80 font-medium text-sm">
                 Project Duration *
               </label>
               <input
@@ -350,10 +350,10 @@ const CreateCaseStudy = () => {
                 value={formData.duration}
                 onChange={handleChange}
                 placeholder="6 Months"
-                className="w-full bg-[var(--color-sub-bg)] border border-[var(--color-border)] rounded-[var(--radius-sm)] p-3 outline-none text-[var(--color-paragraph)] focus:border-[var(--color-primary)] transition"
+                className="w-full bg-[var(--color-sub-bg)] border border-[var(--color-border)] rounded-[var(--radius-sm)] py-2.5 px-3 outline-none text-sm text-[var(--color-paragraph)] focus:border-[var(--color-primary)] transition"
               />
               {errors.duration && (
-                <p className="text-red-500 text-sm mt-1">
+                <p className="text-red-500 text-xs mt-1">
                   {errors.duration}
                 </p>
               )}
@@ -361,7 +361,7 @@ const CreateCaseStudy = () => {
 
             {/* Category */}
             <div className="md:col-span-2">
-              <label className="block mb-2 text-[var(--color-paragraph)] opacity-80 font-medium text-sm">
+              <label className="block mb-1.5 text-[var(--color-paragraph)] opacity-80 font-medium text-sm">
                 Category *
               </label>
               <div className="relative">
@@ -369,7 +369,7 @@ const CreateCaseStudy = () => {
                   name="category"
                   value={formData.category}
                   onChange={handleChange}
-                  className="appearance-none w-full bg-[var(--color-sub-bg)] border border-[var(--color-border)] rounded-[var(--radius-sm)] p-3 outline-none text-[var(--color-paragraph)] focus:border-[var(--color-primary)] transition cursor-pointer"
+                  className="appearance-none w-full bg-[var(--color-sub-bg)] border border-[var(--color-border)] rounded-[var(--radius-sm)] py-2.5 px-3 outline-none text-sm text-[var(--color-paragraph)] focus:border-[var(--color-primary)] transition cursor-pointer"
                 >
                   <option value="" className="bg-[var(--color-main-bg)]">Select Category</option>
                   <option value="Finance" className="bg-[var(--color-main-bg)]">Finance</option>
@@ -385,7 +385,7 @@ const CreateCaseStudy = () => {
                 </div>
               </div>
               {errors.category && (
-                <p className="text-red-500 text-sm mt-1">
+                <p className="text-red-500 text-xs mt-1">
                   {errors.category}
                 </p>
               )}
@@ -394,23 +394,23 @@ const CreateCaseStudy = () => {
         </div>
 
         {/* ================= Media Upload ================= */}
-        <div className="card p-8 shadow-card relative overflow-hidden mb-8">
-          <h2 style={{ fontSize: 'var(--text-paragraph)', fontWeight: 'var(--font-bold)', color: 'var(--color-black)', margin: '0 0 20px 0' }}>
+        <div className="card p-5 shadow-card relative overflow-hidden mb-6">
+          <h2 style={{ fontSize: 'var(--text-paragraph)', fontWeight: 'var(--font-bold)', color: 'var(--color-black)', margin: '0 0 15px 0' }}>
             Media
           </h2>
 
-          <div className="grid lg:grid-cols-2 gap-8">
+          <div className="grid lg:grid-cols-2 gap-5">
             {/* Cover Image */}
             <div>
-              <label className="block mb-3 text-[var(--color-paragraph)] opacity-80 font-medium text-sm">
+              <label className="block mb-2 text-[var(--color-paragraph)] opacity-80 font-medium text-sm">
                 Cover Image *
               </label>
-              <label className="border-2 border-dashed border-[var(--color-border)] hover:border-[var(--color-primary)] transition rounded-[var(--radius-sm)] h-64 flex flex-col items-center justify-center cursor-pointer">
-                <FiUpload className="text-5xl text-[var(--color-primary)] mb-4" />
-                <p className="text-[var(--color-paragraph)] opacity-80 font-medium">
+              <label className="border-2 border-dashed border-[var(--color-border)] hover:border-[var(--color-primary)] transition rounded-[var(--radius-sm)] h-56 flex flex-col items-center justify-center cursor-pointer">
+                <FiUpload className="text-4xl text-[var(--color-primary)] mb-3" />
+                <p className="text-[var(--color-paragraph)] opacity-80 font-medium text-sm">
                   Click to Upload Cover Image
                 </p>
-                <p className="text-sm text-[var(--color-paragraph)] opacity-60 mt-2">
+                <p className="text-xs text-[var(--color-paragraph)] opacity-60 mt-1">
                   JPG, PNG or WEBP
                 </p>
                 <input
@@ -420,18 +420,18 @@ const CreateCaseStudy = () => {
                   onChange={handleCoverImage}
                 />
                 {errors.coverImage && (
-                  <p className="text-red-500 text-sm mt-2">
+                  <p className="text-red-500 text-xs mt-2">
                     {errors.coverImage}
                   </p>
                 )}
               </label>
 
               {formData.coverImage && (
-                <div className="mt-5">
+                <div className="mt-4">
                   <img
                     src={URL.createObjectURL(formData.coverImage)}
                     alt="Cover"
-                    className="w-full h-64 object-cover border border-[var(--color-border)]"
+                    className="w-full h-56 object-cover border border-[var(--color-border)]"
                     style={{ borderRadius: 'var(--radius-sm)' }}
                   />
                 </div>
@@ -440,15 +440,15 @@ const CreateCaseStudy = () => {
 
             {/* Author Image */}
             <div>
-              <label className="block mb-3 text-[var(--color-paragraph)] opacity-80 font-medium text-sm">
+              <label className="block mb-2 text-[var(--color-paragraph)] opacity-80 font-medium text-sm">
                 Author Image *
               </label>
-              <label className="border-2 border-dashed border-[var(--color-border)] hover:border-[var(--color-primary)] transition rounded-[var(--radius-sm)] h-64 flex flex-col items-center justify-center cursor-pointer">
-                <FiUpload className="text-5xl text-[var(--color-primary)] mb-4" />
-                <p className="text-[var(--color-paragraph)] opacity-80 font-medium">
+              <label className="border-2 border-dashed border-[var(--color-border)] hover:border-[var(--color-primary)] transition rounded-[var(--radius-sm)] h-56 flex flex-col items-center justify-center cursor-pointer">
+                <FiUpload className="text-4xl text-[var(--color-primary)] mb-3" />
+                <p className="text-[var(--color-paragraph)] opacity-80 font-medium text-sm">
                   Click to Upload Author Image
                 </p>
-                <p className="text-sm text-[var(--color-paragraph)] opacity-60 mt-2">
+                <p className="text-xs text-[var(--color-paragraph)] opacity-60 mt-1">
                   JPG, PNG or WEBP
                 </p>
                 <input
@@ -458,29 +458,29 @@ const CreateCaseStudy = () => {
                   onChange={handleAuthorImage}
                 />
                 {errors.authorImage && (
-                  <p className="text-red-500 text-sm mt-2">
+                  <p className="text-red-500 text-xs mt-2">
                     {errors.authorImage}
                   </p>
                 )}
               </label>
 
               {formData.authorImage && (
-                <div className="mt-6">
+                <div className="mt-4">
                   <div className="flex justify-center">
                     <AvatarEditor
                       ref={editorRef}
                       image={formData.authorImage}
-                      width={220}
-                      height={220}
-                      border={20}
-                      borderRadius={110}
+                      width={180}
+                      height={180}
+                      border={15}
+                      borderRadius={90}
                       color={[242, 244, 246, 0.6]}
                       scale={scale}
                     />
                   </div>
 
-                  <div className="mt-6">
-                    <label className="text-sm text-[var(--color-paragraph)] opacity-60">
+                  <div className="mt-4">
+                    <label className="text-xs text-[var(--color-paragraph)] opacity-60">
                       Zoom Image
                     </label>
                     <input
@@ -490,7 +490,7 @@ const CreateCaseStudy = () => {
                       step="0.1"
                       value={scale}
                       onChange={(e) => setScale(parseFloat(e.target.value))}
-                      className="w-full mt-2 accent-[var(--color-primary)] cursor-pointer"
+                      className="w-full mt-1 accent-[var(--color-primary)] cursor-pointer"
                     />
                   </div>
                 </div>
@@ -500,27 +500,27 @@ const CreateCaseStudy = () => {
         </div>
 
         {/* ================= Case Study Content ================= */}
-        <div className="card p-8 shadow-card relative overflow-hidden mb-8">
-          <h2 style={{ fontSize: 'var(--text-paragraph)', fontWeight: 'var(--font-bold)', color: 'var(--color-black)', margin: '0 0 20px 0' }}>
+        <div className="card p-5 shadow-card relative overflow-hidden mb-6">
+          <h2 style={{ fontSize: 'var(--text-paragraph)', fontWeight: 'var(--font-bold)', color: 'var(--color-black)', margin: '0 0 15px 0' }}>
             Case Study Content
           </h2>
 
-          <div className="space-y-8">
+          <div className="space-y-5">
             {/* Summary */}
             <div>
-              <label className="block mb-3 text-[var(--color-paragraph)] opacity-80 font-medium text-sm">
+              <label className="block mb-2 text-[var(--color-paragraph)] opacity-80 font-medium text-sm">
                 Summary of Case Study *
               </label>
               <textarea
-                rows={5}
+                rows={4}
                 name="summary"
                 value={formData.summary}
                 onChange={handleChange}
                 placeholder="Provide a concise overview of the project, the client’s objectives, and the overall outcome."
-                className="w-full bg-[var(--color-sub-bg)] border border-[var(--color-border)] rounded-[var(--radius-sm)] p-4 outline-none text-[var(--color-paragraph)] focus:border-[var(--color-primary)] transition resize-none"
+                className="w-full bg-[var(--color-sub-bg)] border border-[var(--color-border)] rounded-[var(--radius-sm)] p-3 outline-none text-sm text-[var(--color-paragraph)] focus:border-[var(--color-primary)] transition resize-none"
               />
               {errors.summary && (
-                <p className="text-red-500 text-sm mt-1">
+                <p className="text-red-500 text-xs mt-1">
                   {errors.summary}
                 </p>
               )}
@@ -528,19 +528,19 @@ const CreateCaseStudy = () => {
 
             {/* Business Challenges */}
             <div>
-              <label className="block mb-3 text-[var(--color-paragraph)] opacity-80 font-medium text-sm">
+              <label className="block mb-2 text-[var(--color-paragraph)] opacity-80 font-medium text-sm">
                 Business Challenges *
               </label>
               <textarea
-                rows={6}
+                rows={5}
                 name="challenges"
                 value={formData.challenges}
                 onChange={handleChange}
                 placeholder="Describe the challenges, pain points, and business problems faced by the client before the project."
-                className="w-full bg-[var(--color-sub-bg)] border border-[var(--color-border)] rounded-[var(--radius-sm)] p-4 outline-none text-[var(--color-paragraph)] focus:border-[var(--color-primary)] transition resize-none"
+                className="w-full bg-[var(--color-sub-bg)] border border-[var(--color-border)] rounded-[var(--radius-sm)] p-3 outline-none text-sm text-[var(--color-paragraph)] focus:border-[var(--color-primary)] transition resize-none"
               />
               {errors.challenges && (
-                <p className="text-red-500 text-sm mt-1">
+                <p className="text-red-500 text-xs mt-1">
                   {errors.challenges}
                 </p>
               )}
@@ -548,19 +548,19 @@ const CreateCaseStudy = () => {
 
             {/* Results & Impact */}
             <div>
-              <label className="block mb-3 text-[var(--color-paragraph)] opacity-80 font-medium text-sm">
+              <label className="block mb-2 text-[var(--color-paragraph)] opacity-80 font-medium text-sm">
                 Results & Impact *
               </label>
               <textarea
-                rows={6}
+                rows={5}
                 name="results"
                 value={formData.results}
                 onChange={handleChange}
                 placeholder="Describe the improvements, measurable outcomes, ROI, business growth, and overall impact after implementing the solution."
-                className="w-full bg-[var(--color-sub-bg)] border border-[var(--color-border)] rounded-[var(--radius-sm)] p-4 outline-none text-[var(--color-paragraph)] focus:border-[var(--color-primary)] transition resize-none"
+                className="w-full bg-[var(--color-sub-bg)] border border-[var(--color-border)] rounded-[var(--radius-sm)] p-3 outline-none text-sm text-[var(--color-paragraph)] focus:border-[var(--color-primary)] transition resize-none"
               />
               {errors.results && (
-                <p className="text-red-500 text-sm mt-1">
+                <p className="text-red-500 text-xs mt-1">
                   {errors.results}
                 </p>
               )}
@@ -569,15 +569,15 @@ const CreateCaseStudy = () => {
         </div>
 
         {/* ================= Author Information ================= */}
-        <div className="card p-8 shadow-card relative overflow-hidden mb-8">
-          <h2 style={{ fontSize: 'var(--text-paragraph)', fontWeight: 'var(--font-bold)', color: 'var(--color-black)', margin: '0 0 20px 0' }}>
+        <div className="card p-5 shadow-card relative overflow-hidden mb-6">
+          <h2 style={{ fontSize: 'var(--text-paragraph)', fontWeight: 'var(--font-bold)', color: 'var(--color-black)', margin: '0 0 15px 0' }}>
             Author Information
           </h2>
 
-          <div className="grid md:grid-cols-2 gap-6">
+          <div className="grid md:grid-cols-2 gap-4">
             {/* Author Website */}
             <div>
-              <label className="block mb-2 text-[var(--color-paragraph)] opacity-80 font-medium text-sm">
+              <label className="block mb-1.5 text-[var(--color-paragraph)] opacity-80 font-medium text-sm">
                 Author Website
               </label>
               <input
@@ -586,18 +586,18 @@ const CreateCaseStudy = () => {
                 value={formData.authorWebsite}
                 onChange={handleChange}
                 placeholder="https://www.yourwebsite.com"
-                className="w-full bg-[var(--color-sub-bg)] border border-[var(--color-border)] rounded-[var(--radius-sm)] p-3 outline-none text-[var(--color-paragraph)] focus:border-[var(--color-primary)] transition"
+                className="w-full bg-[var(--color-sub-bg)] border border-[var(--color-border)] rounded-[var(--radius-sm)] py-2.5 px-3 outline-none text-sm text-[var(--color-paragraph)] focus:border-[var(--color-primary)] transition"
               />
             </div>
           </div>
         </div>
 
         {/* ================= Action Buttons ================= */}
-        <div className="flex justify-end gap-4 mt-10">
+        <div className="flex justify-end gap-3 mt-6">
           <button
             type="button"
             onClick={() => navigate(-1)}
-            className="px-8 py-3 border border-[var(--color-border)] text-[var(--color-paragraph)] hover:bg-[var(--color-sub-bg)] transition font-semibold cursor-pointer"
+            className="px-6 py-2 border border-[var(--color-border)] text-sm text-[var(--color-paragraph)] hover:bg-[var(--color-sub-bg)] transition font-semibold cursor-pointer h-10"
             style={{ borderRadius: 'var(--radius-sm)' }}
           >
             Cancel
@@ -607,7 +607,7 @@ const CreateCaseStudy = () => {
             type="button"
             onClick={() => handleSubmit("Draft")}
             disabled={loading}
-            className="px-8 py-3 bg-amber-500 hover:bg-amber-600 text-white disabled:opacity-50 transition font-semibold cursor-pointer"
+            className="px-6 py-2 bg-amber-500 hover:bg-amber-600 text-sm text-white disabled:opacity-50 transition font-semibold cursor-pointer h-10"
             style={{ borderRadius: 'var(--radius-sm)' }}
           >
             {loading ? "Saving..." : "Save Draft"}
@@ -617,7 +617,7 @@ const CreateCaseStudy = () => {
             type="button"
             onClick={() => handleSubmit("Published")}
             disabled={loading}
-            className="btn px-8 py-3 border-none disabled:opacity-50 cursor-pointer w-full sm:w-auto justify-center"
+            className="btn px-6 py-2 border-none disabled:opacity-50 cursor-pointer w-full sm:w-auto justify-center h-10 text-sm"
             style={{ fontWeight: 'var(--font-semibold)' }}
           >
             {loading ? "Publishing..." : "Publish"}
