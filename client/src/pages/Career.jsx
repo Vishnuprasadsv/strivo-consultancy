@@ -213,42 +213,42 @@ function Career() {
       transition: "all 0.3s ease",
 
       "& fieldset": {
-        borderColor: "var(--color-border-color)",
+        borderColor: "var(--color-border)",
         transition: "all 0.3s ease",
       },
 
       "&:hover fieldset": {
-        borderColor: "#2563EB",
+        borderColor: "var(--color-primary)",
       },
 
       "&.Mui-focused fieldset": {
-        borderColor: "#2563EB",
+        borderColor: "var(--color-primary)",
       },
 
       "&.Mui-focused": {
-        boxShadow: "0 0 14px rgba(37,99,235, 0.25)",
+        boxShadow: "0 0 14px rgba(71, 100, 255, 0.25)",
         background: "var(--color-sub-bg)",
       },
     },
 
 
     "& .MuiInputBase-input": {
-      color: "var(--color-pure-black) !important",
+      color: "var(--color-paragraph) !important",
     },
     "& .MuiSelect-select": {
-      color: "var(--color-pure-black) !important",
+      color: "var(--color-paragraph) !important",
     },
 
     "& .MuiInputLabel-root": {
-      color: "var(--color-pure-black)",
+      color: "var(--color-paragraph)",
     },
 
     "& .MuiInputLabel-root.Mui-focused": {
-      color: "#2563EB",
+      color: "var(--color-primary)",
     },
 
     "& .MuiSvgIcon-root": {
-      color: "var(--color-pure-black)",
+      color: "var(--color-paragraph)",
     },
   };
   const MotionBox = motion.create(Box);
@@ -313,7 +313,7 @@ function Career() {
             width: 700,
             height: 700,
             borderRadius: "50%",
-            background: "#2563EB",
+            background: "var(--color-primary)",
             filter: "blur(250px)",
             opacity: 0.08,
             top: "50%",
@@ -344,7 +344,7 @@ function Career() {
             overflow: "hidden",
             backdropFilter: "blur(30px)",
             background:
-              "linear-gradient(135deg, rgba(37,99,235,.15), rgba(255,255,255,.02))",
+              "linear-gradient(135deg, rgba(71,100,255,.15), rgba(255,255,255,.02))",
             border: "1px solid rgba(255,255,255,.08)",
             boxShadow:
               "0 40px 100px rgba(0,0,0,.6), inset 0 0 30px rgba(255,255,255,.03)",
@@ -361,7 +361,7 @@ function Career() {
               width: 140,
               height: 140,
               borderRadius: "50%",
-              background: "#2563EB",
+              background: "var(--color-primary)",
               filter: "blur(60px)",
               top: "-20px",
               right: "-20px",
@@ -377,8 +377,8 @@ function Career() {
                 width: 44,
                 height: 44,
                 borderRadius: "3px",
-                background: "rgba(37, 99, 235, 0.2)",
-                border: "1px solid rgba(37, 99, 235, 0.4)",
+                background: "rgba(71, 100, 255, 0.2)",
+                border: "1px solid rgba(71, 100, 255, 0.4)",
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
@@ -657,7 +657,7 @@ function Career() {
                     position: "absolute",
                     width: "80%",
                     height: "80%",
-                    background: "#2563EB",
+                    background: "var(--color-primary)",
                     filter: "blur(120px)",
                     opacity: 0.15,
                     top: "50%",
@@ -672,7 +672,7 @@ function Career() {
                     borderRadius: "3px",
                     overflow: "hidden",
                     backdropFilter: "blur(20px)",
-                    border: "1px solid var(--color-border-color)",
+                    border: "1px solid var(--color-border)",
                     background: "var(--color-sub-bg)",
                   }}
                 >
@@ -982,7 +982,7 @@ function Career() {
           >
             <Typography
               sx={{
-                color: "#2563EB",
+                color: "var(--color-primary)",
                 fontWeight: 700,
                 letterSpacing: 4,
                 textTransform: "uppercase",
@@ -994,7 +994,7 @@ function Career() {
 
             <Typography
               sx={{
-                color: "var(--color-pure-black)",
+                color: "var(--color-black)",
                 fontWeight: 700,
                 lineHeight: 1.1,
                 mb: 3,
@@ -1011,7 +1011,7 @@ function Career() {
 
             <Typography
               sx={{
-                color: "var(--color-pure-black)",
+                color: "var(--color-paragraph)",
                 maxWidth: "650px",
                 mx: "auto",
                 lineHeight: 1.7,
@@ -1033,13 +1033,13 @@ function Career() {
                   p: 4,
                   borderRadius: "3px",
                   background: "var(--color-sub-bg)",
-                  border: "1px solid var(--color-border-color)",
+                  border: "1px solid var(--color-border)",
                   backdropFilter: "blur(20px)",
                   transition: "all .3s ease",
 
                   "&:hover": {
-                    border: "1px solid rgba(37,99,235,.4)",
-                    boxShadow: "0 0 40px rgba(37,99,235,.15)",
+                    border: "1px solid rgba(71,100,255,.4)",
+                    boxShadow: "0 0 40px rgba(71,100,255,.15)",
                   },
 
                   display: "flex",
@@ -1058,7 +1058,7 @@ function Career() {
                 <Box maxWidth="750px">
                   <Typography
                     sx={{
-                      color: "var(--color-pure-black)",
+                      color: "var(--color-black)",
                       fontSize: "1.35rem",
                       fontWeight: 700,
                       mb: 1,
@@ -1069,7 +1069,7 @@ function Career() {
 
                   <Typography
                     sx={{
-                      color: "var(--color-pure-black)",
+                      color: "var(--color-paragraph)",
                       lineHeight: 1.8,
                       mb: expandedJobs["frontend"] ? 1.5 : 0.5,
                       display: "-webkit-box",
@@ -1087,7 +1087,7 @@ function Career() {
                     onClick={() => toggleExpandJob("frontend")}
                     sx={{
                       textTransform: "none",
-                      color: "#2563EB",
+                      color: "var(--color-primary)",
                       p: 0,
                       minWidth: "auto",
                       fontWeight: 600,
@@ -1102,9 +1102,9 @@ function Career() {
 
                   <Stack sx={{
                     "& .MuiChip-root": {
-                      color: "var(--color-pure-black)",
-                      background: "rgba(37,99,235,0.15)",
-                      border: "1px solid rgba(37,99,235,0.3)",
+                      color: "var(--color-paragraph)",
+                      background: "rgba(71,100,255,0.15)",
+                      border: "1px solid rgba(71,100,255,0.3)",
                       fontWeight: 500,
                     }
                   }} direction="row" spacing={2} flexWrap="wrap" useFlexGap>
@@ -1124,13 +1124,16 @@ function Career() {
                   }
                   variant="contained"
                   sx={{
-                    background: "#2563EB",
+                    background: "var(--color-primary)",
                     borderRadius: "3px",
                     px: 4,
                     minWidth: 150,
                     height: 50,
                     textTransform: "none",
                     fontWeight: 600,
+                    "&:hover": {
+                      background: "var(--color-primary-hover)",
+                    }
                   }}
                 >
                   Apply Now
@@ -1146,13 +1149,13 @@ function Career() {
                   p: 4,
                   borderRadius: "3px",
                   background: "var(--color-sub-bg)",
-                  border: "1px solid var(--color-border-color)",
+                  border: "1px solid var(--color-border)",
                   backdropFilter: "blur(20px)",
                   transition: "all .3s ease",
 
                   "&:hover": {
-                    border: "1px solid rgba(37,99,235,.4)",
-                    boxShadow: "0 0 40px rgba(37,99,235,.15)",
+                    border: "1px solid rgba(71,100,255,.4)",
+                    boxShadow: "0 0 40px rgba(71,100,255,.15)",
                   },
 
                   display: "flex",
@@ -1171,7 +1174,7 @@ function Career() {
                 <Box maxWidth="750px">
                   <Typography
                     sx={{
-                      color: "var(--color-pure-black)",
+                      color: "var(--color-black)",
                       fontSize: "1.35rem",
                       fontWeight: 700,
                       mb: 1,
@@ -1182,7 +1185,7 @@ function Career() {
 
                   <Typography
                     sx={{
-                      color: "var(--color-pure-black)",
+                      color: "var(--color-paragraph)",
                       lineHeight: 1.8,
                       mb: expandedJobs["uiux"] ? 1.5 : 0.5,
                       display: "-webkit-box",
@@ -1200,7 +1203,7 @@ function Career() {
                     onClick={() => toggleExpandJob("uiux")}
                     sx={{
                       textTransform: "none",
-                      color: "#2563EB",
+                      color: "var(--color-primary)",
                       p: 0,
                       minWidth: "auto",
                       fontWeight: 600,
@@ -1215,9 +1218,9 @@ function Career() {
 
                   <Stack sx={{
                     "& .MuiChip-root": {
-                      color: "var(--color-pure-black)",
-                      background: "rgba(37,99,235,0.15)",
-                      border: "1px solid rgba(37,99,235,0.3)",
+                      color: "var(--color-paragraph)",
+                      background: "rgba(71,100,255,0.15)",
+                      border: "1px solid rgba(71,100,255,0.3)",
                       fontWeight: 500,
                     }
                   }} direction="row" spacing={2} flexWrap="wrap" useFlexGap>
@@ -1236,13 +1239,16 @@ function Career() {
                   }
                   variant="contained"
                   sx={{
-                    background: "#2563EB",
+                    background: "var(--color-primary)",
                     borderRadius: "3px",
                     px: 4,
                     minWidth: 150,
                     height: 50,
                     textTransform: "none",
                     fontWeight: 600,
+                    "&:hover": {
+                      background: "var(--color-primary-hover)",
+                    }
                   }}
                 >
                   Apply Now
@@ -1258,13 +1264,13 @@ function Career() {
                   p: 4,
                   borderRadius: "3px",
                   background: "var(--color-sub-bg)",
-                  border: "1px solid var(--color-border-color)",
+                  border: "1px solid var(--color-border)",
                   backdropFilter: "blur(20px)",
                   transition: "all .3s ease",
 
                   "&:hover": {
-                    border: "1px solid rgba(37,99,235,.4)",
-                    boxShadow: "0 0 40px rgba(37,99,235,.15)",
+                    border: "1px solid rgba(71,100,255,.4)",
+                    boxShadow: "0 0 40px rgba(71,100,255,.15)",
                   },
 
                   display: "flex",
@@ -1283,7 +1289,7 @@ function Career() {
                 <Box maxWidth="750px">
                   <Typography
                     sx={{
-                      color: "var(--color-pure-black)",
+                      color: "var(--color-black)",
                       fontSize: "1.35rem",
                       fontWeight: 700,
                       mb: 1,
@@ -1294,7 +1300,7 @@ function Career() {
 
                   <Typography
                     sx={{
-                      color: "var(--color-pure-black)",
+                      color: "var(--color-paragraph)",
                       lineHeight: 1.8,
                       mb: expandedJobs["consultant"] ? 1.5 : 0.5,
                       display: "-webkit-box",
@@ -1312,7 +1318,7 @@ function Career() {
                     onClick={() => toggleExpandJob("consultant")}
                     sx={{
                       textTransform: "none",
-                      color: "#2563EB",
+                      color: "var(--color-primary)",
                       p: 0,
                       minWidth: "auto",
                       fontWeight: 600,
@@ -1327,9 +1333,9 @@ function Career() {
 
                   <Stack sx={{
                     "& .MuiChip-root": {
-                      color: "var(--color-pure-black)",
-                      background: "rgba(37,99,235,0.15)",
-                      border: "1px solid rgba(37,99,235,0.3)",
+                      color: "var(--color-paragraph)",
+                      background: "rgba(71,100,255,0.15)",
+                      border: "1px solid rgba(71,100,255,0.3)",
                       fontWeight: 500,
                     }
                   }} direction="row" spacing={2} flexWrap="wrap" useFlexGap>
@@ -1349,13 +1355,16 @@ function Career() {
                   }
                   variant="contained"
                   sx={{
-                    background: "#2563EB",
+                    background: "var(--color-primary)",
                     borderRadius: "3px",
                     px: 4,
                     minWidth: 150,
                     height: 50,
                     textTransform: "none",
                     fontWeight: 600,
+                    "&:hover": {
+                      background: "var(--color-primary-hover)",
+                    }
                   }}
                 >
                   Apply Now
@@ -1375,13 +1384,13 @@ function Career() {
                         p: 4,
                         borderRadius: "3px",
                         background: "var(--color-sub-bg)",
-                        border: "1px solid var(--color-border-color)",
+                        border: "1px solid var(--color-border)",
                         backdropFilter: "blur(20px)",
                         transition: "all .3s ease",
 
                         "&:hover": {
-                          border: "1px solid rgba(37,99,235,.4)",
-                          boxShadow: "0 0 40px rgba(37,99,235,.15)",
+                          border: "1px solid rgba(71,100,255,.4)",
+                          boxShadow: "0 0 40px rgba(71,100,255,.15)",
                         },
 
                         display: "flex",
@@ -1400,7 +1409,7 @@ function Career() {
                       <Box maxWidth="750px">
                         <Typography
                           sx={{
-                            color: "var(--color-pure-black)",
+                            color: "var(--color-black)",
                             fontSize: "1.35rem",
                             fontWeight: 700,
                             mb: 1,
@@ -1411,7 +1420,7 @@ function Career() {
 
                         <Typography
                           sx={{
-                            color: "var(--color-pure-black)",
+                            color: "var(--color-paragraph)",
                             lineHeight: 1.8,
                             mb: expandedJobs[job._id] ? 1.5 : 0.5,
                             display: "-webkit-box",
@@ -1426,7 +1435,7 @@ function Career() {
                           onClick={() => toggleExpandJob(job._id)}
                           sx={{
                             textTransform: "none",
-                            color: "#2563EB",
+                            color: "var(--color-primary)",
                             p: 0,
                             minWidth: "auto",
                             fontWeight: 600,
@@ -1441,9 +1450,9 @@ function Career() {
 
                         <Stack sx={{
                           "& .MuiChip-root": {
-                            color: "var(--color-pure-black)",
-                            background: "rgba(37,99,235,0.15)",
-                            border: "1px solid rgba(37,99,235,0.3)",
+                            color: "var(--color-paragraph)",
+                            background: "rgba(71,100,255,0.15)",
+                            border: "1px solid rgba(71,100,255,0.3)",
                             fontWeight: 500,
                           }
                         }} direction="row" spacing={2} flexWrap="wrap" useFlexGap>
@@ -1462,13 +1471,16 @@ function Career() {
                         }
                         variant="contained"
                         sx={{
-                          background: "#2563EB",
+                          background: "var(--color-primary)",
                           borderRadius: "3px",
                           px: 4,
                           minWidth: 150,
                           height: 50,
                           textTransform: "none",
                           fontWeight: 600,
+                          "&:hover": {
+                            background: "var(--color-primary-hover)",
+                          }
                         }}
                       >
                         Apply Now
@@ -1477,7 +1489,6 @@ function Career() {
                   </MotionBox>
                 ))}
 
-
                 {dynamicJobs.length > jobsPerPage && (
                   <Box sx={{ display: "flex", justifyContent: "center", alignItems: "center", gap: 2, mt: 5 }}>
                     <Button
@@ -1485,18 +1496,18 @@ function Career() {
                       onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
                       variant="outlined"
                       sx={{
-                        color: "var(--color-pure-black)",
-                        borderColor: "rgba(255, 255, 255, 0.15)",
+                        color: "var(--color-paragraph)",
+                        borderColor: "var(--color-border)",
                         borderRadius: "3px",
                         textTransform: "none",
                         px: 3,
-                        "&:hover": { borderColor: "#2563EB", background: "rgba(37, 99, 235, 0.1)" },
-                        "&.Mui-disabled": { color: "rgba(255, 255, 255, 0.2)", borderColor: "rgba(255, 255, 255, 0.05)" }
+                        "&:hover": { borderColor: "var(--color-primary)", background: "rgba(71, 100, 255, 0.1)" },
+                        "&.Mui-disabled": { color: "rgba(0, 0, 0, 0.2)", borderColor: "rgba(0, 0, 0, 0.05)" }
                       }}
                     >
                       Previous
                     </Button>
-                    <Typography sx={{ color: "rgba(255, 255, 255, 0.5)", fontSize: "0.9rem" }}>
+                    <Typography sx={{ color: "var(--color-paragraph)", opacity: 0.6, fontSize: "0.9rem" }}>
                       Page {currentPage} of {Math.ceil(dynamicJobs.length / jobsPerPage)}
                     </Typography>
                     <Button
@@ -1504,13 +1515,13 @@ function Career() {
                       onClick={() => setCurrentPage(prev => Math.min(prev + 1, Math.ceil(dynamicJobs.length / jobsPerPage)))}
                       variant="outlined"
                       sx={{
-                        color: "var(--color-pure-black)",
-                        borderColor: "rgba(255, 255, 255, 0.15)",
+                        color: "var(--color-paragraph)",
+                        borderColor: "var(--color-border)",
                         borderRadius: "3px",
                         textTransform: "none",
                         px: 3,
-                        "&:hover": { borderColor: "#2563EB", background: "rgba(37, 99, 235, 0.1)" },
-                        "&.Mui-disabled": { color: "rgba(255, 255, 255, 0.2)", borderColor: "rgba(255, 255, 255, 0.05)" }
+                        "&:hover": { borderColor: "var(--color-primary)", background: "rgba(71, 100, 255, 0.1)" },
+                        "&.Mui-disabled": { color: "rgba(0, 0, 0, 0.2)", borderColor: "rgba(0, 0, 0, 0.05)" }
                       }}
                     >
                       Next
@@ -1560,10 +1571,10 @@ function Career() {
             >
               {/* Tagline */}
               <Box sx={{ display: "flex", alignItems: "center", gap: 1.5, mb: 2 }}>
-                <Box sx={{ width: "3px", height: "18px", backgroundColor: "#2563EB" }} />
+                <Box sx={{ width: "3px", height: "18px", backgroundColor: "var(--color-primary)" }} />
                 <Typography
                   sx={{
-                    color: "#2563EB",
+                    color: "var(--color-primary)",
                     fontWeight: 700,
                     letterSpacing: "1px",
                     textTransform: "uppercase",
@@ -1591,7 +1602,7 @@ function Career() {
               </Typography>
 
               {/* Line Divider */}
-              <Box sx={{ width: "45px", height: "3px", backgroundColor: "#2563EB", mb: 4 }} />
+              <Box sx={{ width: "45px", height: "3px", backgroundColor: "var(--color-primary)", mb: 4 }} />
 
               {/* Description */}
               <Typography
@@ -1616,7 +1627,7 @@ function Career() {
                   setOpenResumeModal(true);
                 }}
                 sx={{
-                  background: "#2563EB",
+                  background: "var(--color-primary)",
                   px: 4,
                   py: 1.6,
                   borderRadius: "3px",
@@ -1624,7 +1635,7 @@ function Career() {
                   fontWeight: 600,
                   fontSize: "0.95rem",
                   "&:hover": {
-                    background: "#1D4ED8",
+                    background: "var(--color-primary-hover)",
                   },
                 }}
               >
@@ -1670,7 +1681,7 @@ function Career() {
           "& .MuiDialog-paper": {
             borderRadius: "3px",
             background: "var(--color-main-bg)",
-            border: "1px solid var(--color-border-color)",
+            border: "1px solid var(--color-border)",
             boxShadow: "0 25px 50px -12px rgba(0, 0, 0, 0.5)",
             maxWidth: "480px",
           },
@@ -1680,7 +1691,7 @@ function Career() {
           <Typography fontWeight={700} sx={{ mb: 0.5, fontSize: { xs: "1.25rem", sm: "1.5rem" } }}>
             Apply for {selectedJob.title || "Job"}
           </Typography>
-          <Typography sx={{ color: "var(--color-pure-black)", maxWidth: "440px", mx: "auto", fontSize: { xs: "0.75rem", sm: "0.85rem" }, lineHeight: 1.5 }}>
+          <Typography sx={{ color: "var(--color-paragraph)", maxWidth: "440px", mx: "auto", fontSize: { xs: "0.75rem", sm: "0.85rem" }, lineHeight: 1.5 }}>
             Submit your details and resume below.
           </Typography>
         </DialogTitle>
@@ -1696,12 +1707,12 @@ function Career() {
                 border: "1px solid rgba(255, 255, 255, 0.08)",
               }}
             >
-              <Typography variant="subtitle2" sx={{ color: "#2563EB", fontWeight: 600, mb: 0.5 }}>
+              <Typography variant="subtitle2" sx={{ color: "var(--color-primary)", fontWeight: 600, mb: 0.5 }}>
                 Job Description:
               </Typography>
               <Typography
                 sx={{
-                  color: "var(--color-pure-black)",
+                  color: "var(--color-paragraph)",
                   fontSize: "0.85rem",
                   lineHeight: 1.5,
                   display: "-webkit-box",
@@ -1716,7 +1727,7 @@ function Career() {
                 onClick={() => setIsDescExpanded(!isDescExpanded)}
                 sx={{
                   textTransform: "none",
-                  color: "#2563EB",
+                  color: "var(--color-primary)",
                   p: 0,
                   minWidth: "auto",
                   fontWeight: 600,
@@ -1754,7 +1765,7 @@ function Career() {
               sx={fieldStyle}
             />
             <Stack spacing={0.5} sx={{ width: "100%", textAlign: "left" }}>
-              <Typography sx={{ color: "var(--color-pure-black)", fontWeight: 500, fontSize: "0.85rem", ml: 1 }}>
+              <Typography sx={{ color: "var(--color-paragraph)", fontWeight: 500, fontSize: "0.85rem", ml: 1 }}>
                 Mobile Number
               </Typography>
               <Box sx={{ display: "flex", gap: 1.5, width: "100%" }}>
@@ -1767,18 +1778,18 @@ function Career() {
                     background: "var(--color-main-bg)",
                     width: "90px",
                     flexShrink: 0,
-                    color: "var(--color-pure-black)",
+                    color: "var(--color-paragraph)",
                     "& .MuiOutlinedInput-notchedOutline": {
-                      borderColor: "var(--color-border-color)",
+                      borderColor: "var(--color-border)",
                     },
                     "&:hover .MuiOutlinedInput-notchedOutline": {
-                      borderColor: "#2563EB",
+                      borderColor: "var(--color-primary)",
                     },
                     "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
-                      borderColor: "#2563EB",
+                      borderColor: "var(--color-primary)",
                     },
                     "& .MuiSvgIcon-root": {
-                      color: "var(--color-pure-black)",
+                      color: "var(--color-paragraph)",
                     }
                   }}
                 >
@@ -1807,14 +1818,14 @@ function Career() {
               component="label"
               sx={{
                 height: 90, borderRadius: "3px",
-                border: "2px dashed rgba(37,99,235,.4)",
+                border: "2px dashed rgba(71,100,255,.4)",
                 background: "var(--color-sub-bg)",
                 display: "flex", flexDirection: "column", gap: 0.5,
-                color: "var(--color-pure-black)", textTransform: "none",
-                "&:hover": { background: "rgba(37,99,235,.08)", borderColor: "#2563EB" },
+                color: "var(--color-paragraph)", textTransform: "none",
+                "&:hover": { background: "rgba(71,100,255,.08)", borderColor: "var(--color-primary)" },
               }}
             >
-              <CloudUploadOutlinedIcon sx={{ fontSize: 28, color: "#2563EB" }} />
+              <CloudUploadOutlinedIcon sx={{ fontSize: 28, color: "var(--color-primary)" }} />
               <Typography fontWeight={600} fontSize="0.9rem">
                 {resumeFile ? resumeFile.name : "Upload Resume"}
               </Typography>
@@ -1840,19 +1851,19 @@ function Career() {
             margin: "0 !important"
           }
         }}>
-          <Button onClick={() => setOpenApplyModal(false)} sx={{ color: "var(--color-pure-black)", textTransform: "none" }}>Cancel</Button>
+          <Button onClick={() => setOpenApplyModal(false)} sx={{ color: "var(--color-paragraph)", textTransform: "none" }}>Cancel</Button>
           <Button
             variant="contained"
             onClick={handleApplySubmit}
             disabled={applyLoading}
             sx={{
-              background: "linear-gradient(90deg,#2563EB,#3B82F6)",
+              background: "var(--color-primary)",
               px: 4, py: 1.2, borderRadius: "3px", textTransform: "none", fontWeight: 600,
-              boxShadow: "0 10px 30px rgba(37,99,235,.35)",
+              boxShadow: "0 10px 30px rgba(71,100,255,.35)",
               transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
               "&:hover": {
-                background: "linear-gradient(90deg,#1D4ED8,#2563EB)",
-                boxShadow: "0 10px 35px rgba(37,99,235,.55)",
+                background: "var(--color-primary-hover)",
+                boxShadow: "0 10px 35px rgba(71,100,255,.55)",
                 transform: "translateY(-2px)"
               },
             }}
@@ -1876,18 +1887,18 @@ function Career() {
           "& .MuiDialog-paper": {
             borderRadius: "3px",
             background: "var(--color-main-bg)",
-            border: "1px solid var(--color-border-color)",
+            border: "1px solid var(--color-border)",
             boxShadow: "0 25px 50px -12px rgba(0, 0, 0, 0.5)",
             maxWidth: "480px",
           },
         }}
       >
         <DialogTitle component="div" sx={{ textAlign: "center", pt: 3.5, pb: 1, px: { xs: 2.5, sm: 4 } }}>
-          <Box sx={{ width: 50, height: 50, mx: "auto", mb: 1.5, borderRadius: "3px", background: "rgba(37,99,235,.12)", display: "flex", alignItems: "center", justifyContent: "center" }}>
-            <CloudUploadOutlinedIcon sx={{ fontSize: 26, color: "#2563EB" }} />
+          <Box sx={{ width: 50, height: 50, mx: "auto", mb: 1.5, borderRadius: "3px", background: "rgba(71,100,255,.12)", display: "flex", alignItems: "center", justifyContext: "center" }}>
+            <CloudUploadOutlinedIcon sx={{ fontSize: 26, color: "var(--color-primary)" }} />
           </Box>
           <Typography fontWeight={700} sx={{ mb: 0.5, fontSize: { xs: "1.25rem", sm: "1.5rem" } }}>Join Our Talent Network</Typography>
-          <Typography sx={{ color: "var(--color-pure-black)", maxWidth: "440px", mx: "auto", fontSize: { xs: "0.75rem", sm: "0.85rem" }, lineHeight: 1.5 }}>
+          <Typography sx={{ color: "var(--color-paragraph)", maxWidth: "440px", mx: "auto", fontSize: { xs: "0.75rem", sm: "0.85rem" }, lineHeight: 1.5 }}>
             Submit your profile and we'll reach out when a suitable opportunity becomes available.
           </Typography>
         </DialogTitle>
@@ -1907,7 +1918,7 @@ function Career() {
               sx={fieldStyle}
             />
             <Stack spacing={0.5} sx={{ width: "100%", textAlign: "left" }}>
-              <Typography sx={{ color: "var(--color-pure-black)", fontWeight: 500, fontSize: "0.85rem", ml: 1 }}>
+              <Typography sx={{ color: "var(--color-paragraph)", fontWeight: 500, fontSize: "0.85rem", ml: 1 }}>
                 Mobile Number
               </Typography>
               <Box sx={{ display: "flex", gap: 1.5, width: "100%" }}>
@@ -1920,18 +1931,18 @@ function Career() {
                     background: "var(--color-main-bg)",
                     width: "90px",
                     flexShrink: 0,
-                    color: "var(--color-pure-black)",
+                    color: "var(--color-paragraph)",
                     "& .MuiOutlinedInput-notchedOutline": {
-                      borderColor: "var(--color-border-color)",
+                      borderColor: "var(--color-border)",
                     },
                     "&:hover .MuiOutlinedInput-notchedOutline": {
-                      borderColor: "#2563EB",
+                      borderColor: "var(--color-primary)",
                     },
                     "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
-                      borderColor: "#2563EB",
+                      borderColor: "var(--color-primary)",
                     },
                     "& .MuiSvgIcon-root": {
-                      color: "var(--color-pure-black)",
+                      color: "var(--color-paragraph)",
                     }
                   }}
                 >
@@ -1971,14 +1982,14 @@ function Career() {
               component="label"
               sx={{
                 height: 90, borderRadius: "3px",
-                border: "2px dashed rgba(37,99,235,.4)",
+                border: "2px dashed rgba(71,100,255,.4)",
                 background: "var(--color-sub-bg)",
                 display: "flex", flexDirection: "column", gap: 0.5,
-                color: "var(--color-pure-black)", textTransform: "none",
-                "&:hover": { background: "rgba(37,99,235,.08)", borderColor: "#2563EB" },
+                color: "var(--color-paragraph)", textTransform: "none",
+                "&:hover": { background: "rgba(71,100,255,.08)", borderColor: "var(--color-primary)" },
               }}
             >
-              <CloudUploadOutlinedIcon sx={{ fontSize: 28, color: "#2563EB" }} />
+              <CloudUploadOutlinedIcon sx={{ fontSize: 28, color: "var(--color-primary)" }} />
               <Typography fontWeight={600} fontSize="0.9rem">
                 {talentFile ? talentFile.name : "Upload Resume"}
               </Typography>
@@ -2004,19 +2015,19 @@ function Career() {
             margin: "0 !important"
           }
         }}>
-          <Button onClick={() => setOpenResumeModal(false)} sx={{ color: "var(--color-pure-black)", textTransform: "none" }}>Cancel</Button>
+          <Button onClick={() => setOpenResumeModal(false)} sx={{ color: "var(--color-paragraph)", textTransform: "none" }}>Cancel</Button>
           <Button
             variant="contained"
             onClick={handleTalentSubmit}
             disabled={talentLoading}
             sx={{
-              background: "linear-gradient(90deg,#2563EB,#3B82F6)",
+              background: "var(--color-primary)",
               px: 4, py: 1.2, borderRadius: "3px", textTransform: "none", fontWeight: 600,
-              boxShadow: "0 10px 30px rgba(37,99,235,.35)",
+              boxShadow: "0 10px 30px rgba(71,100,255,.35)",
               transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
               "&:hover": {
-                background: "linear-gradient(90deg,#1D4ED8,#2563EB)",
-                boxShadow: "0 10px 35px rgba(37,99,235,.55)",
+                background: "var(--color-primary-hover)",
+                boxShadow: "0 10px 35px rgba(71,100,255,.55)",
                 transform: "translateY(-2px)"
               },
             }}

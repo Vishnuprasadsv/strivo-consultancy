@@ -185,7 +185,7 @@ const AdminNavbar = () => {
   };
 
   // Check auth and hide on login pages
-  const isAuthPage = ['/admin', '/admin/login', '/admin/forgot-password', '/admin/reset-password'].includes(location.pathname);
+  const isAuthPage = ['/admin', '/admin/login', '/admin/register', '/admin/forgot-password', '/admin/reset-password'].includes(location.pathname);
   const isAdminRoute = location.pathname.startsWith('/admin');
 
   useEffect(() => {
