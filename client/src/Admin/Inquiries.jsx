@@ -23,6 +23,15 @@ const Inquiries = () => {
     const [showReplyModal, setShowReplyModal] = useState(false);
     const [inquiries, setInquiries] = useState([]);
     const [selected, setSelected] = useState(null);
+    const [expandedIds, setExpandedIds] = useState({});
+
+    const toggleExpand = (id, e) => {
+        e.stopPropagation();
+        setExpandedIds(prev => ({
+            ...prev,
+            [id]: !prev[id]
+        }));
+    };
 
     const [reply, setReply] = useState({
         subject: "",
@@ -148,19 +157,20 @@ console.log(err);
         );
     }
     return (<>
-        <div className="min-h-screen pt-28 px-4 sm:px-8  md:ml-64">
+        <div className="min-h-screen pt-28 px-4 sm:px-8 bg-sub text-[var(--color-paragraph)] md:ml-64">
             <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: .5 }}
-                className="max-w-7xl mx-auto bg-white/5 backdrop-blur-xl border border-white/10 rounded-3xl p-6 sm:p-8 shadow-2xl"
+                className="max-w-7xl mx-auto pb-12"
             >
                 {/* Header */}
-                <div className="mb-8">
-                    <h1 className="text-4xl font-bold">Inquiries</h1>
-
-                    <p className="text-gray-400 mt-2">
-                        Total <span className="text-blue-500">{inquiries.length}</span> inquiries
+                <div className="mb-8 pb-6 border-b border-[var(--color-border)]">
+                    <h1 style={{ fontSize: 'var(--text-sub-heading)', fontWeight: 'var(--font-semibold)', color: 'var(--color-black)', margin: 0 }}>
+                        Inquiries
+                    </h1>
+                    <p style={{ fontSize: 'var(--text-small)', color: 'var(--color-paragraph)', opacity: 0.6, margin: '2px 0 0 0' }}>
+                        Total <span className="text-[var(--color-primary)] font-semibold">{inquiries.length}</span> inquiries
                     </p>
                 </div>
 
@@ -169,57 +179,28 @@ console.log(err);
                     {cards.map((card) => (
                         <div
                             key={card.title}
-                            className="
-bg-white/5
-backdrop-blur-lg
-border
-border-white/10
-rounded-2xl
-p-6
-hover:border-blue-500/50
-hover:-translate-y-1
-hover:shadow-xl
-transition-all
-duration-300
-"
+                            className="card p-5 flex flex-col items-center justify-center text-center hover:border-[var(--color-primary)]/40 hover:shadow-lg transition-all duration-300 group"
                         >
-                            <div className="flex items-center gap-4">
-                                <div
-                                    className={`text-4xl ${card.color}`}
-                                >
-                                    {card.icon}
-                                </div>
-
-                                <div>
-                                    <h3 className="text-4xl font-bold">
-                                        {card.value}
-                                    </h3>
-
-                                    <p className="text-gray-400">
-                                        {card.title}
-                                    </p>
-                                </div>
-                            </div>
+                            <h3 style={{ fontSize: 'var(--text-small)', fontWeight: 'var(--font-medium)', color: 'var(--color-paragraph)', opacity: 0.7, margin: 0 }}>{card.title}</h3>
+                            <p style={{ fontSize: 'var(--text-sub-heading)', fontWeight: 'var(--font-bold)', color: 'var(--color-black)', margin: '4px 0 0 0' }}>{card.value}</p>
                         </div>
                     ))}
                 </div>
 
                 {/* Tabs */}
-                <div className="flex gap-4 sm:gap-8 border-b border-slate-800 pb-4 mb-6 overflow-x-auto whitespace-nowrap scrollbar-hide">
+                <div className="flex gap-4 sm:gap-8 border-b border-[var(--color-border)] pb-4 mb-6 overflow-x-auto scrollbar-hide">
                     {["All", "New", "In Progress", "Responded", "Closed"].map(
                         (tab) => (
                             <button
                                 key={tab}
-
                                 onClick={() => {
-                                    console.log(tab);
                                     setActiveFilter(tab);
                                 }}
-
-                                className={`pb-2 transition-all duration-300 ${activeFilter === tab
-                                    ? "text-blue-500 border-b-2 border-blue-500"
-                                    : "text-gray-400 hover:text-blue-500"
-                                    }`}
+                                className={`pb-2 text-sm font-semibold border-b-2 transition-all duration-300 cursor-pointer ${
+                                    activeFilter === tab
+                                        ? "border-[var(--color-primary)] text-[var(--color-primary)]"
+                                        : "border-transparent text-[var(--color-paragraph)] opacity-60 hover:opacity-100"
+                                }`}
                             >
                                 {tab}
                             </button>
@@ -230,258 +211,173 @@ duration-300
                 {/* Main Layout */}
                 <div className="grid lg:grid-cols-[400px_1fr] gap-6">
                     {/* Left Panel */}
-                    <div className="bg-white/5
-                   
-backdrop-blur-xl
-border
-border-white/10
-rounded-2xl border border-white/10
-bg-black/20
-backdrop-blur-lg rounded-xl p-4 space-y-4 h-[700px] overflow-y-auto">
+                    <div className="card p-4 space-y-4 h-[700px] overflow-y-auto shadow-card">
                         {filteredInquiries.map((item) => (
                             <div
                                 key={item._id}
                                 onClick={() => setSelected(item)}
-                                className={`cursor-pointer rounded-xl border p-4 transition-all duration-300
-hover:border-blue-500
-hover:bg-blue-500/10
-hover:shadow-[0_0_25px_rgba(59,130,246,0.25)]
-hover:-translate-y-1
-${selected?._id === item._id
-                                        ? "border-blue-500 bg-blue-500/10 shadow-[0_0_25px_rgba(59,130,246,0.25)]"
-                                        : "border-slate-800"
-                                    }`}
+                                className={`cursor-pointer border p-4 transition-all duration-300 hover:border-[var(--color-primary)] hover:bg-[var(--color-sub-bg)]/40 hover:-translate-y-1 ${
+                                    selected?._id === item._id
+                                        ? "border-[var(--color-primary)] bg-[var(--color-sub-bg)]"
+                                        : "border-[var(--color-border)]"
+                                }`}
+                                style={{ borderRadius: 'var(--radius-sm)' }}
                             >
                                 <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 sm:gap-0">
                                     <div className="flex gap-3">
-                                        <div className="w-12 h-12 rounded-full bg-blue-600 flex items-center justify-center">
+                                        <div className="w-12 h-12 rounded-full bg-[var(--color-primary)]/10 border border-[var(--color-primary)]/20 text-[var(--color-primary)] flex items-center justify-center font-semibold shrink-0">
                                             {item.fullName?.charAt(0).toUpperCase()}
                                         </div>
 
                                         <div>
-                                            <h3 className="font-semibold">
+                                            <h3 className="font-semibold text-[var(--color-black)] text-sm">
                                                 {item.fullName}
                                             </h3>
-
-                                            <p className="text-sm text-gray-400">
+                                            <p className="text-xs text-[var(--color-paragraph)] opacity-60 truncate mt-0.5">
                                                 {item.company}
                                             </p>
                                         </div>
                                     </div>
 
-             <div className="relative">
-
-<select
-className="
-appearance-none
-w-40
-h-11
-rounded-full
-bg-[#1a2338]
-border border-blue-500/30
-pl-5
-pr-10
-text-blue-400
-font-semibold
-outline-none
-"
-value={item.status}
-
-onChange={(e) => {
-e.stopPropagation();
-
-handleStatusChange(
-item._id,
-e.target.value
-);
-}}
->
-
-<option>New</option>
-<option>In Progress</option>
-<option>Responded</option>
-<option>Closed</option>
-
-</select>
-
-<FiChevronDown
-className="
-absolute
-right-4
-top-1/2
--translate-y-1/2
-text-white/70
-pointer-events-none
-"
-/>
-
-</div>
+                                    <div className="relative">
+                                        <select
+                                            className="appearance-none w-36 h-9 rounded-full bg-[var(--color-sub-bg)] border border-[var(--color-border)] pl-4 pr-8 text-[var(--color-paragraph)] font-semibold outline-none cursor-pointer text-xs"
+                                            value={item.status}
+                                            onChange={(e) => {
+                                                e.stopPropagation();
+                                                handleStatusChange(item._id, e.target.value);
+                                            }}
+                                        >
+                                            <option className="bg-[var(--color-main-bg)]">New</option>
+                                            <option className="bg-[var(--color-main-bg)]">In Progress</option>
+                                            <option className="bg-[var(--color-main-bg)]">Responded</option>
+                                            <option className="bg-[var(--color-main-bg)]">Closed</option>
+                                        </select>
+                                        <FiChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 text-[var(--color-paragraph)] opacity-60 pointer-events-none" />
+                                    </div>
                                 </div>
 
-                                <p className="text-gray-400 text-sm mt-4">
-                                    {item.message.substring(0, 80)}...
-                                </p>
+                                <div className="text-[var(--color-paragraph)] opacity-80 text-sm mt-4">
+                                    <p className={expandedIds[item._id] ? "" : "line-clamp-2"}>
+                                        {item.message}
+                                    </p>
+                                    {item.message.length > 80 && (
+                                        <button
+                                            type="button"
+                                            onClick={(e) => toggleExpand(item._id, e)}
+                                            className="text-[var(--color-primary)] mt-1 hover:underline text-xs font-semibold focus:outline-none block cursor-pointer"
+                                        >
+                                            {expandedIds[item._id] ? "Read Less" : "Read More"}
+                                        </button>
+                                    )}
+                                </div>
 
-                                <div className="flex justify-between mt-4 text-xs text-gray-500">
+                                <div className="flex justify-between mt-4 text-xs text-[var(--color-paragraph)] opacity-50">
                                     <span>
                                         {new Date(item.createdAt).toLocaleDateString()}
                                     </span>
-
-                                    <span>{item._id.slice(-6)}</span>
+                                    <span>#{item._id.slice(-6).toUpperCase()}</span>
                                 </div>
                             </div>
                         ))}
                     </div>
 
                     {/* Right Panel */}
-                    <div className="
-bg-white/5
-backdrop-blur-xl
-border
-border-white/10
-rounded-2xl
-p-8
-h-[720px]
-overflow-y-auto
-">
+                    <div className="card p-8 h-[720px] overflow-y-auto shadow-card">
                         <div className="flex justify-between items-center mb-8">
-    <h2 className="text-2xl font-bold text-white">
-    Inquiry #{inquiries.findIndex(i => i._id === selected?._id) + 1}
-</h2>
+                            <h2 style={{ fontSize: 'var(--text-paragraph)', fontWeight: 'var(--font-bold)', color: 'var(--color-black)', margin: 0 }}>
+                                Inquiry #{inquiries.findIndex(i => i._id === selected?._id) + 1}
+                            </h2>
 
-                          <div className="relative">
-
-<select
-className="
-appearance-none
-w-40
-h-11
-rounded-full
-bg-[#1a2338]
-border border-blue-500/30
-pl-5
-pr-10
-text-blue-400
-font-semibold
-outline-none
-"
-value={selected?.status || "New"}
-
-onChange={(e)=>
-handleStatusChange(
-selected._id,
-e.target.value
-)}
->
-
-<option>New</option>
-<option>In Progress</option>
-<option>Responded</option>
-<option>Closed</option>
-
-</select>
-
-<FiChevronDown
-className="
-absolute
-right-4
-top-1/2
--translate-y-1/2
-text-white/70
-pointer-events-none
-"
-/>
-
-</div>
-                 
+                            <div className="relative">
+                                <select
+                                    className="appearance-none w-36 h-9 rounded-full bg-[var(--color-sub-bg)] border border-[var(--color-border)] pl-4 pr-8 text-[var(--color-paragraph)] font-semibold outline-none cursor-pointer text-xs"
+                                    value={selected?.status || "New"}
+                                    onChange={(e)=> handleStatusChange(selected._id, e.target.value)}
+                                >
+                                    <option className="bg-[var(--color-main-bg)]">New</option>
+                                    <option className="bg-[var(--color-main-bg)]">In Progress</option>
+                                    <option className="bg-[var(--color-main-bg)]">Responded</option>
+                                    <option className="bg-[var(--color-main-bg)]">Closed</option>
+                                </select>
+                                <FiChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 text-[var(--color-paragraph)] opacity-60 pointer-events-none" />
+                            </div>
                         </div>
 
-                        <div className="border border-slate-800 rounded-xl p-6">
+                        <div className="border border-[var(--color-border)] rounded-[var(--radius-sm)] p-6">
                             <div className="flex gap-4 mb-8">
-                                <div className="w-16 h-16 rounded-full bg-blue-600 flex items-center justify-center text-xl">
+                                <div className="w-16 h-16 rounded-full bg-[var(--color-primary)]/10 border border-[var(--color-primary)]/20 text-[var(--color-primary)] flex items-center justify-center text-xl font-semibold shrink-0">
                                    {selected.fullName?.charAt(0).toUpperCase()}
                                 </div>
 
                                 <div>
-                                    <h3 className="text-2xl font-bold">
+                                    <h3 className="text-xl font-bold text-[var(--color-black)]">
                                         {selected.fullName}
                                     </h3>
-
-                                    <p className="text-gray-400">
+                                    <p className="text-[var(--color-paragraph)] opacity-60">
                                         {selected.company}
                                     </p>
                                 </div>
                             </div>
 
-                          <div className="grid md:grid-cols-2 gap-6 mb-8 text-gray-300">
-  <div className="flex items-center gap-2">
-    <FiMail className="text-blue-500 flex-shrink-0" />
-    <span className="break-all">{selected.email}</span>
-  </div>
+                            <div className="grid md:grid-cols-2 gap-6 mb-8 text-[var(--color-paragraph)] opacity-80 text-sm">
+                                <div className="flex items-center gap-2">
+                                    <FiMail className="text-[var(--color-primary)] flex-shrink-0" />
+                                    <span className="break-all">{selected.email}</span>
+                                </div>
 
-  <div className="flex items-center gap-2">
-    <FiPhone className="text-blue-500 flex-shrink-0" />
-    <span>{selected.phone}</span>
-  </div>
+                                <div className="flex items-center gap-2">
+                                    <FiPhone className="text-[var(--color-primary)] flex-shrink-0" />
+                                    <span>{selected.phone}</span>
+                                </div>
 
-  <div className="flex items-center gap-2 md:col-span-2">
-    <FiBriefcase className="text-blue-500 flex-shrink-0" />
-    <span>{selected.company}</span>
-  </div>
-</div>
+                                <div className="flex items-center gap-2 md:col-span-2">
+                                    <FiBriefcase className="text-[var(--color-primary)] flex-shrink-0" />
+                                    <span>{selected.company}</span>
+                                </div>
+                            </div>
 
-                            <div className="grid md:grid-cols-2 gap-8 border-t border-slate-800 pt-6 mb-8">
+                            <div className="grid md:grid-cols-2 gap-8 border-t border-[var(--color-border)] pt-6 mb-8 text-[var(--color-paragraph)] opacity-80">
                                 <div>
-                                    <p className="text-gray-500 text-sm">
+                                    <p className="text-[var(--color-paragraph)] opacity-50 text-xs uppercase mb-1">
                                         Requested Service
                                     </p>
-
-                                    <p>{selected.service}</p>
+                                    <p className="font-semibold text-[var(--color-black)]">{selected.service}</p>
                                 </div>
 
                                 <div>
-                                    <p className="text-gray-500 text-sm">
+                                    <p className="text-[var(--color-paragraph)] opacity-50 text-xs uppercase mb-1">
                                         Submitted On
                                     </p>
-
-                                    <p>
+                                    <p className="font-semibold text-[var(--color-black)]">
                                        {new Date(selected?.createdAt).toLocaleString("en-IN", {
-    dateStyle: "medium",
-    timeStyle: "short",
-})}
+                                            dateStyle: "medium",
+                                            timeStyle: "short",
+                                        })}
                                     </p>
                                 </div>
                             </div>
 
                             <div className="mb-8">
-                                <h3 className="text-lg font-semibold mb-3">
+                                <h3 className="text-sm font-bold text-[var(--color-black)] opacity-80 uppercase tracking-wider mb-3">
                                     Message
                                 </h3>
-
-                                <p className="text-gray-400 leading-7">
+                                <p className="text-[var(--color-paragraph)] opacity-80 leading-7">
                                     {selected.message}
                                 </p>
                             </div>
-
-
 
                             <div className="flex justify-end mt-10">
                                 <button
                                     onClick={() => {
                                         setReply({
                                             subject: `Re: ${selected.service}`,
-                                            message: `Dear ${selected.fullName},
-
-Thank you for contacting Strivo Consultancy.
-
-
-
-`,
+                                            message: `Dear ${selected.fullName},\n\nThank you for contacting Strivo Consultancy.\n\n\n\n`,
                                         });
-
                                         setShowReplyModal(true);
                                     }}
-                                    className="bg-blue-600 hover:bg-blue-700 px-6 py-3 rounded-lg flex items-center gap-2 transition"
+                                    className="btn px-6 py-3 border-none flex items-center gap-2 transition cursor-pointer"
+                                    style={{ fontWeight: 'var(--font-semibold)' }}
                                 >
                                     <FiSend />
                                     Reply to Inquiry
@@ -491,28 +387,26 @@ Thank you for contacting Strivo Consultancy.
                     </div>
                 </div>
             </motion.div>
-
         </div>
         {showReplyModal &&
   createPortal(
     <div className="fixed inset-0 z-[99999] flex items-center justify-center bg-black/70 backdrop-blur-sm p-4">
-      <div className="w-full max-w-lg rounded-3xl border border-white/10 bg-[#0F172A]/95 backdrop-blur-xl shadow-2xl overflow-hidden">
+      <div className="w-full max-w-lg border border-[var(--color-border)] bg-[var(--color-main-bg)] shadow-xl overflow-hidden" style={{ borderRadius: 'var(--radius-sm)' }}>
 
         {/* Header */}
-        <div className="flex items-center justify-between border-b border-white/10 px-6 py-4">
+        <div className="flex items-center justify-between border-b border-[var(--color-border)] px-6 py-4">
           <div>
-            <h2 className="text-2xl font-bold text-white">
+            <h2 className="text-2xl font-bold text-[var(--color-black)]">
               Reply to Inquiry
             </h2>
-
-            <p className="text-sm text-gray-400 mt-1">
+            <p className="text-sm text-[var(--color-paragraph)] opacity-60 mt-1">
               Send a professional response to the customer.
             </p>
           </div>
 
           <button
             onClick={() => setShowReplyModal(false)}
-            className="w-10 h-10 rounded-full bg-white/5 hover:bg-red-500/20 hover:text-red-400 transition flex items-center justify-center text-gray-400"
+            className="w-10 h-10 rounded-full bg-[var(--color-sub-bg)] hover:bg-red-500/20 hover:text-red-600 transition flex items-center justify-center text-[var(--color-paragraph)] opacity-60 hover:opacity-100 cursor-pointer"
           >
             ✕
           </button>
@@ -520,27 +414,24 @@ Thank you for contacting Strivo Consultancy.
 
         {/* Body */}
         <div className="p-6 space-y-4">
-
           {/* To */}
           <div>
-            <label className="block text-sm font-medium text-gray-300 mb-2">
+            <label className="block text-sm font-medium text-[var(--color-paragraph)] opacity-80 mb-2">
               To
             </label>
-
             <input
               type="text"
               value={selected.email}
               disabled
-              className="w-full rounded-xl border border-slate-700 bg-slate-800/80 text-gray-300 px-4 py-3 cursor-not-allowed"
+              className="w-full rounded-[var(--radius-sm)] border border-[var(--color-border)] bg-[var(--color-sub-bg)] text-[var(--color-paragraph)] opacity-60 px-4 py-3 cursor-not-allowed"
             />
           </div>
 
           {/* Subject */}
           <div>
-            <label className="block text-sm font-medium text-gray-300 mb-2">
+            <label className="block text-sm font-medium text-[var(--color-paragraph)] opacity-80 mb-2">
               Subject
             </label>
-
             <input
               type="text"
               value={reply.subject}
@@ -550,16 +441,15 @@ Thank you for contacting Strivo Consultancy.
                   subject: e.target.value,
                 })
               }
-              className="w-full rounded-xl border border-slate-700 bg-slate-900/80 text-white placeholder-gray-500 px-4 py-3 outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-500/30"
+              className="w-full rounded-[var(--radius-sm)] border border-[var(--color-border)] bg-[var(--color-sub-bg)] text-[var(--color-paragraph)] placeholder-gray-400 px-4 py-3 outline-none transition focus:border-[var(--color-primary)]"
             />
           </div>
 
           {/* Message */}
           <div>
-            <label className="block text-sm font-medium text-gray-300 mb-2">
+            <label className="block text-sm font-medium text-[var(--color-paragraph)] opacity-80 mb-2">
               Message
             </label>
-
             <textarea
               rows={5}
               value={reply.message}
@@ -569,33 +459,31 @@ Thank you for contacting Strivo Consultancy.
                   message: e.target.value,
                 })
               }
-              className="w-full rounded-xl border border-slate-700 bg-slate-900/80 text-white placeholder-gray-500 px-4 py-3 resize-none outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-500/30"
+              className="w-full rounded-[var(--radius-sm)] border border-[var(--color-border)] bg-[var(--color-sub-bg)] text-[var(--color-paragraph)] placeholder-gray-400 px-4 py-3 resize-none outline-none transition focus:border-[var(--color-primary)]"
               placeholder="Type your reply..."
             />
           </div>
-
         </div>
 
         {/* Footer */}
-        <div className="flex justify-end gap-4 border-t border-white/10 px-8 py-5">
-
+        <div className="flex justify-end gap-4 border-t border-[var(--color-border)] px-8 py-5">
           <button
             onClick={() => setShowReplyModal(false)}
-            className="px-6 py-3 rounded-xl border border-slate-600 text-gray-300 hover:bg-slate-800 transition"
+            className="px-6 py-3 border border-[var(--color-border)] text-[var(--color-paragraph)] hover:bg-[var(--color-sub-bg)] transition font-semibold cursor-pointer"
+            style={{ borderRadius: 'var(--radius-sm)' }}
           >
             Cancel
           </button>
 
           <button
             onClick={handleSendReply}
-            className="px-6 py-3 rounded-xl bg-gradient-to-r from-blue-600 to-cyan-500 hover:from-blue-500 hover:to-cyan-400 text-white font-medium shadow-lg shadow-blue-500/25 transition flex items-center gap-2"
+            className="btn px-6 py-3 border-none transition flex items-center gap-2 cursor-pointer"
+            style={{ fontWeight: 'var(--font-semibold)' }}
           >
             <FiSend size={18} />
             Send Reply
           </button>
-
         </div>
-
       </div>
     </div>,
     document.body

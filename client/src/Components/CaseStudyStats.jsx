@@ -1,82 +1,17 @@
 import React from "react";
 
-const colorClasses = {
-  blue: {
-    bg: "bg-blue-500/10",
-    text: "text-blue-500",
-    border: "border-blue-500/30",
-  },
-  green: {
-    bg: "bg-green-500/10",
-    text: "text-green-500",
-    border: "border-green-500/30",
-  },
-  orange: {
-    bg: "bg-orange-500/10",
-    text: "text-orange-500",
-    border: "border-orange-500/30",
-  },
-  purple: {
-    bg: "bg-purple-500/10",
-    text: "text-purple-500",
-    border: "border-purple-500/30",
-  },
-};
-
 const CaseStudyStats = ({ stats }) => {
   return (
     <div className="grid lg:grid-cols-4 md:grid-cols-2 gap-6 mb-8">
       {stats.map((item) => {
-        const color = colorClasses[item.color];
-
         return (
           <div
             key={item.title}
-            className={`
-              bg-white/5
-              backdrop-blur-xl
-              border
-              ${color.border}
-              rounded-2xl
-              p-6
-              hover:-translate-y-1
-              transition-all
-              duration-300
-              shadow-lg
-            `}
+            className="card p-5 flex flex-col items-center justify-center text-center hover:border-[var(--color-primary)]/40 hover:shadow-lg transition-all duration-300 group"
           >
-            <div className="flex items-center gap-4">
-
-              <div
-                className={`
-                  w-16 h-16
-                  rounded-full
-                  flex
-                  items-center
-                  justify-center
-                  text-3xl
-                  ${color.bg}
-                  ${color.text}
-                `}
-              >
-                {item.icon}
-              </div>
-
-              <div>
-                <p className="text-gray-400 text-sm">
-                  {item.title}
-                </p>
-
-                <h3 className="text-4xl font-bold mt-1">
-                  {item.value}
-                </h3>
-
-                <p className="text-gray-500 text-sm mt-1">
-                  {item.subtitle}
-                </p>
-              </div>
-
-            </div>
+            <h3 style={{ fontSize: 'var(--text-small)', fontWeight: 'var(--font-medium)', color: 'var(--color-paragraph)', opacity: 0.7, margin: 0 }}>{item.title}</h3>
+            <p style={{ fontSize: 'var(--text-sub-heading)', fontWeight: 'var(--font-bold)', color: 'var(--color-black)', margin: '4px 0 0 0' }}>{item.value}</p>
+            <p style={{ fontSize: 'var(--text-caption)', fontWeight: 'var(--font-semibold)', color: 'var(--color-paragraph)', opacity: 0.6, margin: '4px 0 0 0' }}>{item.subtitle}</p>
           </div>
         );
       })}
