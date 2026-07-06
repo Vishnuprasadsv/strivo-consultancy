@@ -99,102 +99,50 @@ const CaseStudyDetails = () => {
     }
 
     return (
-        <div className="text-white min-h-screen">
+        <div className=" bg-main  min-h-screen">
 
             {/* HERO SECTION */}
-            <div className="bg-main w-full py-8 md:py-16">
-                <div className="max-w-6xl mx-auto px-4 md:px-6 grid grid-cols-1 lg:grid-cols-[7fr_5fr] gap-8 md:gap-12 items-center">
-                    {/* HEADER */}
-                    <motion.div
-                        initial="hidden"
-                        animate="visible"
-                        variants={fadeUp}
-                        className="flex flex-col justify-center h-full"
-                    >
-                        <motion.h1
-                            initial={{ opacity: 0, y: 50 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            transition={{ duration: 0.8 }}
-
-                            className="
-    main-heading
-    text-4xl
-    sm:text-5xl
-    md:text-6xl
-    lg:text-7xl
-    leading-tight
-    mb-6
-  "
-                        >
+            <motion.section
+                initial="hidden"
+                animate="visible"
+                variants={fadeUp}
+                className="max-w-[110rem] mx-auto px-8 py-16"
+            >
+                <div className="grid lg:grid-cols-2 gap-10 items-center">
+                    <div>
+                        <h1 className="main-heading  text-heading leading-tight">
                             {study.title}
-                        </motion.h1>
+                        </h1>
 
-                        <motion.div
-                            initial={{ opacity: 0, y: 30 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            transition={{ duration: 0.8, delay: 0.2 }}
-                            className="
-flex
-flex-col
-sm:flex-row
-sm:flex-wrap
-gap-2
-sm:gap-6
-text-gray-400
-text-sm
-"
-                        >
+                        <p className="paragraph  mt-6">
+                            {study.summary}
+                        </p>
+
+                        <div className="mt-6 flex flex-col sm:flex-row sm:flex-wrap gap-2 sm:gap-6 text-gray-400 text-sm">
                             <span>{study.author}</span>
                             <span>
-                                {study.publicationDate ?
-                                    new Date(study.publicationDate).toLocaleDateString()
+                                {study.publicationDate
+                                    ? new Date(study.publicationDate).toLocaleDateString()
                                     : "-"}
                             </span>
-                            <span>
-                                {study.authorRole}
-                            </span>
-                            <span>
-                                {study.duration}
-                            </span>
-                        </motion.div>
-                    </motion.div>
-
-                    {/* FEATURED IMAGE WITH OBJECT-FILL */}
-                    <motion.div
-                        initial="hidden"
-                        whileInView="visible"
-                        viewport={{ once: true }}
-                        variants={fadeUp}
-                        className="w-full"
-                    >
-                        <div className="
-relative
-w-full
-h-[220px]
-sm:h-[300px]
-md:h-[350px]
-lg:h-[450px]
-rounded-2xl
-overflow-hidden
- ">
-                            {/* Sharp Foreground Full Image stretched using object-fill */}
-                            <motion.img
-                                src={study.coverImage}
-                                alt={study.title}
-                                initial={{ opacity: 0, scale: 0.95 }}
-                                whileInView={{ opacity: 1, scale: 1 }}
-                                viewport={{ once: true }}
-                                transition={{ duration: 0.8 }}
-                                className="w-full h-full object-fill"
-                            />
+                            <span>{study.authorRole}</span>
+                            <span>{study.duration}</span>
                         </div>
-                    </motion.div>
+                    </div>
+
+                    <div>
+                        <img
+                            src={study.coverImage}
+                            alt={study.title}
+                            className="w-full h-[400px] object-cover rounded-[3px]"
+                        />
+                    </div>
                 </div>
-            </div>
+            </motion.section>
 
             {/* OTHER SECTIONS */}
             <div className="bg-sub w-full py-16">
-                <div className="max-w-6xl mx-auto px-6 space-y-16">
+                <div className="max-w-[110rem] mx-auto px-8 space-y-16">
                     {/* EXECUTIVE SUMMARY */}
                     <motion.section
                         initial="hidden"
@@ -348,7 +296,7 @@ overflow-hidden
                                     href={study.authorWebsite}
                                     target="_blank"
                                     rel="noopener noreferrer"
-                                    className="text-sm font-bold hover:text-blue-500 transition"
+                                    className="text-sm font-bold hover:text-blue-500 transition break-all leading-relaxed inline-block max-w-full"
                                 >
                                     {study.authorWebsite}
                                 </a>

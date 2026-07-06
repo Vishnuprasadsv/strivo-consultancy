@@ -219,16 +219,17 @@ const Insight = () => {
 
               </div>
             </div>
-          <div className="
-relative
-h-64
-lg:h-full
-min-h-[400px]
-overflow-hidden
-rounded-r-xl
-order-1 lg:order-2
-">
-                     <img
+            <div
+              className="
+    relative
+    order-1 lg:order-2
+    h-72 md:h-96 lg:h-full
+    min-h-[280px] lg:min-h-[400px]
+    overflow-hidden
+    rounded-t-xl lg:rounded-t-none lg:rounded-r-xl
+  "
+            >
+              <img
                 src={featuredArticle.imageUrl}
                 alt={featuredArticle.title}
                 className="absolute inset-0 w-full h-full object-cover"
@@ -236,18 +237,19 @@ order-1 lg:order-2
                   e.target.src = "https://images.unsplash.com/photo-1488590528505-98d2b5aba04b?q=80&w=600";
                 }}
               />
-             <div
-  className="
-  absolute inset-y-0 left-0
-  w-40
-  bg-gradient-to-r
-  from-[var(--color-main-bg)]
-  via-[var(--color-main-bg)]/70
-  to-transparent
-  z-10
-"
-/>
-        
+              <div
+                className="
+    hidden lg:block
+    absolute inset-y-0 left-0
+    w-40
+    bg-gradient-to-r
+    from-[var(--color-main-bg)]
+    via-[var(--color-main-bg)]/70
+    to-transparent
+    z-10
+  "
+              />
+
             </div>
           </motion.section>
         )}
