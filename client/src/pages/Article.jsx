@@ -171,7 +171,7 @@ const Article = () => {
   return (
     <div className="min-h-screen">
       <section className="bg-main pt-24 pb-20">
-        <div className="max-w-7xl mx-auto px-6 md:px-12">
+        <div className="max-w-[110rem] mx-auto px-8">
 
           <motion.div
             initial="hidden" animate="visible" variants={fadeUpVariants}
@@ -252,7 +252,7 @@ text-sm
         </div>
       </section>
       <section className="bg-sub py-24">
-        <div className="max-w-7xl mx-auto px-6 md:px-12">
+        <div className="max-w-[110rem] mx-auto px-8">
           <div className="flex flex-col lg:flex-row gap-12">
             <motion.div
               initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.1 }} variants={fadeUpVariants}
