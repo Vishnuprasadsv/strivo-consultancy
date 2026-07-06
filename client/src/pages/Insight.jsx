@@ -162,21 +162,31 @@ const Insight = () => {
   const featuredArticle = articles.length > 0 ? (articles.find(a => a.id === 1) || articles[0]) : null;
 
   return (
-    <div className="bg-sub text-white min-h-screen pt-12 pb-24 font-sans">
-      <div className="max-w-7xl mx-auto px-6 md:px-12 space-y-24">
+    <div className="bg-sub min-h-screen font-sans">
+      <motion.section
+        id="hero-section"
+        initial="hidden"
+        animate="visible"
+        variants={fadeUpVariants}
+        className="w-full bg-main py-20 md:py-28"
+      >
+        <div className="max-w-7xl mx-auto px-6 md:px-12">
+          <motion.div variants={containerVariants} className="mx-auto text-center max-w-3xl">
+            <motion.div variants={cardVariants}>
+              <h1 className="main-heading text-4xl sm:text-5xl md:text-6xl lg:text-7xl leading-tight mb-6">
+                Precision Strategy for the Modern Enterprise.
+              </h1>
+            </motion.div>
+            <motion.div variants={cardVariants}>
+              <p className="paragraph max-w-2xl mx-auto leading-relaxed">
+                We bridge the gap between visionary thinking and operational excellence. Discover the story, people, and values that drive our relentless pursuit of impact.
+              </p>
+            </motion.div>
+          </motion.div>
+        </div>
+      </motion.section>
 
-        <motion.section
-          id="hero-section"
-          initial="hidden"
-          animate="visible"
-          variants={fadeUpVariants}
-          className="max-w-3xl mx-auto text-center"
-        >
-          <h1 className="main-heading  md:text-5xl lg:text-6xl leading-tight mb-6 ">Insights & Resources</h1>
-          <p className="paragraph leading-relaxed max-w-2xl">
-            Explore our curated collection of industry trends, strategic guides, and technical deep-dives to help you navigate the future of digital transformation and enterprise growth.
-          </p>
-        </motion.section>
+      <div className="bg-sub max-w-7xl mx-auto px-6 md:px-12 py-16 md:py-24 space-y-24">
 
         {/* Section 2: Featured Article */}
         {featuredArticle && (
@@ -185,14 +195,14 @@ const Insight = () => {
             whileInView="visible"
             viewport={{ once: true, amount: 0.2 }}
             variants={fadeUpVariants}
-            className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center bg-[#111827] rounded-xl overflow-hidden border border-[#374151]"
+            className="bg-main grid grid-cols-1 lg:grid-cols-2 gap-12 items-center  rounded-xl overflow-hidden "
           >
             <div className="p-10 flex flex-col justify-center h-full order-2 lg:order-1">
-              <span className="inline-block px-3 py-1 bg-[#1F2937] text-gray-300 text-xs font-semibold uppercase tracking-wider rounded-md mb-6 w-max">
+              <span className="pre-heading inline-block px-3 py-1 bg-[#1F2937] text-gray-300 text-xs  uppercase tracking-wider rounded-md mb-6 w-max">
                 Featured
               </span>
-              <h2 className="sub-heading  text-white mb-4">{featuredArticle.title}</h2>
-              <p className="pharagraph text-gray-400 mb-6 line-clamp-3">
+              <h2 className="sub-heading   mb-4">{featuredArticle.title}</h2>
+              <p className="paragraph  mb-6 line-clamp-3">
                 {featuredArticle.description}
               </p>
               <div className="flex items-center justify-between mt-auto">
@@ -201,7 +211,7 @@ const Insight = () => {
                 </span>
                 <Link
                   to={`/article/${featuredArticle._id || featuredArticle.id}`}
-                  className="text-blue-500 font-medium flex items-center hover:text-white transition-colors group cursor-pointer"
+                  className="text-blue-500 font-medium flex items-center hover:text-black transition-colors group cursor-pointer"
                 >
                   Read Article
                   <span className="ml-1 group-hover:translate-x-1 transition-transform">→</span>
@@ -209,8 +219,16 @@ const Insight = () => {
 
               </div>
             </div>
-            <div className="h-64 lg:h-full min-h-[400px] relative w-full overflow-hidden order-1 lg:order-2">
-              <img
+          <div className="
+relative
+h-64
+lg:h-full
+min-h-[400px]
+overflow-hidden
+rounded-r-xl
+order-1 lg:order-2
+">
+                     <img
                 src={featuredArticle.imageUrl}
                 alt={featuredArticle.title}
                 className="absolute inset-0 w-full h-full object-cover"
@@ -218,7 +236,18 @@ const Insight = () => {
                   e.target.src = "https://images.unsplash.com/photo-1488590528505-98d2b5aba04b?q=80&w=600";
                 }}
               />
-              <div className="absolute inset-0 bg-gradient-to-r from-[#111827] to-transparent lg:w-1/4"></div>
+             <div
+  className="
+  absolute inset-y-0 left-0
+  w-40
+  bg-gradient-to-r
+  from-[var(--color-main-bg)]
+  via-[var(--color-main-bg)]/70
+  to-transparent
+  z-10
+"
+/>
+        
             </div>
           </motion.section>
         )}
@@ -230,6 +259,7 @@ const Insight = () => {
           whileInView="visible"
           viewport={{ once: true, amount: 0.1 }}
           variants={fadeUpVariants}
+          className="bg-sub rounded-2xl p-6 md:p-8"
         >
           <div className="flex flex-col md:flex-row md:items-end justify-between mb-8 gap-6">
             <h2 className="sub-heading ">All Articles</h2>
@@ -410,11 +440,11 @@ transition"
           whileInView="visible"
           viewport={{ once: true, amount: 0.2 }}
           variants={fadeUpVariants}
-          className="bg-[#1F2937] rounded-xl p-8 md:p-12 flex flex-col lg:flex-row items-center justify-between gap-8 border border-[#374151]"
+          className="bg-main rounded-2xl p-8 md:p-12 flex flex-col lg:flex-row items-center justify-between gap-8"
         >
           <div className="max-w-xl">
-            <h3 className="text-2xl font-bold text-white mb-2">Stay Updated With Our Latest Insights</h3>
-            <p className="text-gray-400">Get weekly deep-dives and strategic guides delivered straight to your inbox. No spam, just high-value signal.</p>
+            <h3 className="text-2xl sub-heading mb-2">Stay Updated With Our Latest Insights</h3>
+            <p className="paragraph">Get weekly deep-dives and strategic guides delivered straight to your inbox. No spam, just high-value signal.</p>
           </div>
           <form onSubmit={handleNewsletterSubscribe} className="flex w-full lg:w-auto gap-3">
             <input
@@ -423,7 +453,7 @@ transition"
               value={newsletterEmail}
               onChange={(e) => setNewsletterEmail(e.target.value)}
               placeholder="Enter your work email"
-              className="bg-[#374151] border border-[#4b5563] text-white placeholder-white/60 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500 w-full md:w-72"
+              className=" bg-[#374151] border border-[#4b5563] text-white placeholder-white/60 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500 w-full md:w-72"
             />
             <button
               type="submit"
