@@ -173,7 +173,17 @@ const Contact = () => {
             className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center text-pure-black"
           >
             <div className="space-y-6">
-              <h1 className="main-heading md:text-5xl lg:text-6xl leading-tight">Let's Start a Conversation</h1>
+              <motion.h1
+  className="
+    main-heading
+    text-4xl
+    sm:text-5xl
+    md:text-6xl
+    lg:text-7xl
+    leading-tight
+    mb-6
+  "
+>Let's Start a Conversation</motion.h1>
               <p className="paragraph leading-relaxed max-w-lg">
                 Whether you're looking to scale your infrastructure, optimize workflows, or explore new technological frontiers, our team of experts is ready to assist. Reach out to discuss how Premium Enterprise can accelerate your growth.
               </p>

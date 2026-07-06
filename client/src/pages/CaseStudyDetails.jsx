@@ -62,7 +62,7 @@ const CaseStudyDetails = () => {
             },
         },
     };
-    
+
     useEffect(() => {
         fetchStudy();
     }, [id]);
@@ -74,24 +74,24 @@ const CaseStudyDetails = () => {
             );
             setStudy(res.data);
         }
-        catch(err){
+        catch (err) {
             console.log(err);
         }
-        finally{
+        finally {
             setLoading(false);
         }
     };
 
-    if(loading){
-        return(
+    if (loading) {
+        return (
             <div className="paragraph h-screen flex items-center justify-center">
                 Loading...
             </div>
         )
     }
 
-    if(!study){
-        return(
+    if (!study) {
+        return (
             <div className="paragraph h-screen flex items-center justify-center">
                 Case Study Not Found
             </div>
@@ -100,10 +100,10 @@ const CaseStudyDetails = () => {
 
     return (
         <div className="text-white min-h-screen">
-            
+
             {/* HERO SECTION */}
-            <div className="bg-main w-full py-16">
-                <div className="max-w-6xl mx-auto px-6 grid grid-cols-1 lg:grid-cols-[7fr_5fr] gap-12 items-center">
+            <div className="bg-main w-full py-8 md:py-16">
+                <div className="max-w-6xl mx-auto px-4 md:px-6 grid grid-cols-1 lg:grid-cols-[7fr_5fr] gap-8 md:gap-12 items-center">
                     {/* HEADER */}
                     <motion.div
                         initial="hidden"
@@ -115,7 +115,16 @@ const CaseStudyDetails = () => {
                             initial={{ opacity: 0, y: 50 }}
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ duration: 0.8 }}
-                            className="main-heading mb-8"
+
+                            className="
+    main-heading
+    text-4xl
+    sm:text-5xl
+    md:text-6xl
+    lg:text-7xl
+    leading-tight
+    mb-6
+  "
                         >
                             {study.title}
                         </motion.h1>
@@ -124,7 +133,16 @@ const CaseStudyDetails = () => {
                             initial={{ opacity: 0, y: 30 }}
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ duration: 0.8, delay: 0.2 }}
-                            className="flex flex-wrap gap-6 text-gray-400"
+                            className="
+flex
+flex-col
+sm:flex-row
+sm:flex-wrap
+gap-2
+sm:gap-6
+text-gray-400
+text-sm
+"
                         >
                             <span>{study.author}</span>
                             <span>
@@ -149,7 +167,16 @@ const CaseStudyDetails = () => {
                         variants={fadeUp}
                         className="w-full"
                     >
-                        <div className="relative w-full h-[350px] lg:h-[450px] rounded-2xl overflow-hidden bg-slate-950 border border-slate-800/80">
+                        <div className="
+relative
+w-full
+h-[220px]
+sm:h-[300px]
+md:h-[350px]
+lg:h-[450px]
+rounded-2xl
+overflow-hidden
+ ">
                             {/* Sharp Foreground Full Image stretched using object-fill */}
                             <motion.img
                                 src={study.coverImage}
@@ -194,7 +221,7 @@ const CaseStudyDetails = () => {
                             Business Challenge
                         </h2>
                         <p className="paragraph mb-6">
-                           {study.challenges}
+                            {study.challenges}
                         </p>
                         <motion.div
                             variants={staggerContainer}
@@ -315,7 +342,7 @@ const CaseStudyDetails = () => {
                             </div>
                             <div>
                                 <p className=" text-white text-3xl font-bold mt-2">
-                                   {study.author} 
+                                    {study.author}
                                 </p>
                                 <a
                                     href={study.authorWebsite}
@@ -323,9 +350,9 @@ const CaseStudyDetails = () => {
                                     rel="noopener noreferrer"
                                     className="text-sm font-bold hover:text-blue-500 transition"
                                 >
-                                   {study.authorWebsite}
+                                    {study.authorWebsite}
                                 </a>
-                                
+
                                 <p className="paragraph text-white mt-4">
                                     {study.authorRole}
                                 </p>

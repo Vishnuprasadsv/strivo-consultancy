@@ -14,7 +14,7 @@ const Digital = () => {
   }, []);
 
   return (
-    <div className="bg-main min-h-screen font-sans selection:bg-blue-600 ">
+    <div className="bg-main w-full py-8 md:py-16 min-h-screen font-sans">
       {/* Section 1: Hero */}
       <motion.section
         id="hero-section"
@@ -23,10 +23,10 @@ const Digital = () => {
         variants={fadeUpVariants}
         className="w-full bg-main"
       >
-        <div className="max-w-7xl mx-auto px-6 md:px-12 py-16 md:py-24">
+          <div className="max-w-7xl mx-auto px-6 md:px-12 py-8 md:py-12">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
             <div className="space-y-8">
-              <h1 className="main-heading">Digital Transformation</h1>
+              <h1 className="main-heading text-4xl sm:text-5xl md:text-6xl lg:text-7xl leading-tight mb-6">Digital Transformation</h1>
               <p className="paragraph">
                 Accelerate innovation through technology modernization, cloud transformation, automation, data intelligence, and digital customer experiences.
               </p>
