@@ -78,14 +78,9 @@ const Footer = () => {
         >
           <div
             onClick={() => {
-              const target = document.getElementById("hero-section");
-              if (target) {
-                target.scrollIntoView({ behavior: "smooth" });
-              } else {
-                window.scrollTo({ top: 0, behavior: "smooth" });
-              }
+              window.scrollTo({ top: 0, behavior: "smooth" });
             }}
-            className="w-10 h-10 md:w-[50px] md:h-[50px] rounded-full bg-(--color-primary) shadow-[0_8px_25px_rgba(71,100,255,0.4)] flex items-center justify-center cursor-pointer transition-all duration-300 ease-in-out hover:bg-[#3b55d9] hover:-translate-y-1 hover:shadow-[0_12px_30px_rgba(71,100,255,0.6)]"
+            className="w-10 h-10 md:w-[50px] md:h-[50px] rounded-full bg-[var(--color-primary)] shadow-[0_8px_25px_rgba(71,100,255,0.4)] flex items-center justify-center cursor-pointer transition-all duration-300 ease-in-out hover:bg-[#3b55d9] hover:-translate-y-1 hover:shadow-[0_12px_30px_rgba(71,100,255,0.6)]"
           >
             <svg className="w-5 h-5 md:w-6 md:h-6" viewBox="0 0 24 24" fill="none" stroke="#ffffff" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
               <path d="M18 15l-6-6-6 6" />

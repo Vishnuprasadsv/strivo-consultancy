@@ -1,5 +1,5 @@
 import React, { useState, useRef } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   Box,
@@ -16,6 +16,7 @@ import {
 
 import { submitReviewAPI } from "../services/allApi";
 import { toast } from "sonner";
+import homeHero from "../assets/homehero.jpg";
 
 
 
@@ -184,7 +185,13 @@ const SuccessScreen = ({ onReset }) => {
 
 
 export default function Review() {
+  const navigate = useNavigate();
   const formRef = useRef(null);
+  const formSectionRef = useRef(null);
+
+  const scrollToForm = () => {
+    formSectionRef.current?.scrollIntoView({ behavior: "smooth" });
+  };
 
   const [form, setForm] = useState({
     fullName: "",
@@ -277,13 +284,150 @@ export default function Review() {
   };
 
   return (
-    <Box className="bg-main"
-      sx={{
-        minHeight: { md: "640px", xs: "auto" },
-        position: "relative",
-        py: { xs: 4, md: 3 },
-      }}
-    >
+    <>
+      {/* Hero Section */}
+      <Box
+        component="section"
+        id="hero-section"
+        sx={{
+          position: { xs: "relative", md: "sticky" },
+          top: "80px", // Header navbar height
+          zIndex: 1,
+          height: { xs: "auto", md: "600px" },
+          minHeight: { xs: "auto", md: "600px" },
+          backgroundColor: "var(--color-primary)",
+          display: "flex",
+          flexDirection: { xs: "column", md: "row" },
+          alignItems: "stretch",
+          overflow: "hidden",
+        }}
+      >
+        {/* Right Column: Clean Image of the Consultant */}
+        <Box
+          sx={{
+            position: { xs: "relative", md: "absolute" },
+            top: 0,
+            right: 0,
+            width: { xs: "100%", md: "50%" },
+            height: { xs: "320px", md: "100%" },
+            backgroundImage: `url(${homeHero})`,
+            backgroundSize: "cover",
+            backgroundPosition: "right top", // Prevents cutting off the man's head!
+            zIndex: 1,
+            order: { xs: 1, md: 2 },
+          }}
+        />
+
+        {/* Left Column Container: Content Aligned to Navbar */}
+        <Box
+          className="max-w-[110rem] mx-auto px-8"
+          sx={{
+            position: "relative",
+            zIndex: 2,
+            width: "100%",
+            display: "flex",
+            alignItems: "center",
+            py: { xs: 6, md: 0 },
+            order: { xs: 2, md: 1 },
+          }}
+        >
+          <Box sx={{ maxWidth: { xs: "100%", md: "46%" } }}>
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8 }}
+            >
+              <Typography
+                component="h1"
+                sx={{
+                  fontFamily: "var(--font-primary)",
+                  fontSize: { xs: "2.2rem", sm: "2.8rem", md: "3.2rem" },
+                  fontWeight: 700,
+                  lineHeight: 1.15,
+                  letterSpacing: "-0.5px",
+                  color: "#ffffff",
+                  mb: 2.5,
+                  textAlign: "left",
+                }}
+              >
+                Where Partnership
+                <br />
+                Inspires Innovation
+              </Typography>
+            </motion.div>
+
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.2, duration: 0.6 }}
+            >
+              <Typography
+                component="p"
+                sx={{
+                  fontSize: { xs: "0.95rem", sm: "1.05rem", md: "1.1rem" },
+                  color: "rgba(255, 255, 255, 0.78)",
+                  maxWidth: "540px",
+                  lineHeight: 1.65,
+                  mb: 4.5,
+                  textAlign: "left",
+                }}
+              >
+                We value our partnership and welcome your honest feedback. Your review helps us
+                refine our methodologies and guides other enterprises towards strategic growth.
+              </Typography>
+            </motion.div>
+
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.4, duration: 0.6 }}
+            >
+              <Stack direction={{ xs: "column", sm: "row" }} spacing={2.5}>
+                <motion.div whileHover={{ y: -2 }} whileTap={{ scale: 0.98 }}>
+                  <Button
+                    variant="contained"
+                    onClick={scrollToForm}
+                    sx={{
+                      py: 1.5,
+                      px: 4.5,
+                      borderRadius: "3px",
+                      textTransform: "none",
+                      fontWeight: 600,
+                      fontSize: "0.95rem",
+                      background: "#ffffff",
+                      color: "var(--color-primary)",
+                      display: "inline-flex",
+                      alignItems: "center",
+                      boxShadow: "0 4px 14px rgba(0, 0, 0, 0.15)",
+                      "&:hover": {
+                        background: "var(--color-sub-bg)",
+                        boxShadow: "0 6px 20px rgba(0, 0, 0, 0.2)",
+                      },
+                      transition: "all 0.2s ease",
+                      width: { xs: "100%", sm: "auto" },
+                    }}
+                  >
+                    Write a Review
+                  </Button>
+                </motion.div>
+              </Stack>
+            </motion.div>
+          </Box>
+        </Box>
+      </Box>
+
+      {/* Review Form Container */}
+      <Box
+        ref={formSectionRef}
+        className="bg-main"
+        sx={{
+          minHeight: { md: "640px", xs: "auto" },
+          position: "relative",
+          zIndex: 10, // Slides OVER the sticky hero!
+          py: { xs: 6, md: 8 },
+          backgroundColor: "var(--color-main-bg)", // Solid background color
+        }}
+      >
       <Container maxWidth="xl" sx={{ position: "relative", zIndex: 1 }}>
 
         {/* Header Section */}
@@ -717,6 +861,7 @@ export default function Review() {
         </AnimatePresence>
 
       </Container>
-    </Box>
+      </Box>
+    </>
   );
 }
