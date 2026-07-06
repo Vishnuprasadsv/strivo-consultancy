@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import LoadingIndicator from "../Components/LoadingIndicator";
 import {
     FiMessageSquare,
     FiClock,
@@ -143,11 +144,7 @@ console.log(err);
         }
     };
     if (loading) {
-        return (
-            <div className="flex justify-center items-center h-screen text-white">
-                Loading inquiries...
-            </div>
-        );
+        return <LoadingIndicator />;
     }
     if (inquiries.length === 0) {
         return (

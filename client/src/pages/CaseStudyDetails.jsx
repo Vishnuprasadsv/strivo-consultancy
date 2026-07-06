@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useParams } from "react-router-dom";
 import { motion } from "framer-motion";
+import LoadingIndicator from "../Components/LoadingIndicator";
 
 const fadeUp = {
     hidden: { opacity: 0, y: 40 },
@@ -83,11 +84,7 @@ const CaseStudyDetails = () => {
     };
 
     if (loading) {
-        return (
-            <div className="paragraph h-screen flex items-center justify-center">
-                Loading...
-            </div>
-        )
+        return <LoadingIndicator />;
     }
 
     if (!study) {

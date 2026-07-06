@@ -6,6 +6,7 @@ import React, {
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
+import LoadingIndicator from "../Components/LoadingIndicator";
 
 const fadeUpVariants = {
   hidden: {
@@ -97,11 +98,7 @@ const CaseStudies = () => {
     );
 
   if (loading) {
-    return (
-      <div className="flex justify-center items-center h-screen">
-        Loading...
-      </div>
-    );
+    return <LoadingIndicator />;
   }
 
   return (
