@@ -124,7 +124,6 @@ const AppLayout = () => {
               <Routes>
                 {/* Fix: Root path now directly renders Home */}
                 <Route path="/" element={<Home />} />
-                <Route path="/home" element={<Home />} />
 
                 <Route path="/about" element={<Aboutus />} />
                 <Route path="/contact" element={<Contact />} />
