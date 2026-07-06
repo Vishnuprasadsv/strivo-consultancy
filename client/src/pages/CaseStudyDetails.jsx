@@ -191,19 +191,19 @@ const CaseStudyDetails = () => {
                             variants={staggerContainer}
                             initial="hidden"
                             animate="visible"
-                            className="space-y-4 text-white"
+                            className="space-y-4 paragraph"
                         >
-                            <div className="bg-slate-900 border border-slate-800 rounded-xl p-5">
-                                ✓ Enterprise Cloud Migration
+                            <div className="bg-main rounded-xl p-5">
+                               <span className="text-blue-500 pr-3">✓</span>  Enterprise Cloud Migration
                             </div>
-                            <div className="bg-slate-900 border border-slate-800 rounded-xl p-5">
-                                ✓ Process Automation & Workflow Optimization
+                            <div className="bg-main rounded-xl p-5">
+                                <span className="text-blue-500 pr-3">✓</span> Process Automation & Workflow Optimization
                             </div>
-                            <div className="bg-slate-900 border border-slate-800 rounded-xl p-5">
-                                ✓ Advanced Analytics & Reporting Infrastructure
+                            <div className="bg-main rounded-xl p-5">
+                                <span className="text-blue-500 pr-3">✓</span> Advanced Analytics & Reporting Infrastructure
                             </div>
-                            <div className="bg-slate-900 border border-slate-800 rounded-xl p-5">
-                                ✓ Omnichannel Customer Experience Strategy
+                            <div className="bg-main rounded-xl p-5">
+                                <span className="text-blue-500 pr-3">✓</span> Omnichannel Customer Experience Strategy
                             </div>
                         </motion.div>
                     </motion.section>
@@ -227,35 +227,35 @@ const CaseStudyDetails = () => {
                             animate="visible"
                             className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6"
                         >
-                            <div className="bg-slate-900 border border-slate-800 rounded-xl p-8 text-center">
+                            <div className="bg-main  rounded-xl p-8 text-center">
                                 <h3 className="text-5xl font-bold text-blue-500 mb-3">
                                     35%
                                 </h3>
-                                <p className="paragraph text-white">
+                                <p className="paragraph ">
                                     Revenue Growth
                                 </p>
                             </div>
-                            <div className="bg-slate-900 border border-slate-800 rounded-xl p-8 text-center">
+                            <div className="bg-main  rounded-xl p-8 text-center">
                                 <h3 className="text-5xl font-bold text-blue-500 mb-3">
                                     28%
                                 </h3>
-                                <p className="paragraph text-white">
+                                <p className="paragraph ">
                                     Cost Reduction
                                 </p>
                             </div>
-                            <div className="bg-slate-900 border border-slate-800 rounded-xl p-8 text-center">
+                            <div className="bg-main  rounded-xl p-8 text-center">
                                 <h3 className="text-5xl font-bold text-blue-500 mb-3">
                                     42%
                                 </h3>
-                                <p className="paragraph text-white">
+                                <p className="paragraph ">
                                     Productivity Increase
                                 </p>
                             </div>
-                            <div className="bg-slate-900 border border-slate-800 rounded-xl p-8 text-center">
+                            <div className="bg-main  rounded-xl p-8 text-center">
                                 <h3 className="text-5xl font-bold text-blue-500 mb-3">
                                     90%
                                 </h3>
-                                <p className="paragraph text-white">
+                                <p className="paragraph ">
                                     Customer Satisfaction
                                 </p>
                             </div>
@@ -276,7 +276,7 @@ const CaseStudyDetails = () => {
                             variants={staggerContainer}
                             initial="hidden"
                             animate="visible"
-                            className="bg-slate-900 border border-slate-800 rounded-2xl p-8 grid grid-cols-1 md:grid-cols-[200px_1fr] gap-8 items-center"
+                            className="bg-main rounded-2xl p-8 grid grid-cols-1 md:grid-cols-[200px_1fr] gap-8 items-center"
                         >
                             <div className="flex justify-center">
                                 <img
@@ -286,7 +286,7 @@ const CaseStudyDetails = () => {
                                 />
                             </div>
                             <div>
-                                <p className=" text-white text-3xl font-bold mt-2">
+                                <p className=" text-3xl font-bold mt-2">
                                     {study.author}
                                 </p>
                                 <a
@@ -298,7 +298,7 @@ const CaseStudyDetails = () => {
                                     {study.authorWebsite}
                                 </a>
 
-                                <p className="paragraph text-white mt-4">
+                                <p className="paragraph mt-4">
                                     {study.authorRole}
                                 </p>
                                 <div className="flex flex-wrap gap-3 mt-6">
