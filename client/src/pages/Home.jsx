@@ -12,8 +12,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import SEO from '../Components/SEO';
 import { SERVER_URL } from '../services/serverUrl';
-import homeHero from "../assets/herohome1.jpg";
-import newHero from "../assets/new_hero.png";
+import homeHero from "../assets/homehero.jpg";
 import leader1 from "../assets/leader1.jpg";
 import leader2 from "../assets/leader2.jpg";
 import leader3 from "../assets/leader3.jpg";
@@ -524,184 +523,156 @@ function Home() {
         id="hero-section"
         sx={{
           position: "relative",
-          minHeight: "700px",
-          py: { xs: 6, lg: 0 },
+          height: { xs: "auto", md: "600px" },
+          minHeight: { xs: "auto", md: "600px" },
+          backgroundColor: "var(--color-primary)", // To undo, change back to: "#030f26"
           display: "flex",
-          alignItems: "center",
+          flexDirection: { xs: "column", md: "row" },
+          alignItems: "stretch",
           overflow: "hidden",
-          backgroundColor: "var(--color-primary)",
         }}
       >
+        {/* Right Column: Clean Image of the Consultant */}
         <Box
           sx={{
-            position: "absolute",
-            inset: 0,
-            backgroundImage: `url(${newHero})`,
+            position: { xs: "relative", md: "absolute" },
+            top: 0,
+            right: 0,
+            width: { xs: "100%", md: "50%" },
+            height: { xs: "320px", md: "100%" },
+            backgroundImage: `url(${homeHero})`,
             backgroundSize: "cover",
-            backgroundPosition: "center",
-            opacity: 0.15,
-            zIndex: 0,
-          }}
-        />
-        {/* Decorative Radial Glow */}
-        <Box
-          sx={{
-            position: "absolute",
-            top: "50%",
-            left: "55%",
-            transform: "translate(-50%, -50%)",
-            width: { xs: "500px", md: "800px" },
-            height: { xs: "500px", md: "800px" },
-            background: "radial-gradient(circle, rgba(37,99,235,0.08), transparent 75%)",
-            pointerEvents: "none",
-            zIndex: 0,
+            backgroundPosition: "right top", // Prevents cutting off the man's head!
+            zIndex: 1,
+            order: { xs: 1, md: 2 },
           }}
         />
 
-        {/* Main Content */}
-
+        {/* Left Column Container: Content Aligned to Navbar */}
         <Box
           className="max-w-[110rem] mx-auto px-8"
           sx={{
             position: "relative",
             zIndex: 2,
             width: "100%",
+            display: "flex",
+            alignItems: "center",
+            py: { xs: 6, md: 0 },
+            order: { xs: 2, md: 1 },
           }}
         >
-          <Box
-            sx={{
-              display: "flex",
-              flexDirection: "column",
-              justifyContent: "center",
-              alignItems: "flex-start",
-              maxWidth: { xs: "100%", md: "80%" },
-            }}
-          >
-            {/* LEFT CONTENT */}
-
-            <Box
-              sx={{
-                filter: "drop-shadow(0px 8px 16px rgba(0, 0, 0, 0.6))"
-              }}
+          <Box sx={{ maxWidth: { xs: "100%", md: "46%" } }}>
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8 }}
             >
-              <motion.div
-                initial={{ opacity: 0, y: 30 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.8 }}
-              >
-                <Box
-                  component='h1'
-                  className='main-heading text-white'
-                  sx={{
-                    fontFamily: "var(--font-primary)",
-                    letterSpacing: "-0.5px",
-                    mb: 2,
-                    textAlign: "left",
-                  }}
-                >
-                  Empowering Enterprise Growth
-                  <br />
-                  through Strategic Innovation
-                </Box>
-              </motion.div>
-
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{
-                  delay: 0.2,
-                  duration: 0.6,
+              <Typography
+                component="h1"
+                sx={{
+                  fontFamily: "var(--font-primary)",
+                  fontSize: { xs: "2.2rem", sm: "2.8rem", md: "3.2rem" },
+                  fontWeight: 700,
+                  lineHeight: 1.15,
+                  letterSpacing: "-0.5px",
+                  color: "#ffffff",
+                  mb: 2.5,
+                  textAlign: "left",
                 }}
               >
-                <Box
-                  component="p"
-                  className="paragraph"
-                  sx={{
-                    maxWidth: "720px",
-                    color: "white",
-                    fontWeight: "medium",
-                    mb: 3,
-                  }}
-                >
-                  We partner with ambitious leaders to solve complex challenges, optimize operations, and drive sustainable growth in an ever-evolving global landscape.
-                </Box>
-              </motion.div>
+                Reimagine What Your
+                <br />
+                Business Can Achieve
+              </Typography>
+            </motion.div>
 
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{
-                  delay: 0.4,
-                  duration: 0.6,
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.2, duration: 0.6 }}
+            >
+              <Typography
+                component="p"
+                sx={{
+                  fontSize: { xs: "0.95rem", sm: "1.05rem", md: "1.1rem" },
+                  color: "rgba(255, 255, 255, 0.78)",
+                  maxWidth: "540px",
+                  lineHeight: 1.65,
+                  mb: 4.5,
+                  textAlign: "left",
                 }}
               >
-                <Stack
-                  direction={{ xs: "column", sm: "row" }}
-                  spacing={2}
-                >
-                  <motion.div whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.98 }}>
-                    <Button
-                      variant="contained"
-                      onClick={() => navigate("/contact")}
-                      sx={{
-                        px: 3.5,
-                        py: 1.2,
-                        borderRadius: "3px",
-                        textTransform: "none",
-                        fontWeight: 700,
-                        fontSize: "0.88rem",
-                        background: "#ffffffff",
-                        display: "inline-flex",
-                        alignItems: "center",
-                        gap: 1,
-                        boxShadow: "0 8px 20px rgba(71, 100, 255, 0.3)",
-                        color:"var(--color-primary)",
-                        "&:hover": {
-                          background: "#0c2dd4ff",
-                          boxShadow: "0 12px 25px rgba(71, 100, 255, 0.4)",
-                          color:"var(--color-white)",
-                        },
-                        transition: "all 0.3s ease",
-                        width: { xs: "100%", sm: "auto" }
-                      }}
-                    >
-                      Contact Us
-                      <ArrowForward sx={{ fontSize: "1rem" }} />
-                    </Button>
-                  </motion.div>
+                We help leaders navigate complexity, solve critical challenges,
+                and build stronger, more resilient organizations for the future.
+              </Typography>
+            </motion.div>
 
-                  <motion.div whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.98 }}>
-                    <Button
-                      variant="outlined"
-                      onClick={() => navigate("/about")}
-                      sx={{
-                        px: 3.5,
-                        py: 1.2,
-                        borderRadius: "3px",
-                        textTransform: "none",
-                        fontWeight: 700,
-                        fontSize: "0.88rem",
-                        color: "#fff",
-                        borderColor: "rgba(255, 255, 255, 1)",
-                        "&:hover": {
-                          background: "rgba(255, 255, 255, 0.08)",
-                          borderColor: "#3b82f6",
-                        },
-                        transition: "all 0.3s ease",
-                        width: { xs: "100%", sm: "auto" }
-                      }}
-                    >
-                      About Us
-                    </Button>
-                  </motion.div>
-                </Stack>
-              </motion.div>
-            </Box>
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.4, duration: 0.6 }}
+            >
+              <Stack direction={{ xs: "column", sm: "row" }} spacing={2.5}>
+                <motion.div whileHover={{ y: -2 }} whileTap={{ scale: 0.98 }}>
+                  <Button
+                    variant="contained"
+                    onClick={() => navigate("/contact")}
+                    sx={{
+                      py: 1.5,
+                      px: 4.5,
+                      borderRadius: "3px",
+                      textTransform: "none",
+                      fontWeight: 600,
+                      fontSize: "0.95rem",
+                      background: "#ffffff",
+                      color: "var(--color-primary)",
+                      display: "inline-flex",
+                      alignItems: "center",
+                      boxShadow: "0 4px 14px rgba(0, 0, 0, 0.15)",
+                      "&:hover": {
+                        background: "var(--color-sub-bg)",
+                        boxShadow: "0 6px 20px rgba(0, 0, 0, 0.2)",
+                      },
+                      transition: "all 0.2s ease",
+                      width: { xs: "100%", sm: "auto" },
+                    }}
+                  >
+                    Contact Us
+                  </Button>
+                </motion.div>
 
-
+                <motion.div whileHover={{ y: -2 }} whileTap={{ scale: 0.98 }}>
+                  <Button
+                    variant="outlined"
+                    onClick={() => navigate("/about")}
+                    sx={{
+                      py: 1.5,
+                      px: 4.5,
+                      borderRadius: "3px",
+                      textTransform: "none",
+                      fontWeight: 600,
+                      fontSize: "0.95rem",
+                      color: "#ffffff",
+                      borderColor: "rgba(255, 255, 255, 0.35)",
+                      display: "inline-flex",
+                      alignItems: "center",
+                      "&:hover": {
+                        background: "rgba(255, 255, 255, 0.08)",
+                        borderColor: "#ffffff",
+                      },
+                      transition: "all 0.2s ease",
+                      width: { xs: "100%", sm: "auto" },
+                    }}
+                  >
+                    About Us
+                  </Button>
+                </motion.div>
+              </Stack>
+            </motion.div>
           </Box>
         </Box>
       </Box>
+
 
       {/* Animated downward arrow below hero image */}
       <Box

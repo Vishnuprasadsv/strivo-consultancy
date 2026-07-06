@@ -29,6 +29,7 @@ import cultureImg from "../assets/culture.jpg";
 import growthImg from "../assets/growth.jpg";
 import collaborationImg from "../assets/collaboration.jpg";
 import successImg from "../assets/purpose.jpg";
+import careerHeroIllustration from "../assets/career-hero-illustration.png";
 import { toast } from "sonner";
 import { applyJobAPI, submitTalentAPI, getJobsAPI } from "../services/allApi";
 import {
@@ -43,6 +44,7 @@ import {
 } from "@mui/material";
 
 function Career() {
+  const SHOW_HERO_ILLUSTRATION = true; // Set to false to easily revert and show the original centered text-only hero layout
 
   const [activeTab, setActiveTab] = useState(0);
 
@@ -334,7 +336,9 @@ function Career() {
       <Box
         id="hero-section"
         sx={{
-          height: { xs: "500px", md: "590px" },
+          height: SHOW_HERO_ILLUSTRATION ? { xs: "auto", md: "590px" } : { xs: "500px", md: "590px" },
+          minHeight: SHOW_HERO_ILLUSTRATION ? { xs: "720px", md: "590px" } : "auto",
+          py: SHOW_HERO_ILLUSTRATION ? { xs: 8, md: 0 } : 0,
           position: "sticky",
           top: 0,
           display: "flex",
@@ -363,126 +367,277 @@ function Career() {
 
 
 
-        <Container maxWidth="lg">
-          <MotionBox
-            initial={{ opacity: 0, y: 50 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 1 }}
-            sx={{
-              textAlign: "center",
-              maxWidth: "900px",
-              mx: "auto",
-              position: "relative",
-              zIndex: 2,
-            }}
-          >
-            <Typography
-              sx={{
-                color: "var(--color-white)",
-                letterSpacing: "3px",
-                fontWeight: 600,
-                textTransform: "uppercase",
-                fontSize: "var(--text-small)",
-                mb: 2,
-                opacity: 0.9,
-              }}
-            >
-              Careers At Strivo
-            </Typography>
+        <Container maxWidth="lg" sx={{ position: "relative", zIndex: 2 }}>
+          {SHOW_HERO_ILLUSTRATION ? (
+            <Grid container spacing={{ xs: 4, md: 6 }} alignItems="center">
+              {/* Left Column - Text Content */}
+              <Grid item xs={12} md={7}>
+                <MotionBox
+                  initial={{ opacity: 0, x: -50 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ duration: 1 }}
+                  sx={{
+                    textAlign: { xs: "center", md: "left" },
+                    maxWidth: "650px",
+                    mx: { xs: "auto", md: "0" },
+                  }}
+                >
+                  <Typography
+                    sx={{
+                      color: "var(--color-white)",
+                      letterSpacing: "3px",
+                      fontWeight: 600,
+                      textTransform: "uppercase",
+                      fontSize: "var(--text-small)",
+                      mb: 2,
+                      opacity: 0.9,
+                    }}
+                  >
+                    Careers At Strivo
+                  </Typography>
 
-            <Typography
-              sx={{
-                color: "var(--color-white)",
-                fontWeight: "var(--font-semibold)",
-                lineHeight: 1.2,
-                mb: 3,
-                fontSize: {
-                  xs: "1.8rem",
-                  md: "2.8rem",
-                },
-              }}
-            >
-              Build The Future With Us
-            </Typography>
+                  <Typography
+                    sx={{
+                      color: "var(--color-white)",
+                      fontWeight: "var(--font-semibold)",
+                      lineHeight: 1.2,
+                      mb: 3,
+                      fontSize: {
+                        xs: "1.8rem",
+                        md: "2.8rem",
+                      },
+                    }}
+                  >
+                    Build The Future With Us
+                  </Typography>
 
-            <Typography
+                  <Typography
+                    sx={{
+                      color: "var(--color-white)",
+                      maxWidth: "580px",
+                      mx: { xs: "auto", md: "0" },
+                      lineHeight: 1.6,
+                      mb: 5,
+                      opacity: 0.85,
+                      fontSize: "var(--text-paragraph)",
+                    }}
+                  >
+                    Join a team of innovators, consultants, and technology
+                    experts solving complex challenges for businesses worldwide.
+                  </Typography>
+
+                  <Box
+                    sx={{
+                      display: "flex",
+                      justifyContent: { xs: "center", md: "flex-start" },
+                      width: "100%",
+                      mt: 2,
+                    }}
+                  >
+                    <Stack
+                      direction={{ xs: "column", sm: "row" }}
+                      spacing={2}
+                      justifyContent={{ xs: "center", md: "flex-start" }}
+                      alignItems="center"
+                    >
+                      <Button
+                        variant="contained"
+                        onClick={() => scrollToSection('open-positions')}
+                        sx={{
+                          px: 2.5,
+                          height: "42px",
+                          minWidth: "130px",
+                          background: "var(--color-white)",
+                          color: "var(--color-primary)",
+                          borderRadius: "var(--radius-sm)",
+                          fontWeight: "var(--font-bold)",
+                          textTransform: "none",
+                          fontSize: "var(--text-small)",
+                          boxShadow: "var(--shadow-button)",
+                          border: "1px solid transparent",
+                          "&:hover": {
+                            background: "var(--color-sub-bg)",
+                            transform: "translateY(-2px)",
+                          },
+                        }}
+                      >
+                        Explore Open Roles
+                      </Button>
+
+                      <Button
+                        variant="outlined"
+                        onClick={() => scrollToSection('life-at-strivo')}
+                        sx={{
+                          px: 2.5,
+                          height: "42px",
+                          minWidth: "130px",
+                          borderRadius: "var(--radius-sm)",
+                          borderColor: "rgba(255,255,255,.4)",
+                          color: "var(--color-white)",
+                          textTransform: "none",
+                          fontWeight: "var(--font-bold)",
+                          fontSize: "var(--text-small)",
+                          border: "1px solid rgba(255,255,255,.4)",
+                          "&:hover": {
+                            borderColor: "var(--color-white)",
+                            background: "rgba(255,255,255,.1)",
+                          },
+                        }}
+                      >
+                        Life At Strivo
+                      </Button>
+                    </Stack>
+                  </Box>
+                </MotionBox>
+              </Grid>
+
+              {/* Right Column - Team Illustration */}
+              <Grid item xs={12} md={5}>
+                <MotionBox
+                  initial={{ opacity: 0, x: 50 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ duration: 1 }}
+                  sx={{
+                    display: "flex",
+                    justifyContent: "center",
+                    alignItems: "center",
+                  }}
+                >
+                  <Box
+                    component="img"
+                    src={careerHeroIllustration}
+                    alt="Strivo Consultancy Team Illustration"
+                    sx={{
+                      width: "100%",
+                      maxWidth: { xs: "300px", sm: "360px", md: "460px" },
+                      height: "auto",
+                      display: "block",
+                      filter: "drop-shadow(0px 10px 25px rgba(0,0,0,0.15))",
+                    }}
+                  />
+                </MotionBox>
+              </Grid>
+            </Grid>
+          ) : (
+            <MotionBox
+              initial={{ opacity: 0, y: 50 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 1 }}
               sx={{
-                color: "var(--color-white)",
-                maxWidth: "650px",
+                textAlign: "center",
+                maxWidth: "900px",
                 mx: "auto",
-                lineHeight: 1.6,
-                mb: 5,
-                opacity: 0.85,
-                fontSize: "var(--text-paragraph)",
+                position: "relative",
+                zIndex: 2,
               }}
             >
-              Join a team of innovators, consultants, and technology
-              experts solving complex challenges for businesses worldwide.
-            </Typography>
-            <Box
-              sx={{
-                display: "flex",
-                justifyContent: "center",
-                width: "100%",
-                mt: 2,
-              }}
-            >
-              <Stack
-                direction={{ xs: "column", sm: "row" }}
-                spacing={2}
-                justifyContent="center"
-                alignItems="center"
+              <Typography
+                sx={{
+                  color: "var(--color-white)",
+                  letterSpacing: "3px",
+                  fontWeight: 600,
+                  textTransform: "uppercase",
+                  fontSize: "var(--text-small)",
+                  mb: 2,
+                  opacity: 0.9,
+                }}
               >
-                <Button
-                  variant="contained"
-                  onClick={() => scrollToSection('open-positions')}
-                  sx={{
-                    px: 2.5,
-                    height: "42px",
-                    minWidth: "130px",
-                    background: "var(--color-white)",
-                    color: "var(--color-primary)",
-                    borderRadius: "var(--radius-sm)",
-                    fontWeight: "var(--font-bold)",
-                    textTransform: "none",
-                    fontSize: "var(--text-small)",
-                    boxShadow: "var(--shadow-button)",
-                    border: "1px solid transparent",
-                    "&:hover": {
-                      background: "var(--color-sub-bg)",
-                      transform: "translateY(-2px)",
-                    },
-                  }}
-                >
-                  Explore Open Roles
-                </Button>
+                Careers At Strivo
+              </Typography>
 
-                <Button
-                  variant="outlined"
-                  onClick={() => scrollToSection('life-at-strivo')}
-                  sx={{
-                    px: 2.5,
-                    height: "42px",
-                    minWidth: "130px",
-                    borderRadius: "var(--radius-sm)",
-                    borderColor: "rgba(255,255,255,.4)",
-                    color: "var(--color-white)",
-                    textTransform: "none",
-                    fontWeight: "var(--font-bold)",
-                    fontSize: "var(--text-small)",
-                    border: "1px solid rgba(255,255,255,.4)",
-                    "&:hover": {
-                      borderColor: "var(--color-white)",
-                      background: "rgba(255,255,255,.1)",
-                    },
-                  }}
-                >
-                  Life At Strivo
-                </Button>
-              </Stack>
-            </Box>
+              <Typography
+                sx={{
+                  color: "var(--color-white)",
+                  fontWeight: "var(--font-semibold)",
+                  lineHeight: 1.2,
+                  mb: 3,
+                  fontSize: {
+                    xs: "1.8rem",
+                    md: "2.8rem",
+                  },
+                }}
+              >
+                Build The Future With Us
+              </Typography>
 
-          </MotionBox>
+              <Typography
+                sx={{
+                  color: "var(--color-white)",
+                  maxWidth: "650px",
+                  mx: "auto",
+                  lineHeight: 1.6,
+                  mb: 5,
+                  opacity: 0.85,
+                  fontSize: "var(--text-paragraph)",
+                }}
+              >
+                Join a team of innovators, consultants, and technology
+                experts solving complex challenges for businesses worldwide.
+              </Typography>
+              <Box
+                sx={{
+                  display: "flex",
+                  justifyContent: "center",
+                  width: "100%",
+                  mt: 2,
+                }}
+              >
+                <Stack
+                  direction={{ xs: "column", sm: "row" }}
+                  spacing={2}
+                  justifyContent="center"
+                  alignItems="center"
+                >
+                  <Button
+                    variant="contained"
+                    onClick={() => scrollToSection('open-positions')}
+                    sx={{
+                      px: 2.5,
+                      height: "42px",
+                      minWidth: "130px",
+                      background: "var(--color-white)",
+                      color: "var(--color-primary)",
+                      borderRadius: "var(--radius-sm)",
+                      fontWeight: "var(--font-bold)",
+                      textTransform: "none",
+                      fontSize: "var(--text-small)",
+                      boxShadow: "var(--shadow-button)",
+                      border: "1px solid transparent",
+                      "&:hover": {
+                        background: "var(--color-sub-bg)",
+                        transform: "translateY(-2px)",
+                      },
+                    }}
+                  >
+                    Explore Open Roles
+                  </Button>
+
+                  <Button
+                    variant="outlined"
+                    onClick={() => scrollToSection('life-at-strivo')}
+                    sx={{
+                      px: 2.5,
+                      height: "42px",
+                      minWidth: "130px",
+                      borderRadius: "var(--radius-sm)",
+                      borderColor: "rgba(255,255,255,.4)",
+                      color: "var(--color-white)",
+                      textTransform: "none",
+                      fontWeight: "var(--font-bold)",
+                      fontSize: "var(--text-small)",
+                      border: "1px solid rgba(255,255,255,.4)",
+                      "&:hover": {
+                        borderColor: "var(--color-white)",
+                        background: "rgba(255,255,255,.1)",
+                      },
+                    }}
+                  >
+                    Life At Strivo
+                  </Button>
+                </Stack>
+              </Box>
+            </MotionBox>
+          )}
         </Container>
 
 
@@ -516,7 +671,7 @@ function Career() {
           zIndex: 10,
         }}
       >
-        <Container maxWidth="md" sx={{ display: "flex", alignItems: "center" }}>
+        <Container maxWidth="md">
           <Box
             sx={{
               display: "grid",
@@ -679,6 +834,7 @@ function Career() {
           </Box>
         </Container>
       </Box>
+
       <Box
         id="life-at-strivo"
         sx={{
@@ -940,7 +1096,7 @@ function Career() {
                       mb: 1,
                     }}
                   >
-                    Frontend Developer
+                    Senior Strategy Consultant
                   </Typography>
 
                   <Typography
@@ -957,10 +1113,9 @@ function Career() {
                       hyphens: "auto",
                     }}
                   >
-                    Build modern web applications using React,
-                    Material UI, and JavaScript. Collaborate with
-                    designers and backend teams to deliver fast,
-                    responsive, and user-centric digital experiences.
+                    Lead high-priority consulting engagements, analyze market data,
+                    and collaborate with C-suite executives to formulate growth strategies,
+                    improve business processes, and drive organizational transformation.
                   </Typography>
                   <Button
                     onClick={() => toggleExpandJob("frontend")}
@@ -999,7 +1154,7 @@ function Career() {
                       }
                     }}
                   >
-                    <Chip label="Technology" />
+                    <Chip label="Strategy" />
                     <Chip label="Remote" />
                     <Chip label="Full Time" />
                   </Box>
@@ -1009,8 +1164,8 @@ function Career() {
 
                   onClick={() =>
                     handleApplyClick(
-                      "Frontend Developer",
-                      "Build modern web applications using React, Material UI, and JavaScript. Collaborate with designers and backend teams to deliver fast, responsive, and user-centric digital experiences."
+                      "Senior Strategy Consultant",
+                      "Lead high-priority consulting engagements, analyze market data, and collaborate with C-suite executives to formulate growth strategies, improve business processes, and drive organizational transformation."
                     )
                   }
                   variant="contained"
@@ -1074,7 +1229,7 @@ function Career() {
                       mb: 1,
                     }}
                   >
-                    UI/UX Designer
+                    Operations & Management Consultant
                   </Typography>
 
                   <Typography
@@ -1091,10 +1246,9 @@ function Career() {
                       hyphens: "auto",
                     }}
                   >
-                    Create intuitive interfaces, wireframes,
-                    and prototypes that enhance user engagement
-                    and provide seamless digital experiences
-                    across web and mobile platforms.
+                    Evaluate company workflows, design organizational changes,
+                    and optimize supply chain/business operations to enhance efficiency,
+                    reduce costs, and accelerate overall business performance.
                   </Typography>
                   <Button
                     onClick={() => toggleExpandJob("uiux")}
@@ -1133,7 +1287,7 @@ function Career() {
                       }
                     }}
                   >
-                    <Chip label="Design" />
+                    <Chip label="Operations" />
                     <Chip label="Kochi" />
                     <Chip label="Full Time" />
                   </Box>
@@ -1142,8 +1296,8 @@ function Career() {
                 <Button
                   onClick={() =>
                     handleApplyClick(
-                      "UI/UX Designer",
-                      "Create intuitive interfaces, wireframes and prototypes that enhance user engagement and provide seamless digital experiences across web and mobile platforms."
+                      "Operations & Management Consultant",
+                      "Evaluate company workflows, design organizational changes, and optimize supply chain/business operations to enhance efficiency, reduce costs, and accelerate overall business performance."
                     )
                   }
                   variant="contained"
