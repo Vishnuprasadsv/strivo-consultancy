@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import SecurityIcon from "@mui/icons-material/Security";
 import LockIcon from "@mui/icons-material/Lock";
@@ -19,7 +20,22 @@ const PrivacyPolicy = () => {
 
             {/* Hero */}
 
-            <section className="pt-32 pb-16 px-6 bg-main">
+            <section className="pt-24 pb-16 px-6 bg-main">
+
+                <div className="max-w-6xl mx-auto mb-8 text-left">
+                    <Link
+                        to="/review"
+                        className="btn"
+                        style={{
+                            display: "inline-flex",
+                            width: "fit-content",
+                            borderRadius: "3px",
+                            textDecoration: "none",
+                        }}
+                    >
+                        Back to Review
+                    </Link>
+                </div>
 
                 <motion.div
                     initial="hidden"
