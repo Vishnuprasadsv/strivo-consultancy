@@ -401,7 +401,7 @@ rounded-full
 font-bold
 transition
 
-${currentPage === pageNum
+${currentPage === i + 1
                               ? "text-primary font-bold bg-transparent"
                               : "text-black font-bold bg-transparent hover:text-primary"
                             }
