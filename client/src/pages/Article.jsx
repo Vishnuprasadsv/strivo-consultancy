@@ -4,6 +4,7 @@ import { motion } from 'framer-motion';
 import { articlesData } from './Insight';
 import { getArticlesAPI, subscribeEmailAPI } from '../services/allApi';
 import { toast } from 'sonner';
+import LoadingIndicator from '../Components/LoadingIndicator';
 
 const fadeUpVariants = {
   hidden: { opacity: 0, y: 30 },
@@ -145,12 +146,7 @@ const Article = () => {
   }, [id]);
 
   if (loading) {
-    return (
-      <div className="bg-main text-white min-h-screen pt-32 text-center">
-        <div className="w-8 h-8 border-4 border-blue-500 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
-        <p className="paragraph">Loading article details...</p>
-      </div>
-    );
+    return <LoadingIndicator />;
   }
 
   if (!article) {

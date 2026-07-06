@@ -168,17 +168,17 @@ const Insight = () => {
         initial="hidden"
         animate="visible"
         variants={fadeUpVariants}
-        className="w-full bg-main py-20 md:py-28"
+        className="w-full h-[500px] bg-primary py-20 md:py-28"
       >
         <div className="max-w-7xl mx-auto px-6 md:px-12">
-          <motion.div variants={containerVariants} className="mx-auto text-center max-w-3xl">
+          <motion.div variants={containerVariants} className="mx-auto text-center max-w-7xl" style={{filter: "drop-shadow(0px 8px 16px rgba(0, 0, 0, 0.6))"}}>
             <motion.div variants={cardVariants}>
-              <h1 className="main-heading text-4xl sm:text-5xl md:text-6xl lg:text-7xl leading-tight mb-6">
+              <h1 className="main-heading text-white text-4xl sm:text-5xl md:text-6xl lg:text-7xl leading-tight mb-6">
                 Precision Strategy for the Modern Enterprise.
               </h1>
             </motion.div>
-            <motion.div variants={cardVariants}>
-              <p className="paragraph max-w-2xl mx-auto leading-relaxed">
+            <motion.div variants={cardVariants} style={{filter: "drop-shadow(0px 8px 16px rgba(0, 0, 0, 0.6))"}}>
+              <p className="paragraph max-w-2xl mx-auto leading-relaxed text-white">
                 We bridge the gap between visionary thinking and operational excellence. Discover the story, people, and values that drive our relentless pursuit of impact.
               </p>
             </motion.div>
@@ -368,10 +368,11 @@ const Insight = () => {
               {totalPages > 1 && (
                 <div className="flex justify-center items-center gap-3 mt-12">
                   <button
+                    onClick={() =>
+                      setCurrentPage(prev =>
+                        Math.max(prev - 1, 1)
+                      )}
                     disabled={currentPage === 1}
-                    onClick={() => {
-                      setCurrentPage(prev => Math.max(1, prev - 1));
-                    }}
                     className="
 w-10 h-10
 flex items-center justify-center
@@ -387,16 +388,13 @@ transition"
                     </svg>
                   </button>
 
-                  <div className="flex gap-2">
-                    {Array.from({ length: totalPages }, (_, index) => {
-                      const pageNum = index + 1;
-                      return (
-                        <button
-                          key={pageNum}
-                          onClick={() => {
-                            setCurrentPage(pageNum);
-                          }}
-                          className={`
+                  {[...Array(totalPages)].map((_, i) => (
+                    <button
+                      key={i}
+                      onClick={() =>
+                        setCurrentPage(i + 1)
+                      }
+                      className={`
 w-10
 h-10
 rounded-full
@@ -408,18 +406,17 @@ ${currentPage === pageNum
                               : "text-black font-bold bg-transparent hover:text-primary"
                             }
 `}
-                        >
-                          {pageNum}
-                        </button>
-                      );
-                    })}
-                  </div>
+                    >
+                      {i + 1}
+                    </button>
+                  ))}
 
                   <button
+                    onClick={() =>
+                      setCurrentPage(prev =>
+                        Math.min(prev + 1, totalPages)
+                      )}
                     disabled={currentPage === totalPages}
-                    onClick={() => {
-                      setCurrentPage(prev => Math.min(totalPages, prev + 1));
-                    }}
                     className="
 w-10 h-10
 flex items-center justify-center
@@ -446,7 +443,7 @@ transition"
           whileInView="visible"
           viewport={{ once: true, amount: 0.2 }}
           variants={fadeUpVariants}
-          className="bg-main rounded-2xl p-8 md:p-12 flex flex-col lg:flex-row items-center justify-between gap-8"
+          className="bg-main rounded-[--radius-sm] p-8 md:p-12 flex flex-col lg:flex-row items-center justify-between gap-8"
         >
           <div className="max-w-xl">
             <h3 className="text-2xl sub-heading mb-2">Stay Updated With Our Latest Insights</h3>
@@ -475,7 +472,7 @@ transition"
             <button
               type="submit"
               disabled={submittingNewsletter}
-              className="btn disabled:bg-blue-500/50 px-6 py-3 whitespace-nowrap transition-colors cursor-pointer"
+              className="btn disabled:bg-blue-500/50 px-6 py-2 whitespace-nowrap transition-colors cursor-pointer"
             >
               {submittingNewsletter ? "Subscribing..." : "Subscribe"}
             </button>
