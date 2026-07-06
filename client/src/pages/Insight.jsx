@@ -270,9 +270,9 @@ const Insight = () => {
                 <button
                   key={cat}
                   onClick={() => handleCategoryChange(cat)}
-                  className={`px-4 py-1.5 rounded-full text-sm font-medium transition-colors cursor-pointer ${selectedCategory === cat
-                    ? 'bg-blue-600 text-white border border-blue-600'
-                    : 'bg-[#1F2937] text-gray-400 border border-transparent hover:text-white hover:bg-[#374151]'
+                  className={`px-4 py-2 rounded-full text-sm transition-all duration-300 hover:scale-105 cursor-pointer ${selectedCategory === cat
+                    ? 'bg-blue-600 text-white'
+                    : 'bg-slate-800 text-white hover:bg-blue-600'
                     }`}
                 >
                   {cat}
@@ -300,65 +300,63 @@ const Insight = () => {
                       initial="hidden"
                       animate="visible"
                       exit="exit"
-                      whileHover={{ y: -15, scale: 1.03 }}
                       key={article._id || article.id}
-                      className="card relative  overflow-hidden group  transition-shadow duration-300 ease-out hover:border-blue-500/40 hover:shadow-[0_20px_50px_rgba(37,99,235,0.18)] flex flex-col h-full cursor-pointer"
+                      className="group relative card border border-white-800/80 overflow-hidden bg-main backdrop-blur-md hover:border-white-500/50 hover:-translate-y-2 hover:shadow-[0_20px_40px_rgba(59,130,246,0.08)] transition-all duration-500 flex flex-col h-full shadow-md/30 cursor-pointer"
                       onClick={() => navigate(`/article/${article._id || article.id}`)}
                     >
-                      {/* Top gradient line */}
-                      <div className=" absolute top-0 left-0 w-full h-[2px]  from-blue-600 to-transparent z-10"></div>
-
-                      {/* Glow effect */}
-                      <div className="absolute -top-[70px] -right-[70px] w-[180px] h-[180px] pointer-events-none z-10"></div>
-
-                      <div className="h-48 w-full relative overflow-hidden z-20">
+                      {/* Image Header with Container */}
+                      <div className="relative overflow-hidden aspect-[16/10] bg-[#070b13] flex items-center justify-center">
                         <img
                           src={article.imageUrl}
                           alt={article.title}
-                          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300 ease-out"
+                          className="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-700 ease-out"
                           onError={(e) => {
-                            e.target.src = "https://images.unsplash.com/photo-1488590528505-98d2b5aba04b?q=80&w=400";
+                            e.target.src = "https://images.unsplash.com/photo-1488590528505-98d2b5aba04b?q=80&w=1200";
                           }}
                         />
+                        <div className="absolute inset-0 bg-gradient-to-t from-[#0a0f1d] via-transparent to-transparent opacity-20 pointer-events-none" />
+                        <span className="absolute top-4 left-4 bg-blue-500/10 backdrop-blur-md border border-blue-500/20 text-blue-400 text-[10px] font-bold uppercase tracking-wider px-3 py-1 rounded-full shadow-lg z-10">
+                          {article.category}
+                        </span>
                       </div>
-                      <div className="p-6 flex flex-col flex-grow relative z-20  from-[#081224]/50 to-[#0f172a]/50">
-                        <span className="text-blue-500 text-xs font-semibold mb-2 uppercase">{article.category}</span>
-                        <h3
-                          className="
-  text-xl
-  font-bold
-  text-[#4764FF]
-  mb-3
-  line-clamp-2
-  leading-snug
-  min-h-[56px]
-"
-                        >
+
+                      {/* Card Body */}
+                      <div className="p-6 flex flex-col flex-grow">
+                        {/* Truncated Title (2 lines max) */}
+                        <h3 className="text-xl font-bold text-(--color-sub-heading) mb-3 group-hover:text-blue-400 transition-colors duration-300 leading-snug line-clamp-2">
                           {article.title}
                         </h3>
-                        <p
-                          className=" paragraph
-  
-  mb-6
-  flex-grow
-  line-clamp-3
-  leading-relaxed
-  min-h-[72px]
-"
-                        >
+
+                        {/* Truncated Summary (3 lines max) */}
+                        <p className="text-(--color-paragraph) text-sm leading-relaxed mb-6 flex-grow line-clamp-3">
                           {article.description}
                         </p>
 
-                        <Link
-                          to={`/article/${article._id || article.id}`}
-                          onClick={(e) => {
-                            // Prevent card click navigation from colliding
-                            e.stopPropagation();
-                          }}
-                          className="text-blue-500 font-medium flex items-center hover:text-[#454545] transition-colors w-max group"
-                        >
-                          Read Article <span className="ml-1 group-hover:translate-x-1 transition-transform">→</span>
-                        </Link>
+                        {/* Footer with Slide-arrow Button */}
+                        <div className="border-t border-slate-800/60 pt-5 mt-auto flex items-center justify-between">
+                          <Link
+                            to={`/article/${article._id || article.id}`}
+                            onClick={(e) => {
+                              e.stopPropagation();
+                            }}
+                            className="inline-flex items-center gap-2 text-sm font-semibold text-(--color-sub-heading) hover:text-blue-300 group/btn transition-colors"
+                          >
+                            Read Article
+                            <svg
+                              className="w-4 h-4 transform group-hover/btn:translate-x-1.5 transition-transform duration-300"
+                              fill="none"
+                              stroke="currentColor"
+                              viewBox="0 0 24 24"
+                            >
+                              <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                strokeWidth={2.5}
+                                d="M14 5l7 7m0 0l-7 7m7-7H3"
+                              />
+                            </svg>
+                          </Link>
+                        </div>
                       </div>
                     </motion.article>
 
@@ -375,15 +373,18 @@ const Insight = () => {
                       setCurrentPage(prev => Math.max(1, prev - 1));
                     }}
                     className="
-px-4 py-2
-rounded-lg
-bg-slate-800
+w-10 h-10
+flex items-center justify-center
+rounded-full
+bg-primary
 text-white
 disabled:opacity-40
-hover:bg-blue-600
+hover:bg-blue-700
 transition"
                   >
-                    Previous
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                      <path d="M15 18l-6-6 6-6" />
+                    </svg>
                   </button>
 
                   <div className="flex gap-2">
@@ -398,13 +399,13 @@ transition"
                           className={`
 w-10
 h-10
-rounded-lg
-font-medium
+rounded-full
+font-bold
 transition
 
 ${currentPage === pageNum
-                              ? "bg-blue-600 text-white"
-                              : "bg-slate-800 text-gray-300 hover:bg-blue-600"
+                              ? "text-primary font-bold bg-transparent"
+                              : "text-black font-bold bg-transparent hover:text-primary"
                             }
 `}
                         >
@@ -420,15 +421,18 @@ ${currentPage === pageNum
                       setCurrentPage(prev => Math.min(totalPages, prev + 1));
                     }}
                     className="
-px-4 py-2
-rounded-lg
-bg-slate-800
+w-10 h-10
+flex items-center justify-center
+rounded-full
+bg-primary
 text-white
 disabled:opacity-40
-hover:bg-blue-600
+hover:bg-blue-700
 transition"
                   >
-                    Next
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                      <path d="M9 18l6-6-6-6" />
+                    </svg>
                   </button>
                 </div>
               )}
@@ -448,14 +452,25 @@ transition"
             <h3 className="text-2xl sub-heading mb-2">Stay Updated With Our Latest Insights</h3>
             <p className="paragraph">Get weekly deep-dives and strategic guides delivered straight to your inbox. No spam, just high-value signal.</p>
           </div>
-          <form onSubmit={handleNewsletterSubscribe} className="flex w-full lg:w-auto gap-3">
+          <form
+            onSubmit={handleNewsletterSubscribe}
+            className="
+    flex
+    flex-col
+    sm:flex-row
+    items-center
+    gap-3
+    w-full
+    lg:w-auto
+  "
+          >
             <input
               type="email"
               required
               value={newsletterEmail}
               onChange={(e) => setNewsletterEmail(e.target.value)}
               placeholder="Enter your work email"
-              className=" bg-[#374151] border border-[#4b5563] text-white placeholder-white/60 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500 w-full md:w-72"
+              className=" bg-sub border border-blue-500 text-black placeholder-black/60 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500 w-full md:w-72"
             />
             <button
               type="submit"
