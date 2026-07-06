@@ -13,6 +13,7 @@ import { useNavigate } from 'react-router-dom';
 import SEO from '../Components/SEO';
 import { SERVER_URL } from '../services/serverUrl';
 import homeHero from "../assets/herohome1.jpg";
+import newHero from "../assets/new_hero.png";
 import leader1 from "../assets/leader1.jpg";
 import leader2 from "../assets/leader2.jpg";
 import leader3 from "../assets/leader3.jpg";
@@ -517,23 +518,31 @@ function Home() {
         title="Home"
         description="We partner with ambitious leaders to solve complex challenges, optimize operations, and drive sustainable growth in an ever-evolving global landscape."
       />
+      {/* Hero Section */}
       <Box
         component="section"
         id="hero-section"
         sx={{
           position: "relative",
-          minHeight: { xs: "auto", lg: "calc(100vh - 80px)" },
+          minHeight: "700px",
           py: { xs: 6, lg: 0 },
           display: "flex",
           alignItems: "center",
           overflow: "hidden",
-          backgroundColor: "var(--color-black)",
-          backgroundImage: `linear-gradient(to right, rgba(0, 0, 0, 0.95) 0%, rgba(0, 0, 0, 0.85) 40%, rgba(0, 0, 0, 0.5) 100%), url(${homeHero})`,
-          backgroundSize: "cover",
-          backgroundPosition: "center",
-          backgroundRepeat: "no-repeat",
+          backgroundColor: "var(--color-primary)",
         }}
       >
+        <Box
+          sx={{
+            position: "absolute",
+            inset: 0,
+            backgroundImage: `url(${newHero})`,
+            backgroundSize: "cover",
+            backgroundPosition: "center",
+            opacity: 0.15,
+            zIndex: 0,
+          }}
+        />
         {/* Decorative Radial Glow */}
         <Box
           sx={{
@@ -570,7 +579,11 @@ function Home() {
           >
             {/* LEFT CONTENT */}
 
-            <Box>
+            <Box
+              sx={{
+                filter: "drop-shadow(0px 8px 16px rgba(0, 0, 0, 0.6))"
+              }}
+            >
               <motion.div
                 initial={{ opacity: 0, y: 30 }}
                 animate={{ opacity: 1, y: 0 }}
@@ -578,7 +591,7 @@ function Home() {
               >
                 <Box
                   component='h1'
-                  className='main-heading'
+                  className='main-heading text-white'
                   sx={{
                     fontFamily: "var(--font-primary)",
                     letterSpacing: "-0.5px",
@@ -606,6 +619,7 @@ function Home() {
                   sx={{
                     maxWidth: "720px",
                     color: "white",
+                    fontWeight: "medium",
                     mb: 3,
                   }}
                 >
@@ -636,14 +650,16 @@ function Home() {
                         textTransform: "none",
                         fontWeight: 700,
                         fontSize: "0.88rem",
-                        background: "#4764FF",
+                        background: "#ffffffff",
                         display: "inline-flex",
                         alignItems: "center",
                         gap: 1,
                         boxShadow: "0 8px 20px rgba(71, 100, 255, 0.3)",
+                        color:"var(--color-primary)",
                         "&:hover": {
-                          background: "#3b55d9",
+                          background: "#0c2dd4ff",
                           boxShadow: "0 12px 25px rgba(71, 100, 255, 0.4)",
+                          color:"var(--color-white)",
                         },
                         transition: "all 0.3s ease",
                         width: { xs: "100%", sm: "auto" }
@@ -666,7 +682,7 @@ function Home() {
                         fontWeight: 700,
                         fontSize: "0.88rem",
                         color: "#fff",
-                        borderColor: "rgba(255, 255, 255, 0.25)",
+                        borderColor: "rgba(255, 255, 255, 1)",
                         "&:hover": {
                           background: "rgba(255, 255, 255, 0.08)",
                           borderColor: "#3b82f6",

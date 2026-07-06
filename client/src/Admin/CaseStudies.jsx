@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
+import LoadingIndicator from "../Components/LoadingIndicator";
 import { motion } from "framer-motion";
 import {
     FiPlus,
@@ -126,11 +127,7 @@ const CaseStudies = () => {
         },
     ];
     if (loading) {
-        return (
-            <div className="flex justify-center items-center h-screen text-white">
-                Loading Case Studies...
-            </div>
-        );
+        return <LoadingIndicator />;
     }
 
     const itemsPerPage = 5;

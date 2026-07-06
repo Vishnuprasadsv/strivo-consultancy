@@ -71,39 +71,51 @@ const Services = () => {
     <div className="bg-transparent text-white min-h-screen">
 
       {/* Hero Section */}
-      <motion.section
-        initial="hidden"
-        animate="visible"
-        variants={fadeUpVariants}
-        className="max-w-[110rem] mx-auto px-8 py-16"
+      <div
+        style={{
+          backgroundColor: "var(--color-primary)",
+          minHeight: "500px",
+          display: "flex",
+          alignItems: "center"
+        }}
       >
-        <div className="grid lg:grid-cols-2 gap-10 items-center">
-          <div>
-            <h1 className="text-main-heading font-bold text-heading leading-tight">
-              Expert Precision for
-              <span className="block text-white">
-                Complex Challenges
-              </span>
-            </h1>
+        <motion.section
+          initial="hidden"
+          animate="visible"
+          variants={fadeUpVariants}
+          className="max-w-[110rem] w-full mx-auto px-8 py-16"
+          style={{
+            filter: "drop-shadow(0px 8px 16px rgba(0, 0, 0, 0.6))"
+          }}
+        >
+          <div className="grid lg:grid-cols-2 gap-10 items-center">
+            <div>
+              <h1 className="main-heading text-white leading-tight">
+                Expert Precision for
+                <span className="block text-white">
+                  Complex Challenges
+                </span>
+              </h1>
 
-            <p className="paragraph text-white mt-6">
-              We architect scalable solutions for enterprise growth.
-              Discover our comprehensive suite of consulting services
-              designed to optimize operations, drive digital
-              transformation, and navigate complex organizational
-              change.
-            </p>
-          </div>
+              <p className="paragraph text-white mt-6">
+                We architect scalable solutions for enterprise growth.
+                Discover our comprehensive suite of consulting services
+                designed to optimize operations, drive digital
+                transformation, and navigate complex organizational
+                change.
+              </p>
+            </div>
 
-          <div>
-            <img
-              src={heroImage}
-              alt="Services"
-              className="w-full h-[400px] object-cover rounded-[3px]"
-            />
+            <div>
+              <img
+                src={heroImage}
+                alt="Services"
+                className="w-full h-[400px] object-cover rounded-[3px]"
+              />
+            </div>
           </div>
-        </div>
-      </motion.section>
+        </motion.section>
+      </div>
 
       {/* Service Cards */}
       <div style={{ backgroundColor: "var(--color-main-bg)", padding: "4rem 0" }} >

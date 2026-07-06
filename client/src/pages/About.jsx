@@ -108,9 +108,9 @@ const itemVariants = {
     <Box
   id="hero-section"
   sx={{
-    backgroundColor: "transparent",
+    backgroundColor: "var(--color-primary)",
     color: "#fff",
-    minHeight: "80vh",
+    minHeight: "500px",
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
@@ -129,6 +129,7 @@ const itemVariants = {
           textAlign: "center",
           maxWidth: "1200px",
           mx: "auto",
+          filter: "drop-shadow(0px 8px 16px rgba(0, 0, 0, 0.6))",
         }}
       >
         {/* Heading */}
@@ -136,7 +137,7 @@ const itemVariants = {
           <Box
             component="h1"
             className="main-heading"
-            sx={{ mb: 4 }}
+            sx={{ mb: 4, color: "white" }}
           >
             Precision Strategy for the Modern Enterprise.
           </Box>
