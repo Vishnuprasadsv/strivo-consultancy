@@ -334,7 +334,7 @@ function Career() {
       <Box
         id="hero-section"
         sx={{
-          height: { xs: "500px", md: "640px" },
+          height: { xs: "500px", md: "590px" },
           position: "sticky",
           top: 0,
           display: "flex",
