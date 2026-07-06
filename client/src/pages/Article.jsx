@@ -34,7 +34,7 @@ const renderContent = (contentString) => {
     if (trimmed.toLowerCase().startsWith("<blockquote>") && trimmed.toLowerCase().endsWith("</blockquote>")) {
       const insideText = trimmed.slice(12, -13);
       return (
-        <blockquote key={idx} className="bg-[#1F2937] border-l-4 border-blue-500 italic p-6 rounded-r-lg paragraph text-white my-6">
+        <blockquote key={idx} className="bg-main paragraph border-l border-l-blue-500 border-l-4 rounded-r-xl p-8 text-blue-500">
           {insideText}
         </blockquote>
       );
@@ -42,7 +42,7 @@ const renderContent = (contentString) => {
 
     if (trimmed.startsWith(">")) {
       return (
-        <blockquote key={idx} className="bg-[#1F2937] border-l-4 border-blue-500 italic p-6 rounded-r-lg paragraph text-white my-6">
+        <blockquote key={idx}  className="bg-main paragraph border-l border-l-blue-500 border-l-4 rounded-r-xl p-8 text-blue-500">
           {trimmed.replace(/^>\s*/, "")}
         </blockquote>
       );
