@@ -162,21 +162,31 @@ const Insight = () => {
   const featuredArticle = articles.length > 0 ? (articles.find(a => a.id === 1) || articles[0]) : null;
 
   return (
-    <div className="bg-sub text-white min-h-screen pt-12 pb-24 font-sans">
-      <div className="max-w-7xl mx-auto px-6 md:px-12 space-y-24">
+    <div className="bg-sub min-h-screen font-sans">
+      <motion.section
+        id="hero-section"
+        initial="hidden"
+        animate="visible"
+        variants={fadeUpVariants}
+        className="w-full h-[500px] bg-primary py-20 md:py-28"
+      >
+        <div className="max-w-7xl mx-auto px-6 md:px-12">
+          <motion.div variants={containerVariants} className="mx-auto text-center max-w-7xl" style={{filter: "drop-shadow(0px 8px 16px rgba(0, 0, 0, 0.6))"}}>
+            <motion.div variants={cardVariants}>
+              <h1 className="main-heading text-white text-4xl sm:text-5xl md:text-6xl lg:text-7xl leading-tight mb-6">
+                Precision Strategy for the Modern Enterprise.
+              </h1>
+            </motion.div>
+            <motion.div variants={cardVariants} style={{filter: "drop-shadow(0px 8px 16px rgba(0, 0, 0, 0.6))"}}>
+              <p className="paragraph max-w-2xl mx-auto leading-relaxed text-white">
+                We bridge the gap between visionary thinking and operational excellence. Discover the story, people, and values that drive our relentless pursuit of impact.
+              </p>
+            </motion.div>
+          </motion.div>
+        </div>
+      </motion.section>
 
-        <motion.section
-          id="hero-section"
-          initial="hidden"
-          animate="visible"
-          variants={fadeUpVariants}
-          className="max-w-3xl mx-auto text-center"
-        >
-          <h1 className="main-heading  md:text-5xl lg:text-6xl leading-tight mb-6 ">Insights & Resources</h1>
-          <p className="paragraph leading-relaxed max-w-2xl">
-            Explore our curated collection of industry trends, strategic guides, and technical deep-dives to help you navigate the future of digital transformation and enterprise growth.
-          </p>
-        </motion.section>
+      <div className="bg-sub max-w-7xl mx-auto px-6 md:px-12 py-16 md:py-24 space-y-24">
 
         {/* Section 2: Featured Article */}
         {featuredArticle && (
@@ -185,14 +195,14 @@ const Insight = () => {
             whileInView="visible"
             viewport={{ once: true, amount: 0.2 }}
             variants={fadeUpVariants}
-            className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center bg-[#111827] rounded-xl overflow-hidden border border-[#374151]"
+            className="bg-main grid grid-cols-1 lg:grid-cols-2 gap-12 items-center  rounded-xl overflow-hidden "
           >
             <div className="p-10 flex flex-col justify-center h-full order-2 lg:order-1">
-              <span className="inline-block px-3 py-1 bg-[#1F2937] text-gray-300 text-xs font-semibold uppercase tracking-wider rounded-md mb-6 w-max">
+              <span className="pre-heading inline-block px-3 py-1 bg-[#1F2937] text-gray-300 text-xs  uppercase tracking-wider rounded-md mb-6 w-max">
                 Featured
               </span>
-              <h2 className="sub-heading  text-white mb-4">{featuredArticle.title}</h2>
-              <p className="pharagraph text-gray-400 mb-6 line-clamp-3">
+              <h2 className="sub-heading   mb-4">{featuredArticle.title}</h2>
+              <p className="paragraph  mb-6 line-clamp-3">
                 {featuredArticle.description}
               </p>
               <div className="flex items-center justify-between mt-auto">
@@ -201,7 +211,7 @@ const Insight = () => {
                 </span>
                 <Link
                   to={`/article/${featuredArticle._id || featuredArticle.id}`}
-                  className="text-blue-500 font-medium flex items-center hover:text-white transition-colors group cursor-pointer"
+                  className="text-blue-500 font-medium flex items-center hover:text-black transition-colors group cursor-pointer"
                 >
                   Read Article
                   <span className="ml-1 group-hover:translate-x-1 transition-transform">→</span>
@@ -209,7 +219,16 @@ const Insight = () => {
 
               </div>
             </div>
-            <div className="h-64 lg:h-full min-h-[400px] relative w-full overflow-hidden order-1 lg:order-2">
+            <div
+              className="
+    relative
+    order-1 lg:order-2
+    h-72 md:h-96 lg:h-full
+    min-h-[280px] lg:min-h-[400px]
+    overflow-hidden
+    rounded-t-xl lg:rounded-t-none lg:rounded-r-xl
+  "
+            >
               <img
                 src={featuredArticle.imageUrl}
                 alt={featuredArticle.title}
@@ -218,7 +237,19 @@ const Insight = () => {
                   e.target.src = "https://images.unsplash.com/photo-1488590528505-98d2b5aba04b?q=80&w=600";
                 }}
               />
-              <div className="absolute inset-0 bg-gradient-to-r from-[#111827] to-transparent lg:w-1/4"></div>
+              <div
+                className="
+    hidden lg:block
+    absolute inset-y-0 left-0
+    w-40
+    bg-gradient-to-r
+    from-[var(--color-main-bg)]
+    via-[var(--color-main-bg)]/70
+    to-transparent
+    z-10
+  "
+              />
+
             </div>
           </motion.section>
         )}
@@ -230,6 +261,7 @@ const Insight = () => {
           whileInView="visible"
           viewport={{ once: true, amount: 0.1 }}
           variants={fadeUpVariants}
+          className="bg-sub rounded-2xl p-6 md:p-8"
         >
           <div className="flex flex-col md:flex-row md:items-end justify-between mb-8 gap-6">
             <h2 className="sub-heading ">All Articles</h2>
@@ -238,9 +270,9 @@ const Insight = () => {
                 <button
                   key={cat}
                   onClick={() => handleCategoryChange(cat)}
-                  className={`px-4 py-1.5 rounded-full text-sm font-medium transition-colors cursor-pointer ${selectedCategory === cat
-                    ? 'bg-blue-600 text-white border border-blue-600'
-                    : 'bg-[#1F2937] text-gray-400 border border-transparent hover:text-white hover:bg-[#374151]'
+                  className={`px-4 py-2 rounded-full text-sm transition-all duration-300 hover:scale-105 cursor-pointer ${selectedCategory === cat
+                    ? 'bg-blue-600 text-white'
+                    : 'bg-slate-800 text-white hover:bg-blue-600'
                     }`}
                 >
                   {cat}
@@ -268,65 +300,63 @@ const Insight = () => {
                       initial="hidden"
                       animate="visible"
                       exit="exit"
-                      whileHover={{ y: -15, scale: 1.03 }}
                       key={article._id || article.id}
-                      className="card relative  overflow-hidden group  transition-shadow duration-300 ease-out hover:border-blue-500/40 hover:shadow-[0_20px_50px_rgba(37,99,235,0.18)] flex flex-col h-full cursor-pointer"
+                      className="group relative card border border-white-800/80 overflow-hidden bg-main backdrop-blur-md hover:border-white-500/50 hover:-translate-y-2 hover:shadow-[0_20px_40px_rgba(59,130,246,0.08)] transition-all duration-500 flex flex-col h-full shadow-md/30 cursor-pointer"
                       onClick={() => navigate(`/article/${article._id || article.id}`)}
                     >
-                      {/* Top gradient line */}
-                      <div className=" absolute top-0 left-0 w-full h-[2px]  from-blue-600 to-transparent z-10"></div>
-
-                      {/* Glow effect */}
-                      <div className="absolute -top-[70px] -right-[70px] w-[180px] h-[180px] pointer-events-none z-10"></div>
-
-                      <div className="h-48 w-full relative overflow-hidden z-20">
+                      {/* Image Header with Container */}
+                      <div className="relative overflow-hidden aspect-[16/10] bg-[#070b13] flex items-center justify-center">
                         <img
                           src={article.imageUrl}
                           alt={article.title}
-                          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300 ease-out"
+                          className="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-700 ease-out"
                           onError={(e) => {
-                            e.target.src = "https://images.unsplash.com/photo-1488590528505-98d2b5aba04b?q=80&w=400";
+                            e.target.src = "https://images.unsplash.com/photo-1488590528505-98d2b5aba04b?q=80&w=1200";
                           }}
                         />
+                        <div className="absolute inset-0 bg-gradient-to-t from-[#0a0f1d] via-transparent to-transparent opacity-20 pointer-events-none" />
+                        <span className="absolute top-4 left-4 bg-blue-500/10 backdrop-blur-md border border-blue-500/20 text-blue-400 text-[10px] font-bold uppercase tracking-wider px-3 py-1 rounded-full shadow-lg z-10">
+                          {article.category}
+                        </span>
                       </div>
-                      <div className="p-6 flex flex-col flex-grow relative z-20  from-[#081224]/50 to-[#0f172a]/50">
-                        <span className="text-blue-500 text-xs font-semibold mb-2 uppercase">{article.category}</span>
-                        <h3
-                          className="
-  text-xl
-  font-bold
-  text-[#4764FF]
-  mb-3
-  line-clamp-2
-  leading-snug
-  min-h-[56px]
-"
-                        >
+
+                      {/* Card Body */}
+                      <div className="p-6 flex flex-col flex-grow">
+                        {/* Truncated Title (2 lines max) */}
+                        <h3 className="text-xl font-bold text-(--color-sub-heading) mb-3 group-hover:text-blue-400 transition-colors duration-300 leading-snug line-clamp-2">
                           {article.title}
                         </h3>
-                        <p
-                          className=" paragraph
-  
-  mb-6
-  flex-grow
-  line-clamp-3
-  leading-relaxed
-  min-h-[72px]
-"
-                        >
+
+                        {/* Truncated Summary (3 lines max) */}
+                        <p className="text-(--color-paragraph) text-sm leading-relaxed mb-6 flex-grow line-clamp-3">
                           {article.description}
                         </p>
 
-                        <Link
-                          to={`/article/${article._id || article.id}`}
-                          onClick={(e) => {
-                            // Prevent card click navigation from colliding
-                            e.stopPropagation();
-                          }}
-                          className="text-blue-500 font-medium flex items-center hover:text-[#454545] transition-colors w-max group"
-                        >
-                          Read Article <span className="ml-1 group-hover:translate-x-1 transition-transform">→</span>
-                        </Link>
+                        {/* Footer with Slide-arrow Button */}
+                        <div className="border-t border-slate-800/60 pt-5 mt-auto flex items-center justify-between">
+                          <Link
+                            to={`/article/${article._id || article.id}`}
+                            onClick={(e) => {
+                              e.stopPropagation();
+                            }}
+                            className="inline-flex items-center gap-2 text-sm font-semibold text-(--color-sub-heading) hover:text-blue-300 group/btn transition-colors"
+                          >
+                            Read Article
+                            <svg
+                              className="w-4 h-4 transform group-hover/btn:translate-x-1.5 transition-transform duration-300"
+                              fill="none"
+                              stroke="currentColor"
+                              viewBox="0 0 24 24"
+                            >
+                              <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                strokeWidth={2.5}
+                                d="M14 5l7 7m0 0l-7 7m7-7H3"
+                              />
+                            </svg>
+                          </Link>
+                        </div>
                       </div>
                     </motion.article>
 
@@ -338,65 +368,68 @@ const Insight = () => {
               {totalPages > 1 && (
                 <div className="flex justify-center items-center gap-3 mt-12">
                   <button
+                    onClick={() =>
+                      setCurrentPage(prev =>
+                        Math.max(prev - 1, 1)
+                      )}
                     disabled={currentPage === 1}
-                    onClick={() => {
-                      setCurrentPage(prev => Math.max(1, prev - 1));
-                    }}
                     className="
-px-4 py-2
-rounded-lg
-bg-slate-800
+w-10 h-10
+flex items-center justify-center
+rounded-full
+bg-primary
 text-white
 disabled:opacity-40
-hover:bg-blue-600
+hover:bg-blue-700
 transition"
                   >
-                    Previous
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                      <path d="M15 18l-6-6 6-6" />
+                    </svg>
                   </button>
 
-                  <div className="flex gap-2">
-                    {Array.from({ length: totalPages }, (_, index) => {
-                      const pageNum = index + 1;
-                      return (
-                        <button
-                          key={pageNum}
-                          onClick={() => {
-                            setCurrentPage(pageNum);
-                          }}
-                          className={`
+                  {[...Array(totalPages)].map((_, i) => (
+                    <button
+                      key={i}
+                      onClick={() =>
+                        setCurrentPage(i + 1)
+                      }
+                      className={`
 w-10
 h-10
-rounded-lg
-font-medium
+rounded-full
+font-bold
 transition
 
-${currentPage === pageNum
-                              ? "bg-blue-600 text-white"
-                              : "bg-slate-800 text-gray-300 hover:bg-blue-600"
+${currentPage === i + 1
+                              ? "text-primary font-bold bg-transparent"
+                              : "text-black font-bold bg-transparent hover:text-primary"
                             }
 `}
-                        >
-                          {pageNum}
-                        </button>
-                      );
-                    })}
-                  </div>
+                    >
+                      {i + 1}
+                    </button>
+                  ))}
 
                   <button
+                    onClick={() =>
+                      setCurrentPage(prev =>
+                        Math.min(prev + 1, totalPages)
+                      )}
                     disabled={currentPage === totalPages}
-                    onClick={() => {
-                      setCurrentPage(prev => Math.min(totalPages, prev + 1));
-                    }}
                     className="
-px-4 py-2
-rounded-lg
-bg-slate-800
+w-10 h-10
+flex items-center justify-center
+rounded-full
+bg-primary
 text-white
 disabled:opacity-40
-hover:bg-blue-600
+hover:bg-blue-700
 transition"
                   >
-                    Next
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                      <path d="M9 18l6-6-6-6" />
+                    </svg>
                   </button>
                 </div>
               )}
@@ -410,25 +443,36 @@ transition"
           whileInView="visible"
           viewport={{ once: true, amount: 0.2 }}
           variants={fadeUpVariants}
-          className="bg-[#1F2937] rounded-xl p-8 md:p-12 flex flex-col lg:flex-row items-center justify-between gap-8 border border-[#374151]"
+          className="bg-main rounded-[--radius-sm] p-8 md:p-12 flex flex-col lg:flex-row items-center justify-between gap-8"
         >
           <div className="max-w-xl">
-            <h3 className="text-2xl font-bold text-white mb-2">Stay Updated With Our Latest Insights</h3>
-            <p className="text-gray-400">Get weekly deep-dives and strategic guides delivered straight to your inbox. No spam, just high-value signal.</p>
+            <h3 className="text-2xl sub-heading mb-2">Stay Updated With Our Latest Insights</h3>
+            <p className="paragraph">Get weekly deep-dives and strategic guides delivered straight to your inbox. No spam, just high-value signal.</p>
           </div>
-          <form onSubmit={handleNewsletterSubscribe} className="flex w-full lg:w-auto gap-3">
+          <form
+            onSubmit={handleNewsletterSubscribe}
+            className="
+    flex
+    flex-col
+    sm:flex-row
+    items-center
+    gap-3
+    w-full
+    lg:w-auto
+  "
+          >
             <input
               type="email"
               required
               value={newsletterEmail}
               onChange={(e) => setNewsletterEmail(e.target.value)}
               placeholder="Enter your work email"
-              className="bg-[#374151] border border-[#4b5563] text-white placeholder-white/60 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500 w-full md:w-72"
+              className=" bg-sub input  text-black placeholder-black/60 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500 w-full md:w-72"
             />
             <button
               type="submit"
               disabled={submittingNewsletter}
-              className="btn disabled:bg-blue-500/50 px-6 py-3 whitespace-nowrap transition-colors cursor-pointer"
+              className="btn disabled:bg-blue-500/50 px-6 py-2 whitespace-nowrap transition-colors cursor-pointer"
             >
               {submittingNewsletter ? "Subscribing..." : "Subscribe"}
             </button>

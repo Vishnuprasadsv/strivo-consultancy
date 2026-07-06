@@ -517,6 +517,7 @@ function Home() {
         title="Home"
         description="We partner with ambitious leaders to solve complex challenges, optimize operations, and drive sustainable growth in an ever-evolving global landscape."
       />
+      {/* Hero Section */}
       <Box
         component="section"
         id="hero-section"

@@ -173,12 +173,22 @@ const Contact = () => {
             className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center text-pure-black"
           >
             <div className="space-y-6">
-              <h1 className="main-heading md:text-5xl lg:text-6xl leading-tight">Let's Start a Conversation</h1>
+              <motion.h1
+  className="
+    main-heading
+    text-4xl
+    sm:text-5xl
+    md:text-6xl
+    lg:text-7xl
+    leading-tight
+    mb-6
+  "
+>Let's Start a Conversation</motion.h1>
               <p className="paragraph leading-relaxed max-w-lg">
                 Whether you're looking to scale your infrastructure, optimize workflows, or explore new technological frontiers, our team of experts is ready to assist. Reach out to discuss how Premium Enterprise can accelerate your growth.
               </p>
             </div>
-            <div className="relative rounded-2xl overflow-hidden shadow-2xl border border-gray-800">
+            <div className="relative rounded-[var(--radius-sm)] overflow-hidden shadow-2xl border border-gray-800">
               <img src={contactImg} alt="Contact Enterprise Solutions" className="w-full h-auto object-cover" />
             </div>
           </motion.section>
@@ -193,52 +203,52 @@ const Contact = () => {
           >
             {/* Left Column: Cards */}
             <div className="space-y-4">
-              <div className="bg-[#1e293b] p-6 rounded-xl flex items-start gap-4 hover:bg-[#253247] transition-colors border border-gray-700/50">
+              <div className="bg-[var(--color-sub-bg)] p-6 rounded-[var(--radius-sm)] flex items-start gap-4 transition-colors border border-gray-200">
                 <div className="text-blue-500 mt-1"><LocationOnIcon /></div>
                 <div>
-                  <h3 className="text-lg font-semibold text-white mb-2">Headquarters</h3>
-                  <p className="text-gray-400 text-sm leading-relaxed">100 Innovation Way<br />Tech District, Suite 400<br />San Francisco, CA 94105</p>
+                  <h3 className="text-lg font-semibold text-black mb-2">Headquarters</h3>
+                  <p className="paragraph text-gray-700 text-sm leading-relaxed">100 Innovation Way<br />Tech District, Suite 400<br />San Francisco, CA 94105</p>
                 </div>
               </div>
-              <div className="bg-[#1e293b] p-6 rounded-xl flex items-start gap-4 hover:bg-[#253247] transition-colors border border-gray-700/50">
+              <div className="bg-[var(--color-sub-bg)] p-6 rounded-[var(--radius-sm)] flex items-start gap-4 transition-colors border border-gray-200">
                 <div className="text-blue-500 mt-1"><PhoneIcon /></div>
                 <div>
-                  <h3 className="text-lg font-semibold text-white mb-2">Direct Line</h3>
-                  <p className="text-gray-400 text-sm leading-relaxed">Support: +1 (800) 555-0199<br />Sales: +1 (800) 555-0198</p>
+                  <h3 className="text-lg font-semibold text-black mb-2">Direct Line</h3>
+                  <p className="paragraph text-gray-700 text-sm leading-relaxed">Support: +1 (800) 555-0199<br />Sales: +1 (800) 555-0198</p>
                 </div>
               </div>
-              <div className="bg-[#1e293b] p-6 rounded-xl flex items-start gap-4 hover:bg-[#253247] transition-colors border border-gray-700/50">
+              <div className="bg-[var(--color-sub-bg)] p-6 rounded-[var(--radius-sm)] flex items-start gap-4 transition-colors border border-gray-200">
                 <div className="text-blue-500 mt-1"><EmailIcon /></div>
                 <div>
-                  <h3 className="text-lg font-semibold text-white mb-2">Electronic Mail</h3>
-                  <p className="text-gray-400 text-sm leading-relaxed">hello@premiumenterprise.com<br />support@premiumenterprise.com</p>
+                  <h3 className="text-lg font-semibold text-black mb-2">Electronic Mail</h3>
+                  <p className="paragraph text-gray-700 text-sm leading-relaxed">hello@premiumenterprise.com<br />support@premiumenterprise.com</p>
                 </div>
               </div>
-              <div className="bg-[#1e293b] p-6 rounded-xl flex items-start gap-4 hover:bg-[#253247] transition-colors border border-gray-700/50">
+              <div className="bg-[var(--color-sub-bg)] p-6 rounded-[var(--radius-sm)] flex items-start gap-4 transition-colors border border-gray-200">
                 <div className="text-blue-500 mt-1"><AccessTimeIcon /></div>
                 <div>
-                  <h3 className="text-lg font-semibold text-white mb-2">Business Hours</h3>
-                  <p className="text-gray-400 text-sm leading-relaxed">Monday - Friday: 8:00 AM - 6:00 PM (PST)<br />Weekend support available for enterprise clients.</p>
+                  <h3 className="text-lg font-semibold text-black mb-2">Business Hours</h3>
+                  <p className="paragraph text-gray-700 text-sm leading-relaxed">Monday - Friday: 8:00 AM - 6:00 PM (PST)<br />Weekend support available for enterprise clients.</p>
                 </div>
               </div>
             </div>
             {/* Right Column: Form */}
-            <div className="bg-[#1e293b] p-8 rounded-xl h-full flex flex-col border border-gray-700/50">
-              <h2 className="text-2xl font-bold text-white mb-6">Send us a message</h2>
+            <div className="bg-[var(--color-sub-bg)] p-8 rounded-[var(--radius-sm)] h-full flex flex-col border border-gray-200">
+              <h2 className="text-2xl font-bold text-black mb-6">Send us a message</h2>
               <form className="flex-grow flex flex-col gap-5" onSubmit={handleSubmit}>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
                   {/* Full Name */}
                   <div className="flex flex-col gap-2">
-                    <label className="text-sm text-gray-300 font-medium">Full Name</label>
+                    <label className="paragraph text-sm text-black font-medium">Full Name</label>
                     <input
                       type="text"
                       name="fullName"
                       value={formData.fullName}
                       onChange={handleChange}
                       placeholder="Jane Doe"
-                      className={`w-full bg-[#334155] text-white rounded-lg px-4 py-3 border focus:outline-none focus:ring-2 transition-colors ${errors.fullName
-                        ? "border-red-500/50 focus:ring-red-500/30"
-                        : "border-gray-600/50 focus:ring-blue-500"
+                      className={`paragraph w-full bg-white text-black placeholder-gray-500 rounded-[var(--radius-sm)] px-4 py-3 border focus:outline-none focus:ring-2 transition-colors ${errors.fullName
+                        ? "border-red-500 focus:ring-red-500/30"
+                        : "border-gray-300 focus:ring-blue-500"
                         }`}
                     />
                     {errors.fullName && (
@@ -247,16 +257,16 @@ const Contact = () => {
                   </div>
                   {/* Company */}
                   <div className="flex flex-col gap-2">
-                    <label className="text-sm text-gray-300 font-medium">Company</label>
+                    <label className="paragraph text-sm text-black font-medium">Company</label>
                     <input
                       type="text"
                       name="company"
                       value={formData.company}
                       onChange={handleChange}
                       placeholder="Acme Corp"
-                      className={`w-full bg-[#334155] text-white rounded-lg px-4 py-3 border focus:outline-none focus:ring-2 transition-colors ${errors.company
-                        ? "border-red-500/50 focus:ring-red-500/30"
-                        : "border-gray-600/50 focus:ring-blue-500"
+                      className={`paragraph w-full bg-white text-black placeholder-gray-500 rounded-[var(--radius-sm)] px-4 py-3 border focus:outline-none focus:ring-2 transition-colors ${errors.company
+                        ? "border-red-500 focus:ring-red-500/30"
+                        : "border-gray-300 focus:ring-blue-500"
                         }`}
                     />
                     {errors.company && (
@@ -267,16 +277,16 @@ const Contact = () => {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
                   {/* Email Address */}
                   <div className="flex flex-col gap-2">
-                    <label className="text-sm text-gray-300 font-medium">Email Address</label>
+                    <label className="paragraph text-sm text-black font-medium">Email Address</label>
                     <input
                       type="email"
                       name="email"
                       value={formData.email}
                       onChange={handleChange}
                       placeholder="jane@acme.com"
-                      className={`w-full bg-[#334155] text-white rounded-lg px-4 py-3 border focus:outline-none focus:ring-2 transition-colors ${errors.email
-                        ? "border-red-500/50 focus:ring-red-500/30"
-                        : "border-gray-600/50 focus:ring-blue-500"
+                      className={`paragraph w-full bg-white text-black placeholder-gray-500 rounded-[var(--radius-sm)] px-4 py-3 border focus:outline-none focus:ring-2 transition-colors ${errors.email
+                        ? "border-red-500 focus:ring-red-500/30"
+                        : "border-gray-300 focus:ring-blue-500"
                         }`}
                     />
                     {errors.email && (
@@ -285,7 +295,7 @@ const Contact = () => {
                   </div>
                   {/* Phone Number with Searchable Country Code Dropdown */}
                   <div className="flex flex-col gap-2">
-                    <label className="text-sm text-gray-300 font-medium">Phone Number</label>
+                    <label className="paragraph text-sm text-black font-medium">Phone Number</label>
                     <div className="flex items-center gap-2 w-full">
                       {/* Searchable Dropdown Container (Configured small - w-20) */}
                       <div className="relative w-[72px] flex-shrink-0" ref={dropdownRef}>
@@ -295,23 +305,23 @@ const Contact = () => {
                             setIsDropdownOpen(!isDropdownOpen);
                             setSearchQuery(""); // Clear search on open
                           }}
-                          className="w-full flex items-center justify-between bg-[#334155] text-white rounded-lg pl-3 pr-1.5 py-3 border border-gray-600/50 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors cursor-pointer text-left text-sm"
+                          className="paragraph w-full flex items-center justify-between bg-white text-black rounded-[var(--radius-sm)] pl-3 pr-1.5 py-3 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors cursor-pointer text-left text-sm"
                         >
                           <span className="truncate">{formData.countryCode}</span>
-                          <ExpandMoreIcon fontSize="small" className="text-gray-400 shrink-0 ml-0.5" />
+                          <ExpandMoreIcon fontSize="small" className="text-gray-500 shrink-0 ml-0.5" />
                         </button>
 
                         {/* Search Menu Panel (Floating dropdown menu) */}
                         {isDropdownOpen && (
-                          <div className="absolute left-0 mt-1 w-64 bg-[#1e293b] border border-gray-700 rounded-lg shadow-xl z-50 overflow-hidden">
+                          <div className="absolute left-0 mt-1 w-64 bg-white border border-gray-300 rounded-[var(--radius-sm)] shadow-xl z-50 overflow-hidden paragraph">
                             {/* Search Box */}
-                            <div className="p-2 border-b border-gray-700 bg-[#1e293b]">
+                            <div className="p-2 border-b border-gray-200 bg-white">
                               <input
                                 type="text"
                                 placeholder="Search country..."
                                 value={searchQuery}
                                 onChange={(e) => setSearchQuery(e.target.value)}
-                                className="w-full bg-[#334155] text-white text-xs rounded px-2 py-1.5 border border-gray-600 focus:outline-none focus:ring-1 focus:ring-blue-500"
+                                className="w-full bg-white text-black text-xs rounded-[var(--radius-sm)] px-2 py-1.5 border border-gray-300 focus:outline-none focus:ring-1 focus:ring-blue-500"
                               />
                             </div>
 
@@ -329,10 +339,10 @@ const Contact = () => {
                                       }));
                                       setIsDropdownOpen(false);
                                     }}
-                                    className="w-full text-left px-3 py-2 text-sm text-gray-200 hover:bg-[#334155] transition-colors flex justify-between items-center cursor-pointer"
+                                    className="w-full text-left px-3 py-2 text-sm text-black hover:bg-gray-100 transition-colors flex justify-between items-center cursor-pointer"
                                   >
                                     <span className="truncate mr-2">{item.name}</span>
-                                    <span className="text-gray-400 font-mono text-xs shrink-0">{item.code}</span>
+                                    <span className="text-gray-500 font-mono text-xs shrink-0">{item.code}</span>
                                   </button>
                                 ))
                               ) : (
@@ -352,11 +362,13 @@ const Contact = () => {
                         onChange={handleChange}
                         placeholder="(555) 000-0000"
                         className={`
+    paragraph
     min-w-0
     flex-1
-    bg-[#334155]
-    text-white
-    rounded-lg
+    bg-white
+    text-black
+    placeholder-gray-500
+    rounded-[var(--radius-sm)]
     px-4
     py-3
     border
@@ -364,8 +376,8 @@ const Contact = () => {
     focus:ring-2
     transition-colors
     ${errors.phone
-                            ? "border-red-500/50 focus:ring-red-500/30"
-                            : "border-gray-600/50 focus:ring-blue-500"
+                            ? "border-red-500 focus:ring-red-500/30"
+                            : "border-gray-300 focus:ring-blue-500"
                           }
   `}
                       />
@@ -377,15 +389,15 @@ const Contact = () => {
                 </div>
                 {/* Service Interest */}
                 <div className="flex flex-col gap-2">
-                  <label className="text-sm text-gray-300 font-medium">Service Interest</label>
+                  <label className="paragraph text-sm text-black font-medium">Service Interest</label>
                   <div className="relative">
                     <select
                       name="service"
                       value={formData.service}
                       onChange={handleChange}
-                      className={`w-full bg-[#334155] text-white rounded-lg px-4 py-3 pr-12 border focus:outline-none focus:ring-2 appearance-none transition-colors ${errors.service
-                        ? "border-red-500/50 focus:ring-red-500/30"
-                        : "border-gray-600/50 focus:ring-blue-500"
+                      className={`paragraph w-full bg-white text-black rounded-[var(--radius-sm)] px-4 py-3 pr-12 border border-gray-300 focus:outline-none focus:ring-2 appearance-none transition-colors ${errors.service
+                        ? "border-red-500 focus:ring-red-500/30"
+                        : "border-gray-300 focus:ring-blue-500"
                         }`}
                     >
                       <option value="">Select a specialized service...</option>
@@ -394,7 +406,7 @@ const Contact = () => {
                       <option value="Digital Transformation">Digital Transformation</option>
                       <option value="Change Management">Change Management</option>
                     </select>
-                    <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 text-white">
+                    <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 text-black">
                       <ExpandMoreIcon />
                     </div>
                   </div>
@@ -404,16 +416,16 @@ const Contact = () => {
                 </div>
                 {/* Message */}
                 <div className="flex flex-col gap-2 flex-grow">
-                  <label className="text-sm text-gray-300 font-medium">Message</label>
+                  <label className="paragraph text-sm text-black font-medium">Message</label>
                   <textarea
                     name="message"
                     value={formData.message}
                     onChange={handleChange}
                     placeholder="Tell us about your project requirements and timelines..."
                     rows={6}
-                    className={`w-full min-h-[150px] bg-[#334155] text-white placeholder-gray-400 rounded-lg px-4 py-3 border resize-none focus:outline-none focus:ring-2 transition-colors ${errors.message
-                      ? "border-red-500/50 focus:ring-red-500/30"
-                      : "border-gray-600/50 focus:ring-blue-500"
+                    className={`paragraph w-full min-h-[150px] bg-white text-black placeholder-gray-500 rounded-[var(--radius-sm)] px-4 py-3 border border-gray-300 resize-none focus:outline-none focus:ring-2 transition-colors ${errors.message
+                      ? "border-red-500 focus:ring-red-500/30"
+                      : "border-gray-300 focus:ring-blue-500"
                       }`}
                   />
                   {errors.message && (
@@ -430,18 +442,18 @@ const Contact = () => {
       mt-1
       h-4
       w-4
-      rounded
-      border-gray-500
+      rounded-[var(--radius-sm)]
+      border-gray-300
       accent-blue-600
       cursor-pointer
       "
                     />
 
-                    <span className="text-sm text-gray-300 leading-6">
+                    <span className="paragraph text-sm text-gray-700 leading-6">
                       I agree to the{" "}
                       <Link
                         to="/privacy-policy"
-                        className="text-blue-400 hover:text-blue-300 underline"
+                        className="text-blue-600 hover:text-blue-700 underline"
                       >
                         Privacy Policy
                       </Link>{" "}
@@ -464,21 +476,22 @@ const Contact = () => {
 mt-4
 py-3
 px-6
-rounded-lg
+rounded-[var(--radius-sm)]
 font-semibold
 flex items-center
 justify-center
 gap-2
 w-full
 transition-colors
+paragraph
 
 ${agreePolicy
-                      ? "bg-blue-600 hover:bg-blue-700 cursor-pointer text-white"
-                      : "bg-gray-600 cursor-not-allowed text-gray-300"}
+                      ? "bg-[var(--color-primary)] hover:opacity-90 cursor-pointer text-white"
+                      : "bg-gray-300 cursor-not-allowed text-gray-500"}
 `}
                 >
-                  Send Message
-                  <SendIcon fontSize="small" />
+                  <span className="text-white">Send Message</span>
+                  <SendIcon fontSize="small" className="text-white" />
                 </motion.button>
               </form>
             </div>

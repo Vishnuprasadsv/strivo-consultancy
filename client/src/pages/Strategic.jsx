@@ -20,7 +20,7 @@ const Strategic = () => {
 
 
 
-    <div className="bg-main min-h-screen font-sans">
+   <div className="bg-main w-full py-8 md:py-16">
 
       {/* Section 1: Hero */}
       <motion.section
@@ -33,7 +33,17 @@ const Strategic = () => {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
 
             <div className="space-y-8">
-              <h1 className="main-heading">Architecting the Future of Enterprise Strategy</h1>
+              <motion.h1
+  className="
+    main-heading
+    text-4xl
+    sm:text-5xl
+    md:text-6xl
+    lg:text-7xl
+    leading-tight
+    mb-6
+  "
+>Architecting the Future of Enterprise Strategy</motion.h1>
               <p className="paragraph">
                 We partner with visionary leaders to navigate complexity, define bold directions, and orchestrate execution that guarantees sustainable market dominance in an unpredictable global landscape.
               </p>

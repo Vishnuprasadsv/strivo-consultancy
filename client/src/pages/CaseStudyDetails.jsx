@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useParams } from "react-router-dom";
 import { motion } from "framer-motion";
+import LoadingIndicator from "../Components/LoadingIndicator";
 
 const fadeUp = {
     hidden: { opacity: 0, y: 40 },
@@ -62,7 +63,7 @@ const CaseStudyDetails = () => {
             },
         },
     };
-    
+
     useEffect(() => {
         fetchStudy();
     }, [id]);
@@ -74,24 +75,20 @@ const CaseStudyDetails = () => {
             );
             setStudy(res.data);
         }
-        catch(err){
+        catch (err) {
             console.log(err);
         }
-        finally{
+        finally {
             setLoading(false);
         }
     };
 
-    if(loading){
-        return(
-            <div className="paragraph h-screen flex items-center justify-center">
-                Loading...
-            </div>
-        )
+    if (loading) {
+        return <LoadingIndicator />;
     }
 
-    if(!study){
-        return(
+    if (!study) {
+        return (
             <div className="paragraph h-screen flex items-center justify-center">
                 Case Study Not Found
             </div>
@@ -99,75 +96,50 @@ const CaseStudyDetails = () => {
     }
 
     return (
-        <div className="text-white min-h-screen">
-            
-            {/* HERO SECTION */}
-            <div className="bg-main w-full py-16">
-                <div className="max-w-6xl mx-auto px-6 grid grid-cols-1 lg:grid-cols-[7fr_5fr] gap-12 items-center">
-                    {/* HEADER */}
-                    <motion.div
-                        initial="hidden"
-                        animate="visible"
-                        variants={fadeUp}
-                        className="flex flex-col justify-center h-full"
-                    >
-                        <motion.h1
-                            initial={{ opacity: 0, y: 50 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            transition={{ duration: 0.8 }}
-                            className="main-heading mb-8"
-                        >
-                            {study.title}
-                        </motion.h1>
+        <div className=" bg-main  min-h-screen">
 
-                        <motion.div
-                            initial={{ opacity: 0, y: 30 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            transition={{ duration: 0.8, delay: 0.2 }}
-                            className="flex flex-wrap gap-6 text-gray-400"
-                        >
+            {/* HERO SECTION */}
+            <motion.section
+                initial="hidden"
+                animate="visible"
+                variants={fadeUp}
+                className="max-w-[110rem] mx-auto px-8 py-16"
+            >
+                <div className="grid lg:grid-cols-2 gap-10 items-center">
+                    <div>
+                        <h1 className="main-heading  text-heading leading-tight">
+                            {study.title}
+                        </h1>
+
+                        <p className="paragraph  mt-6">
+                            {study.summary}
+                        </p>
+
+                        <div className="mt-6 flex flex-col sm:flex-row sm:flex-wrap gap-2 sm:gap-6 text-gray-400 text-sm">
                             <span>{study.author}</span>
                             <span>
-                                {study.publicationDate ?
-                                    new Date(study.publicationDate).toLocaleDateString()
+                                {study.publicationDate
+                                    ? new Date(study.publicationDate).toLocaleDateString()
                                     : "-"}
                             </span>
-                            <span>
-                                {study.authorRole}
-                            </span>
-                            <span>
-                                {study.duration}
-                            </span>
-                        </motion.div>
-                    </motion.div>
-
-                    {/* FEATURED IMAGE WITH OBJECT-FILL */}
-                    <motion.div
-                        initial="hidden"
-                        whileInView="visible"
-                        viewport={{ once: true }}
-                        variants={fadeUp}
-                        className="w-full"
-                    >
-                        <div className="relative w-full h-[350px] lg:h-[450px] rounded-2xl overflow-hidden bg-slate-950 border border-slate-800/80">
-                            {/* Sharp Foreground Full Image stretched using object-fill */}
-                            <motion.img
-                                src={study.coverImage}
-                                alt={study.title}
-                                initial={{ opacity: 0, scale: 0.95 }}
-                                whileInView={{ opacity: 1, scale: 1 }}
-                                viewport={{ once: true }}
-                                transition={{ duration: 0.8 }}
-                                className="w-full h-full object-fill"
-                            />
+                            <span>{study.authorRole}</span>
+                            <span>{study.duration}</span>
                         </div>
-                    </motion.div>
+                    </div>
+
+                    <div>
+                        <img
+                            src={study.coverImage}
+                            alt={study.title}
+                            className="w-full h-[400px] object-cover rounded-[3px]"
+                        />
+                    </div>
                 </div>
-            </div>
+            </motion.section>
 
             {/* OTHER SECTIONS */}
             <div className="bg-sub w-full py-16">
-                <div className="max-w-6xl mx-auto px-6 space-y-16">
+                <div className="max-w-[110rem] mx-auto px-8 space-y-16">
                     {/* EXECUTIVE SUMMARY */}
                     <motion.section
                         initial="hidden"
@@ -194,7 +166,7 @@ const CaseStudyDetails = () => {
                             Business Challenge
                         </h2>
                         <p className="paragraph mb-6">
-                           {study.challenges}
+                            {study.challenges}
                         </p>
                         <motion.div
                             variants={staggerContainer}
@@ -219,7 +191,7 @@ const CaseStudyDetails = () => {
                             variants={staggerContainer}
                             initial="hidden"
                             animate="visible"
-                            className="space-y-4"
+                            className="space-y-4 text-white"
                         >
                             <div className="bg-slate-900 border border-slate-800 rounded-xl p-5">
                                 ✓ Enterprise Cloud Migration
@@ -315,17 +287,17 @@ const CaseStudyDetails = () => {
                             </div>
                             <div>
                                 <p className=" text-white text-3xl font-bold mt-2">
-                                   {study.author} 
+                                    {study.author}
                                 </p>
                                 <a
                                     href={study.authorWebsite}
                                     target="_blank"
                                     rel="noopener noreferrer"
-                                    className="text-sm font-bold hover:text-blue-500 transition"
+                                    className="text-sm font-bold hover:text-blue-500 transition break-all leading-relaxed inline-block max-w-full"
                                 >
-                                   {study.authorWebsite}
+                                    {study.authorWebsite}
                                 </a>
-                                
+
                                 <p className="paragraph text-white mt-4">
                                     {study.authorRole}
                                 </p>

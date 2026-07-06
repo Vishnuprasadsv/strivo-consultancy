@@ -5,7 +5,7 @@ import logo from '../assets/strivo logo.png';
 
 
 const navLinks = [
-  { name: 'Home', path: '/home' },
+  { name: 'Home', path: '/' },
   { name: 'About', path: '/about' },
   { name: 'Services', path: '/services' },
   { name: 'Case Studies', path: '/casestudies' },
@@ -37,7 +37,7 @@ const Navbar = () => {
   const getActiveTab = () => {
     const path = location.pathname;
     if (['/contact', '/strategic', '/operations', '/change', '/digital'].includes(path)) return null;
-    if (path === '/' || path === '/home') return 'Home';
+    if (path === '/') return 'Home';
     if (path.startsWith('/insights') || path.startsWith('/article')) return 'Insights';
     if (path === '/about') return 'About';
     if (path === '/services') return 'Services';

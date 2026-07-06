@@ -5,6 +5,7 @@ import React, {
 } from "react";
 import axios from "axios";
 import AvatarEditor from "react-avatar-editor";
+import LoadingIndicator from "../Components/LoadingIndicator";
 import {
 
     useNavigate,
@@ -264,17 +265,7 @@ const EditCaseStudy = () => {
 
     }
     if (loading) {
-
-        return (
-
-            <div className="h-screen flex items-center justify-center">
-
-                Loading...
-
-            </div>
-
-        );
-
+        return <LoadingIndicator />;
     }
     return (
         <div className="min-h-screen pt-24 px-4 sm:px-8 pb-8 relative z-10 md:ml-56 bg-sub">

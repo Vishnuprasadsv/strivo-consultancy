@@ -5,8 +5,8 @@ import { Toaster } from 'sonner';
 import Navbar from './Components/Navbar';
 import AdminNavbar from './Components/AdminNavbar';
 import Footer from './Components/Footer';
-import Ferrofluid from './Components/Ferrofluid';
 import Ready from './Components/Ready';
+import LoadingIndicator from './Components/LoadingIndicator';
 
 import Review from './pages/Review';
 import Career from './pages/Career';
@@ -91,12 +91,7 @@ const ConditionalFooter = () => {
   );
 };
 
-// A premium loading fallback for Suspense
-const PageLoader = () => (
-  <div className="min-h-screen flex items-center justify-center bg-transparent z-50">
-    <div className="w-10 h-10 border-4 border-blue-600 border-t-transparent rounded-full animate-spin"></div>
-  </div>
-);
+
 
 const AppLayout = () => {
   const { pathname } = useLocation();
@@ -118,45 +113,17 @@ const AppLayout = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
-  const noFerrofluidRoutes = [
-    '/mission', '/vision', '/values/integrity', '/values/innovation', '/values/impact', '/values/collaboration'
-  ];
-  const isNoFerrofluid = noFerrofluidRoutes.includes(pathname);
-
   return (
-    <div className={`min-h-screen ${isNoFerrofluid ? 'bg-[var(--color-main-bg)] text-[var(--color-pure-black)]' : 'bg-transparent text-white'} flex flex-col relative z-0`}>
-      {!isNoFerrofluid && (
-        <div className="fixed inset-0 z-[-1] bg-black">
-            <Ferrofluid
-    colors={["#a6a8ff","#a8a5ff","#000000"]}
-    speed={0.1}
-    scale={1.8}
-    turbulence={0}
-    fluidity={0.08}
-    rimWidth={0.19}
-    sharpness={2.1}
-    shimmer={1.2}
-    glow={0.5}
-    flowDirection="down"
-    opacity={1}
-    mouseInteraction={false}
-    mouseStrength={1}
-    mouseRadius={0.2}
-  />
-          <div className="absolute inset-0 backdrop-blur-[6px] bg-black/40 pointer-events-none" />
-        </div>
-      )}
-
+    <div className={`min-h-screen bg-[var(--color-main-bg)] text-[var(--color-pure-black)] flex flex-col relative z-0`}>
       <ConditionalNavbar />
       <AdminNavbar />
 
       {/* Main content area */}
       <main className="flex-grow relative z-10">
-        <Suspense fallback={<PageLoader />}>
+        <Suspense fallback={<LoadingIndicator />}>
               <Routes>
                 {/* Fix: Root path now directly renders Home */}
                 <Route path="/" element={<Home />} />
-                <Route path="/home" element={<Home />} />
 
                 <Route path="/about" element={<Aboutus />} />
                 <Route path="/contact" element={<Contact />} />
