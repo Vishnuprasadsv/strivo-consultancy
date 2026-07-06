@@ -191,7 +191,7 @@ const CaseStudyDetails = () => {
                             variants={staggerContainer}
                             initial="hidden"
                             animate="visible"
-                            className="space-y-4"
+                            className="space-y-4 text-white"
                         >
                             <div className="bg-slate-900 border border-slate-800 rounded-xl p-5">
                                 ✓ Enterprise Cloud Migration
