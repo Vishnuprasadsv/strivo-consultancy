@@ -467,7 +467,7 @@ transition"
               value={newsletterEmail}
               onChange={(e) => setNewsletterEmail(e.target.value)}
               placeholder="Enter your work email"
-              className=" bg-sub border border-blue-500 text-black placeholder-black/60 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500 w-full md:w-72"
+              className=" bg-sub input  text-black placeholder-black/60 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500 w-full md:w-72"
             />
             <button
               type="submit"
