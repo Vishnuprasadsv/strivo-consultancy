@@ -9,7 +9,7 @@ const navLinks = [
   { name: 'Services', path: '/services' },
   { name: 'Case Studies', path: '/casestudies' },
   { name: 'Insights', path: '/insights' },
-  {name: 'Career', path: '/careerstrivo'},
+  { name: 'Career', path: '/careerstrivo' },
 ];
 
 const containerVariants = {
@@ -60,9 +60,9 @@ const Navbar = () => {
         <div className="max-w-[110rem] mx-auto px-42 flex items-center justify-between h-20">
           <motion.div variants={itemVariants} className="flex items-center gap-2">
             <Logo className="h-12 text-[var(--color-primary)]" />
-            </motion.div>
+          </motion.div>
 
-           <ul className="flex items-center gap-6">
+          <ul className="flex items-center gap-6">
             {navLinks.map((link) => (
               <motion.li variants={itemVariants} key={link.name} className="relative">
                 {link.path !== '#' ? (
