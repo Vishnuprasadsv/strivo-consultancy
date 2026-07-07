@@ -1,6 +1,6 @@
 import React from 'react';
 import { motion } from "framer-motion";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import {
   TrendingUp,
   Settings,
@@ -10,6 +10,9 @@ import {
 
 function Ready() {
   const navigate = useNavigate();
+  const { pathname } = useLocation();
+
+  if (pathname === '/careerstrivo') return null;
 
   return (
     <div className="w-full bg-[var(--color-main-bg)]">

@@ -315,3 +315,10 @@ body,
 #root {
   font-family: "Poppins", sans-serif;
 }
+
+.MuiTypography-root,
+.MuiButtonBase-root,
+.MuiInputBase-root,
+.MuiFormLabel-root {
+  font-family: var(--font-primary) !important;
+}

@@ -983,8 +983,8 @@ function Career() {
               <Typography
                 sx={{
                   color: "var(--color-paragraph)",
-                  fontSize: { xs: "12px", sm: "14px", md: "15px" },
-                  lineHeight: 1.8,
+                  fontSize: "var(--text-paragraph)",
+                  lineHeight: 1.7,
                   textAlign: "justify",
                   textJustify: "inter-word",
                   hyphens: "auto",
@@ -1070,8 +1070,8 @@ function Career() {
                   transition: "all .3s ease",
 
                   "&:hover": {
-                    border: "1px solid rgba(71,100,255,.4)",
-                    boxShadow: "0 0 40px rgba(71,100,255,.15)",
+                    background: "var(--color-white)",
+                    boxShadow: "0 10px 30px rgba(0, 0, 0, 0.05)",
                   },
 
                   display: "flex",
@@ -1140,9 +1140,9 @@ function Career() {
                       flexWrap: "wrap",
                       gap: 1.5,
                       "& .MuiChip-root": {
-                        color: "var(--color-paragraph)",
-                        background: "rgba(71,100,255,0.15)",
-                        border: "1px solid rgba(71,100,255,0.3)",
+                        color: "var(--color-primary)",
+                        background: "rgba(1, 42, 89, 0.08)",
+                        border: "1px solid rgba(1, 42, 89, 0.2)",
                         fontWeight: 500,
                         maxWidth: "100%",
                         height: "auto",
@@ -1203,8 +1203,8 @@ function Career() {
                   transition: "all .3s ease",
 
                   "&:hover": {
-                    border: "1px solid rgba(71,100,255,.4)",
-                    boxShadow: "0 0 40px rgba(71,100,255,.15)",
+                    background: "var(--color-white)",
+                    boxShadow: "0 10px 30px rgba(0, 0, 0, 0.05)",
                   },
 
                   display: "flex",
@@ -1273,9 +1273,9 @@ function Career() {
                       flexWrap: "wrap",
                       gap: 1.5,
                       "& .MuiChip-root": {
-                        color: "var(--color-paragraph)",
-                        background: "rgba(71,100,255,0.15)",
-                        border: "1px solid rgba(71,100,255,0.3)",
+                        color: "var(--color-primary)",
+                        background: "rgba(1, 42, 89, 0.08)",
+                        border: "1px solid rgba(1, 42, 89, 0.2)",
                         fontWeight: 500,
                         maxWidth: "100%",
                         height: "auto",
@@ -1335,8 +1335,8 @@ function Career() {
                   transition: "all .3s ease",
 
                   "&:hover": {
-                    border: "1px solid rgba(71,100,255,.4)",
-                    boxShadow: "0 0 40px rgba(71,100,255,.15)",
+                    background: "var(--color-white)",
+                    boxShadow: "0 10px 30px rgba(0, 0, 0, 0.05)",
                   },
 
                   display: "flex",
@@ -1406,9 +1406,9 @@ function Career() {
                       flexWrap: "wrap",
                       gap: 1.5,
                       "& .MuiChip-root": {
-                        color: "var(--color-paragraph)",
-                        background: "rgba(71,100,255,0.15)",
-                        border: "1px solid rgba(71,100,255,0.3)",
+                        color: "var(--color-primary)",
+                        background: "rgba(1, 42, 89, 0.08)",
+                        border: "1px solid rgba(1, 42, 89, 0.2)",
                         fontWeight: 500,
                         maxWidth: "100%",
                         height: "auto",
@@ -1473,8 +1473,8 @@ function Career() {
                         transition: "all .3s ease",
 
                         "&:hover": {
-                          border: "1px solid rgba(71,100,255,.4)",
-                          boxShadow: "0 0 40px rgba(71,100,255,.15)",
+                          background: "var(--color-white)",
+                          boxShadow: "0 10px 30px rgba(0, 0, 0, 0.05)",
                         },
 
                         display: "flex",
@@ -1653,7 +1653,7 @@ function Career() {
           <Box
             sx={{
               borderRadius: "3px",
-              background: "var(--color-black)",
+              background: "var(--color-primary)",
               backdropFilter: "blur(20px)",
               border: "1px solid rgba(255, 255, 255, 0.08)",
               boxShadow: "0 20px 40px rgba(0,0,0,0.3)",
@@ -1678,14 +1678,15 @@ function Career() {
             >
               {/* Tagline */}
               <Box sx={{ display: "flex", alignItems: "center", gap: 1.5, mb: 1.5 }}>
-                <Box sx={{ width: "3px", height: "18px", backgroundColor: "var(--color-primary)" }} />
+                <Box sx={{ width: "3px", height: "18px", backgroundColor: "var(--color-white)" }} />
                 <Typography
                   sx={{
-                    color: "var(--color-primary)",
+                    color: "var(--color-white)",
                     fontWeight: "var(--font-semibold)",
                     letterSpacing: "1px",
                     textTransform: "uppercase",
                     fontSize: "0.85rem",
+                    opacity: 0.9,
                   }}
                 >
                   WE'RE ALWAYS GROWING
@@ -1709,7 +1710,7 @@ function Career() {
               </Typography>
 
               {/* Line Divider */}
-              <Box sx={{ width: "45px", height: "3px", backgroundColor: "var(--color-primary)", mb: 2.5 }} />
+              <Box sx={{ width: "45px", height: "3px", backgroundColor: "var(--color-white)", mb: 2.5 }} />
 
               {/* Description */}
               <Typography
@@ -1737,7 +1738,8 @@ function Career() {
                   setOpenResumeModal(true);
                 }}
                 sx={{
-                  background: "var(--color-primary)",
+                  background: "var(--color-white)",
+                  color: "var(--color-primary)",
                   px: 2.5,
                   height: "42px",
                   minWidth: "130px",
@@ -1747,8 +1749,9 @@ function Career() {
                   fontSize: "0.95rem",
                   boxShadow: "var(--shadow-button)",
                   "&:hover": {
-                    background: "var(--color-primary-hover)",
+                    background: "var(--color-sub-bg)",
                     transform: "translateY(-2px)",
+                    boxShadow: "var(--shadow-button)",
                   },
                 }}
               >
