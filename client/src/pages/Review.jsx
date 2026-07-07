@@ -428,439 +428,439 @@ export default function Review() {
           backgroundColor: "var(--color-main-bg)", // Solid background color
         }}
       >
-      <Container maxWidth="xl" sx={{ position: "relative", zIndex: 1 }}>
+        <Container maxWidth="xl" sx={{ position: "relative", zIndex: 1 }}>
 
-        {/* Header Section */}
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.7 }}
-        >
-          <Box sx={{ mb: { xs: 2, md: 3.5 } }}>
-            {/* Top Badge */}
-            <Box
-              sx={{
-                display: "inline-flex",
-                alignItems: "center",
-                gap: 1,
-                px: 2.5,
-                py: 0.5,
-                borderRadius: "30px",
-                background: "rgba(71,100,255,0.12)",
-                border: "1px solid rgba(71,100,255,0.25)",
-                mb: 1.5,
-              }}
-            >
-              <AutoAwesomeIcon sx={{ fontSize: 14, color: "var(--color-primary)" }} />
+          {/* Header Section */}
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.7 }}
+          >
+            <Box sx={{ mb: { xs: 2, md: 3.5 } }}>
+              {/* Top Badge */}
+              <Box
+                sx={{
+                  display: "inline-flex",
+                  alignItems: "center",
+                  gap: 1,
+                  px: 2.5,
+                  py: 0.5,
+                  borderRadius: "30px",
+                  background: "rgba(71,100,255,0.12)",
+                  border: "1px solid rgba(71,100,255,0.25)",
+                  mb: 1.5,
+                }}
+              >
+                <AutoAwesomeIcon sx={{ fontSize: 14, color: "var(--color-primary)" }} />
+                <Typography
+                  sx={{
+                    color: "var(--color-paragraph)",
+                    fontWeight: 700,
+                    fontSize: "0.75rem",
+                    letterSpacing: "2px",
+                    textTransform: "uppercase",
+                  }}
+                >
+                  Client Testimonials
+                </Typography>
+              </Box>
+
+
+              <Typography
+                sx={{
+                  color: "var(--color-black)",
+                  fontWeight: 900,
+                  fontSize: { xs: "1.8rem", sm: "2.2rem", md: "2.5rem" },
+                  lineHeight: 1.1,
+                  mb: 1,
+                }}
+              >
+                Share Your{" "}
+                <Box
+                  component="span"
+                  sx={{
+                    background: "linear-gradient(90deg, var(--color-primary), #60A5FA)",
+                    WebkitBackgroundClip: "text",
+                    WebkitTextFillColor: "transparent",
+                  }}
+                >
+                  Success Story
+                </Box>
+              </Typography>
+
+
               <Typography
                 sx={{
                   color: "var(--color-paragraph)",
-                  fontWeight: 700,
-                  fontSize: "0.75rem",
-                  letterSpacing: "2px",
-                  textTransform: "uppercase",
+                  maxWidth: 640,
+                  lineHeight: 1.5,
+                  fontSize: { xs: "0.82rem", md: "0.88rem" },
                 }}
               >
-                Client Testimonials
+                Your insights help us refine our approach and guide other enterprises
+                toward strategic excellence. We value your honest feedback.
               </Typography>
             </Box>
+          </motion.div>
 
-
-            <Typography
-              sx={{
-                color: "var(--color-black)",
-                fontWeight: 900,
-                fontSize: { xs: "1.8rem", sm: "2.2rem", md: "2.5rem" },
-                lineHeight: 1.1,
-                mb: 1,
-              }}
-            >
-              Share Your{" "}
-              <Box
-                component="span"
-                sx={{
-                  background: "linear-gradient(90deg, var(--color-primary), #60A5FA)",
-                  WebkitBackgroundClip: "text",
-                  WebkitTextFillColor: "transparent",
+          <AnimatePresence mode="wait">
+            {submitted ? (
+              <motion.div
+                key="success"
+                initial={{ opacity: 0, scale: 0.95 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: 0.95 }}
+                transition={{ duration: 0.4 }}
+                style={{
+                  borderRadius: "3px",
+                  background: "var(--color-sub-bg)",
+                  border: "1px solid var(--color-border)",
+                  maxWidth: 640,
+                  margin: "0 auto",
+                  height: 420,
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
                 }}
               >
-                Success Story
-              </Box>
-            </Typography>
+                <SuccessScreen onReset={handleReset} />
+              </motion.div>
+            ) : (
+              <motion.div
+                key="form"
+                initial={{ opacity: 0, y: 30 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -20 }}
+                transition={{ duration: 0.5 }}
+              >
+                <Grid container spacing={3} alignItems="stretch">
 
-
-            <Typography
-              sx={{
-                color: "var(--color-paragraph)",
-                maxWidth: 640,
-                lineHeight: 1.5,
-                fontSize: { xs: "0.82rem", md: "0.88rem" },
-              }}
-            >
-              Your insights help us refine our approach and guide other enterprises
-              toward strategic excellence. We value your honest feedback.
-            </Typography>
-          </Box>
-        </motion.div>
-
-        <AnimatePresence mode="wait">
-          {submitted ? (
-            <motion.div
-              key="success"
-              initial={{ opacity: 0, scale: 0.95 }}
-              animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 0.95 }}
-              transition={{ duration: 0.4 }}
-              style={{
-                borderRadius: "3px",
-                background: "var(--color-sub-bg)",
-                border: "1px solid var(--color-border)",
-                maxWidth: 640,
-                margin: "0 auto",
-                height: 420,
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-              }}
-            >
-              <SuccessScreen onReset={handleReset} />
-            </motion.div>
-          ) : (
-            <motion.div
-              key="form"
-              initial={{ opacity: 0, y: 30 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -20 }}
-              transition={{ duration: 0.5 }}
-            >
-              <Grid container spacing={3} alignItems="stretch">
-
-                {/* Guidelines Box (on the left now) */}
-                <Grid item xs={12} md={5}>
-                  <Box
-                    sx={{
-                      p: { xs: 2.5, md: 3 },
-                      borderRadius: "3px",
-                      background: "var(--color-sub-bg)",
-                      border: "1px solid var(--color-border)",
-                      position: { md: "sticky" },
-                      top: { md: 100 },
-                      minHeight: { md: "420px", xs: "auto" },
-                      height: "100%",
-                      display: "flex",
-                      flexDirection: "column",
-                      justifyContent: "space-between",
-                    }}
-                  >
-                    <Box>
-                      <Stack direction="row" spacing={1.5} alignItems="center" sx={{ mb: "24px" }}>
-                        <Box
-                          sx={{
-                            width: 34, height: 34,
-                            borderRadius: "3px",
-                            background: "rgba(71,100,255,0.2)",
-                            display: "flex", alignItems: "center", justifyContent: "center"
-                          }}
-                        >
-                          <InfoOutlinedIcon sx={{ color: "var(--color-primary)", fontSize: 18 }} />
-                        </Box>
-                        <Typography sx={{ color: "var(--color-black)", fontWeight: 700, fontSize: "0.95rem" }}>
-                          Review Guidelines
-                        </Typography>
-                      </Stack>
-
-                      <Stack spacing={1.5} sx={{ mt: "24px" }}>
-                        {guidelines.map((g, i) => (
+                  {/* Guidelines Box (on the left now) */}
+                  <Grid item xs={12} md={5}>
+                    <Box
+                      sx={{
+                        p: { xs: 2.5, md: 3 },
+                        borderRadius: "3px",
+                        background: "var(--color-sub-bg)",
+                        border: "1px solid var(--color-border)",
+                        position: { md: "sticky" },
+                        top: { md: 100 },
+                        minHeight: { md: "420px", xs: "auto" },
+                        height: "100%",
+                        display: "flex",
+                        flexDirection: "column",
+                        justifyContent: "space-between",
+                      }}
+                    >
+                      <Box>
+                        <Stack direction="row" spacing={1.5} alignItems="center" sx={{ mb: "24px" }}>
                           <Box
-                            key={i}
                             sx={{
-                              display: "flex",
-                              gap: 1.5, p: 1.5,
+                              width: 34, height: 34,
                               borderRadius: "3px",
-                              background: "var(--color-main-bg)",
-                              border: "1px solid var(--color-border)",
-                              transition: "all 0.25s ease",
-                              "&:hover": {
-                                background: "rgba(71,100,255,0.08)",
-                                border: "1px solid rgba(71,100,255,0.2)",
-                              },
+                              background: "rgba(71,100,255,0.2)",
+                              display: "flex", alignItems: "center", justifyContent: "center"
                             }}
                           >
-                            <CheckCircleOutlineIcon
-                              sx={{
-                                color: "var(--color-primary)",
-                                fontSize: 20,
-                                mt: 0.2,
-                                flexShrink: 0,
-                              }}
-                            />
-                            <Box>
-                              <Typography sx={{ color: "var(--color-black)", fontWeight: 700, fontSize: "0.8rem", mb: 0.3 }}>
-                                {g.title}
-                              </Typography>
-                              <Typography sx={{ color: "var(--color-paragraph)", fontSize: "0.75rem", lineHeight: 1.4 }}>
-                                {g.desc}
-                              </Typography>
-                            </Box>
+                            <InfoOutlinedIcon sx={{ color: "var(--color-primary)", fontSize: 18 }} />
                           </Box>
-                        ))}
-                      </Stack>
-
-                      <Box
-                        sx={{
-                          mt: 2,
-                          p: 1.5,
-                          borderRadius: "3px",
-                          background: "rgba(71,100,255,0.05)",
-                          borderLeft: "3px solid var(--color-primary)",
-                        }}
-                      >
-                        <Typography sx={{ color: "var(--color-black)", fontWeight: 700, fontSize: "0.8rem", mb: 0.5 }}>
-                          Verification Process
-                        </Typography>
-                        <Typography sx={{ color: "var(--color-paragraph)", fontSize: "0.72rem", lineHeight: 1.4 }}>
-                          For authenticity, all submitted strategic consulting testimonials undergo an internal review before being featured on our website.
-                        </Typography>
-                      </Box>
-                    </Box>
-
-                    <Box
-                      sx={{
-                        mt: 2.5, p: 1.5,
-                        borderRadius: "3px",
-                        background: "rgba(71,100,255,0.06)",
-                        border: "1px solid rgba(71,100,255,0.12)",
-                        textAlign: "center",
-                      }}
-                    >
-                      <Typography sx={{ color: "var(--color-paragraph)", fontSize: "0.68rem", lineHeight: 1.4 }}>
-                        Your review may be featured on our website with your
-                        permission. We never share personal data without consent.
-                      </Typography>
-                    </Box>
-                  </Box>
-                </Grid>
-
-                {/* Review Form Box (on the right now) */}
-                <Grid item xs={12} md={7}>
-                  <Box
-                    component="form"
-                    ref={formRef}
-                    onSubmit={handleSubmit}
-                    sx={{
-                      p: { xs: 2.5, sm: 3, md: 3.5 },
-                      borderRadius: "3px",
-                      background: "var(--color-sub-bg)",
-                      border: "1px solid var(--color-border)",
-                      position: "relative",
-                      minHeight: { md: "420px", xs: "auto" },
-                      height: "100%",
-                      display: "flex",
-                      flexDirection: "column",
-                      justifyContent: "space-between",
-                      "&::before": {
-                        content: '""',
-                        position: "absolute",
-                        top: 0, left: 0, right: 0,
-                        height: "3px",
-                        background: "linear-gradient(90deg, var(--color-primary), #7A90FF)",
-                      },
-                    }}
-                  >
-
-                    <Box
-                      sx={{
-                        position: "absolute",
-                        top: 15, right: 20,
-                        opacity: 0.03,
-                      }}
-                    >
-                      <FormatQuoteIcon sx={{ fontSize: 90, color: "var(--color-primary)" }} />
-                    </Box>
-
-                    <Stack spacing={2} sx={{ position: "relative", zIndex: 1, flexGrow: 1 }}>
-
-                      {/* Name & Company Input Fields */}
-                      <Grid container spacing={2}>
-                        <Grid item xs={12} sm={6} sx={{ width: "100%" }}>
-                          <TextField
-                            fullWidth
-                            size="small"
-                            label="Full Name"
-                            name="fullName"
-                            value={form.fullName}
-                            onChange={handleChange}
-                            placeholder="Jane Doe"
-                            error={!!errors.fullName}
-                            helperText={errors.fullName}
-                            sx={fieldSx}
-                            FormHelperTextProps={{ sx: { color: "var(--color-danger)" } }}
-                          />
-                        </Grid>
-                        <Grid item xs={12} sm={6} sx={{ width: "100%" }}>
-                          <TextField
-                            fullWidth
-                            size="small"
-                            label="Company Name"
-                            name="company"
-                            value={form.company}
-                            onChange={handleChange}
-                            placeholder="Acme Corp"
-                            error={!!errors.company}
-                            helperText={errors.company}
-                            sx={fieldSx}
-                            FormHelperTextProps={{ sx: { color: "var(--color-danger)" } }}
-                          />
-                        </Grid>
-                      </Grid>
-
-
-                      <Box
-                        sx={{
-                          p: 1.5,
-                          borderRadius: "3px",
-                          border: errors.rating
-                            ? "1px solid rgba(239,68,68,0.4)"
-                            : "1px solid var(--color-border)",
-                          background: "var(--color-main-bg)",
-                        }}
-                      >
-                        <Typography sx={{ color: "var(--color-paragraph)", fontSize: "0.78rem", mb: 0.5 }}>
-                          Overall Rating
-                        </Typography>
-                        <StarRating
-                          value={form.rating}
-                          onChange={(newRating) => {
-                            setForm((prev) => ({ ...prev, rating: newRating }));
-                            setErrors((prev) => ({ ...prev, rating: "" }));
-                          }}
-                        />
-                        {errors.rating && (
-                          <Typography sx={{ color: "var(--color-danger)", fontSize: "0.72rem", mt: 0.5 }}>
-                            {errors.rating}
+                          <Typography sx={{ color: "var(--color-black)", fontWeight: 700, fontSize: "0.95rem" }}>
+                            Review Guidelines
                           </Typography>
-                        )}
-                      </Box>
+                        </Stack>
 
-
-                      <TextField
-                        fullWidth
-                        size="small"
-                        label="Review Title"
-                        name="title"
-                        value={form.title}
-                        onChange={handleChange}
-                        placeholder="Transformative strategic guidance"
-                        error={!!errors.title}
-                        helperText={errors.title}
-                        sx={fieldSx}
-                        FormHelperTextProps={{ sx: { color: "var(--color-danger)" } }}
-                      />
-
-
-                      <TextField
-                        fullWidth
-                        multiline
-                        rows={3}
-                        label="Detailed Review"
-                        name="review"
-                        value={form.review}
-                        onChange={handleChange}
-                        placeholder="Describe your experience working with our consulting team..."
-                        error={!!errors.review}
-                        helperText={
-                          errors.review ||
-                          `${form.review.length} characters (min 20)`
-                        }
-                        sx={fieldSx}
-                        FormHelperTextProps={{
-                          sx: {
-                            color: errors.review ? "var(--color-danger)" : "var(--color-paragraph)",
-                            fontSize: "0.72rem",
-                          },
-                        }}
-                      />
-
-                      <Box sx={{ mt: 1 }}>
-                        <FormControlLabel
-                          control={
-                            <Checkbox
-                              checked={acceptedPolicy}
-                              onChange={(e) => {
-                                setAcceptedPolicy(e.target.checked);
-                                if (errors.acceptedPolicy) {
-                                  setErrors((prev) => ({ ...prev, acceptedPolicy: "" }));
-                                }
-                              }}
+                        <Stack spacing={1.5} sx={{ mt: "24px" }}>
+                          {guidelines.map((g, i) => (
+                            <Box
+                              key={i}
                               sx={{
-                                p: 0.5,
-                                color: errors.acceptedPolicy ? "var(--color-danger)" : "var(--color-paragraph)",
-                                "&.Mui-checked": {
-                                  color: "var(--color-primary)",
+                                display: "flex",
+                                gap: 1.5, p: 1.5,
+                                borderRadius: "3px",
+                                background: "var(--color-main-bg)",
+                                border: "1px solid var(--color-border)",
+                                transition: "all 0.25s ease",
+                                "&:hover": {
+                                  background: "rgba(71,100,255,0.08)",
+                                  border: "1px solid rgba(71,100,255,0.2)",
                                 },
                               }}
-                            />
-                          }
-                          label={
-                            <Typography sx={{ color: "var(--color-paragraph)", fontSize: "0.75rem", userSelect: "none" }}>
-                              I accept the{" "}
-                              <Link
-                                to="/privacy-policy"
-                                onClick={(e) => {
-                                  e.stopPropagation();
-                                }}
-                                style={{
+                            >
+                              <CheckCircleOutlineIcon
+                                sx={{
                                   color: "var(--color-primary)",
-                                  textDecoration: "underline",
+                                  fontSize: 20,
+                                  mt: 0.2,
+                                  flexShrink: 0,
                                 }}
-                              >
-                                privacy policy
-                              </Link>{" "}
-                              for publishing this testimonial.
-                            </Typography>
-                          }
-                        />
-                        {errors.acceptedPolicy && (
-                          <Typography sx={{ color: "var(--color-danger)", fontSize: "0.72rem", mt: 0.5, pl: 3.5 }}>
-                            {errors.acceptedPolicy}
-                          </Typography>
-                        )}
-                      </Box>
-                    </Stack>
+                              />
+                              <Box>
+                                <Typography sx={{ color: "var(--color-black)", fontWeight: 700, fontSize: "0.8rem", mb: 0.3 }}>
+                                  {g.title}
+                                </Typography>
+                                <Typography sx={{ color: "var(--color-paragraph)", fontSize: "0.75rem", lineHeight: 1.4 }}>
+                                  {g.desc}
+                                </Typography>
+                              </Box>
+                            </Box>
+                          ))}
+                        </Stack>
 
-                    <Box sx={{ display: "flex", justifyContent: "flex-end", mt: 1.5, position: "relative", zIndex: 1 }}>
-                      <Button
-                        type="submit"
-                        variant="contained"
-                        disabled={loading}
+                        <Box
+                          sx={{
+                            mt: 2,
+                            p: 1.5,
+                            borderRadius: "3px",
+                            background: "rgba(71,100,255,0.05)",
+                            borderLeft: "3px solid var(--color-primary)",
+                          }}
+                        >
+                          <Typography sx={{ color: "var(--color-black)", fontWeight: 700, fontSize: "0.8rem", mb: 0.5 }}>
+                            Verification Process
+                          </Typography>
+                          <Typography sx={{ color: "var(--color-paragraph)", fontSize: "0.72rem", lineHeight: 1.4 }}>
+                            For authenticity, all submitted strategic consulting testimonials undergo an internal review before being featured on our website.
+                          </Typography>
+                        </Box>
+                      </Box>
+
+                      <Box
                         sx={{
-                          background: loading
-                            ? "rgba(71,100,255,0.5)"
-                            : "var(--color-btn-bg)",
-                          px: 4, py: 1.1,
+                          mt: 2.5, p: 1.5,
                           borderRadius: "3px",
-                          textTransform: "none",
-                          fontWeight: 700,
-                          fontSize: "0.9rem",
-                          transition: "all 0.2s ease",
-                          "&:hover": {
-                            background: "var(--color-primary-hover)",
-                            transform: "translateY(-1px)"
-                          }
+                          background: "rgba(71,100,255,0.06)",
+                          border: "1px solid rgba(71,100,255,0.12)",
+                          textAlign: "center",
                         }}
                       >
-                        {loading ? "Submitting..." : "Submit Review"}
-                      </Button>
+                        <Typography sx={{ color: "var(--color-paragraph)", fontSize: "0.68rem", lineHeight: 1.4 }}>
+                          Your review may be featured on our website with your
+                          permission. We never share personal data without consent.
+                        </Typography>
+                      </Box>
                     </Box>
-                  </Box>
+                  </Grid>
+
+                  {/* Review Form Box (on the right now) */}
+                  <Grid item xs={12} md={7}>
+                    <Box
+                      component="form"
+                      ref={formRef}
+                      onSubmit={handleSubmit}
+                      sx={{
+                        p: { xs: 2.5, sm: 3, md: 3.5 },
+                        borderRadius: "3px",
+                        background: "var(--color-sub-bg)",
+                        border: "1px solid var(--color-border)",
+                        position: "relative",
+                        minHeight: { md: "420px", xs: "auto" },
+                        height: "100%",
+                        display: "flex",
+                        flexDirection: "column",
+                        justifyContent: "space-between",
+                        "&::before": {
+                          content: '""',
+                          position: "absolute",
+                          top: 0, left: 0, right: 0,
+                          height: "3px",
+                          background: "linear-gradient(90deg, var(--color-primary), #7A90FF)",
+                        },
+                      }}
+                    >
+
+                      <Box
+                        sx={{
+                          position: "absolute",
+                          top: 15, right: 20,
+                          opacity: 0.03,
+                        }}
+                      >
+                        <FormatQuoteIcon sx={{ fontSize: 90, color: "var(--color-primary)" }} />
+                      </Box>
+
+                      <Stack spacing={2} sx={{ position: "relative", zIndex: 1, flexGrow: 1 }}>
+
+                        {/* Name & Company Input Fields */}
+                        <Grid container spacing={2}>
+                          <Grid item xs={12} sm={6} sx={{ width: "100%" }}>
+                            <TextField
+                              fullWidth
+                              size="small"
+                              label="Full Name"
+                              name="fullName"
+                              value={form.fullName}
+                              onChange={handleChange}
+                              placeholder="Jane Doe"
+                              error={!!errors.fullName}
+                              helperText={errors.fullName}
+                              sx={fieldSx}
+                              FormHelperTextProps={{ sx: { color: "var(--color-danger)" } }}
+                            />
+                          </Grid>
+                          <Grid item xs={12} sm={6} sx={{ width: "100%" }}>
+                            <TextField
+                              fullWidth
+                              size="small"
+                              label="Company Name"
+                              name="company"
+                              value={form.company}
+                              onChange={handleChange}
+                              placeholder="Acme Corp"
+                              error={!!errors.company}
+                              helperText={errors.company}
+                              sx={fieldSx}
+                              FormHelperTextProps={{ sx: { color: "var(--color-danger)" } }}
+                            />
+                          </Grid>
+                        </Grid>
+
+
+                        <Box
+                          sx={{
+                            p: 1.5,
+                            borderRadius: "3px",
+                            border: errors.rating
+                              ? "1px solid rgba(239,68,68,0.4)"
+                              : "1px solid var(--color-border)",
+                            background: "var(--color-main-bg)",
+                          }}
+                        >
+                          <Typography sx={{ color: "var(--color-paragraph)", fontSize: "0.78rem", mb: 0.5 }}>
+                            Overall Rating
+                          </Typography>
+                          <StarRating
+                            value={form.rating}
+                            onChange={(newRating) => {
+                              setForm((prev) => ({ ...prev, rating: newRating }));
+                              setErrors((prev) => ({ ...prev, rating: "" }));
+                            }}
+                          />
+                          {errors.rating && (
+                            <Typography sx={{ color: "var(--color-danger)", fontSize: "0.72rem", mt: 0.5 }}>
+                              {errors.rating}
+                            </Typography>
+                          )}
+                        </Box>
+
+
+                        <TextField
+                          fullWidth
+                          size="small"
+                          label="Review Title"
+                          name="title"
+                          value={form.title}
+                          onChange={handleChange}
+                          placeholder="Transformative strategic guidance"
+                          error={!!errors.title}
+                          helperText={errors.title}
+                          sx={fieldSx}
+                          FormHelperTextProps={{ sx: { color: "var(--color-danger)" } }}
+                        />
+
+
+                        <TextField
+                          fullWidth
+                          multiline
+                          rows={3}
+                          label="Detailed Review"
+                          name="review"
+                          value={form.review}
+                          onChange={handleChange}
+                          placeholder="Describe your experience working with our consulting team..."
+                          error={!!errors.review}
+                          helperText={
+                            errors.review ||
+                            `${form.review.length} characters (min 20)`
+                          }
+                          sx={fieldSx}
+                          FormHelperTextProps={{
+                            sx: {
+                              color: errors.review ? "var(--color-danger)" : "var(--color-paragraph)",
+                              fontSize: "0.72rem",
+                            },
+                          }}
+                        />
+
+                        <Box sx={{ mt: 1 }}>
+                          <FormControlLabel
+                            control={
+                              <Checkbox
+                                checked={acceptedPolicy}
+                                onChange={(e) => {
+                                  setAcceptedPolicy(e.target.checked);
+                                  if (errors.acceptedPolicy) {
+                                    setErrors((prev) => ({ ...prev, acceptedPolicy: "" }));
+                                  }
+                                }}
+                                sx={{
+                                  p: 0.5,
+                                  color: errors.acceptedPolicy ? "var(--color-danger)" : "var(--color-paragraph)",
+                                  "&.Mui-checked": {
+                                    color: "var(--color-primary)",
+                                  },
+                                }}
+                              />
+                            }
+                            label={
+                              <Typography sx={{ color: "var(--color-paragraph)", fontSize: "0.75rem", userSelect: "none" }}>
+                                I accept the{" "}
+                                <Link
+                                  to="/privacy-policy"
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                  }}
+                                  style={{
+                                    color: "var(--color-primary)",
+                                    textDecoration: "underline",
+                                  }}
+                                >
+                                  privacy policy
+                                </Link>{" "}
+                                for publishing this testimonial.
+                              </Typography>
+                            }
+                          />
+                          {errors.acceptedPolicy && (
+                            <Typography sx={{ color: "var(--color-danger)", fontSize: "0.72rem", mt: 0.5, pl: 3.5 }}>
+                              {errors.acceptedPolicy}
+                            </Typography>
+                          )}
+                        </Box>
+                      </Stack>
+
+                      <Box sx={{ display: "flex", justifyContent: "flex-end", mt: 1.5, position: "relative", zIndex: 1 }}>
+                        <Button
+                          type="submit"
+                          variant="contained"
+                          disabled={loading}
+                          sx={{
+                            background: loading
+                              ? "rgba(71,100,255,0.5)"
+                              : "var(--color-btn-bg)",
+                            px: 4, py: 1.1,
+                            borderRadius: "3px",
+                            textTransform: "none",
+                            fontWeight: 700,
+                            fontSize: "0.9rem",
+                            transition: "all 0.2s ease",
+                            "&:hover": {
+                              background: "var(--color-primary-hover)",
+                              transform: "translateY(-1px)"
+                            }
+                          }}
+                        >
+                          {loading ? "Submitting..." : "Submit Review"}
+                        </Button>
+                      </Box>
+                    </Box>
+                  </Grid>
+
                 </Grid>
+              </motion.div>
+            )}
+          </AnimatePresence>
 
-              </Grid>
-            </motion.div>
-          )}
-        </AnimatePresence>
-
-      </Container>
+        </Container>
       </Box>
     </>
   );

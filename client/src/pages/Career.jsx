@@ -671,7 +671,7 @@ function Career() {
           zIndex: 10,
         }}
       >
-        <Container maxWidth="md">
+        <Container maxWidth="lg">
           <Box
             sx={{
               display: "grid",
@@ -847,7 +847,7 @@ function Career() {
           zIndex: 10,
         }}
       >
-        <Container maxWidth="md" sx={{ width: "100%" }}>
+        <Container maxWidth="lg" sx={{ width: "100%" }}>
           <Box
             sx={{
               textAlign: "left",
@@ -1006,7 +1006,7 @@ function Career() {
           zIndex: 10,
         }}
       >
-        <Container maxWidth="md">
+        <Container maxWidth="lg">
           {/* Heading */}
           <Box
             sx={{
@@ -1649,7 +1649,7 @@ function Career() {
           zIndex: 10,
         }}
       >
-        <Container maxWidth="md">
+        <Container maxWidth="lg">
           <Box
             sx={{
               borderRadius: "3px",
