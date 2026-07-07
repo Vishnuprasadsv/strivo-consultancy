@@ -139,7 +139,7 @@ function Aboutus() {
                   xs: "100%",
                   lg: "auto",
                 },
-                maxWidth: "580px",
+                maxWidth: "680px",
               }}
             >
               <motion.div
@@ -147,7 +147,7 @@ function Aboutus() {
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ duration: 0.8 }}
               >
-                <Box sx={{ textAlign: "left", width: "100%", maxWidth: "580px" }}>
+                <Box sx={{ textAlign: "left", width: "100%", maxWidth: "680px" }}>
                   <Typography
                     component="h1"
                     sx={{
@@ -171,7 +171,7 @@ function Aboutus() {
                       fontSize: { xs: "1rem", md: "1.1rem" },
                       color: "rgba(255, 255, 255, 0.85)",
                       lineHeight: 1.7,
-                      maxWidth: "580px",
+                      maxWidth: "680px",
                       textAlign: "justify",
                       textJustify: "inter-word",
                       hyphens: "auto",
