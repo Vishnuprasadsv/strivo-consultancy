@@ -5,7 +5,7 @@ import { toast } from 'sonner';
 import axios from 'axios';
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
-import logo1 from '../assets/strivo logo.png';
+import Logo from '../assets/strivo logo.svg?react';
 
 
 const Login = () => {
@@ -50,7 +50,8 @@ const Login = () => {
         className="w-full max-w-md card py-6 px-8 relative overflow-hidden"
       >
         <div className="flex flex-col items-center gap-4 mb-5">
-          <img src={logo1} alt="Strivo Logo" className="h-9 object-contain" />
+          {/* <img src={logo1} alt="Strivo Logo" className="h-9 object-contain" /> */}
+            <Logo className="h-10 text-[var(--color-primary)]" />
         </div>
 
         <div className="text-center mb-5">

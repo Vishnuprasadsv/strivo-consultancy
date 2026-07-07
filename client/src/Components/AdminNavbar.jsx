@@ -18,7 +18,7 @@ import {
   getAdminInquiriesAPI,
   getReviewsAPI
 } from '../services/allApi';
-import logo from '../assets/strivo logo.svg';
+import Logo from '../assets/strivo logo.svg?react';
 
 
 const navLinks = [
@@ -330,7 +330,9 @@ const AdminNavbar = () => {
 
         {/* Logo Section */}
         <div className="flex flex-col items-center justify-center py-6 gap-2">
-          <img src={logo} alt="Strivo Logo" className="h-10 w-auto brightness-0 invert" />
+          {/* <img src={logo} alt="Strivo Logo" className="h-10 w-auto brightness-0 invert" /> */}
+                     <Logo className="h-10 w-auto brightness-0 invert text-[var(--color-primary)]" />
+        
         </div>
 
         <div className="mx-6 border-b border-white/10 mb-6"></div>

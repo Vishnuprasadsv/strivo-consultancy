@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import logo from '../assets/strivo logo.svg';
+import Logo from '../assets/strivo logo.svg?react';
 
 
 const Footer = () => {
@@ -32,7 +32,8 @@ const Footer = () => {
         {/* Column 1: Branding and Copyright */}
         <div className="flex flex-col gap-6">
           <div className="flex flex-col gap-3 items-start">
-            <img src={logo} alt="Strivo Logo" className="h-10 w-auto object-contain" />
+            {/* <img src={logo} alt="Strivo Logo" className="h-10 w-auto object-contain" /> */}
+            <Logo className="h-10 w-auto object-contain text-[var(--color-primary)]" />
           </div>
           <p className="text-gray-400 text-sm leading-relaxed pr-4">
             © 2024 Strivo Consultancy. All rights reserved. Expert precision for enterprise growth.

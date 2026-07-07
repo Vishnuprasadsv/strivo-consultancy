@@ -5,7 +5,7 @@ import { toast } from 'sonner';
 import axios from 'axios';
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
-import logo1 from '../assets/strivo logo.png';
+import Logo from '../assets/strivo logo.svg?react';
 
 /**
  * AdminRegistration Component
@@ -120,7 +120,8 @@ const Register = () => {
         >
           {/* Logo display */}
           <div className="flex flex-col items-center gap-4 mb-8">
-            <img src={logo1} alt="Strivo Logo" className="h-10 object-contain" />
+            {/* <img src={logo1} alt="Strivo Logo" className="h-10 object-contain" /> */}
+             <Logo className="h-10 text-[var(--color-primary)]" />
           </div>
 
           <h2
@@ -159,7 +160,7 @@ const Register = () => {
       >
         {/* Logo container */}
         <div className="flex flex-col items-center gap-4 mb-6">
-          <img src={logo1} alt="Strivo Logo" className="h-10 object-contain" />
+         <Logo className="h-10 text-[var(--color-primary)]" />
         </div>
 
         {/* Heading Section */}
