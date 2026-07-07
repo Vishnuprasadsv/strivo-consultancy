@@ -4,7 +4,7 @@ import { useNavigate, Link } from 'react-router-dom';
 import { toast } from 'sonner';
 import axios from 'axios';
 import { FiMail, FiLock, FiEye, FiEyeOff } from 'react-icons/fi';
-import logo from '../assets/strivo logo.png';
+import Logo from '../assets/strivo logo.svg?react';
 
 const ForgotPassword = () => {
   const [step, setStep] = useState(1);
@@ -141,7 +141,8 @@ const ForgotPassword = () => {
         className="w-full max-w-md card p-8 relative overflow-hidden"
       >
         <div className="flex flex-col items-center gap-4 mb-8">
-          <img src={logo} alt="Strivo Logo" className="h-10 object-contain" />
+          {/* <img src={logo} alt="Strivo Logo" className="h-10 object-contain" /> */}
+          <Logo className="h-10 text-[var(--color-primary)]" />
         </div>
 
         <AnimatePresence mode="wait">

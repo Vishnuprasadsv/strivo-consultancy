@@ -133,8 +133,8 @@ const CaseStudies = () => {
               }}
               className={`px-4 py-2 rounded-full text-sm transition-all duration-300 hover:scale-105
                 ${selectedCategory === category
-                  ? "bg-blue-600 text-white"
-                  : "bg-slate-800 text-white hover:bg-blue-600"
+                  ? "bg-(--color-primary) text-white"
+                  : "bg-slate-800 text-white hover:bg-(--color-primary)"
                 }`}
             >
               {category}
@@ -189,7 +189,7 @@ const CaseStudies = () => {
               {/* Card Body */}
               <div className="p-6 flex flex-col flex-grow">
                 {/* Truncated Title (2 lines max) */}
-                <h3 className="text-xl font-bold text-(--color-sub-heading) mb-3 group-hover:text-blue-400 transition-colors duration-300 leading-snug line-clamp-2">
+                <h3 className="text-xl font-bold text-(--color-primary) mb-3 group-hover:text-blue-400 transition-colors duration-300 leading-snug line-clamp-2">
                   {study.title}
                 </h3>
 

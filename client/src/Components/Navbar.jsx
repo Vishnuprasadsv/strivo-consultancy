@@ -1,8 +1,7 @@
 import React, { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import logo from '../assets/strivo logo.png';
-
+import Logo from '../assets/strivo logo.svg?react';
 
 const navLinks = [
   { name: 'Home', path: '/' },
@@ -10,6 +9,7 @@ const navLinks = [
   { name: 'Services', path: '/services' },
   { name: 'Case Studies', path: '/casestudies' },
   { name: 'Insights', path: '/insights' },
+  {name: 'Career', path: '/careerstrivo'},
 ];
 
 const containerVariants = {
@@ -42,6 +42,7 @@ const Navbar = () => {
     if (path === '/about') return 'About';
     if (path === '/services') return 'Services';
     if (path === '/casestudies') return 'Case Studies';
+    if (path === '/careerstrivo') return 'Career';
     return null;
   };
 
@@ -56,18 +57,18 @@ const Navbar = () => {
         variants={containerVariants}
         className="bg-white text-black w-full sticky top-0 z-50 border-b border-[var(--color-border)] hidden md:block"
       >
-        <div className="max-w-[110rem] mx-auto px-8 flex items-center justify-between h-20">
+        <div className="max-w-[110rem] mx-auto px-42 flex items-center justify-between h-20">
           <motion.div variants={itemVariants} className="flex items-center gap-2">
-            <img src={logo} alt="Strivo Logo" className="h-12 w-auto" />
-          </motion.div>
+            <Logo className="h-12 text-[var(--color-primary)]" />
+            </motion.div>
 
-          <ul className="flex items-center gap-6">
+           <ul className="flex items-center gap-6">
             {navLinks.map((link) => (
               <motion.li variants={itemVariants} key={link.name} className="relative">
                 {link.path !== '#' ? (
                   <Link
                     to={link.path}
-                    className="px-3 py-2 block transition-all duration-150 ease-in-out font-bold text-navlink hover:text-[var(--color-primary)]"
+                    className="px-3 py-2 block transition-all duration-150 ease-in-out font-bold text-[var(--color-primary)] hover:text-[var(--color-primary)]"
                   >
                     {link.name}
                   </Link>
@@ -77,7 +78,7 @@ const Navbar = () => {
                     onClick={(e) => {
                       e.preventDefault();
                     }}
-                    className="px-3 py-2 block transition-all duration-150 ease-in-out font-bold text-navlink hover:text-[var(--color-navlink)]"
+                    className="px-3 py-2 block transition-all duration-150 ease-in-out font-bold text-[var(--color-primary)] hover:text-[var(--color-primary)]"
                   >
                     {link.name}
                   </a>
@@ -85,7 +86,7 @@ const Navbar = () => {
                 {activeTab === link.name && (
                   <motion.div
                     layoutId="active-underline"
-                    className="absolute left-1 right-1 bottom-0 h-[10px] border-b-[3px] border-[var(--color-navlink)] rounded-[3px]"
+                    className="absolute left-1 right-1 bottom-0 h-[10px] border-b-[3px] border-[var(--color-primary)] rounded-[3px]"
                     transition={{ type: 'spring', stiffness: 350, damping: 30 }}
                     initial={false}
                   />
@@ -113,7 +114,8 @@ const Navbar = () => {
         className="md:hidden w-full sticky top-0 z-50 bg-[var(--color-white)] border-b border-[var(--color-border)] flex items-center justify-between px-4 h-16"
       >
         <motion.div variants={itemVariants} className="flex items-center gap-2">
-          <img src={logo} alt="Strivo Logo" className="h-8 w-auto" />
+          {/* <img src={logo} alt="Strivo Logo" className="h-8 w-auto" /> */}
+          <Logo className="h-6 sm:h-8 md:h-10 lg:h-12 w-auto text-[var(--color-primary)]" />
         </motion.div>
         <motion.button
           variants={itemVariants}
