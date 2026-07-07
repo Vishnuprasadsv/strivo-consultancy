@@ -331,7 +331,7 @@ const AdminNavbar = () => {
         {/* Logo Section */}
         <div className="flex flex-col items-center justify-center py-6 gap-2">
           {/* <img src={logo} alt="Strivo Logo" className="h-10 w-auto brightness-0 invert" /> */}
-                     <Logo className="h-10 w-auto brightness-0 invert text-[var(--color-primary)]" />
+                     <Logo className="h-10 text-[var(--color-primary)]" />
         
         </div>
 
