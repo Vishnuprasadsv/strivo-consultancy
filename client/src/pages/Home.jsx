@@ -371,25 +371,25 @@ function Home() {
   ];
   const services = [
     {
-      icon: <AccountTree sx={{ color: "#3b82f6" }} />,
+      icon: <AccountTree sx={{ color: "var(--color-primary)" }} />,
       title: "Strategic Planning",
       description:
         "Aligning vision with actionable roadmaps to secure long-term competitive advantage.",
     },
     {
-      icon: <Settings sx={{ color: "#3b82f6" }} />,
+      icon: <Settings sx={{ color: "var(--color-primary)" }} />,
       title: "Operations Optimization",
       description:
         "Streamlining processes to enhance efficiency, reduce costs, and scale effectively.",
     },
     {
-      icon: <AutoGraph sx={{ color: "#3b82f6" }} />,
+      icon: <AutoGraph sx={{ color: "var(--color-primary)" }} />,
       title: "Digital Transformation",
       description:
         "Modernizing technology stacks to drive agility and unlock new revenue streams.",
     },
     {
-      icon: <Groups sx={{ color: "#3b82f6" }} />,
+      icon: <Groups sx={{ color: "var(--color-primary)" }} />,
       title: "Change Management",
       description:
         "Guiding organizations through complex transitions with minimal disruption.",
@@ -529,7 +529,7 @@ function Home() {
           display: "flex",
           alignItems: "center",
           overflow: "hidden",
-          backgroundColor: "var(--color-primary)",
+          backgroundColor: "var(--color-primary)", 
         }}
       >
         <Box
@@ -539,7 +539,7 @@ function Home() {
             backgroundImage: `url(${newHero})`,
             backgroundSize: "cover",
             backgroundPosition: "center",
-            opacity: 0.15,
+            opacity: 0.8,
             zIndex: 0,
           }}
         />
@@ -581,7 +581,8 @@ function Home() {
 
             <Box
               sx={{
-                filter: "drop-shadow(0px 8px 16px rgba(0, 0, 0, 0.6))"
+                filter: "drop-shadow(0px 8px 16px rgba(0, 0, 0, 0.6))",
+                marginLeft:"110px"
               }}
             >
               <motion.div
@@ -706,7 +707,7 @@ function Home() {
       {/* Animated downward arrow below hero image */}
       <Box
         sx={{
-          backgroundColor: "#000",
+          backgroundColor: "var(--color-bg-main)",
           display: "flex",
           justifyContent: "center",
           alignItems: "center",
@@ -725,7 +726,7 @@ function Home() {
             }
           }}
         >
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#3b82f6" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+          <svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="var(--color-primary)" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
             <path d="M12 5v14M19 12l-7 7-7-7" />
           </svg>
         </motion.div>
@@ -866,7 +867,7 @@ function Home() {
                       width: "100%",
                       height: "2px",
                       background:
-                        "linear-gradient(90deg,#2563eb,transparent)",
+                        "linear-gradient(90deg,var(--color-primary),transparent)",
                     },
 
                     "&:hover": {
@@ -880,7 +881,7 @@ function Home() {
                   <Typography
                     sx={{
                       fontWeight: 800,
-                      color: "#2563eb",
+                      color: "var(--color-primary)",
                       mb: 1,
                       lineHeight: 1,
                       fontSize: {
@@ -1020,7 +1021,7 @@ function Home() {
                         width: "100%",
                         height: "2px",
                         background:
-                          "linear-gradient(90deg,#2563eb,transparent)",
+                          "linear-gradient(90deg,var(--color-primary),transparent)",
                       },
 
                       "&:hover": {
@@ -1039,7 +1040,7 @@ function Home() {
                         width: "180px",
                         height: "180px",
                         background:
-                          "radial-gradient(circle, rgba(37,99,235,.18), transparent)",
+                          "radial-gradient(circle, var(--color-primary), transparent)",
                         top: "-70px",
                         right: "-70px",
                         pointerEvents: "none",
@@ -1054,7 +1055,7 @@ function Home() {
                         height: { xs: 44, md: 60 },
                         borderRadius: "16px",
                         background:
-                          "rgba(37,99,235,.12)",
+                          "var(--color-sub-bg)",
                         display: "flex",
                         alignItems: "center",
                         justifyContent: "center",
@@ -1119,7 +1120,7 @@ function Home() {
           }}
         />
 
-        <Container maxWidth="xl" sx={{ px: { xs: 2, md: 6, lg: 8 } }}>
+        <Container maxWidth="xl" sx={{ px: { xs: 2, md: 6, lg: 8,}, px:{lg:"140px"}}}>
           <Box
             sx={{
               display: "grid",
@@ -1215,7 +1216,7 @@ function Home() {
                   <Box key={index}>
                     <Typography
                       sx={{
-                        color: "var(--color-btn-bg)",
+                        color: "var(--color-primary)",
                         fontWeight: 800,
                         fontSize: {
                           xs: "1.8rem",
@@ -1376,7 +1377,7 @@ function Home() {
                   width: 44,
                   height: 44,
                   borderRadius: "50%",
-                  background: "var(--color-btn-bg)",
+                  background: "var(--color-primary)",
                   border: "1px solid rgba(255, 255, 255, 0.15)",
                   display: { xs: "none", md: "flex" },
                   alignItems: "center",
@@ -1406,7 +1407,7 @@ function Home() {
                   width: 44,
                   height: 44,
                   borderRadius: "50%",
-                  background: "var(--color-btn-bg)",
+                  background: "var(--color-primary)",
                   border: "1px solid rgba(255, 255, 255, 0.15)",
                   display: { xs: "none", md: "flex" },
                   alignItems: "center",
@@ -1495,7 +1496,7 @@ function Home() {
                           transition: "all 0.3s ease",
                           "&:hover": {
                             transform: "translateY(-4px)",
-                            borderColor: "#2563eb",
+                            borderColor: "var(--color-primary)",
                             boxShadow: "0 10px 25px rgba(37, 99, 235, 0.08)",
                           }
                         }}

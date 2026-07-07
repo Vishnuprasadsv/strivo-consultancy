@@ -18,7 +18,7 @@ import {
   getAdminInquiriesAPI,
   getReviewsAPI
 } from '../services/allApi';
-import logo from '../assets/strivo logo.png';
+import logo from '../assets/strivo logo.svg';
 
 
 const navLinks = [

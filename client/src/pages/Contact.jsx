@@ -204,28 +204,28 @@ const Contact = () => {
             {/* Left Column: Cards */}
             <div className="space-y-4">
               <div className="bg-[var(--color-sub-bg)] p-6 rounded-[var(--radius-sm)] flex items-start gap-4 transition-colors border border-gray-200">
-                <div className="text-blue-500 mt-1"><LocationOnIcon /></div>
+                <div className="text-(--color-primary) mt-1"><LocationOnIcon /></div>
                 <div>
                   <h3 className="text-lg font-semibold text-black mb-2">Headquarters</h3>
                   <p className="paragraph text-gray-700 text-sm leading-relaxed">100 Innovation Way<br />Tech District, Suite 400<br />San Francisco, CA 94105</p>
                 </div>
               </div>
               <div className="bg-[var(--color-sub-bg)] p-6 rounded-[var(--radius-sm)] flex items-start gap-4 transition-colors border border-gray-200">
-                <div className="text-blue-500 mt-1"><PhoneIcon /></div>
+                <div className="text-(--color-primary) mt-1"><PhoneIcon /></div>
                 <div>
                   <h3 className="text-lg font-semibold text-black mb-2">Direct Line</h3>
                   <p className="paragraph text-gray-700 text-sm leading-relaxed">Support: +1 (800) 555-0199<br />Sales: +1 (800) 555-0198</p>
                 </div>
               </div>
               <div className="bg-[var(--color-sub-bg)] p-6 rounded-[var(--radius-sm)] flex items-start gap-4 transition-colors border border-gray-200">
-                <div className="text-blue-500 mt-1"><EmailIcon /></div>
+                <div className="text-(--color-primary) mt-1"><EmailIcon /></div>
                 <div>
                   <h3 className="text-lg font-semibold text-black mb-2">Electronic Mail</h3>
                   <p className="paragraph text-gray-700 text-sm leading-relaxed">hello@premiumenterprise.com<br />support@premiumenterprise.com</p>
                 </div>
               </div>
               <div className="bg-[var(--color-sub-bg)] p-6 rounded-[var(--radius-sm)] flex items-start gap-4 transition-colors border border-gray-200">
-                <div className="text-blue-500 mt-1"><AccessTimeIcon /></div>
+                <div className="text-(--color-primary) mt-1"><AccessTimeIcon /></div>
                 <div>
                   <h3 className="text-lg font-semibold text-black mb-2">Business Hours</h3>
                   <p className="paragraph text-gray-700 text-sm leading-relaxed">Monday - Friday: 8:00 AM - 6:00 PM (PST)<br />Weekend support available for enterprise clients.</p>

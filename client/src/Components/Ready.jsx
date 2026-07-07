@@ -79,7 +79,7 @@ function Ready() {
               {/* Prop 1 */}
               <div className="flex flex-row sm:flex-col items-center text-left sm:text-center gap-4 sm:gap-3 md:gap-4 max-w-[280px] sm:max-w-none mx-auto w-full">
                 <div className="w-9 sm:w-10 md:w-10 lg:w-12 h-9 sm:h-10 md:h-10 lg:h-12 rounded-full border border-blue-500/30 flex items-center justify-center text-[#3b82f6] bg-blue-500/5 shrink-0">
-                  <TrendingUp className="w-4 h-4 sm:w-5 sm:h-5 md:w-5 lg:w-6 md:h-5 lg:h-6" />
+                  <TrendingUp className="w-4 h-4 text-primary sm:w-5 sm:h-5 md:w-5 lg:w-6 md:h-5 lg:h-6" />
                 </div>
                 <div>
                   <h3 className="paragraph mb-1 sm:mb-2 md:mb-2">
@@ -94,7 +94,7 @@ function Ready() {
               {/* Prop 2 */}
               <div className="flex flex-row sm:flex-col items-center text-left sm:text-center gap-4 sm:gap-3 md:gap-4 max-w-[280px] sm:max-w-none mx-auto w-full">
                 <div className="w-9 sm:w-10 md:w-10 lg:w-12 h-9 sm:h-10 md:h-10 lg:h-12 rounded-full border border-blue-500/30 flex items-center justify-center text-[#3b82f6] bg-blue-500/5 shrink-0">
-                  <Settings className="w-4 h-4 sm:w-5 sm:h-5 md:w-5 lg:w-6 md:h-5 lg:h-6" />
+                  <Settings className="w-4 h-4 text-primary sm:w-5 sm:h-5 md:w-5 lg:w-6 md:h-5 lg:h-6" />
                 </div>
                 <div>
                   <h3 className="paragraph mb-1 sm:mb-2 md:mb-2">
@@ -109,7 +109,7 @@ function Ready() {
               {/* Prop 3 */}
               <div className="flex flex-row sm:flex-col items-center text-left sm:text-center gap-4 sm:gap-3 md:gap-4 max-w-[280px] sm:max-w-none mx-auto w-full">
                 <div className="w-9 sm:w-10 md:w-10 lg:w-12 h-9 sm:h-10 md:h-10 lg:h-12 rounded-full border border-blue-500/30 flex items-center justify-center text-[#3b82f6] bg-blue-500/5 shrink-0">
-                  <WorkspacePremium className="w-4 h-4 sm:w-5 sm:h-5 md:w-5 lg:w-6 md:h-5 lg:h-6" />
+                  <WorkspacePremium className="w-4 h-4 text-primary sm:w-5 sm:h-5 md:w-5 lg:w-6 md:h-5 lg:h-6" />
                 </div>
                 <div>
                   <h3 className="paragraph mb-1 sm:mb-2 md:mb-2">
