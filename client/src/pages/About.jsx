@@ -112,7 +112,7 @@ function Aboutus() {
         className="section-padding"
         sx={{
           backgroundColor: "var(--color-primary)",
-          color: "#ffffff",
+          color: "var(--color-white)",
           height: { xs: "auto", md: "500px" },
           minHeight: { xs: "auto", md: "500px" },
           display: "flex",
@@ -156,7 +156,7 @@ function Aboutus() {
                       fontWeight: "var(--font-normal)",
                       lineHeight: 1.2,
                       letterSpacing: "-0.5px",
-                      color: "#ffffff",
+                      color: "var(--color-white)",
                       mb: 3,
                     }}
                   >
@@ -279,7 +279,7 @@ function Aboutus() {
                   lg: "60%",
                 },
                 maxWidth: "750px",
-                color: "#fff",
+                color: "var(--color-white)",
                 textAlign: "left",
               }}
             >
@@ -457,7 +457,7 @@ function Aboutus() {
                 {/* Card 1 */}
                 <Box
                   sx={{
-                    backgroundColor: "#ffffff",
+                    backgroundColor: "var(--color-white)",
                     p: { xs: 2, sm: 2.5, lg: 3 },
                     borderRadius: "3px",
                     border: "1px solid var(--color-border)",
@@ -512,7 +512,7 @@ function Aboutus() {
                 {/* Card 2 */}
                 <Box
                   sx={{
-                    backgroundColor: "#ffffff",
+                    backgroundColor: "var(--color-white)",
                     p: { xs: 2, sm: 2.5, lg: 3 },
                     borderRadius: "3px",
                     border: "1px solid var(--color-border)",
@@ -567,7 +567,7 @@ function Aboutus() {
                 {/* Card 3 */}
                 <Box
                   sx={{
-                    backgroundColor: "#ffffff",
+                    backgroundColor: "var(--color-white)",
                     p: { xs: 2, sm: 2.5, lg: 3 },
                     borderRadius: "3px",
                     border: "1px solid var(--color-border)",
@@ -622,7 +622,7 @@ function Aboutus() {
                 {/* Card 4 */}
                 <Box
                   sx={{
-                    backgroundColor: "#ffffff",
+                    backgroundColor: "var(--color-white)",
                     p: { xs: 2, sm: 2.5, lg: 3 },
                     borderRadius: "3px",
                     border: "1px solid var(--color-border)",
@@ -732,7 +732,7 @@ function Aboutus() {
                 transition={{ duration: 0.8 }}
                 onClick={() => navigate("/mission")}
                 sx={{
-                  bgcolor: "white",
+                  bgcolor: "var(--color-white)",
                   border: "1px solid #e2e8f0",
                   borderRadius: "6px",
                   boxShadow: "0 4px 20px rgba(0, 0, 0, 0.03)",
@@ -744,8 +744,8 @@ function Aboutus() {
                   position: "relative",
                   overflow: "hidden",
                   "&:hover": {
-                    borderColor: "#2F6BFF",
-                    boxShadow: "0 20px 40px rgba(47, 107, 255, 0.15)",
+                    borderColor: "var(--color-primary)",
+                    boxShadow: "0 20px 40px rgba(1, 42, 89, 0.15)",
                     transform: "translateY(-8px)",
                   },
                   "&::after": {
@@ -755,7 +755,7 @@ function Aboutus() {
                     left: 0,
                     width: "100%",
                     height: "4px",
-                    backgroundColor: "#2F6BFF",
+                    backgroundColor: "var(--color-primary)",
                     transform: "scaleX(0)",
                     transformOrigin: "left",
                     transition: "transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94)",
@@ -764,12 +764,12 @@ function Aboutus() {
                     transform: "scaleX(1)",
                   },
                   "&:hover .icon-container": {
-                    backgroundColor: "#2F6BFF",
-                    borderColor: "#2F6BFF",
+                    backgroundColor: "var(--color-primary)",
+                    borderColor: "var(--color-primary)",
                     transform: "scale(1.1) rotate(5deg)",
                   },
                   "&:hover .icon-container svg": {
-                    color: "#ffffff !important",
+                    color: "var(--color-white) !important",
                   }
                 }}
               >
@@ -780,7 +780,7 @@ function Aboutus() {
                     height: 40,
                     border: "1px solid #e2e8f0",
                     borderRadius: "50%",
-                    bgcolor: "rgba(47, 107, 255, 0.05)",
+                    bgcolor: "rgba(1, 42, 89, 0.05)",
                     display: "flex",
                     justifyContent: "center",
                     alignItems: "center",
@@ -840,7 +840,7 @@ function Aboutus() {
                 transition={{ duration: 0.8 }}
                 onClick={() => navigate("/vision")}
                 sx={{
-                  bgcolor: "white",
+                  bgcolor: "var(--color-white)",
                   border: "1px solid #e2e8f0",
                   borderRadius: "6px",
                   boxShadow: "0 4px 20px rgba(0, 0, 0, 0.03)",
@@ -852,8 +852,8 @@ function Aboutus() {
                   position: "relative",
                   overflow: "hidden",
                   "&:hover": {
-                    borderColor: "#2F6BFF",
-                    boxShadow: "0 20px 40px rgba(47, 107, 255, 0.15)",
+                    borderColor: "var(--color-primary)",
+                    boxShadow: "0 20px 40px rgba(1, 42, 89, 0.15)",
                     transform: "translateY(-8px)",
                   },
                   "&::after": {
@@ -863,7 +863,7 @@ function Aboutus() {
                     left: 0,
                     width: "100%",
                     height: "4px",
-                    backgroundColor: "#2F6BFF",
+                    backgroundColor: "var(--color-primary)",
                     transform: "scaleX(0)",
                     transformOrigin: "left",
                     transition: "transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94)",
@@ -872,12 +872,12 @@ function Aboutus() {
                     transform: "scaleX(1)",
                   },
                   "&:hover .icon-container": {
-                    backgroundColor: "#2F6BFF",
-                    borderColor: "#2F6BFF",
+                    backgroundColor: "var(--color-primary)",
+                    borderColor: "var(--color-primary)",
                     transform: "scale(1.1) rotate(5deg)",
                   },
                   "&:hover .icon-container svg": {
-                    color: "#ffffff !important",
+                    color: "var(--color-white) !important",
                   }
                 }}
               >
@@ -888,7 +888,7 @@ function Aboutus() {
                     height: 40,
                     border: "1px solid #e2e8f0",
                     borderRadius: "50%",
-                    bgcolor: "rgba(47, 107, 255, 0.05)",
+                    bgcolor: "rgba(1, 42, 89, 0.05)",
                     display: "flex",
                     justifyContent: "center",
                     alignItems: "center",
@@ -959,7 +959,7 @@ function Aboutus() {
                   }}
                   onClick={() => navigate(`/values/${item.title.toLowerCase()}`)}
                   sx={{
-                    bgcolor: "white",
+                    bgcolor: "var(--color-white)",
                     border: "1px solid #e2e8f0",
                     borderRadius: "6px",
                     boxShadow: "0 4px 20px rgba(0, 0, 0, 0.03)",
@@ -971,8 +971,8 @@ function Aboutus() {
                     position: "relative",
                     overflow: "hidden",
                     "&:hover": {
-                      borderColor: "#2F6BFF",
-                      boxShadow: "0 20px 40px rgba(47, 107, 255, 0.15)",
+                      borderColor: "var(--color-primary)",
+                      boxShadow: "0 20px 40px rgba(1, 42, 89, 0.15)",
                       transform: "translateY(-8px)",
                     },
                     "&::after": {
@@ -982,7 +982,7 @@ function Aboutus() {
                       left: 0,
                       width: "100%",
                       height: "4px",
-                      backgroundColor: "#2F6BFF",
+                      backgroundColor: "var(--color-primary)",
                       transform: "scaleX(0)",
                       transformOrigin: "left",
                       transition: "transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94)",
@@ -991,12 +991,12 @@ function Aboutus() {
                       transform: "scaleX(1)",
                     },
                     "&:hover .icon-container": {
-                      backgroundColor: "#2F6BFF",
-                      borderColor: "#2F6BFF",
+                      backgroundColor: "var(--color-primary)",
+                      borderColor: "var(--color-primary)",
                       transform: "scale(1.1) rotate(5deg)",
                     },
                     "&:hover .icon-container svg": {
-                      color: "#ffffff !important",
+                      color: "var(--color-white) !important",
                     }
                   }}
                 >
@@ -1007,7 +1007,7 @@ function Aboutus() {
                       height: 40,
                       border: "1px solid #e2e8f0",
                       borderRadius: "50%",
-                      bgcolor: "rgba(47, 107, 255, 0.05)",
+                      bgcolor: "rgba(1, 42, 89, 0.05)",
                       display: "flex",
                       justifyContent: "center",
                       alignItems: "center",
@@ -1124,7 +1124,7 @@ function Aboutus() {
                     left: 0,
                     width: "100%",
                     height: "4px",
-                    backgroundColor: "#2F6BFF",
+                    backgroundColor: "var(--color-primary)",
                     transform: "scaleX(0)",
                     transformOrigin: "left",
                     transition: "transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94)",
@@ -1301,7 +1301,7 @@ function Aboutus() {
                   height: { xs: "32px", md: "48px" },
                   borderRadius: "50%",
                   backgroundColor: "var(--color-primary)",
-                  color: "#ffffff",
+                  color: "var(--color-white)",
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "center",
@@ -1366,7 +1366,7 @@ function Aboutus() {
                   height: { xs: "32px", md: "48px" },
                   borderRadius: "50%",
                   backgroundColor: "var(--color-primary)",
-                  color: "#ffffff",
+                  color: "var(--color-white)",
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "center",
@@ -1431,7 +1431,7 @@ function Aboutus() {
                   height: { xs: "32px", md: "48px" },
                   borderRadius: "50%",
                   backgroundColor: "var(--color-primary)",
-                  color: "#ffffff",
+                  color: "var(--color-white)",
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "center",
@@ -1496,7 +1496,7 @@ function Aboutus() {
                   height: { xs: "32px", md: "48px" },
                   borderRadius: "50%",
                   backgroundColor: "var(--color-primary)",
-                  color: "#ffffff",
+                  color: "var(--color-white)",
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "center",
@@ -1561,7 +1561,7 @@ function Aboutus() {
                   height: { xs: "32px", md: "48px" },
                   borderRadius: "50%",
                   backgroundColor: "var(--color-primary)",
-                  color: "#ffffff",
+                  color: "var(--color-white)",
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "center",
@@ -1612,19 +1612,19 @@ function Aboutus() {
                 px: 5,
                 py: 2,
                 fontSize: "1rem",
-                fontWeight: 600,
+                fontWeight: "var(--font-bold)",
                 fontFamily: "var(--font-primary)",
-                borderRadius: "var(--radius-md)",
+                borderRadius: "var(--radius-sm)",
                 backgroundColor: "var(--color-primary)",
-                color: "#ffffff",
+                color: "var(--color-white)",
                 border: "none",
                 cursor: "pointer",
-                boxShadow: "0 8px 25px rgba(37, 99, 235, 0.3)",
+                boxShadow: "var(--shadow-button)",
                 transition: "all 0.3s ease",
                 "&:hover": {
-                  backgroundColor: "#1d4ed8",
+                  backgroundColor: "var(--color-primary-hover)",
                   transform: "translateY(-2px)",
-                  boxShadow: "0 12px 30px rgba(37, 99, 235, 0.5)",
+                  boxShadow: "var(--shadow-button)",
                 },
                 "&:active": {
                   transform: "translateY(0)",
