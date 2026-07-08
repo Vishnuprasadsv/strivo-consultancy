@@ -6,6 +6,7 @@ import axios from "axios";
 import Accordion from '@mui/material/Accordion';
 import AccordionSummary from '@mui/material/AccordionSummary';
 import AccordionDetails from '@mui/material/AccordionDetails';
+import { Box, Typography } from '@mui/material';
 // MUI icons
 import LocationOnIcon from '@mui/icons-material/LocationOn';
 import PhoneIcon from '@mui/icons-material/Phone';
@@ -161,68 +162,147 @@ const Contact = () => {
   );
   return (
     <div className="flex flex-col min-h-screen font-sans overflow-hidden bg-main">
-      {/* Wrapper for Sections 1 & 2 */}
-      <div className="w-full  pt-12 pb-24 flex-grow">
-        <div className="max-w-7xl mx-auto px-6 md:px-12 space-y-32 ">
-          {/* Section 1: Hero */}
-          <motion.section
-            id="hero-section"
-            initial="hidden"
-            animate="visible"
-            variants={fadeUpVariants}
-            className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center text-pure-black"
+      {/* Section 1: Hero */}
+      <Box
+        component={motion.section}
+        id="hero-section"
+        initial="hidden"
+        animate="visible"
+        variants={fadeUpVariants}
+        className="section-padding"
+        sx={{
+          backgroundColor: "var(--color-primary)",
+          color: "var(--color-white)",
+          minHeight: { xs: "auto", md: "500px" },
+          display: "flex",
+          alignItems: "center",
+           border: "none",
+                    boxShadow: "none",
+                 
+        }}
+      >
+        <Box className="max-w-[110rem] mx-auto px-6 md:px-42" sx={{ width: "100%" }}>
+          <Box
+            sx={{
+              display: "flex",
+              flexDirection: { xs: "column", lg: "row" },
+              alignItems: "center",
+              justifyContent: "center",
+              gap: { xs: 5, md: 8, lg: 8 },
+            }}
           >
-            <div className="space-y-6">
-              <motion.h1
-  className="
-    main-heading
-    text-4xl
-    sm:text-5xl
-    md:text-6xl
-    lg:text-7xl
-    leading-tight
-    mb-6
-  "
->Let's Start a Conversation</motion.h1>
-              <p className="paragraph leading-relaxed max-w-lg">
-                Whether you're looking to scale your infrastructure, optimize workflows, or explore new technological frontiers, our team of experts is ready to assist. Reach out to discuss how Premium Enterprise can accelerate your growth.
-              </p>
-            </div>
-            <div className="relative rounded-[var(--radius-sm)] overflow-hidden shadow-2xl border border-gray-800">
-              <img src={contactImg} alt="Contact Enterprise Solutions" className="w-full h-auto object-cover" />
-            </div>
-          </motion.section>
+            <Box
+              sx={{
+                width: { xs: "100%", lg: "auto" },
+                maxWidth: "680px",
+              }}
+            >
+              <motion.div
+                initial={{ opacity: 0, x: -30 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ duration: 0.8 }}
+              >
+                <Typography
+                  component="h1"
+                  sx={{
+                    fontFamily: "var(--font-primary)",
+                    fontSize: { xs: "38px", md: "var(--text-main-heading)" },
+                    fontWeight: "var(--font-normal)",
+                    lineHeight: 1.2,
+                    letterSpacing: "-0.5px",
+                    color: "var(--color-white)",
+                    mb: 3,
+                  }}
+                >
+                  Let's Start a Conversation
+                </Typography>
+                <Typography
+                  component="p"
+                  sx={{
+                    fontSize: { xs: "1rem", md: "1.1rem" },
+                    color: "rgba(255, 255, 255, 0.85)",
+                    lineHeight: 1.7,
+                    maxWidth: "680px",
+                    textAlign: "justify",
+                    textJustify: "inter-word",
+                    hyphens: "auto",
+                  }}
+                >
+                  Whether you're looking to scale your infrastructure, optimize workflows, or explore new technological frontiers, our team of experts is ready to assist. Reach out to discuss how Premium Enterprise can accelerate your growth.
+                </Typography>
+              </motion.div>
+            </Box>
 
+            <Box
+              sx={{
+                width: { xs: "100%", lg: "auto" },
+                display: "flex",
+                justifyContent: "center",
+              }}
+            >
+              <motion.div
+                initial={{ opacity: 0, x: 30 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ duration: 0.8, delay: 0.1 }}
+                sx={{ border: "none",
+                    boxShadow: "none",
+                  
+                }}>
+                <Box
+                  component="img"
+                  src={contactImg}
+                  alt="Contact Enterprise Solutions"
+                  sx={{
+                    width: "100%",
+                    height: "auto",
+                    maxHeight: "380px",
+                    objectFit: "contain",
+                    objectPosition: { xs: "center", lg: "right" },
+                    display: "block",
+                    border: "none",
+                    boxShadow: "none",
+                  }}
+                />
+              </motion.div>
+            </Box>
+          </Box>
+        </Box>
+      </Box>
+
+      {/* Wrapper for Sections 2+ */}
+      <div className="w-full flex-grow section-padding px-31 ">
+        <div className="max-w-7xl mx-auto px-6 md:px-12 space-y-32 ">
           {/* Section 2: Contact Info & Form */}
           <motion.section
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true, amount: 0.2 }}
-            variants={fadeUpVariants}
-            className="grid grid-cols-1 lg:grid-cols-2 gap-8"
-          >
+  initial="hidden"
+  whileInView="visible"
+  viewport={{ once: true, amount: 0.2 }}
+  variants={fadeUpVariants}
+  className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-stretch"
+>
             {/* Left Column: Cards */}
             <div className="space-y-4">
               <div className="bg-[var(--color-sub-bg)] p-6 rounded-[var(--radius-sm)] flex items-start gap-4 transition-colors border border-gray-200">
                 <div className="text-(--color-primary) mt-1"><LocationOnIcon /></div>
                 <div>
                   <h3 className="text-lg font-semibold text-black mb-2">Headquarters</h3>
-                  <p className="paragraph text-gray-700 text-sm leading-relaxed">100 Innovation Way<br />Tech District, Suite 400<br />San Francisco, CA 94105</p>
+                  <p className="paragraph text-gray-700 text-sm leading-relaxed">TechPark Tower<br />Infopark Expressway<br />Kakkanad, Kochi, Kerala 682042</p>
                 </div>
               </div>
               <div className="bg-[var(--color-sub-bg)] p-6 rounded-[var(--radius-sm)] flex items-start gap-4 transition-colors border border-gray-200">
                 <div className="text-(--color-primary) mt-1"><PhoneIcon /></div>
                 <div>
                   <h3 className="text-lg font-semibold text-black mb-2">Direct Line</h3>
-                  <p className="paragraph text-gray-700 text-sm leading-relaxed">Support: +1 (800) 555-0199<br />Sales: +1 (800) 555-0198</p>
+                  <p className="paragraph text-gray-700 text-sm leading-relaxed">Support: +91 484 123 4567<br />Sales: +91 484 123 4568</p>
                 </div>
               </div>
               <div className="bg-[var(--color-sub-bg)] p-6 rounded-[var(--radius-sm)] flex items-start gap-4 transition-colors border border-gray-200">
                 <div className="text-(--color-primary) mt-1"><EmailIcon /></div>
                 <div>
                   <h3 className="text-lg font-semibold text-black mb-2">Electronic Mail</h3>
-                  <p className="paragraph text-gray-700 text-sm leading-relaxed">hello@premiumenterprise.com<br />support@premiumenterprise.com</p>
+                  <p className="paragraph text-gray-700 text-sm leading-relaxed">strivoc@gmail.com<br />hrstrivoc@gmail.com</p>
                 </div>
+                
               </div>
               <div className="bg-[var(--color-sub-bg)] p-6 rounded-[var(--radius-sm)] flex items-start gap-4 transition-colors border border-gray-200">
                 <div className="text-(--color-primary) mt-1"><AccessTimeIcon /></div>
@@ -231,7 +311,15 @@ const Contact = () => {
                   <p className="paragraph text-gray-700 text-sm leading-relaxed">Monday - Friday: 8:00 AM - 6:00 PM (PST)<br />Weekend support available for enterprise clients.</p>
                 </div>
               </div>
+              <div className="bg-[var(--color-sub-bg)] rounded-[var(--radius-sm)] border border-gray-200 overflow-hidden h-72">
+  <iframe
+    src="https://www.google.com/maps?q=Kochi,Kerala&output=embed"
+    className="w-full h-full"
+    loading="lazy"
+  />
+</div>
             </div>
+            
             {/* Right Column: Form */}
             <div className="bg-[var(--color-sub-bg)] p-8 rounded-[var(--radius-sm)] h-full flex flex-col border border-gray-200">
               <h2 className="text-2xl font-bold text-black mb-6">Send us a message</h2>
