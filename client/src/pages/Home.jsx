@@ -26,6 +26,9 @@ import {
   Groups,
   WorkspacePremium,
   ArrowForward,
+  HandshakeOutlined,
+  BarChartOutlined,
+  GpsFixedOutlined,
 } from "@mui/icons-material";
 
 import heroBg from "../assets/heroBg.jpeg";
@@ -141,12 +144,12 @@ function Home() {
   const highlightReview = (text) => {
     if (!text) return "";
     const highlights = [
-      { phrase: "40% improvement", color: "#3b82f6" },
-      { phrase: "65% increase in our revenue", color: "#3b82f6" },
-      { phrase: "exceeded our expectations", color: "#3b82f6" },
-      { phrase: "30% reduction", color: "#3b82f6" },
-      { phrase: "measurable business impact", color: "#3b82f6" },
-      { phrase: "digital transformation", color: "#3b82f6" }
+      { phrase: "40% improvement", color: "var(--color-paragraph)" },
+      { phrase: "65% increase in our revenue", color: "var(--color-paragraph)" },
+      { phrase: "exceeded our expectations", color: "var(--color-paragraph)" },
+      { phrase: "30% reduction", color: "var(--color-paragraph)" },
+      { phrase: "measurable business impact", color: "var(--color-paragraph)" },
+      { phrase: "digital transformation", color: "var(--color-paragraph)" }
     ];
     let result = text;
     highlights.forEach(({ phrase, color }) => {
@@ -483,7 +486,7 @@ function Home() {
         if (data && data.length > 0) {
           // Map backend data to frontend expected format, filtering out invalid dummy database data
           const formattedData = data
-            .filter(story => story.name && story.clientStories && story.name.trim().length > 3 && !story.name.toLowerCase().includes("sdfg"))
+            .filter(story => story.name && story.clientStories)
             .map(story => ({
               name: story.name,
               role: story.position || "Client",
@@ -529,7 +532,7 @@ function Home() {
           display: "flex",
           alignItems: "center",
           overflow: "hidden",
-          backgroundColor: "var(--color-primary)", 
+          backgroundColor: "var(--color-primary)",
         }}
       >
         <Box
@@ -582,7 +585,7 @@ function Home() {
             <Box
               sx={{
                 filter: "drop-shadow(0px 8px 16px rgba(0, 0, 0, 0.6))",
-                marginLeft:"110px"
+                marginLeft: "110px"
               }}
             >
               <motion.div
@@ -656,14 +659,14 @@ function Home() {
                         alignItems: "center",
                         gap: 1,
                         boxShadow: "0 8px 20px rgba(71, 100, 255, 0.3)",
-                        color:"var(--color-primary)",
+                        color: "var(--color-primary)",
                         "& svg": {
                           transition: "transform 0.4s ease",
                         },
                         "&:hover": {
                           background: "var(--color-sub-bg)",
                           boxShadow: "0 12px 25px rgba(71, 100, 255, 0.4)",
-                          color:"var(--color-primary)",
+                          color: "var(--color-primary)",
                           "& svg": {
                             transform: "translateX(5px)",
                           }
@@ -673,7 +676,7 @@ function Home() {
                       }}
                     >
                       Contact Us
-                      <ArrowForward sx={{ fontSize: "1rem",}} />
+                      <ArrowForward sx={{ fontSize: "1rem", }} />
                     </Button>
                   </motion.div>
 
@@ -693,7 +696,7 @@ function Home() {
                         "&:hover": {
                           background: "var(--color-main-bg)",
                           borderColor: "var(--color-primary)",
-                          color:"var(--color-primary)",
+                          color: "var(--color-primary)",
                         },
                         transition: "all 0.3s ease",
                         width: { xs: "100%", sm: "auto" }
@@ -718,7 +721,7 @@ function Home() {
           display: "flex",
           justifyContent: "center",
           alignItems: "center",
-          py: 2.5,
+          marginTop: "20px",
           borderBottom: "1px solid rgba(255, 255, 255, 0.05)"
         }}
       >
@@ -750,176 +753,183 @@ function Home() {
       >
         {/* TRUSTED BY SECTION */}
 
-        <Container maxWidth="xl">
-          <Box
-            sx={{
-              borderTop: "1px solid rgba(0,0,0,0.06)",
-              borderBottom: "1px solid rgba(0,0,0,0.06)",
-              py: 4,
-              overflow: "hidden",
-            }}
-          >
-            <Box
-              component="h2"
-              className="sub-heading"
-              sx={{
-                textAlign: "center",
-                letterSpacing: "1px",
-                mb: 6,
-              }}
-            >
-              Trusted By Industary Leaders
+        <div className="max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8">
+          <Box sx={{ py: { xs: 8, md: 1 }, overflow: "hidden" }}>
+            <Box sx={{ textAlign: "center", mb: 6 }}>
+              <Box
+                component="p"
+                className="pre-heading"
+                sx={{
+                  textTransform: "uppercase",
+                  mb: 1.5,
+                }}
+              >
+                OUR TRUSTED PARTNERS
+              </Box>
+              <Box
+                component="h2"
+                className="sub-heading"
+                sx={{
+                  color: "var(--color-primary)",
+                  mb: 2,
+                }}
+              >
+                Trusted by Industry Leaders
+              </Box>
+              <Typography
+                sx={{
+                  color: "var(--color-paragraph)",
+                  fontSize: "1.1rem",
+                  maxWidth: "600px",
+                  mx: "auto",
+                  lineHeight: 1.6,
+                }}
+              >
+                We collaborate with forward-thinking companies who share our vision for innovation and excellence.
+              </Typography>
             </Box>
 
-            <motion.div
-              animate={{
-                x: ["0%", "-50%"],
-              }}
-              transition={{
-                duration: 20,
-                repeat: Infinity,
-                ease: "linear",
+            <Box
+              sx={{
+                display: "flex",
+                flexWrap: "nowrap",
+                justifyContent: { xs: "flex-start", lg: "center" },
+                alignItems: "center",
+                gap: { xs: 3, md: 4 },
+                mb: 8,
+                overflowX: "auto",
+                "&::-webkit-scrollbar": { display: "none" },
+                msOverflowStyle: "none",
+                scrollbarWidth: "none",
+                width: "100%",
+                py: 1,
               }}
             >
-              <Box
-                sx={{
-                  display: "flex",
-                  gap: { xs: 6, md: 10 },
-                  width: "max-content",
-                }}
-              >
-                {[...companies, ...companies].map(
-                  (company, index) => (
-                    <Typography
-                      key={index}
-                      sx={{
-                        color: "#94a3b8",
-                        fontWeight: 700,
-                        whiteSpace: "nowrap",
-                        cursor: "pointer",
-                        transition: ".4s",
-                        fontSize: {
-                          xs: "1.2rem",
-                          md: "1.8rem",
-                        },
-
-                        "&:hover": {
-                          color: "#0f172a",
-                        },
-                      }}
-                    >
-                      {company}
-                    </Typography>
-                  )
-                )}
-              </Box>
-            </motion.div>
-          </Box>
-        </Container>
-
-        {/* STATS SECTION */}
-
-        <Container
-          maxWidth="lg"
-          sx={{
-            mt: { xs: 4, lg: 6 },
-          }}
-        >
-          <Box
-            sx={{
-              display: "grid",
-              gridTemplateColumns: {
-                xs: "repeat(2,1fr)",
-                lg: "repeat(4,1fr)",
-              },
-              gap: { xs: 2, sm: 4 },
-            }}
-          >
-            {stats.map((item, index) => (
-              <motion.div
-                key={index}
-                initial={{
-                  opacity: 0,
-                  y: 60,
-                }}
-                whileInView={{
-                  opacity: 1,
-                  y: 0,
-                }}
-                viewport={{
-                  once: true,
-                }}
-                transition={{
-                  duration: 0.8,
-                  delay: index * 0.2,
-                }}
-              >
+              {companyLogos.map((company, index) => (
                 <Box
+                  key={index}
                   sx={{
-                    background: "#f8fafc",
-                    border: "1px solid rgba(37,99,235,0.08)",
-                    borderRadius: "3px",
-                    p: { xs: 2.5, sm: 3, md: 3.5 },
-                    textAlign: "center",
-                    position: "relative",
-                    overflow: "hidden",
-                    transition: "all .4s ease",
-                    boxShadow: "0 10px 30px rgba(0,0,0,0.02)",
-
-                    "&::before": {
-                      content: '""',
-                      position: "absolute",
-                      top: 0,
-                      left: 0,
-                      width: "100%",
-                      height: "2px",
-                      background:
-                        "linear-gradient(90deg,var(--color-primary),transparent)",
-                    },
-
+                    display: "flex",
+                    alignItems: "center",
+                    gap: 1,
+                    color: "var(--color-paragraph)",
+                    transition: "all 0.3s ease",
+                    cursor: "pointer",
                     "&:hover": {
-                      transform: "translateY(-12px)",
-                      background: "#ffffff",
-                      border: "1px solid rgba(37,99,235,0.2)",
-                      boxShadow: "0 20px 40px rgba(37,99,235,0.08)",
+                      color: "var(--color-primary)",
                     },
+                    borderRight: index !== companyLogos.length - 1 ? "1px solid rgba(0,0,0,0.1)" : "none",
+                    pr: index !== companyLogos.length - 1 ? { xs: 3, md: 4 } : 0,
+                    flexShrink: 0,
                   }}
                 >
+                  <Box sx={{ display: "flex", alignItems: "center", color: "inherit", "& svg": { width: 18, height: 18 } }}>
+                    {company.svg}
+                  </Box>
                   <Typography
                     sx={{
                       fontWeight: 800,
-                      color: "var(--color-primary)",
-                      mb: 1,
-                      lineHeight: 1,
-                      fontSize: {
-                        xs: "2rem",
-                        md: "2.6rem",
-                      },
+                      fontSize: "1.3rem",
+                      letterSpacing: "0.5px",
+                      color: "inherit",
                     }}
                   >
-                    {item.value}
-                    {item.suffix}
-                  </Typography>
-
-                  <Typography
-                    sx={{
-                      color: "#475569",
-                      letterSpacing: "2px",
-                      fontWeight: 600,
-                      textTransform: "uppercase",
-                      fontSize: {
-                        xs: "0.75rem",
-                        md: "0.85rem",
-                      },
-                    }}
-                  >
-                    {item.label}
+                    {company.name}
                   </Typography>
                 </Box>
-              </motion.div>
-            ))}
+              ))}
+            </Box>
+
+            <Box
+              className="card"
+              sx={{
+                background: "var(--color-primary)",
+                // borderRadius: "16px",
+                p: { xs: 5, md: 7 },
+                display: "grid",
+                gridTemplateColumns: { xs: "1fr", sm: "1fr 1fr", md: "repeat(4, 1fr)" },
+                gap: { xs: 4, md: 2 },
+                boxShadow: "0 20px 40px rgba(1, 41, 89, 0.15)",
+              }}
+            >
+              {stats.map((stat, index) => (
+                <Box
+                  key={index}
+                  sx={{
+                    display: "flex",
+                    flexDirection: "column",
+                    alignItems: "center",
+                    textAlign: "center",
+                    position: "relative",
+                    "&::after": {
+                      content: '""',
+                      position: "absolute",
+                      right: 0,
+                      top: "15%",
+                      height: "70%",
+                      width: "1px",
+                      background: "rgba(255,255,255,0.15)",
+                      display: index !== stats.length - 1 ? { xs: "none", md: "block" } : "none",
+                    }
+                  }}
+                >
+                  <Box
+                    sx={{
+                      width: 64,
+                      height: 64,
+                      borderRadius: "50%",
+                      background: "rgba(255,255,255,0.08)",
+                      border: "1px solid rgba(255,255,255,0.15)",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      mb: 2.5,
+                      color: "#fff",
+                    }}
+                  >
+                    {index === 0 && <AccountTree sx={{ fontSize: 32 }} />}
+                    {index === 1 && <Groups sx={{ fontSize: 32 }} />}
+                    {index === 2 && <Settings sx={{ fontSize: 32 }} />}
+                    {index === 3 && <AutoGraph sx={{ fontSize: 32 }} />}
+                  </Box>
+                  <Box sx={{ display: "flex", alignItems: "baseline", mb: 0.5 }}>
+                    <Typography
+                      sx={{
+                        color: "#fff",
+                        fontSize: "2.8rem",
+                        fontWeight: 700,
+                        lineHeight: 1,
+                      }}
+                    >
+                      <AnimatedCounter target={stat.value} />
+                    </Typography>
+                    <Typography
+                      sx={{
+                        color: "#fff",
+                        fontSize: "2.8rem",
+                        fontWeight: 700,
+                        lineHeight: 1,
+                      }}
+                    >
+                      {stat.suffix}
+                    </Typography>
+                  </Box>
+                  <Typography
+                    sx={{
+                      color: "rgba(255,255,255,0.7)",
+                      fontSize: "0.8rem",
+                      fontWeight: 600,
+                      letterSpacing: "1px",
+                      textTransform: "uppercase",
+                    }}
+                  >
+                    {stat.label}
+                  </Typography>
+                </Box>
+              ))}
+            </Box>
           </Box>
-        </Container>
+        </div>
       </Box>
       {/*  third section */}
       <Box
@@ -948,8 +958,8 @@ function Home() {
             }}
           >
             <Box
-            component="h2"
-            className='sub-heading'
+              component="h2"
+              className='sub-heading'
               sx={{
                 textAlign: "center",
                 mb: 2,
@@ -959,8 +969,8 @@ function Home() {
             </Box>
 
             <Box
-            component='p'
-            className='paragraph'
+              component='p'
+              className='paragraph'
               sx={{
                 textAlign: "center",
                 maxWidth: "800px",
@@ -1007,7 +1017,6 @@ function Home() {
                     sx={{
                       position: "relative",
                       background:
-                        // "linear-gradient(145deg,#081224,#0f172a)",
                         "var(--color-main-bg)",
                       borderRadius: "3px",
                       p: { xs: 2, sm: 3, md: 3 },
@@ -1034,8 +1043,6 @@ function Home() {
                       "&:hover": {
                         border:
                           "1px solid rgba(59,130,246,.4)",
-                        boxShadow:
-                          "0 20px 50px rgba(37,99,235,.18)",
                       },
                     }}
                   >
@@ -1045,12 +1052,14 @@ function Home() {
                       sx={{
                         position: "absolute",
                         width: "180px",
-                        height: "180px",
+                        height: "170px",
+                        borderRadius: "10%",
                         background:
                           "radial-gradient(circle, var(--color-primary), transparent)",
                         top: "-70px",
                         right: "-70px",
                         pointerEvents: "none",
+                        opacity: 0.3,
                       }}
                     />
 
@@ -1079,7 +1088,7 @@ function Home() {
                         color: "var(--color-paragraph)",
                         fontWeight: 700,
                         mb: { xs: 1, md: 2 },
-                        fontSize:"var(--text-paragraph)",
+                        fontSize: "var(--text-paragraph)",
                       }}
                     >
                       {service.title}
@@ -1127,7 +1136,7 @@ function Home() {
           }}
         />
 
-        <Container maxWidth="xl" sx={{ px: { xs: 2, md: 6, lg: 8,}, px:{lg:"140px"}}}>
+        <div className="max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8">
           <Box
             sx={{
               display: "grid",
@@ -1135,114 +1144,71 @@ function Home() {
                 xs: "1fr",
                 lg: "1.1fr 0.9fr",
               },
-              gap: { xs: 4, md: 6, lg: 8 },
+              gap: { xs: 8, md: 10, lg: 12 },
               alignItems: "center",
+              position: "relative"
             }}
           >
             {/* LEFT CONTENT */}
             <motion.div
-              initial={{
-                opacity: 0,
-                y: 60,
-              }}
-              whileInView={{
-                opacity: 1,
-                y: 0,
-              }}
+              initial={{ opacity: 0, y: 60 }}
+              whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              transition={{
-                duration: 1,
-              }}
+              transition={{ duration: 1 }}
             >
-              <Box
-                component="p"
-                className="pre-heading"
-              >
-                Why Clients Trust Us
+              <Box component="p" className="pre-heading" sx={{ color: "var(--color-primary)", letterSpacing: "1.5px" }}>
+                WHY CLIENTS TRUST US
               </Box>
 
               <Box
                 component="h2"
                 className="sub-heading"
                 sx={{
-                  mb: 4,
+                  mb: 6,
                   maxWidth: "700px",
                 }}
               >
                 Building Long-Term Partnerships Through Proven Results
               </Box>
 
-              <Box
-                component="p"
-                className="paragraph"
-                sx={{
-                  mb: 3,
-                }}
-              >
-                For more than 15 years, we have partnered with
-                organizations across industries to solve complex
-                business challenges, improve operational performance,
-                and accelerate sustainable growth.
-              </Box>
-
-              <Box
-                component="p"
-                className="paragraph"
-                sx={{
-                  mb: 3,
-                }}
-              >
-                Our consultants combine strategic insight, industry
-                expertise, and data-driven decision-making to deliver
-                solutions that create measurable business impact.
-              </Box>
-
-              <Box
-                component="p"
-                className="paragraph"
-              >
-                Every engagement is tailored to the unique goals of
-                our clients, ensuring practical, scalable, and
-                results-oriented outcomes that drive long-term success.
-              </Box>
-
-              {/* Bottom Metrics */}
-              <Box
-                sx={{
-                  display: "flex",
-                  flexWrap: "wrap",
-                  gap: { xs: 4, md: 6 },
-                  mt: 5,
-                }}
-              >
+              <Box sx={{ display: 'flex', flexDirection: 'column', gap: 5 }}>
                 {[
-                  { value: 500, suffix: "+", label: "Projects" },
-                  { value: 200, suffix: "+", label: "Clients" },
-                  { value: 98, suffix: "%", label: "Success Rate" },
+                  {
+                    icon: <HandshakeOutlined sx={{ color: "var(--color-primary)", fontSize: "1.8rem" }} />,
+                    text: "For more than 15 years, we have partnered with organizations across industries to solve complex business challenges, improve operational performance, and accelerate sustainable growth."
+                  },
+                  {
+                    icon: <BarChartOutlined sx={{ color: "var(--color-primary)", fontSize: "1.8rem" }} />,
+                    text: "Our consultants combine strategic insight, industry expertise, and data-driven decision-making to deliver solutions that create measurable business impact."
+                  },
+                  {
+                    icon: <GpsFixedOutlined sx={{ color: "var(--color-primary)", fontSize: "1.8rem" }} />,
+                    text: "Every engagement is tailored to the unique goals of our clients, ensuring practical, scalable, and results-oriented outcomes that drive long-term success."
+                  }
                 ].map((item, index) => (
-                  <Box key={index}>
-                    <Typography
-                      sx={{
-                        color: "var(--color-primary)",
-                        fontWeight: 800,
-                        fontSize: {
-                          xs: "1.8rem",
-                          md: "2.5rem",
-                        },
-                      }}
-                    >
-                      <AnimatedCounter target={item.value} suffix={item.suffix} />
-                    </Typography>
+                  <Box key={index} sx={{ display: 'flex', gap: 4, position: 'relative' }}>
+                    {/* Vertical line connector */}
+                    {index !== 2 && (
+                      <Box sx={{ position: 'absolute', left: '32px', top: '64px', bottom: '-40px', width: '2px', background: 'rgba(0,0,0,0.06)' }} />
+                    )}
 
-                    <Typography
-                      sx={{
-                        color: "var(--color-pure-black)",
-                        fontWeight: 700,
-                        letterSpacing: "2px"
-                      }}
-                    >
-                      {item.label}
-                    </Typography>
+                    {/* Icon */}
+                    <Box sx={{
+                      width: 64, height: 64, borderRadius: '50%',
+                      background: '#fff',
+                      border: '1px solid rgba(0,0,0,0.05)',
+                      boxShadow: '0 8px 20px rgba(0,0,0,0.04)',
+                      display: 'flex', alignItems: 'center', justifyContent: 'center',
+                      flexShrink: 0,
+                      zIndex: 1
+                    }}>
+                      {item.icon}
+                    </Box>
+
+                    {/* Text */}
+                    <Box component="p" className="paragraph" sx={{ pt: 1, fontSize: "0.95rem" }}>
+                      {item.text}
+                    </Box>
                   </Box>
                 ))}
               </Box>
@@ -1250,18 +1216,10 @@ function Home() {
 
             {/* RIGHT IMAGE */}
             <motion.div
-              initial={{
-                opacity: 0,
-                x: 80,
-              }}
-              whileInView={{
-                opacity: 1,
-                x: 0,
-              }}
+              initial={{ opacity: 0, x: 80 }}
+              whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: true }}
-              transition={{
-                duration: 1,
-              }}
+              transition={{ duration: 1 }}
             >
               <Box
                 sx={{
@@ -1271,16 +1229,31 @@ function Home() {
                   width: "100%",
                 }}
               >
-                {/* Glow */}
+                {/* Dotted Pattern Top Right */}
                 <Box
                   sx={{
                     position: "absolute",
-                    width: "250px",
-                    height: "250px",
-                    background:
-                      "radial-gradient(circle, rgba(37,99,235,.25), transparent)",
-                    top: "-50px",
-                    right: "-50px",
+                    top: "-30px",
+                    left: "-30px",
+                    width: "120px",
+                    height: "120px",
+                    backgroundImage: "radial-gradient(var(--color-primary) 2px, transparent 2px)",
+                    backgroundSize: "16px 16px",
+                    opacity: 0.15,
+                    zIndex: 0,
+                  }}
+                />
+
+                {/* Dark Blue Box Bottom Right */}
+                <Box
+                  sx={{
+                    position: "absolute",
+                    bottom: "-25px",
+                    right: "-25px",
+                    width: "80%",
+                    height: "80%",
+                    background: "radial-gradient(circle, var(--color-primary) 40%, transparent 100%)",
+                    borderRadius: "3px",
                     zIndex: 0,
                   }}
                 />
@@ -1292,23 +1265,103 @@ function Home() {
                   alt="Business Consulting"
                   sx={{
                     width: "100%",
-                    height: { xs: "auto", md: "380px", lg: "420px" },
+                    height: { xs: "auto", md: "400px", lg: "500px" },
                     borderRadius: "3px",
                     position: "relative",
                     zIndex: 2,
                     objectFit: "cover",
-                    boxShadow:
-                      "0 20px 50px rgba(0,0,0,.15)",
+                    boxShadow: "0 20px 50px rgba(0,0,0,.15)",
                     transition: ".5s ease",
                     "&:hover": {
-                      transform: "scale(1.03)",
+                      transform: "scale(1.02)",
                     },
                   }}
                 />
               </Box>
             </motion.div>
           </Box>
-        </Container>
+
+          {/* Bottom Metrics Card */}
+          <motion.div
+            initial={{ opacity: 0, y: 40 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 1, delay: 0.2 }}
+          >
+            <Box
+              className="card"
+              sx={{
+                mt: { xs: 8, md: 12 },
+                background: "var(--color-sub-bg)",
+                display: "grid",
+                gridTemplateColumns: { xs: "1fr", md: "repeat(3, 1fr)" },
+                alignItems: "center",
+                p: { xs: 4, md: 5 },
+                zIndex: 2,
+                position: "relative",
+                boxShadow: "0 20px 60px rgba(0,0,0,0.06)",
+                borderRadius: "3px",
+              }}
+            >
+              {[
+                { value: 500, suffix: "+", label: "Projects Completed", icon: <AccountTree sx={{ color: "#fff" }} /> },
+                { value: 200, suffix: "+", label: "Clients Served", icon: <Groups sx={{ color: "#fff" }} /> },
+                { value: 98, suffix: "%", label: "Success Rate", icon: <AutoGraph sx={{ color: "#fff" }} /> },
+              ].map((item, index) => (
+                <Box
+                  key={index}
+                  sx={{
+                    display: "flex",
+                    alignItems: "center",
+                    gap: 3,
+                    justifyContent: { xs: "flex-start", md: "center" },
+                    position: "relative",
+                    borderRight: index !== 2 ? { xs: "none", md: "1px solid rgba(0,0,0,0.1)" } : "none",
+                    py: { xs: 2, md: 0 },
+                    borderBottom: index !== 2 ? { xs: "1px solid rgba(0,0,0,0.1)", md: "none" } : "none"
+                  }}
+                >
+                  <Box
+                    sx={{
+                      width: 64,
+                      height: 64,
+                      borderRadius: "50%",
+                      background: "var(--color-primary)",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      flexShrink: 0
+                    }}
+                  >
+                    {item.icon}
+                  </Box>
+                  <Box>
+                    <Typography
+                      sx={{
+                        color: "var(--color-primary)",
+                        fontWeight: 800,
+                        fontSize: "2.2rem",
+                        lineHeight: 1.1,
+                        mb: 0.5
+                      }}
+                    >
+                      <AnimatedCounter target={item.value} suffix={item.suffix} />
+                    </Typography>
+                    <Typography
+                      sx={{
+                        color: "var(--color-paragraph)",
+                        fontWeight: 600,
+                        fontSize: "0.85rem",
+                      }}
+                    >
+                      {item.label}
+                    </Typography>
+                  </Box>
+                </Box>
+              ))}
+            </Box>
+          </motion.div>
+        </div>
       </Box>
       {/* Client Success Stories Section */}
       <Box
@@ -1394,7 +1447,7 @@ function Home() {
                   fontSize: "1.2rem",
                   transition: "all 0.3s ease",
                   "&:hover": {
-                    background: "rgba(37, 99, 235, 0.2)",
+                    background: "var(--color-primary-hover)",
                     borderColor: "#3b82f6",
                   },
                 }}
@@ -1424,7 +1477,7 @@ function Home() {
                   fontSize: "1.2rem",
                   transition: "all 0.3s ease",
                   "&:hover": {
-                    background: "rgba(37, 99, 235, 0.2)",
+                    background: "var(--color-primary-hover)",
                     borderColor: "#3b82f6",
                   },
                 }}
@@ -1433,6 +1486,7 @@ function Home() {
               </Box>
 
               <Swiper
+                key={successStories.length}
                 modules={[Pagination, Autoplay]}
                 onBeforeInit={(swiper) => {
                   swiperRef.current = swiper;
@@ -1454,9 +1508,8 @@ function Home() {
                     const activeIndex = (current - 1) % 3;
                     let html = "";
                     for (let i = 0; i < 3; i++) {
-                      html += `<span class="swiper-pagination-bullet ${
-                        activeIndex === i ? "swiper-pagination-bullet-active" : ""
-                      }"></span>`;
+                      html += `<span class="swiper-pagination-bullet ${activeIndex === i ? "swiper-pagination-bullet-active" : ""
+                        }"></span>`;
                     }
                     return html;
                   }
@@ -1620,7 +1673,7 @@ function Home() {
                       cursor: "pointer",
                     },
                     "& .swiper-pagination-bullet-active": {
-                      backgroundColor: "#2563eb",
+                      backgroundColor: "var(--color-primary)",
                       opacity: 1,
                       width: "16px",
                       "@media (min-width: 900px)": {
@@ -1634,68 +1687,7 @@ function Home() {
             </Box>
           )}
 
-          {/* Trusted By Industry Leaders Logo Strip */}
-          <Box
-            sx={{
-              mt: 10,
-              pt: 6,
-              borderTop: "1px solid rgba(255, 255, 255, 0.08)",
-              textAlign: "center"
-            }}
-          >
-            <Box
-              component="h2"
-              className="sub-heading"
-              sx={{
-                mb: 4
-              }}
-            >
-              Trusted By Industry Leaders
-            </Box>
 
-            <Box
-              sx={{
-                display: "flex",
-                flexWrap: "wrap",
-                justifyContent: "center",
-                alignItems: "center",
-                gap: { xs: 4, md: 8 },
-              }}
-            >
-              {companyLogos.map((company, index) => (
-                <Box
-                  key={index}
-                  sx={{
-                    display: "flex",
-                    alignItems: "center",
-                    gap: 1,
-                    color: "var(--color-black)",
-                    transition: "all 0.3s ease",
-                    cursor: "default",
-                    "&:hover": {
-                      color: "#2200ffcc",
-                      transform: "scale(1.05)",
-                      cursor: "pointer"
-                    }
-                  }}
-                >
-                  <Box sx={{ display: "flex", alignItems: "center" }}>
-                    {company.svg}
-                  </Box>
-                  <Typography
-                    sx={{
-                      fontWeight: 800,
-                      fontSize: "0.95rem",
-                      letterSpacing: "1.5px",
-                      textTransform: "uppercase"
-                    }}
-                  >
-                    {company.name}
-                  </Typography>
-                </Box>
-              ))}
-            </Box>
-          </Box>
         </Container>
       </Box>
 
