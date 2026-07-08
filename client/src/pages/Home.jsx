@@ -1705,7 +1705,7 @@ function Home() {
           "& .MuiDialog-paper": {
             background: "var(--color-main-bg)",
             color: "var(--color-pure-black)",
-            borderRadius: "20px",
+            borderRadius: "3px",
             border: "1px solid rgba(0, 0, 0, 0.08)",
             boxShadow: "0 20px 40px rgba(0, 0, 0, 0.15)",
             p: { xs: 3, sm: 4 },
