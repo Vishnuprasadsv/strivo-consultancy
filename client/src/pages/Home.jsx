@@ -1700,12 +1700,12 @@ function Home() {
         sx={{
           "& .MuiDialog-container": {
             backdropFilter: "blur(8px)",
-            background: "rgba(0, 0, 0, 0.4)",
+            background: "rgba(0, 0, 0, 0.3)",
           },
           "& .MuiDialog-paper": {
             background: "var(--color-main-bg)",
-            color: "var(--color-pure-black)",
-            borderRadius: "20px",
+            color: "var(--color-paragraph)",
+            borderRadius: "px",
             border: "1px solid rgba(0, 0, 0, 0.08)",
             boxShadow: "0 20px 40px rgba(0, 0, 0, 0.15)",
             p: { xs: 3, sm: 4 },
@@ -1723,7 +1723,7 @@ function Home() {
                 right: -5,
                 cursor: "pointer",
                 fontSize: "1.6rem",
-                color: "#64748b",
+                color: "var(--color-primary)",
                 fontWeight: 500,
                 lineHeight: 1,
                 transition: "color 0.2s",
@@ -1735,7 +1735,7 @@ function Home() {
 
             <Typography
               sx={{
-                color: "#2563eb",
+                color: "var(--color-primary)",
                 fontSize: "3.5rem",
                 fontWeight: 900,
                 fontFamily: "Georgia, serif",
@@ -1750,7 +1750,7 @@ function Home() {
 
             <Typography
               sx={{
-                color: "var(--color-pure-black)",
+                color: "var(--color-paragraph)",
                 fontSize: { xs: "0.88rem", sm: "1rem" },
                 lineHeight: 1.7,
                 mb: 3,
