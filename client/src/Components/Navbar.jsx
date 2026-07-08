@@ -57,53 +57,69 @@ const Navbar = () => {
         variants={containerVariants}
         className="bg-white text-black w-full sticky top-0 z-50 border-b border-[var(--color-border)] hidden md:block"
       >
-        <div className="max-w-[110rem] mx-auto px-42 flex items-center justify-between h-20">
-          <motion.div variants={itemVariants} className="flex items-center gap-2">
-            <Logo className="h-12 text-[var(--color-primary)]" />
-          </motion.div>
+        <div className="max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8">
+  <div className="flex items-center justify-between h-20">
 
-          <ul className="flex items-center gap-6">
-            {navLinks.map((link) => (
-              <motion.li variants={itemVariants} key={link.name} className="relative">
-                {link.path !== '#' ? (
-                  <Link
-                    to={link.path}
-                    className="px-3 py-2 block transition-all duration-150 ease-in-out font-bold text-[var(--color-primary)] hover:text-[var(--color-primary)]"
-                  >
-                    {link.name}
-                  </Link>
-                ) : (
-                  <a
-                    href={link.path}
-                    onClick={(e) => {
-                      e.preventDefault();
-                    }}
-                    className="px-3 py-2 block transition-all duration-150 ease-in-out font-bold text-[var(--color-primary)] hover:text-[var(--color-primary)]"
-                  >
-                    {link.name}
-                  </a>
-                )}
-                {activeTab === link.name && (
-                  <motion.div
-                    layoutId="active-underline"
-                    className="absolute left-1 right-1 bottom-0 h-[10px] border-b-[3px] border-[var(--color-primary)] rounded-[3px]"
-                    transition={{ type: 'spring', stiffness: 350, damping: 30 }}
-                    initial={false}
-                  />
-                )}
-              </motion.li>
-            ))}
-          </ul>
+    {/* Logo */}
+    <motion.div
+      variants={itemVariants}
+      className="flex-shrink-0"
+    >
+      <Logo className="h-10 xl:h-12 text-[var(--color-primary)]" />
+    </motion.div>
 
-          <motion.div variants={itemVariants} className="flex items-center gap-4">
-            <Link
-              to="/contact"
-              className="btn"
-            >
-              Contact Us
-            </Link>
-          </motion.div>
-        </div>
+    {/* Navigation */}
+    <ul className="hidden lg:flex items-center whitespace-nowrap gap-3 xl:gap-6">
+      {navLinks.map((link) => (
+        <motion.li
+          variants={itemVariants}
+          key={link.name}
+          className="relative"
+        >
+          <Link
+            to={link.path}
+            className="
+              px-2 xl:px-3
+              py-2
+              text-sm xl:text-base
+              font-bold
+              text-[var(--color-primary)]
+              transition-all
+            "
+          >
+            {link.name}
+          </Link>
+
+          {activeTab === link.name && (
+            <motion.div
+              layoutId="active-underline"
+              className="absolute left-1 right-1 bottom-0 h-[10px] border-b-[3px] border-[var(--color-primary)] rounded-[3px]"
+            />
+          )}
+        </motion.li>
+      ))}
+    </ul>
+
+    {/* CTA */}
+    <motion.div
+      variants={itemVariants}
+      className="hidden lg:flex items-center"
+    >
+      <Link
+        to="/contact"
+        className="btn text-sm xl:text-base"
+      >
+        Contact Us
+      </Link>
+    </motion.div>
+
+    {/* Mobile Menu Button */}
+    <button className="lg:hidden">
+      ☰
+    </button>
+
+  </div>
+</div>
       </motion.nav>
 
       {/* Mobile Navbar */}

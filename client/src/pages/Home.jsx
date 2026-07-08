@@ -657,17 +657,23 @@ function Home() {
                         gap: 1,
                         boxShadow: "0 8px 20px rgba(71, 100, 255, 0.3)",
                         color:"var(--color-primary)",
+                        "& svg": {
+                          transition: "transform 0.4s ease",
+                        },
                         "&:hover": {
-                          background: "var(--color-primary)",
+                          background: "var(--color-sub-bg)",
                           boxShadow: "0 12px 25px rgba(71, 100, 255, 0.4)",
-                          color:"var(--color-white)",
+                          color:"var(--color-primary)",
+                          "& svg": {
+                            transform: "translateX(5px)",
+                          }
                         },
                         transition: "all 0.3s ease",
                         width: { xs: "100%", sm: "auto" }
                       }}
                     >
                       Contact Us
-                      <ArrowForward sx={{ fontSize: "1rem" }} />
+                      <ArrowForward sx={{ fontSize: "1rem",}} />
                     </Button>
                   </motion.div>
 
@@ -685,8 +691,9 @@ function Home() {
                         color: "#fff",
                         borderColor: "rgba(255, 255, 255, 1)",
                         "&:hover": {
-                          background: "rgba(255, 255, 255, 0.08)",
-                          borderColor: "#3b82f6",
+                          background: "var(--color-main-bg)",
+                          borderColor: "var(--color-primary)",
+                          color:"var(--color-primary)",
                         },
                         transition: "all 0.3s ease",
                         width: { xs: "100%", sm: "auto" }

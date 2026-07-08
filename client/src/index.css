@@ -8,8 +8,8 @@
   --font-secondary: "Inter", sans-serif;
 
   /* Brand Colors */
-  --color-primary: #012a59;
-  --color-primary-hover: #3652F5;
+  --color-primary: #012959;
+  --color-primary-hover: #01193a;
 
   /* Background Colors */
   --color-main-bg: #FFFFFF;
@@ -37,7 +37,7 @@
   --color-danger: #EF4444;
 
   /* Font Sizes */
-  --text-main-heading: 58px;
+  --text-main-heading: 54px;
   --text-sub-heading: 38px;
   --text-paragraph: 18px;
   --text-small: 14px;
