@@ -59,7 +59,7 @@ const Vision = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-main font-sans">
+    <div className="min-h-screen bg-main font-sans ">
       {/* HERO SECTION CONTAINER - transparent with black text */}
       <div className="max-w-7xl mx-auto px-6 md:px-12 pt-24 pb-12 text-black">
         {/* Back Button */}
@@ -71,7 +71,7 @@ const Vision = () => {
         >
           <button 
             onClick={() => navigate("/about")} 
-            className="text-blue-500 hover:text-white transition-colors flex items-center border border-blue-500/30 rounded-full px-5 py-2 text-sm font-medium hover:border-blue-500 cursor-pointer"
+            className="text-[var(--color-primary)] hover:text-white transition-colors flex items-center border border-[var(--color-primary)] rounded-full px-5 py-2 text-sm font-medium hover:border-blue-500 cursor-pointer"
           >
             ← Back to About Us
           </button>
