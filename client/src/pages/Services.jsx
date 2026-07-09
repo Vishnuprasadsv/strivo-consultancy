@@ -294,7 +294,7 @@ const Services = () => {
                   {service.description}
                 </p>
 
-                <ul className="space-y-3 paragraph text-gray-600">
+                <ul className="space-y-3 paragraph">
                   <li>✔ Comprehensive assessment and diagnostics</li>
                   <li>✔ Customized implementation roadmap</li>
                   <li>✔ Ongoing support and optimization</li>
