@@ -67,7 +67,7 @@ const Strategic = () => {
               whileInView="visible"
               viewport={{ once: true, amount: 0.2 }}
               variants={fadeUpVariants}
-              className="grid grid-cols-1 lg:grid-cols-2 gap-0 lg:gap-8 items-stretch bg-white rounded-xl overflow-hidden border border-black/5 shadow-[0_15px_35px_rgba(0,0,0,0.03)]"
+              className="grid grid-cols-1 lg:grid-cols-2 gap-0 lg:gap-8 items-stretch bg-white var(--radius-sm) overflow-hidden border border-black/5 shadow-[0_15px_35px_rgba(0,0,0,0.03)]"
             >
               <div className="p-6 sm:p-10 md:p-12 flex flex-col justify-center order-2 lg:order-1">
                 <h2 className="sub-heading mb-4">
@@ -164,7 +164,7 @@ const Strategic = () => {
           initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.2 }} variants={fadeUpVariants}
           className="w-full py-4 md:py-8"
         >
-          <div className="bg-main rounded-2xl p-12 text-center relative overflow-hidden">
+          <div className="bg-main var(--radius-sm) p-12 text-center relative overflow-hidden">
             <div className="absolute inset-0 pointer-events-none"></div>
             <div className="relative z-10 max-w-2xl mx-auto space-y-6">
               <h2 className="sub-heading">Ready to Build a Future-Proof Strategy?</h2>
@@ -336,7 +336,7 @@ const Strategic = () => {
                 <p className="paragraph mb-4"><strong>Challenge:</strong> A multi-national manufacturer faced a 15% margin erosion due to fragmented supply chains and rising geopolitical tensions.</p>
                 <p className="paragraph mb-8"><strong>Solution:</strong> We architected a 5-year nearshoring strategy, integrating advanced analytics to identify key vulnerabilities and establishing a resilient, cost-effective operating model.</p>
               </div>
-              <Link to="/insights" className="inline-flex items-center gap-2 text-[var(--color-primary)] text-sm font-medium hover:text-[var(--color-primary-hover)] transition-colors group">
+              <Link to="/casestudies" className="inline-flex items-center gap-2 text-[var(--color-primary)] text-sm font-medium hover:text-[var(--color-primary-hover)] transition-colors group">
                 Read Full Case Study
                 <span className="group-hover:translate-x-1 transition-transform">→</span>
               </Link>
