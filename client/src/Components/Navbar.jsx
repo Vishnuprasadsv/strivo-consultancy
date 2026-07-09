@@ -78,14 +78,14 @@ const Navbar = () => {
         >
           <Link
             to={link.path}
-            className="
+            className={`
               px-2 xl:px-3
               py-2
               text-sm xl:text-base
-              font-bold
-              text-[var(--color-primary)]
+              font-[var(--font-bold)]
               transition-all
-            "
+              ${activeTab === link.name ? "text-[var(--color-primary-hover)]" : "text-[var(--color-primary)]"}
+            `}
           >
             {link.name}
           </Link>

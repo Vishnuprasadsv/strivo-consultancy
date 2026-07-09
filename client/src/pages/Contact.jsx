@@ -459,7 +459,7 @@ const Contact = () => {
                     type="submit"
                     whileHover={{ scale: agreePolicy ? 1.01 : 1 }}
                     whileTap={{ scale: agreePolicy ? 0.99 : 1 }}
-                    className={`mt-2 py-3 px-6 rounded-[var(--radius-sm)] font-semibold flex items-center justify-center gap-2 w-full transition-colors paragraph ${agreePolicy ? "bg-[var(--color-primary)] text-white hover:opacity-90 cursor-pointer" : "bg-gray-300 text-gray-500 cursor-not-allowed"}`}
+                    className={`mt-2 py-3 px-6 rounded-[var(--radius-sm)] font-semibold flex items-center justify-center gap-2 w-full transition-colors paragraph ${agreePolicy ? "bg-[var(--color-primary)] text-white hover:bg-[var(--color-primary-hover)] cursor-pointer" : "bg-gray-300 text-gray-500 cursor-not-allowed"}`}
                   >
                     <span>Send Message</span>
                     <SendIcon fontSize="small" />
@@ -497,7 +497,7 @@ const Contact = () => {
                   disableGutters
                   sx={{
                     backgroundColor: 'var(--color-main-bg)',
-                    borderRadius: '8px !important',
+                    borderRadius: 'var(--radius-sm)',
                     '&:before': { display: 'none' },
                     boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)',
                     mb: '12px',

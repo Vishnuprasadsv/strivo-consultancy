@@ -38,7 +38,7 @@ const Operations = () => {
                 </Link>
               </div>
             </div>
-            <div className="relative w-full aspect-square md:aspect-auto md:h-[600px] rounded-2xl overflow-hidden bg-main border border-[var(--color-border-color)] flex items-center justify-center p-8">
+            <div className="relative w-full aspect-square md:aspect-auto md:h-[600px] rounded-2xl overflow-hidden bg-main  flex items-center justify-center p-8">
               <img
                 alt="Operational excellence illustration"
                 className="object-contain w-full h-full opacity-90 drop-shadow-[0_0_30px_rgba(37,99,235,0.2)]"
@@ -69,7 +69,7 @@ const Operations = () => {
             <div className="order-1 md:order-2 space-y-8">
               <div className="flex items-center gap-3">
                 <div className="w-10 h-10 rounded-full bg-[#111827] flex items-center justify-center border border-[#374151]">
-                  <svg className="text-blue-500 w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <svg className="text-[var(--color-white)] w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
                   </svg>
@@ -87,11 +87,11 @@ const Operations = () => {
                   { title: 'Performance measurement systems', desc: 'Establish KPIs to monitor ongoing operational health.' }
                 ].map((item, idx) => (
                   <li key={idx} className="flex items-start gap-3">
-                    <svg className="text-blue-500 w-6 h-6 shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
+                    <svg className="text-[var(--color-primary)] w-6 h-6 shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
                       <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
                     </svg>
                     <div>
-                      <strong className="text-base text-blue-500 block">{item.title}</strong>
+                      <strong className="text-base text-[var(--color-primary)] block">{item.title}</strong>
                       <span className="paragraph">{item.desc}</span>
                     </div>
                   </li>
@@ -133,10 +133,10 @@ const Operations = () => {
               }
             ].map((pillar, idx) => (
               <div key={idx} className="card hover:-translate-y-1 hover:shadow-[0_10px_25px_-5px_rgba(37,99,235,0.1)] transition-all duration-200">
-                <svg className="text-blue-500 w-8 h-8 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg className="text-[var(--color-primary)] w-8 h-8 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   {pillar.icon}
                 </svg>
-                <h3 className="text-xl font-semibold text-blue-500 mb-3">{pillar.title}</h3>
+                <h3 className="text-xl font-semibold text-[var(--color-primary)] mb-3">{pillar.title}</h3>
                 <p className="paragraph">{pillar.desc}</p>
               </div>
             ))}
@@ -190,8 +190,8 @@ const Operations = () => {
     text-left
   "
               >
-                <div className="w-12 h-12 rounded-full bg-blue-600 text-white flex items-center justify-center text-xl font-semibold mb-6 shadow-[0_0_15px_rgba(37,99,235,0.5)]">{step.num}</div>
-                <h3 className="text-xl font-semibold text-blue-500 mb-2">{step.title}</h3>
+                <div className="w-12 h-12 rounded-full bg-[var(--color-primary)] text-white flex items-center justify-center text-xl font-semibold mb-6 shadow-[0_0_15px_rgba(37,99,235,0.5)]">{step.num}</div>
+                <h3 className="text-xl font-semibold text-[var(--color-primary)] mb-2">{step.title}</h3>
                 <ul className="paragraph space-y-1 list-disc list-inside">
                   {step.items.map((item, idx) => <li key={idx}>{item}</li>)}
                 </ul>
@@ -219,7 +219,7 @@ const Operations = () => {
               { val: '3-5 Yrs', label: 'Sustainable Performance Gains' }
             ].map((metric, idx) => (
               <div key={idx} className="text-center px-4">
-                <div className="text-4xl md:text-5xl font-bold text-blue-500 mb-2">{metric.val}</div>
+                <div className="text-4xl md:text-5xl font-bold text-[var(--color-primary)] mb-2">{metric.val}</div>
                 <div className="paragraph uppercase tracking-wider">{metric.label}</div>
               </div>
             ))}
@@ -237,7 +237,7 @@ const Operations = () => {
       >
         <div className="max-w-7xl mx-auto px-6 md:px-12">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-stretch">
-            <div className="bg-[#111111] border border-[#222222] rounded-2xl p-8 flex flex-col justify-between">
+            <div className="bg-[#111111] border border-[#222222] rounded-[var(--radius-sm)] p-8 flex flex-col justify-between">
               <div>
                 <div className="flex gap-2 mb-6">
                   <span className="px-3 py-1 rounded-full bg-[#111827] border border-[#374151] text-xs font-semibold text-gray-400">Manufacturing</span>
@@ -247,22 +247,22 @@ const Operations = () => {
                 <p className="paragraph text-white mb-4"><strong>Challenge:</strong> A multi-national manufacturer faced a 15% margin erosion due to fragmented supply chains and rising geopolitical tensions.</p>
                 <p className="paragraph text-white mb-8"><strong>Solution:</strong> We restructured the core logistics framework, implementing automated tracking and predictive inventory management to drastically reduce bottlenecks.</p>
               </div>
-              <Link to="/insights" className="inline-flex items-center gap-2 text-blue-500 text-sm font-medium hover:text-white transition-colors group">
+              <Link to="/insights" className="inline-flex items-center gap-2 text-[var(--color-primary)] text-sm font-medium hover:text-white transition-colors group">
                 Read Full Case Study
                 <span className="group-hover:translate-x-1 transition-transform">?</span>
               </Link>
             </div>
-            <div className="bg-[#111111] border border-[#222222] rounded-2xl p-8 flex flex-col items-center justify-center min-h-[400px] relative overflow-hidden">
+            <div className="bg-[#111111] border border-[#222222] rounded-[var(--radius-sm)] p-8 flex flex-col items-center justify-center min-h-[400px] relative overflow-hidden">
               <div className="absolute inset-0 bg-gradient-to-t from-[#111111] to-transparent z-10 pointer-events-none"></div>
               <div className="w-full h-full flex items-end justify-between gap-2 px-4 relative z-0 opacity-50">
                 <div className="w-1/6 bg-gradient-to-t from-blue-600/20 to-blue-600/5 h-[20%] rounded-t-sm"></div>
                 <div className="w-1/6 bg-gradient-to-t from-blue-600/30 to-blue-600/10 h-[35%] rounded-t-sm"></div>
                 <div className="w-1/6 bg-gradient-to-t from-blue-600/40 to-blue-600/15 h-[45%] rounded-t-sm"></div>
-                <div className="w-1/6 bg-blue-600/40 border border-blue-600 h-[70%] rounded-t-sm relative">
-                  <span className="absolute -top-6 left-1/2 -translate-x-1/2 text-xs text-blue-500 font-semibold hidden sm:block">Implementation</span>
+                <div className="w-1/6 bg-[var(--color-primary)]/40 border border-blue-600 h-[70%] rounded-t-sm relative">
+                  <span className="absolute -top-6 left-1/2 -translate-x-1/2 text-xs text-[var(--color-primary)] font-semibold hidden sm:block">Implementation</span>
                 </div>
-                <div className="w-1/6 bg-blue-600 h-[90%] rounded-t-sm relative">
-                  <span className="absolute -top-6 left-1/2 -translate-x-1/2 text-xs text-blue-500 font-semibold hidden sm:block">Optimization</span>
+                <div className="w-1/6 bg-[var(--color-primary)] h-[90%] rounded-t-sm relative">
+                  <span className="absolute -top-6 left-1/2 -translate-x-1/2 text-xs text-[var(--color-primary)] font-semibold hidden sm:block">Optimization</span>
                 </div>
               </div>
               <div className="absolute top-8 left-8 right-8 z-20">
@@ -283,7 +283,7 @@ const Operations = () => {
         className="w-full bg-main py-16"
       >
         <div className="max-w-7xl mx-auto px-6 md:px-12">
-          <div className="bg-[#111111] border border-[#222222] rounded-2xl p-12 text-center relative overflow-hidden">
+          <div className="bg-[#111111] border border-[#222222] rounded-[var(--radius-sm)] p-12 text-center relative overflow-hidden">
             <div className="absolute inset-0 bg-gradient-to-br from-blue-600/10 to-transparent pointer-events-none"></div>
             <div className="relative z-10 max-w-2xl mx-auto space-y-6">
               <h2 className="sub-heading text-white">Ready to Transform Operational Performance?</h2>
