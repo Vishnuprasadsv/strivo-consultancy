@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import { Button } from '@mui/material';
 
 const fadeUpVariants = {
   hidden: { opacity: 0, y: 30 },
@@ -8,69 +9,119 @@ const fadeUpVariants = {
 };
 
 const Strategic = () => {
+  const navigate = useNavigate();
+
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
 
   return (
-
-
-
-
-
-
-
-   <div className="bg-main w-full py-8 md:py-16">
-
-      {/* Section 1: Hero */}
-      <motion.section
-        id="hero-section"
-        initial="hidden" animate="visible" variants={fadeUpVariants}
-        className="w-full bg-main"
+    <div className="w-full bg-sub">
+      
+      {/* ========================================================================= */}
+      {/* TOP BANNER HERO                                                           */}
+      {/* ========================================================================= */}
+      <div
+        style={{
+          backgroundColor: "var(--color-primary)",
+          minHeight: "320px",
+          display: "flex",
+          alignItems: "center"
+        }}
       >
+        <motion.section
+          initial="hidden"
+          animate="visible"
+          variants={fadeUpVariants}
+          className="max-w-[110rem] w-full mx-auto px-8 md:px-16 lg:px-[180px] py-10 text-white"
+          style={{
+            filter: "drop-shadow(0px 8px 16px rgba(0, 0, 0, 0.2))"
+          }}
+        >
+          <div className="max-w-4xl flex flex-col items-start text-left">
+            <button 
+              onClick={() => navigate("/services")} 
+              className="text-white/80 hover:text-white transition-colors flex items-center gap-2 mb-6 text-sm font-medium cursor-pointer bg-white/10 hover:bg-white/20 rounded-md px-4 py-1.5 border border-white/20"
+            >
+              ← Back to Services
+            </button>
+            <h1 className="main-heading text-white leading-tight mb-4 text-3xl md:text-4xl lg:text-5xl">
+              Strategic Planning
+            </h1>
+            <p className="paragraph text-white/90 max-w-3xl text-sm md:text-base leading-relaxed">
+              Architecting the future of enterprise strategy. We partner with visionary leaders to navigate complexity, define bold directions, and orchestrate execution that guarantees long-term market dominance.
+            </p>
+          </div>
+        </motion.section>
+      </div>
 
-        <div className="max-w-7xl mx-auto px-6 md:px-12 py-8 md:py-12">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
-
-            <div className="space-y-8">
-              <motion.h1
-  className="
-    main-heading
-    text-4xl
-    sm:text-5xl
-    md:text-6xl
-    lg:text-7xl
-    leading-tight
-    mb-6
-  "
->Architecting the Future of Enterprise Strategy</motion.h1>
-              <p className="paragraph">
-                We partner with visionary leaders to navigate complexity, define bold directions, and orchestrate execution that guarantees sustainable market dominance in an unpredictable global landscape.
-              </p>
-              <div className="flex flex-col sm:flex-row gap-4">
-                <Link to="/contact" className="btn text-sm px-6 py-3 transition-colors shadow-[0_0_15px_rgba(37,99,235,0.3)] hover:shadow-[0_0_25px_rgba(37,99,235,0.5)] ">
+      {/* ========================================================================= */}
+      {/* SECOND SECTION: Enterprise Architecture                                   */}
+      {/* ========================================================================= */}
+      <div className="max-w-[1440px] mx-auto">
+        {/* Adjusted padding to half */}
+        <div className="bg-sub py-6 md:py-12 px-6 md:px-16 lg:px-[180px]">
+          <div className="max-w-[1440px] mx-auto">
+            <motion.section
+              initial="hidden"
+              whileInView="visible"
+              viewport={{ once: true, amount: 0.2 }}
+              variants={fadeUpVariants}
+              className="grid grid-cols-1 lg:grid-cols-2 gap-0 lg:gap-8 items-stretch bg-white rounded-xl overflow-hidden border border-black/5 shadow-[0_15px_35px_rgba(0,0,0,0.03)]"
+            >
+              <div className="p-6 sm:p-10 md:p-12 flex flex-col justify-center order-2 lg:order-1">
+                <h2 className="sub-heading mb-4">
+                  Architecting the Future of Enterprise Strategy
+                </h2>
+                <p className="paragraph mb-6 leading-relaxed text-sm md:text-base text-gray-700">
+                  We partner with visionary leaders to navigate complexity, define bold directions, and orchestrate execution that guarantees sustainable market dominance in an unpredictable global landscape.
+                </p>
+                
+                <Button
+                  variant="contained"
+                  onClick={() => navigate("/contact")}
+                  sx={{
+                    backgroundColor: "var(--color-primary)",
+                    color: "var(--color-btn-text)",
+                    minWidth: "130px",
+                    width: "max-content",
+                    height: "42px",
+                    flexGrow: 0,
+                    borderRadius: "var(--radius-sm)",
+                    fontWeight: "var(--font-bold)",
+                    boxShadow: "var(--shadow-button)",
+                    transition: "all var(--transition-speed) ease",
+                    textTransform: "none", 
+                    "&:hover": {
+                      backgroundColor: "var(--color-primary)", 
+                      opacity: 0.9,
+                    },
+                  }}
+                >
                   Schedule Consultation
-                </Link>
+                </Button>
               </div>
-            </div>
-            <div className="
-relative w-full aspect-square md:aspect-auto md:h-[600px]
-rounded-2xl overflow-hidden
-bg-main
-flex items-center justify-center p-8
-">
-              <img alt="Abstract strategic planning" className="object-contain w-full h-full opacity-90 drop-shadow-[0_0_30px_rgba(37,99,235,0.2)]" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAwH885Ucg74aW0JQ-tQ_R19jjsVUDbDWzt_rmw6fjRAflkTAWnj3pp44SYvBT6CItG78fZ56GGg-lZvfmJ1MYl-P779LOy7KhXM07RkdI-y-DF592pJBVw5j2h7CcNsyCvROSQEIX6-OPEl-cff306Trl3rX_qAEKob5mhJRicbHpacPmjrUOLinS4xZ9q8fqHQwuuNjGzrjAfBudpy7V0GD8Vf64RJVrGZIG8ePF4Amxwv-9Vp6nHfiZPZrSRhhPjMNOR5Cob5A" />
-            </div>
+              
+              <div className="h-64 sm:h-80 lg:h-auto min-h-[250px] relative w-full overflow-hidden order-1 lg:order-2">
+                <img 
+                  alt="Abstract strategic planning" 
+                  className="absolute inset-0 w-full h-full object-cover" 
+                  src="https://lh3.googleusercontent.com/aida-public/AB6AXuAwH885Ucg74aW0JQ-tQ_R19jjsVUDbDWzt_rmw6fjRAflkTAWnj3pp44SYvBT6CItG78fZ56GGg-lZvfmJ1MYl-P779LOy7KhXM07RkdI-y-DF592pJBVw5j2h7CcNsyCvROSQEIX6-OPEl-cff306Trl3rX_qAEKob5mhJRicbHpacPmjrUOLinS4xZ9q8fqHQwuuNjGzrjAfBudpy7V0GD8Vf64RJVrGZIG8ePF4Amxwv-9Vp6nHfiZPZrSRhhPjMNOR5Cob5A" 
+                />
+                <div className="absolute inset-0 bg-gradient-to-r from-white to-transparent lg:w-1/4"></div>
+              </div>
+            </motion.section>
           </div>
         </div>
-      </motion.section>
+      </div>
 
       {/* Section 2: Service Overview */}
-      <motion.section
-        initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.2 }} variants={fadeUpVariants}
-        className="w-full bg-sub border-t "
-      >
-        <div className="max-w-7xl mx-auto px-6 md:px-12 py-16 md:py-24">
+      <div className="max-w-[1440px] mx-auto px-6 md:px-16 lg:px-[180px]">
+        {/* Adjusted padding to half */}
+        <motion.section
+          initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.2 }} variants={fadeUpVariants}
+          className="w-full bg-sub py-4 md:py-8"
+        >
           <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
             <div className="order-2 md:order-1 relative w-full aspect-square md:aspect-auto md:h-[500px] rounded-2xl overflow-hidden flex items-center justify-center p-8">
               <img alt="Strategic Service Overview" className="object-contain w-full h-full opacity-90 drop-shadow-[0_0_30px_rgba(37,99,235,0.2)]" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAnaZPRqgp5-0qAJ5fUPAFjw_vWJ0DZbGpj7hSYyHBDOCXi6TW0Df3CyMxFt24jvrKMtKIYi09UJaHU0sfq1MLtztLykDCi1MN-eLzjig4LE1cbtNRFb6tt97CqusV0pbj9nd39Eo5xGYG-Ny-eiJZMgXavzQTdHva57tUby2XQTLTq5A8YCkoC1mkpRR9jgfIvl1xQYrBq4AHauCrzRBMbHIzpJB-X4V7kq-pKTOIkPV9AiPMQPoY0aDcAGF0ofN3NOPvOjSgf7Q" />
@@ -103,15 +154,38 @@ flex items-center justify-center p-8
               </ul>
             </div>
           </div>
-        </div>
-      </motion.section>
+        </motion.section>
+      </div>
+
+      {/* Section 7: CTA Banner */}
+      <div className="max-w-[1440px] mx-auto px-6 md:px-16 lg:px-[180px]">
+        {/* Adjusted padding to half */}
+        <motion.section
+          initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.2 }} variants={fadeUpVariants}
+          className="w-full py-4 md:py-8"
+        >
+          <div className="bg-main rounded-2xl p-12 text-center relative overflow-hidden">
+            <div className="absolute inset-0 pointer-events-none"></div>
+            <div className="relative z-10 max-w-2xl mx-auto space-y-6">
+              <h2 className="sub-heading">Ready to Build a Future-Proof Strategy?</h2>
+              <p className="paragraph">
+                Engage with our senior partners to discuss your immediate challenges and explore how our strategic framework can drive measurable transformation.
+              </p>
+              <Link to="/contact" className="btn inline-flex items-center justify-center text-sm px-8 py-4 mt-4 transition-colors shadow-[0_0_15px_rgba(37,99,235,0.3)] hover:shadow-[0_0_25px_rgba(37,99,235,0.5)]">
+                Schedule a Consultation
+              </Link>
+            </div>
+          </div>
+        </motion.section>
+      </div>
 
       {/* Section 3: Core Capabilities */}
-      <motion.section
-        initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.1 }} variants={fadeUpVariants}
-        className="w-full bg-sub"
-      >
-        <div className="max-w-7xl mx-auto px-6 md:px-12 py-16 md:py-24">
+      <div className="max-w-[1440px] mx-auto px-6 md:px-16 lg:px-[180px]">
+        {/* Adjusted padding to half */}
+        <motion.section
+          initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.1 }} variants={fadeUpVariants}
+          className="w-full bg-sub py-4 md:py-8"
+        >
           <div className="mb-12">
             <h2 className="sub-heading">Core Capabilities</h2>
           </div>
@@ -138,111 +212,131 @@ flex items-center justify-center p-8
                 desc: "Developing resilient strategies against macroeconomic shocks, regulatory changes, and technological disruptions."
               }
             ].map((cap, idx) => (
-              <div key={idx} className="card hover:-translate-y-1 hover:shadow-[0_10px_25px_-5px_rgba(37,99,235,0.1)] transition-all duration-200">
+              <div key={idx} className="card hover:-translate-y-1 hover:shadow-[0_10px_25px_-5px_rgba(37,99,235,0.1)] transition-all duration-200 bg-main">
                 <svg className="text-[var(--color-primary)] w-8 h-8 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">{cap.icon}</svg>
                 <h3 className="text-xl font-semibold text-[var(--color-primary)] mb-3">{cap.title}</h3>
                 <p className="paragraph">{cap.desc}</p>
               </div>
             ))}
           </div>
-        </div>
-      </motion.section>
+        </motion.section>
+      </div>
 
       {/* Section 4: The Acumen Strategic Framework */}
-      <motion.section
-        initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.1 }} variants={fadeUpVariants}
-        className="w-full bg-sub py-16 md:py-24 "
-      >
-        <div className="max-w-7xl mx-auto px-6 md:px-12 text-center">
-          <span className="pre-heading inline-block px-3 py-1 rounded-full bg-white border border-[#374151] uppercase tracking-[3px] mb-4">4-Step Strategic Framework</span>
-          <h2 className="sub-heading mb-16">The Acumen Strategic Framework</h2>
-          <div className="relative flex flex-col lg:flex-row gap-6 isolate">
-            <div
-              className="
-    hidden lg:block
-    absolute
-    top-[48px]
-    left-[10%]
-    right-[10%]
-    h-[2px]
-    bg-gray-400
-    z-0
-  "
-            />
-            {[
-              { num: 1, title: "Diagnostic Discovery", items: ["Business Assessment", "Stakeholder Analysis", "Opportunity Identification"] },
-              { num: 2, title: "Strategy Architecture", items: ["Vision Development", "Goal Definition", "Strategic Mapping"] },
-              { num: 3, title: "Operationalization", items: ["Execution Planning", "Resource Alignment", "KPI Definition"] },
-              { num: 4, title: "Governance & Iteration", items: ["Performance Monitoring", "Continuous Improvement", "Strategic Reviews"] }
-            ].map((step) => (
-              <div
-                key={step.num}
-                className="
-    card
-    flex-1
-    relative
-    z-20
-    bg-white
-    
-    shadow-md
-    hover:-translate-y-1
-    transition-all
-    duration-200
-    text-left
-  "
-              >
-                <div className="w-12 h-12 rounded-full bg-[var(--color-primary)] text-white flex items-center justify-center text-xl font-semibold mb-6 shadow-[0_0_15px_rgba(37,99,235,0.5)]">{step.num}</div>
-                <h3 className="text-xl font-semibold text-[var(--color-primary)] mb-2">{step.title}</h3>
-                <ul className="paragraph space-y-1 list-disc list-inside">
-                  {step.items.map((item, idx) => <li key={idx}>{item}</li>)}
-                </ul>
-              </div>
-            ))}
-          </div>
-        </div>
-      </motion.section>
+      <div className="max-w-[1440px] mx-auto px-6 md:px-16 lg:px-[180px]">
+        {/* Adjusted padding to half */}
+        <motion.section
+          initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.1 }} variants={fadeUpVariants}
+          className="w-full bg-sub py-6 md:py-12"
+        >
+          <div className="text-center">
+            <span className="pre-heading inline-block px-3 py-1 rounded-full bg-white border border-[#374151] uppercase tracking-[3px] mb-4">4-Step Strategic Framework</span>
+            <h2 className="sub-heading mb-16">The Acumen Strategic Framework</h2>
+            <div className="relative flex flex-col lg:flex-row gap-6 isolate">
+              <div className="hidden lg:block absolute top-[48px] left-[10%] right-[10%] h-[2px] bg-[var(--color-primary)] z-0" />
+              
+              {[
+                { num: 1, title: "Diagnostic Discovery", items: ["Business Assessment", "Stakeholder Analysis", "Opportunity Identification"] },
+                { num: 2, title: "Strategy Architecture", items: ["Vision Development", "Goal Definition", "Strategic Mapping"] },
+                { num: 3, title: "Operationalization", items: ["Execution Planning", "Resource Alignment", "KPI Definition"] },
+                { num: 4, title: "Governance & Iteration", items: ["Performance Monitoring", "Continuous Improvement", "Strategic Reviews"] }
+              ].map((step) => (
+                <div 
+                  key={step.num} 
+                  className="card flex-1 min-h-[340px] h-full flex flex-col justify-between relative z-20 bg-main p-6 border border-gray-100 transition-all duration-200 text-left hover:-translate-y-1 hover:shadow-lg"
+                >
+                  <div>
+                    {/* Step Indicator */}
+                    <div className="w-12 h-12 rounded-full bg-[var(--color-primary)] text-white flex items-center justify-center text-xl font-semibold mb-6 shadow-sm">
+                      {step.num}
+                    </div>
+                    
+                    {/* Card Title */}
+                    <h3 className="text-xl font-bold text-[var(--color-primary)] mb-4 tracking-tight min-h-[56px] flex items-center">
+                      {step.title}
+                    </h3>
+                  </div>
 
-      {/* Section 5: Impact Metrics */}
-      <motion.section
-        initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.2 }} variants={fadeUpVariants}
-        className="w-full bg-main py-16 md:py-24"
-      >
-        <div className="max-w-7xl mx-auto px-6 md:px-12">
-          <h2 className="sub-heading mb-12 text-center">Impact Metrics</h2>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-8 bg-[var(--color-main-bg)] p-8 divide-x divide-[var(--color-border-color)]">
-            {[
-              { val: "50+", label: "Strategic Engagements" },
-              { val: "95%", label: "Client Satisfaction" },
-              { val: "30%", label: "Avg Growth Improvement" },
-              { val: "5-10", label: "Years Planning Horizon" }
-            ].map((metric, idx) => (
-              <div key={idx} className="text-center px-4">
-                <div className="text-4xl md:text-5xl font-bold text-[var(--color-primary)] mb-2">{metric.val}</div>
-                <div className="paragraph uppercase tracking-wider">{metric.label}</div>
-              </div>
-            ))}
+                  {/* Clean Left-Aligned List Content */}
+                  <ul className="space-y-3 flex-grow flex flex-col justify-start">
+                    {step.items.map((item, idx) => (
+                      <li key={idx} className="flex items-start gap-2.5 text-sm paragraph font-medium leading-relaxed">
+                        <span className="inline-block w-1.5 h-1.5 rounded-full bg-[var(--color-primary)] mt-2 shrink-0" />
+                        <span>{item}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              ))}
+            </div>
           </div>
-        </div>
-      </motion.section>
+        </motion.section>
+      </div>
+      
+      {/* Section 8: Final Conversion */}
+      <div className="max-w-[1440px] mx-auto px-6 md:px-16 lg:px-[180px]">
+        {/* Adjusted padding to half */}
+        <motion.section
+          initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.2 }} variants={fadeUpVariants}
+          className="w-full bg-sub text-center py-4 md:py-8"
+        >
+          <div>
+            <h2 className="sub-heading mb-6">What Could Strategic Clarity Unlock For Your Business?</h2>
+            <p className="paragraph mb-10 max-w-3xl mx-auto">
+              The difference between market leaders and followers is actionable foresight. Let's build your blueprint for tomorrow.
+            </p>
+            <Link to="/contact" className="btn inline-flex items-center justify-center text-sm px-8 py-4 mt-4 transition-colors shadow-[0_0_15px_rgba(37,99,235,0.3)]">
+              Contact Our Team
+            </Link>
+          </div>
+        </motion.section>
+      </div>
+      
+      {/* Section 5: Impact Metrics */}
+      <div className="max-w-[1440px] mx-auto px-6 md:px-16 lg:px-[180px]">
+        {/* Adjusted padding to half */}
+        <motion.section
+          initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.2 }} variants={fadeUpVariants}
+          className="w-full py-6 md:py-12"
+        >
+          <div>
+            <h2 className="sub-heading mb-12">Impact Metrics</h2>
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-8 p-8 divide-x divide-[var(--color-border-color)]">
+              {[
+                { val: "50+", label: "Strategic Engagements" },
+                { val: "95%", label: "Client Satisfaction" },
+                { val: "30%", label: "Avg Growth Improvement" },
+                { val: "5-10", label: "Years Planning Horizon" }
+              ].map((metric, idx) => (
+                <div key={idx} className="text-center px-4">
+                  <div className="text-4xl md:text-5xl font-bold text-[var(--color-primary)] mb-2">{metric.val}</div>
+                  <div className="paragraph uppercase tracking-wider">{metric.label}</div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </motion.section>
+      </div>
 
       {/* Section 6: Strategic Excellence in Action */}
-      <motion.section
-        initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.1 }} variants={fadeUpVariants}
-        className="w-full bg-main py-16 md:py-24 border-t border-[var(--color-border-color)]"
-      >
-        <div className="max-w-7xl mx-auto px-6 md:px-12">
+      <div className="max-w-[1440px] mx-auto px-6 md:px-16 lg:px-[180px]">
+        {/* Adjusted padding to half */}
+        <motion.section
+          initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.1 }} variants={fadeUpVariants}
+          className="w-full py-5 md:py-10"
+        >
           <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-stretch">
-            <div className="bg-[#111111] border border-[#222222] rounded-[var(--radius-sm)] p-8 flex flex-col justify-between">
+            <div className="bg-main rounded-[var(--radius-sm)] p-8 flex flex-col justify-between">
               <div>
                 <div className="flex gap-2 mb-6">
-                  <span className="px-3 py-1 rounded-full bg-[#111827] border border-[#374151] text-xs font-semibold text-gray-400">Manufacturing</span>
-                  <span className="px-3 py-1 rounded-full bg-[#111827] border border-[#374151] text-xs font-semibold text-gray-400">Transformation</span>
+                  <span className="px-3 py-1 rounded-full bg-[var(--color-primary)] border border-[#374151] text-xs font-semibold text-white">Manufacturing</span>
+                  <span className="px-3 py-1 rounded-full bg-[var(--color-primary)] border border-[#374151] text-xs font-semibold text-white">Transformation</span>
                 </div>
-                <h3 className="text-2xl md:text-3xl font-bold text-white mb-4">Optimizing Global Supply Chains</h3>
-                <p className="paragraph text-white mb-4"><strong>Challenge:</strong> A multi-national manufacturer faced a 15% margin erosion due to fragmented supply chains and rising geopolitical tensions.</p>
-                <p className="paragraph text-white mb-8"><strong>Solution:</strong> We architected a 5-year nearshoring strategy, integrating advanced analytics to identify key vulnerabilities and establishing a resilient, cost-effective operating model.</p>
+                <h3 className="text-2xl md:text-3xl font-bold text-[var(--color-primary)] mb-4">Optimizing Global Supply Chains</h3>
+                <p className="paragraph mb-4"><strong>Challenge:</strong> A multi-national manufacturer faced a 15% margin erosion due to fragmented supply chains and rising geopolitical tensions.</p>
+                <p className="paragraph mb-8"><strong>Solution:</strong> We architected a 5-year nearshoring strategy, integrating advanced analytics to identify key vulnerabilities and establishing a resilient, cost-effective operating model.</p>
               </div>
-              <Link to="/insights" className="inline-flex items-center gap-2 text-blue-500 text-sm font-medium hover:text-white transition-colors group">
+              <Link to="/insights" className="inline-flex items-center gap-2 text-[var(--color-primary)] text-sm font-medium hover:text-[var(--color-primary-hover)] transition-colors group">
                 Read Full Case Study
                 <span className="group-hover:translate-x-1 transition-transform">→</span>
               </Link>
@@ -262,45 +356,9 @@ flex items-center justify-center p-8
               </div>
             </div>
           </div>
-        </div>
-      </motion.section>
+        </motion.section>
+      </div>
 
-      {/* Section 7: CTA Banner */}
-      <motion.section
-        initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.2 }} variants={fadeUpVariants}
-        className="w-full bg-main py-16"
-      >
-        <div className="max-w-7xl mx-auto px-6 md:px-12">
-          <div className="bg-[#111111] border border-[#222222] rounded-[var(--radius-sm)] p-12 text-center relative overflow-hidden">
-            <div className="absolute inset-0 bg-gradient-to-br from-blue-600/10 to-transparent pointer-events-none"></div>
-            <div className="relative z-10 max-w-2xl mx-auto space-y-6">
-              <h2 className="sub-heading text-white">Ready to Build a Future-Proof Strategy?</h2>
-              <p className="paragraph text-white">
-                Engage with our senior partners to discuss your immediate challenges and explore how our strategic framework can drive measurable transformation.
-              </p>
-              <Link to="/contact" className="btn inline-flex items-center justify-center text-sm px-8 py-4 mt-4 transition-colors shadow-[0_0_15px_rgba(37,99,235,0.3)] hover:shadow-[0_0_25px_rgba(37,99,235,0.5)]">
-                Schedule a Consultation
-              </Link>
-            </div>
-          </div>
-        </div>
-      </motion.section>
-
-      {/* Section 8: Final Conversion */}
-      <motion.section
-        initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.2 }} variants={fadeUpVariants}
-        className="w-full bg-sub py-24 text-center border-t border-[var(--color-border-color)]"
-      >
-        <div className="max-w-7xl mx-auto px-6 md:px-12">
-          <h2 className="sub-heading mb-6">What Could Strategic Clarity Unlock For Your Business?</h2>
-          <p className="paragraph mb-10 max-w-3xl mx-auto">
-            The difference between market leaders and followers is actionable foresight. Let's build your blueprint for tomorrow.
-          </p>
-          <Link to="/contact" className="btn inline-flex items-center justify-center text-sm px-8 py-4 mt-4 transition-colors shadow-[0_0_15px_rgba(37,99,235,0.3)] hover:shadow-[0_0_25px_rgba(37,99,235,0.5)]">
-            Contact Our Team
-          </Link>
-        </div>
-      </motion.section>
     </div>
   );
 };
