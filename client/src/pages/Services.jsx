@@ -303,7 +303,7 @@ const Services = () => {
 
                 <Link
                   to={service.link}
-                  className="btn h-[40px] w-[140px] flex items-center justify-center inline-block mt-6 pt-2 pl-7"
+                  className="btn h-[40px] w-[140px] mt-6"
                 >
                   Learn More
                 </Link>
