@@ -466,27 +466,25 @@ export default function Review() {
               </Box>
 
 
-              <Typography
+              <Box
+              component='h2'
+              className="sub-heading"
                 sx={{
-                  color: "var(--color-black)",
-                  fontWeight: 900,
-                  fontSize: { xs: "1.8rem", sm: "2.2rem", md: "2.5rem" },
-                  lineHeight: 1.1,
                   mb: 1,
                 }}
               >
                 Share Your{" "}
-                <Box
+                {/* <Box
                   component="span"
                   sx={{
                     background: "linear-gradient(90deg, var(--color-primary), #60A5FA)",
                     WebkitBackgroundClip: "text",
                     WebkitTextFillColor: "transparent",
                   }}
-                >
+                > */}
                   Success Story
                 </Box>
-              </Typography>
+              {/* </Typography> */}
 
 
               <Typography
@@ -835,8 +833,8 @@ export default function Review() {
                           disabled={loading}
                           sx={{
                             background: loading
-                              ? "rgba(71,100,255,0.5)"
-                              : "var(--color-btn-bg)",
+                              ? "var(--color-primary"
+                              : "var(--color-primary)",
                             px: 4, py: 1.1,
                             borderRadius: "3px",
                             textTransform: "none",

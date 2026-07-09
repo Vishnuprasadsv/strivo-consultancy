@@ -17,7 +17,7 @@ function Ready() {
   return (
     <div className="w-full bg-[var(--color-main-bg)]">
       <div className="max-w-[960px] md:max-w-full mx-auto py-6 md:py-8 px-4 sm:px-6 md:px-12 lg:px-20">
-        <div className="bg-[var(--color-main-bg)] relative overflow-hidden shadow-[0_15px_35px_rgba(0,0,0,0.03)] p-5 sm:p-6 md:p-10 lg:p-16 text-center w-full sm:max-w-[540px] md:max-w-full mx-auto md:h-[500px] flex flex-col justify-center">
+        <div className="bg-[var(--color-main-bg)] relative overflow-hidden p-5 sm:p-6 md:p-10 lg:p-16 text-center w-full sm:max-w-[540px] md:max-w-full mx-auto md:h-[500px] flex flex-col justify-center">
           {/* Glow Effects */}
           <div
             className="absolute -top-[150px] left-1/2 -translate-x-1/2 w-[350px] md:w-[600px] lg:w-[800px] pointer-events-none z-10"
@@ -62,7 +62,7 @@ function Ready() {
 
           <div className="relative z-20 max-w-[700px] md:max-w-[1000px] lg:max-w-[1200px] mx-auto w-full">
             {/* Subheading */}
-            <p className="pre-heading text-primary tracking-[3px] md:tracking-[5px] mb-3 mt-7 md:mb-4">
+            <p className="pre-heading tracking-[3px] md:tracking-[5px] mb-3 mt-7 md:mb-4">
               Let's Build What's Next
             </p>
 
@@ -85,10 +85,10 @@ function Ready() {
                   <TrendingUp className="w-4 h-4 text-primary sm:w-5 sm:h-5 md:w-5 lg:w-6 md:h-5 lg:h-6" />
                 </div>
                 <div>
-                  <h3 className="paragraph mb-1 sm:mb-2 md:mb-2">
+                  <h3 className="paragraph  font-[var(--font-semibold)] mb-1 sm:mb-2 md:mb-2">
                     Drive Growth
                   </h3>
-                  <p className="paragraph text-gray-500 leading-relaxed">
+                  <p className="paragraph leading-relaxed">
                     Identify new opportunities and accelerate results.
                   </p>
                 </div>
@@ -100,10 +100,10 @@ function Ready() {
                   <Settings className="w-4 h-4 text-primary sm:w-5 sm:h-5 md:w-5 lg:w-6 md:h-5 lg:h-6" />
                 </div>
                 <div>
-                  <h3 className="paragraph mb-1 sm:mb-2 md:mb-2">
+                  <h3 className="paragraph font-[var(--font-semibold)] mb-1 sm:mb-2 md:mb-2">
                     Optimize Operations
                   </h3>
-                  <p className="paragraph text-gray-500 leading-relaxed">
+                  <p className="paragraph leading-relaxed">
                     Streamline processes and improve efficiency.
                   </p>
                 </div>
@@ -115,10 +115,10 @@ function Ready() {
                   <WorkspacePremium className="w-4 h-4 text-primary sm:w-5 sm:h-5 md:w-5 lg:w-6 md:h-5 lg:h-6" />
                 </div>
                 <div>
-                  <h3 className="paragraph mb-1 sm:mb-2 md:mb-2">
+                  <h3 className="paragraph  font-[var(--font-semibold)] mb-1 sm:mb-2 md:mb-2">
                     Build Lasting Success
                   </h3>
-                  <p className="paragraph text-gray-500 leading-relaxed">
+                  <p className="paragraph leading-relaxed">
                     Create sustainable value and long-term impact.
                   </p>
                 </div>
@@ -129,15 +129,12 @@ function Ready() {
             <div className="flex flex-col items-center mt-2 md:mt-4">
               <button
                 onClick={() => navigate("/contact")}
-                className="btn gap-3 p-4"
+                className="btn gap-3 px-8"
               >
-                <div className="w-[22px] h-[22px] md:w-[20px] md:h-[20px] rounded-full flex items-center justify-center">
-                  <ArrowForward className="text-[12px] sm:text-[14px] md:text-[12px] text-white" />
-                </div>
                 Contact Us
               </button>
 
-              <p className="paragraph font-light text-[12.5px] md:text-[13px] mt-4 max-w-[180px] md:max-w-none leading-relaxed">
+              <p className="paragraph font-light text-[12.5px] md:text-[13px] mt-4 mb-9 max-w-[180px] md:max-w-none leading-relaxed">
                 Let's start a conversation about your goals.
               </p>
             </div>

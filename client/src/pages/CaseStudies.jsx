@@ -169,16 +169,14 @@ const CaseStudies = () => {
                 delay: index * 0.1,
                 ease: "easeOut",
               }}
-              className="group relative card border border-white-800/80 overflow-hidden bg-(--color-sub-bg) backdrop-blur-md
-                         hover:border-white-500/50 hover:-translate-y-2 hover:shadow-[0_20px_40px_rgba(59,130,246,0.08)]
-                         transition-all duration-500 flex flex-col h-full shadow-md/30"
+              className="group relative card p-0 border border-white-800/80 overflow-hidden bg-(--color-sub-bg) hover:border-white-500/50 transition-all duration-500 flex flex-col h-full"
             >
               {/* Image Header with Container */}
-              <div className="relative overflow-hidden aspect-[16/10] bg-[#070b13] flex items-center justify-center">
+              <div className="relative overflow-hidden aspect-[16/10] bg-[var(--color-sub-bg)] flex items-center justify-center">
                 <img
                   src={study.coverImage}
                   alt={study.title}
-                  className="w-full h-full object-fill transform group-hover:scale-105 transition-transform duration-700 ease-out"
+                  className="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-700 ease-out"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-[#0a0f1d] via-transparent to-transparent opacity-20 pointer-events-none" />
                 <span className="absolute top-4 left-4 bg-blue-500/10 backdrop-blur-md border border-blue-500/20 text-blue-400 text-[10px] font-bold uppercase tracking-wider px-3 py-1 rounded-full shadow-lg z-10">
@@ -189,7 +187,7 @@ const CaseStudies = () => {
               {/* Card Body */}
               <div className="p-6 flex flex-col flex-grow">
                 {/* Truncated Title (2 lines max) */}
-                <h3 className="text-xl font-bold text-(--color-primary) mb-3 group-hover:text-blue-400 transition-colors duration-300 leading-snug line-clamp-2">
+                <h3 className="text-xl font-bold text-(--color-primary) mb-3 group-hover:text-(--color-primary-hover) transition-colors duration-300 leading-snug line-clamp-2">
                   {study.title}
                 </h3>
 

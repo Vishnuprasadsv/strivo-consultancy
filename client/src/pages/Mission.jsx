@@ -62,7 +62,7 @@ const Mission = () => {
     <div className="min-h-screen bg-main text-black font-sans">
       
       {/* BACK BUTTON CONTAINER - Matched exact padding and max-width layout of the sections below */}
-      <div className="max-w-[1440px] mx-auto px-6 md:px-16 lg:px-[180px] pt-8">
+      <div className="max-w-[1440px] mx-auto px-6 md:px-16 lg:px-[140px] pt-8">
         <motion.div 
           initial="hidden" 
           animate="visible" 
@@ -71,7 +71,7 @@ const Mission = () => {
         >
           <button 
             onClick={() => navigate("/about")} 
-            className="text-[var(--color-primary)] hover:text-[var(--color-primary-hover)] transition-colors flex items-center border border-[var(--color-primary)] rounded-full px-5 py-2 text-sm font-medium hover:border-[var(--color-primary-hover)] cursor-pointer"
+            className="text-[var(--color-primary)] hover:text-[var(--color-primary-hover)] transition-colors flex items-center px-5 py-2 text-sm font-medium hover:border-[var(--color-primary-hover)] cursor-pointer"
           >
             ← Back to About Us
           </button>
@@ -103,7 +103,7 @@ const Mission = () => {
             whileInView="visible"
             viewport={{ once: true, amount: 0.2 }}
             variants={fadeUpVariants}
-            className="grid grid-cols-1 lg:grid-cols-2 gap-0 lg:gap-8 items-stretch bg-white rounded-xl overflow-hidden border border-black/5 shadow-[0_15px_35px_rgba(0,0,0,0.03)]"
+            className="rounded-[var(--radius-sm)] grid grid-cols-1 lg:grid-cols-2 gap-0 lg:gap-8 items-stretch bg-white overflow-hidden border border-black/5 shadow-[0_15px_35px_rgba(0,0,0,0.03)]"
           >
             {/* Text Content */}
             <div className="p-6 sm:p-10 md:p-12 flex flex-col justify-center order-2 lg:order-1">
