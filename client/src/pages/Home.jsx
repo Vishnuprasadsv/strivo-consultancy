@@ -622,8 +622,8 @@ function Home() {
                   className="paragraph"
                   sx={{
                     maxWidth: "720px",
-                    color: "white",
-                    fontWeight: "medium",
+                    color: "#cccccc",
+                    fontWeight: "regular",
                     mb: 3,
                   }}
                 >
@@ -777,12 +777,13 @@ function Home() {
                 Trusted by Industry Leaders
               </Box>
               <Typography
+                component={"p"}
+                className="paragraph"
                 sx={{
-                  color: "var(--color-paragraph)",
-                  fontSize: "1.1rem",
-                  maxWidth: "600px",
+                  // color: "var(--color-paragraph)",
+                  // fontSize: "1.1rem",
+                  // maxWidth: "600px",
                   mx: "auto",
-                  lineHeight: 1.6,
                 }}
               >
                 We collaborate with forward-thinking companies who share our vision for innovation and excellence.
