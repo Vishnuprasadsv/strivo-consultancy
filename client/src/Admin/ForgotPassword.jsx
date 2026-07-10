@@ -15,6 +15,7 @@ const ForgotPassword = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [resetToken, setResetToken] = useState('');
+  const [showRequirements, setShowRequirements] = useState(false);
 
   const [isLoading, setIsLoading] = useState(false);
   const [timer, setTimer] = useState(300); // 5 minutes in seconds
@@ -107,10 +108,21 @@ const ForgotPassword = () => {
 
   const handleResetPassword = async (e) => {
     e.preventDefault();
-    if (newPassword.length < 6) {
-      toast.error('Password must be at least 6 characters long.');
+
+    // Password validation criteria check
+    const minLength = newPassword.length >= 8;
+    const hasUpper = /[A-Z]/.test(newPassword);
+    const hasLower = /[a-z]/.test(newPassword);
+    const hasNumber = /[0-9]/.test(newPassword);
+    const hasSpecial = /[!@#$%^&*(),.?":{}|<>]/.test(newPassword);
+
+    if (!(minLength && hasUpper && hasLower && hasNumber && hasSpecial)) {
+      setNewPassword('');
+      setConfirmPassword('');
+      toast.error('Password does not meet expectation: must be at least 8 characters, with one uppercase letter, one lowercase letter, one special character, and one number.');
       return;
     }
+
     if (newPassword !== confirmPassword) {
       toast.error('Passwords do not match.');
       return;
@@ -133,12 +145,12 @@ const ForgotPassword = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center relative z-10 px-4 bg-sub">
+    <div className="min-h-screen flex items-center justify-center relative z-10 px-4 bg-sub pt-16">
       <motion.div
         initial={{ opacity: 0, y: 30 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6, ease: "easeOut" }}
-        className="w-full max-w-md card p-8 relative overflow-hidden"
+        className="w-full max-w-md card p-8 relative overflow-visible"
       >
         <div className="flex flex-col items-center gap-4 mb-8">
           {/* <img src={logo} alt="Strivo Logo" className="h-10 object-contain" /> */}
@@ -325,6 +337,8 @@ const ForgotPassword = () => {
                       required
                       value={newPassword}
                       onChange={(e) => setNewPassword(e.target.value)}
+                      onFocus={() => setShowRequirements(true)}
+                      onBlur={() => setShowRequirements(false)}
                       placeholder="Enter new password"
                       className="input pl-11 pr-12 placeholder:text-[var(--color-paragraph)] placeholder:opacity-40 transition-all"
                       style={{ fontSize: 'var(--text-paragraph)', color: 'var(--color-paragraph)' }}
@@ -337,6 +351,22 @@ const ForgotPassword = () => {
                     >
                       {showPassword ? <FiEyeOff size={18} /> : <FiEye size={18} />}
                     </button>
+
+                    {/* Floating absolutely positioned requirements tooltip */}
+                    {showRequirements && (
+                      <div className="absolute z-30 left-0 right-0 md:left-full md:-top-6 md:ml-4 mt-2 md:mt-0 w-full md:w-64 bg-white border border-[var(--color-border)] rounded-[var(--radius-sm)] p-4 shadow-xl text-left text-black">
+                        <span className="text-[11px] font-bold uppercase tracking-wider block mb-1">
+                          Password Requirements:
+                        </span>
+                        <ul className="list-disc pl-4 text-xs flex flex-col gap-1 leading-relaxed text-[var(--color-paragraph)]">
+                          <li>Must be at least <strong>8 characters</strong> long</li>
+                          <li>Must contain at least <strong>one uppercase letter</strong></li>
+                          <li>Must contain at least <strong>one lowercase letter</strong></li>
+                          <li>Must contain at least <strong>one number</strong></li>
+                          <li>Must contain at least <strong>one special character</strong></li>
+                        </ul>
+                      </div>
+                    )}
                   </div>
                 </div>
 

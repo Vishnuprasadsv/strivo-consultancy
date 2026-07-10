@@ -2,7 +2,7 @@ import express from 'express';
 import multer from 'multer';
 import { v2 as cloudinary } from 'cloudinary';
 import { CloudinaryStorage } from 'multer-storage-cloudinary';
-import { createStory, getStories, deleteStory } from '../controllers/successStoryController.js';
+import { createStory, getStories, deleteStory, updateStory } from '../controllers/successStoryController.js';
 import dotenv from 'dotenv';
 dotenv.config();
 
@@ -36,5 +36,14 @@ router.post('/', (req, res, next) => {
 }, createStory);
 router.get('/', getStories);
 router.delete('/:id', deleteStory);
+router.put('/:id', (req, res, next) => {
+  upload.single('image')(req, res, (err) => {
+    if (err) {
+      console.error('Multer/Cloudinary error:', err);
+      return res.status(500).json({ message: 'Image upload failed. Please check Cloudinary credentials.', error: err.message || err });
+    }
+    next();
+  });
+}, updateStory);
 
 export default router;

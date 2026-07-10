@@ -157,7 +157,7 @@ export const subscribeEmail = async (req, res) => {
 // @access  Public (Admin panel)
 export const createArticle = async (req, res) => {
   try {
-    const { title, category, imageUrl, description, content, showSubscription } = req.body;
+    const { title, category, imageUrl, description, content, showSubscription, publicationDate, status } = req.body;
 
     // Validate that all fields are filled
     if (!title || !category || !imageUrl || !description || !content) {
@@ -175,6 +175,8 @@ export const createArticle = async (req, res) => {
       description,
       content,
       showSubscription: showSubscription !== false, // Default to true if not specified
+      publicationDate,
+      status: status || "Published",
     });
 
     // Save to database
@@ -267,7 +269,7 @@ export const getArticleById = async (req, res) => {
 export const updateArticle = async (req, res) => {
   try {
     const { id } = req.params;
-    const { title, category, imageUrl, description, content, showSubscription } = req.body;
+    const { title, category, imageUrl, description, content, showSubscription, publicationDate, status } = req.body;
 
     // Validate input fields
     if (!title || !category || !imageUrl || !description || !content) {
@@ -287,6 +289,8 @@ export const updateArticle = async (req, res) => {
         description,
         content,
         showSubscription: showSubscription !== false, // Default to true if not specified
+        publicationDate,
+        status,
       },
       { new: true, runValidators: true }
     );

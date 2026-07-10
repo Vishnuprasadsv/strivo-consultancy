@@ -12,7 +12,7 @@ const CaseStudyFilters = ({
   setSortBy,
 }) => {
   return (
-    <div className="card p-4 mb-6 shadow-card">
+    <div className="card bg-white p-4 mb-6 shadow-md border border-[var(--color-border)]">
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         
         {/* Search */}
@@ -50,7 +50,7 @@ const CaseStudyFilters = ({
             className="
               appearance-none
               w-full
-              bg-[var(--color-sub-bg)]
+              bg-white
               border
               border-[var(--color-border)]
               rounded-[var(--radius-sm)]
@@ -96,7 +96,7 @@ const CaseStudyFilters = ({
             className="
               appearance-none
               w-full
-              bg-[var(--color-sub-bg)]
+              bg-white
               border
               border-[var(--color-border)]
               rounded-[var(--radius-sm)]
@@ -142,7 +142,7 @@ const CaseStudyFilters = ({
             className="
               appearance-none
               w-full
-              bg-[var(--color-sub-bg)]
+              bg-white
               border
               border-[var(--color-border)]
               rounded-[var(--radius-sm)]

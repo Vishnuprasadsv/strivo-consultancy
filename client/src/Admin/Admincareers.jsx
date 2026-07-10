@@ -1,4 +1,7 @@
 import React, { useState, useEffect } from 'react';
+import { createPortal } from 'react-dom';
+import { useNavigate } from 'react-router-dom';
+import { FiBarChart2, FiSearch, FiRefreshCw } from 'react-icons/fi';
 import { motion, AnimatePresence } from 'framer-motion';
 import { toast } from 'sonner';
 
@@ -42,6 +45,7 @@ import {
 } from "@mui/material";
 
 const CareerAdmin = () => {
+  const navigate = useNavigate();
 
 
 
@@ -87,6 +91,12 @@ const CareerAdmin = () => {
   const [talentPage, setTalentPage] = useState(1);
   const [notifPage, setNotifPage] = useState(1);
   const [clearedNotificationsTime, setClearedNotificationsTime] = useState(null);
+  const [talentSearch, setTalentSearch] = useState('');
+
+  // Modal and tab states
+  const [showAnalyticsModal, setShowAnalyticsModal] = useState(false);
+  const [showNotifDropdown, setShowNotifDropdown] = useState(false);
+  const [activeSubTab, setActiveSubTab] = useState('applications');
   // ella datem fetch chaiyya back end eenu
   const fetchData = async (silent = false) => {
     try {
@@ -221,6 +231,20 @@ const CareerAdmin = () => {
     } catch (error) {
       console.error("Failed to delete talent submission:", error);
       toast.error("Failed to delete talent submission.");
+    }
+  };
+
+  const handleDeleteAllTalent = async () => {
+    if (!window.confirm("WARNING: Are you sure you want to delete ALL talent submissions? This action cannot be undone.")) return;
+    try {
+      const promises = talentSubmissions.map(sub => deleteTalentSubmissionAPI(sub._id));
+      await Promise.all(promises);
+      toast.success("All talent submissions deleted successfully");
+      setTalentPage(1);
+      fetchData(true);
+    } catch (error) {
+      console.error("Error deleting all talent submissions:", error);
+      toast.error("Failed to delete all talent submissions.");
     }
   };
 
@@ -427,10 +451,20 @@ const CareerAdmin = () => {
 
   // Talent Submissions Pagination & Sort (newest first)
   const sortedTalentSubmissions = [...talentSubmissions].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+  const filteredTalentSubmissions = sortedTalentSubmissions.filter(sub => {
+    if (!talentSearch.trim()) return true;
+    const term = talentSearch.toLowerCase();
+    return (
+      (sub.fullName || '').toLowerCase().includes(term) ||
+      (sub.email || '').toLowerCase().includes(term) ||
+      (sub.category || '').toLowerCase().includes(term) ||
+      (sub.mobile || '').includes(term)
+    );
+  });
   const talentPerPage = 5;
-  const totalTalentPages = Math.ceil(sortedTalentSubmissions.length / talentPerPage) || 1;
+  const totalTalentPages = Math.ceil(filteredTalentSubmissions.length / talentPerPage) || 1;
   const currentTalentPage = Math.min(talentPage, totalTalentPages);
-  const paginatedTalent = sortedTalentSubmissions.slice((currentTalentPage - 1) * talentPerPage, currentTalentPage * talentPerPage);
+  const paginatedTalent = filteredTalentSubmissions.slice((currentTalentPage - 1) * talentPerPage, currentTalentPage * talentPerPage);
 
 
   const getDynamicNotifications = () => {
@@ -514,92 +548,185 @@ const CareerAdmin = () => {
   const paginatedNotifications = recentNotifications.slice((currentNotifPage - 1) * notifsPerPage, currentNotifPage * notifsPerPage);
 
   return (
-    <div className="min-h-screen pt-24 px-4 sm:px-8 relative z-10 md:ml-56 bg-sub">
+    <div className="min-h-screen bg-sub flex flex-col" style={{ fontFamily: 'var(--font-primary)' }}>
+      
+      {/* Top Header Section with flat white background spanning full-width */}
+      <div className="bg-white pt-24 pb-0 border-b border-[var(--color-border)] px-4 sm:px-8 md:px-16 lg:px-24">
+        <div className="max-w-6xl mx-auto">
+          {/* Header Row */}
+          <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 pb-6 mt-4">
+            <div className="text-left">
+              <h1 className="text-2xl font-[var(--font-bold)] text-primary leading-none uppercase" style={{ margin: 0 }}>
+                CAREER & JOBS ADMIN
+              </h1>
+              <p className="text-xs text-[var(--color-black)] font-medium opacity-85 mt-2" style={{ margin: '6px 0 0 0', lineHeight: 1.3 }}>
+                Manage job listings, candidate profiles, and talent network.
+              </p>
+            </div>
+            
+            <div className="flex items-center gap-3 w-full sm:w-auto">
+              {/* Notifications Bell Button */}
+              <div className="relative">
+                <button
+                  onClick={() => setShowNotifDropdown(!showNotifDropdown)}
+                  className="bg-white border border-[var(--color-primary)] text-[var(--color-primary)] hover:bg-[var(--color-primary)] hover:text-white p-1.5 rounded-[var(--radius-sm)] flex items-center justify-center transition cursor-pointer h-8 w-8 relative shrink-0 shadow-sm"
+                  title="Notifications"
+                >
+                  <NotificationsIcon style={{ fontSize: 16 }} />
+                  {recentNotifications.length > 0 && (
+                    <span className="absolute -top-1 -right-1 bg-red-500 text-white text-[8px] font-extrabold rounded-full h-4 w-4 flex items-center justify-center">
+                      {recentNotifications.length}
+                    </span>
+                  )}
+                </button>
+                
+                <AnimatePresence>
+                  {showNotifDropdown && (
+                    <>
+                      <div className="fixed inset-0 z-40" onClick={() => setShowNotifDropdown(false)} />
+                      <motion.div
+                        initial={{ opacity: 0, y: 10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: 10 }}
+                        className="absolute right-0 mt-2 w-80 bg-white border border-[var(--color-border)] shadow-lg z-50 rounded-[var(--radius-sm)] overflow-hidden"
+                        style={{ fontFamily: 'var(--font-primary)' }}
+                      >
+                        <div className="flex justify-between items-center px-4 py-3 border-b border-[var(--color-border)] bg-[var(--color-sub-bg)]/20">
+                          <span className="text-xs font-bold text-[var(--color-black)]">Recent Alerts</span>
+                          <button
+                            onClick={() => {
+                              setClearedNotificationsTime(new Date());
+                              setNotifPage(1);
+                              toast.success("All notifications marked as read");
+                              setShowNotifDropdown(false);
+                            }}
+                            className="text-[10px] text-[var(--color-primary)] hover:underline font-bold bg-transparent border-none cursor-pointer"
+                          >
+                            Mark all as read
+                          </button>
+                        </div>
+                        <div className="flex flex-col max-h-80 overflow-y-auto divide-y divide-[var(--color-border)]">
+                          {recentNotifications.length === 0 ? (
+                            <div className="py-6 text-center text-[var(--color-paragraph)] opacity-60 text-xs">
+                              No new notifications
+                            </div>
+                          ) : (
+                            recentNotifications.map((notif, index) => (
+                              <div key={index} className="flex items-start gap-2.5 p-3 hover:bg-[var(--color-sub-bg)]/30 transition-colors text-left">
+                                <span className={`w-2 h-2 rounded-full mt-1.5 shrink-0 ${notif.color}`}></span>
+                                <div className="min-w-0 flex-1">
+                                  <p className="text-xs text-[var(--color-paragraph)] leading-snug break-words" style={{ margin: 0 }}>
+                                    {notif.text}
+                                  </p>
+                                  <span className="text-[9px] text-[var(--color-paragraph)] opacity-50 block mt-1">{notif.time}</span>
+                                </div>
+                              </div>
+                            ))
+                          )}
+                        </div>
+                      </motion.div>
+                    </>
+                  )}
+                </AnimatePresence>
+              </div>
 
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5 }}
-        className="max-w-7xl mx-auto pb-12"
-      >
-
-        <div className="flex flex-col sm:flex-row justify-between items-center sm:items-center mb-6 pb-5 border-b border-[var(--color-border)] gap-4">
-          <div className="flex flex-col items-center text-center sm:items-start sm:text-left">
-            <h1 style={{ fontSize: '26px', fontWeight: 'var(--font-semibold)', color: 'var(--color-black)', margin: 0 }}>
-              Career Admin Dashboard
-            </h1>
-            <p style={{ fontSize: 'var(--text-small)', color: 'var(--color-paragraph)', opacity: 0.6, margin: '2px 0 0 0' }}>
-              Manage careers, applications and talent submissions
-            </p>
+              {/* Analytics button */}
+              <button
+                onClick={() => setShowAnalyticsModal(true)}
+                className="bg-white border border-[var(--color-primary)] text-[var(--color-primary)] hover:text-white hover:bg-[var(--color-primary)] px-2.5 py-1.5 rounded-[var(--radius-sm)] flex items-center justify-center gap-2 transition cursor-pointer h-8 text-xs font-normal w-full sm:w-auto"
+              >
+                <FiBarChart2 size={13} />
+                Analytics
+              </button>
+              
+              {/* Create New Job button */}
+              <button
+                id="create-new-job-btn"
+                onClick={() => navigate('/admin/create-job')}
+                className="btn px-2.5 py-1.5 flex items-center justify-center gap-2 cursor-pointer border-none h-8 text-xs font-normal w-full sm:w-auto"
+                style={{ fontWeight: 'normal' }}
+              >
+                <AddIcon style={{ fontSize: 13 }} />
+                Create New Job
+              </button>
+            </div>
           </div>
+        </div>
+      </div>
+
+      {/* Main Content Area */}
+      <div className="px-4 sm:px-8 md:px-16 lg:px-24 py-10 flex-grow">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5 }}
+          className="max-w-6xl mx-auto flex flex-col gap-6"
+        >
+
+        {/* Tab Navigation Selector */}
+        <div className="flex flex-wrap gap-2 p-1 bg-white border border-[var(--color-border)] rounded-[var(--radius-sm)] mb-3 w-fit shadow-sm">
           <button
-            id="create-new-job-btn"
-            onClick={handleOpenCreateModal}
-            className="btn px-4 py-2 flex items-center justify-center gap-2 cursor-pointer border-none w-full sm:w-auto h-10 text-sm"
-            style={{ fontWeight: 'var(--font-medium)' }}
+            onClick={() => {
+              setActiveSubTab('applications');
+              setAppPage(1);
+            }}
+            className={`px-4 py-1.5 text-xs font-bold transition-all rounded-[var(--radius-sm)] cursor-pointer border-none ${
+              activeSubTab === 'applications'
+                ? 'bg-[var(--color-primary)] text-white'
+                : 'text-[var(--color-paragraph)] hover:bg-[var(--color-sub-bg)] bg-transparent'
+            }`}
           >
-            <AddIcon fontSize="small" /> Create New Job
+            Applications
+          </button>
+          <button
+            onClick={async () => {
+              setActiveSubTab('talent');
+              setTalentPage(1);
+              setLoadingTalent(true);
+              try {
+                const res = await getTalentSubmissionsAPI();
+                if (res.status === 200 && res.data?.success) {
+                  setTalentSubmissions(res.data.data);
+                }
+              } catch (e) {
+                toast.error("Failed to fetch talent submissions.");
+              } finally {
+                setLoadingTalent(false);
+              }
+            }}
+            className={`px-4 py-1.5 text-xs font-bold transition-all rounded-[var(--radius-sm)] cursor-pointer border-none ${
+              activeSubTab === 'talent'
+                ? 'bg-[var(--color-primary)] text-white'
+                : 'text-[var(--color-paragraph)] hover:bg-[var(--color-sub-bg)] bg-transparent'
+            }`}
+          >
+            Talent Network
+          </button>
+          <button
+            onClick={() => {
+              setActiveSubTab('jobs');
+            }}
+            className={`px-4 py-1.5 text-xs font-bold transition-all rounded-[var(--radius-sm)] cursor-pointer border-none ${
+              activeSubTab === 'jobs'
+                ? 'bg-[var(--color-primary)] text-white'
+                : 'text-[var(--color-paragraph)] hover:bg-[var(--color-sub-bg)] bg-transparent'
+            }`}
+          >
+            Job Listings
           </button>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 mb-6">
-
-          <div
-            onClick={() => {
-              const element = document.getElementById('active-job-listings-section');
-              if (element) element.scrollIntoView({ behavior: 'smooth' });
-            }}
-            className="card py-4 px-5 flex flex-col items-center justify-center text-center hover:border-[var(--color-primary)]/40 hover:shadow-lg transition-all duration-300 cursor-pointer group"
-          >
-            <h3 style={{ fontSize: 'var(--text-small)', fontWeight: 'var(--font-medium)', color: 'var(--color-paragraph)', opacity: 0.7, margin: 0 }}>Total Jobs</h3>
-            <p style={{ fontSize: '26px', fontWeight: 'var(--font-bold)', color: 'var(--color-black)', margin: '2px 0 0 0' }}>{stats.totalJobs || jobs.length}</p>
-            <p style={{ fontSize: 'var(--text-caption)', fontWeight: 'var(--font-semibold)', color: 'var(--color-primary)', margin: '2px 0 0 0' }}>Click to View Listing</p>
-          </div>
-
-          <div
-            onClick={() => {
-              setActiveFilter('all');
-              toast.info("Showing all applications.");
-            }}
-            className="card py-4 px-5 flex flex-col items-center justify-center text-center hover:border-[var(--color-primary)]/40 hover:shadow-lg transition-all duration-300 cursor-pointer group"
-          >
-            <h3 style={{ fontSize: 'var(--text-small)', fontWeight: 'var(--font-medium)', color: 'var(--color-paragraph)', opacity: 0.7, margin: 0 }}>Applications</h3>
-            <p style={{ fontSize: '26px', fontWeight: 'var(--font-bold)', color: 'var(--color-black)', margin: '2px 0 0 0' }}>{stats.totalApplications || applications.length}</p>
-            <p style={{ fontSize: 'var(--text-caption)', fontWeight: 'var(--font-semibold)', color: 'var(--color-primary)', margin: '2px 0 0 0' }}>Show All Entries </p>
-          </div>
-
-          <div
-            onClick={handleOpenTalentModal}
-            className="card py-4 px-5 flex flex-col items-center justify-center text-center hover:border-[var(--color-primary)]/40 hover:shadow-lg transition-all duration-300 cursor-pointer group"
-          >
-            <h3 style={{ fontSize: 'var(--text-small)', fontWeight: 'var(--font-medium)', color: 'var(--color-paragraph)', opacity: 0.7, margin: 0 }}>Talent Submissions</h3>
-            <p style={{ fontSize: '26px', fontWeight: 'var(--font-bold)', color: 'var(--color-black)', margin: '2px 0 0 0' }}>{stats.talentSubmissions || talentSubmissions.length}</p>
-            <p style={{ fontSize: 'var(--text-caption)', fontWeight: 'var(--font-semibold)', color: 'var(--color-primary)', margin: '2px 0 0 0' }}>View Talent Network </p>
-          </div>
-
-          <div
-            onClick={() => {
-              setActiveFilter('pending');
-              toast.info("Filtering table: Pending actions only.");
-            }}
-            className="card py-4 px-5 flex flex-col items-center justify-center text-center hover:border-[var(--color-primary)]/40 hover:shadow-lg transition-all duration-300 cursor-pointer group"
-          >
-            <h3 style={{ fontSize: 'var(--text-small)', fontWeight: 'var(--font-medium)', color: 'var(--color-paragraph)', opacity: 0.7, margin: 0 }}>Pending Actions</h3>
-            <p style={{ fontSize: '26px', fontWeight: 'var(--font-bold)', color: 'var(--color-black)', margin: '2px 0 0 0' }}>{stats.pendingActions || applications.filter(a => a.status === 'pending').length}</p>
-            <p style={{ fontSize: 'var(--text-caption)', fontWeight: 'var(--font-semibold)', color: 'var(--color-primary)', margin: '2px 0 0 0' }}>Filter Pending</p>
-          </div>
-        </div>
-
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+        <div className="w-full">
 
 
-          <div className="lg:col-span-9 flex flex-col gap-6">
+          <div className="w-full flex flex-col gap-6">
 
 
-            <div className="card p-5 shadow-card relative overflow-hidden">
+            {activeSubTab === 'applications' && (
+              <div className="card bg-white p-5 shadow-card relative overflow-hidden border border-[var(--color-border)] rounded-[var(--radius-sm)]">
               <div className="flex flex-wrap justify-between items-center mb-5 gap-2">
                 <div className="flex items-center gap-3">
-                  <h2 style={{ fontSize: 'var(--text-paragraph)', fontWeight: 'var(--font-bold)', color: 'var(--color-black)', margin: 0 }}>Recent Applications</h2>
+                  <h2 className="text-primary" style={{ fontSize: 'var(--text-paragraph)', fontWeight: 'var(--font-bold)', margin: 0 }}>Recent Applications</h2>
                   {activeFilter === 'pending' && (
                     <span className="px-2.5 py-0.5 rounded-full text-[10px] font-semibold bg-amber-500/10 text-amber-600 border border-amber-500/20 animate-pulse">
                       Pending Only
@@ -633,11 +760,11 @@ const CareerAdmin = () => {
                   {/* Table view for desktop / tablet */}
                   <table className="w-full text-left border-collapse table-fixed hidden md:table">
                     <thead>
-                      <tr className="border-b border-[var(--color-border)] text-[var(--color-paragraph)] opacity-50 text-xs font-semibold uppercase tracking-wider">
-                        <th className="pb-3 pr-2 font-semibold w-[32%]">Candidate & Position</th>
-                        <th className="pb-3 px-2 font-semibold w-[14%] text-center">Applied On</th>
-                        <th className="pb-3 px-2 font-semibold w-[14%] text-center">Status</th>
-                        <th className="pb-3 pl-2 font-semibold text-right w-[40%]">Action</th>
+                      <tr className="border-b border-[var(--color-border)] text-[var(--color-black)] text-xs font-bold uppercase tracking-wider">
+                        <th className="pb-3 pr-2 font-bold w-[32%]">Candidate & Position</th>
+                        <th className="pb-3 px-2 font-bold w-[14%] text-center">Applied On</th>
+                        <th className="pb-3 px-2 font-bold w-[14%] text-center">Status</th>
+                        <th className="pb-3 px-2 font-bold text-center w-[40%]">Action</th>
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-[var(--color-border)] text-sm">
@@ -674,7 +801,7 @@ const CareerAdmin = () => {
                               </div>
                             </td>
 
-                            <td className="py-3 px-2 text-[var(--color-paragraph)] opacity-80 w-[14%] text-center text-xs">{appliedDate}</td>
+                            <td className="py-3 px-2 text-[var(--color-black)] w-[14%] text-center text-xs">{appliedDate}</td>
 
                             <td className="py-3 px-2 w-[14%] text-center">
                               <span className={`px-2 py-0.5 rounded-full text-[10px] font-semibold ${statusObj.className}`}>
@@ -682,8 +809,8 @@ const CareerAdmin = () => {
                               </span>
                             </td>
 
-                            <td className="py-3 pl-2 text-right w-[40%] whitespace-nowrap">
-                              <div className="flex items-center justify-end gap-1.5">
+                            <td className="py-3 px-2 text-center w-[40%] whitespace-nowrap">
+                              <div className="flex items-center justify-center gap-1.5">
                                 <button
                                   onClick={() => handleViewApplication(app)}
                                   className="w-7 h-7 flex items-center justify-center transition-colors cursor-pointer border border-[var(--color-border)] bg-[var(--color-main-bg)] text-[var(--color-paragraph)] opacity-70 hover:opacity-100"
@@ -726,7 +853,7 @@ const CareerAdmin = () => {
                                 </button>
                                 <button
                                   onClick={() => handleDeleteApplication(app._id)}
-                                  className="w-7 h-7 flex items-center justify-center transition-colors cursor-pointer border border-red-500/20 bg-red-500/5 text-red-600 hover:bg-red-500/10"
+                                  className="w-7 h-7 flex items-center justify-center transition-colors cursor-pointer border border-[var(--color-primary)] bg-[var(--color-primary)] hover:bg-[var(--color-primary-hover)] text-white"
                                   style={{ borderRadius: 'var(--radius-sm)' }}
                                   title="Delete Application"
                                 >
@@ -843,7 +970,7 @@ const CareerAdmin = () => {
                         onClick={() => setAppPage(p => Math.max(1, p - 1))}
                         className="px-3 py-1.5 border border-[var(--color-border)] hover:bg-[var(--color-sub-bg)] text-[var(--color-paragraph)] text-xs rounded-[var(--radius-sm)] transition-all cursor-pointer font-semibold bg-transparent"
                       >
-                        Previous
+                        &lt;
                       </button>
                       <span className="text-xs text-[var(--color-paragraph)] opacity-60">
                         Page {currentAppPage} of {totalAppPages}
@@ -853,18 +980,240 @@ const CareerAdmin = () => {
                         onClick={() => setAppPage(p => Math.min(totalAppPages, p + 1))}
                         className="px-3 py-1.5 border border-[var(--color-border)] hover:bg-[var(--color-sub-bg)] text-[var(--color-paragraph)] text-xs rounded-[var(--radius-sm)] transition-all cursor-pointer font-semibold bg-transparent"
                       >
-                        Next
+                        &gt;
                       </button>
                     </div>
                   )}
                 </div>
               )}
             </div>
+          )}
+
+          {/* Tab 2: Talent Network */}
+          {activeSubTab === 'talent' && (
+            <div className="card bg-white p-5 shadow-card relative overflow-hidden border border-[var(--color-border)] rounded-[var(--radius-sm)]">
+              <div className="flex flex-wrap justify-between items-center mb-5 gap-4">
+                <h2 className="text-primary" style={{ fontSize: 'var(--text-paragraph)', fontWeight: 'var(--font-bold)', margin: 0 }}>
+                  Talent Network Submissions
+                </h2>
+                <div className="flex flex-wrap items-center gap-2.5 w-full sm:w-auto">
+                  {/* Search Input */}
+                  <div className="flex items-center gap-2 bg-[var(--color-sub-bg)] border border-[var(--color-border)] rounded-[var(--radius-sm)] px-3 py-1.5 w-full sm:w-60">
+                    <FiSearch className="text-[var(--color-paragraph)] opacity-60" size={14} />
+                    <input
+                      type="text"
+                      value={talentSearch}
+                      onChange={(e) => { setTalentSearch(e.target.value); setTalentPage(1); }}
+                      placeholder="Search candidate or category..."
+                      className="bg-transparent border-none outline-none text-xs text-[var(--color-black)] w-full placeholder-[var(--color-paragraph)]/60"
+                      style={{ padding: 0, margin: 0, height: 'auto', lineHeight: 'normal' }}
+                    />
+                    {talentSearch && (
+                      <button
+                        type="button"
+                        onClick={() => setTalentSearch('')}
+                        className="bg-transparent border-none cursor-pointer p-0 text-[var(--color-paragraph)] hover:text-red-500 flex items-center justify-center shrink-0"
+                      >
+                        <CloseIcon style={{ fontSize: 14 }} />
+                      </button>
+                    )}
+                  </div>
+                  
+                  <button
+                    onClick={async () => {
+                      setLoadingTalent(true);
+                      try {
+                        const res = await getTalentSubmissionsAPI();
+                        if (res.status === 200 && res.data?.success) {
+                          setTalentSubmissions(res.data.data);
+                          toast.success("Talent Network list reloaded");
+                        }
+                      } catch (e) {
+                        toast.error("Failed to refresh talent network.");
+                      } finally {
+                        setLoadingTalent(false);
+                      }
+                    }}
+                    className="w-8 h-8 rounded-full flex items-center justify-center border border-[var(--color-border)] bg-white text-[var(--color-paragraph)] hover:bg-[var(--color-sub-bg)] transition-all cursor-pointer shrink-0"
+                    title="Refresh List"
+                  >
+                    <FiRefreshCw size={13} />
+                  </button>
+
+                  <button
+                    onClick={handleDeleteAllTalent}
+                    className="w-8 h-8 rounded-full flex items-center justify-center border border-[var(--color-border)] bg-white text-[var(--color-paragraph)] hover:bg-[var(--color-sub-bg)] transition-all cursor-pointer shrink-0"
+                    title="Delete All Submissions"
+                  >
+                    <DeleteIcon fontSize="small" style={{ fontSize: 16 }} />
+                  </button>
+                </div>
+              </div>
+
+              {loadingTalent ? (
+                <div className="py-12 flex justify-center"><div className="w-8 h-8 border-4 border-emerald-500 border-t-transparent rounded-full animate-spin"></div></div>
+              ) : talentSubmissions.length === 0 ? (
+                <div className="py-12 text-center text-[var(--color-paragraph)] opacity-50 border border-[var(--color-border)] bg-[var(--color-sub-bg)] rounded-[var(--radius-sm)]">
+                  No resumes submitted to the Talent Network yet.
+                </div>
+              ) : (
+                <>
+                  {/* Desktop View Table */}
+                  <div className="hidden md:block overflow-x-auto">
+                    <table className="w-full text-left border-collapse min-w-[750px]">
+                      <thead>
+                        <tr className="border-b border-[var(--color-border)] text-[var(--color-black)] text-xs font-bold uppercase tracking-wider">
+                          <th className="pb-3 px-6 font-bold">Candidate</th>
+                          <th className="pb-3 px-6 font-bold">Mobile</th>
+                          <th className="pb-3 px-6 font-bold">Category</th>
+                          <th className="pb-3 px-6 font-bold">Submitted On</th>
+                          <th className="pb-3 px-6 font-bold text-center">Resume</th>
+                        </tr>
+                      </thead>
+                      <tbody className="divide-y divide-[var(--color-border)] text-sm">
+                        {paginatedTalent.map((sub) => {
+                          const initials = sub.fullName.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2);
+                          const submittedDate = new Date(sub.createdAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+
+                          return (
+                            <tr key={sub._id} className="hover:bg-[var(--color-sub-bg)]/40 transition-colors">
+                              <td className="py-4 px-6">
+                                <div className="flex items-center gap-3 text-left">
+                                  <div className="w-10 h-10 rounded-full bg-[var(--color-primary)]/10 border border-[var(--color-primary)]/20 text-[var(--color-primary)] flex items-center justify-center font-bold text-sm shrink-0">
+                                    {initials}
+                                  </div>
+                                  <div className="min-w-0">
+                                    <p className="font-bold text-[var(--color-black)] truncate" style={{ margin: 0 }}>{sub.fullName}</p>
+                                    <p className="text-xs text-[var(--color-black)] opacity-60 truncate mt-0.5" style={{ margin: 0 }}>{sub.email}</p>
+                                  </div>
+                                </div>
+                              </td>
+                              <td className="py-4 px-6 text-[var(--color-black)]">{sub.mobile}</td>
+                              <td className="py-4 px-6 text-[var(--color-black)] font-medium">{sub.category}</td>
+                              <td className="py-4 px-6 text-[var(--color-black)] opacity-85">{submittedDate}</td>
+                              <td className="py-4 px-6 text-center">
+                                <div className="flex items-center justify-center gap-2">
+                                  <a
+                                    href={sub.resumeUrl}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="px-3 py-1.5 bg-[var(--color-primary)]/10 hover:bg-[var(--color-primary)]/20 border border-[var(--color-primary)]/20 text-[var(--color-primary)] rounded-[var(--radius-sm)] transition-all font-semibold text-xs inline-flex items-center gap-1 cursor-pointer no-underline"
+                                  >
+                                    <PictureAsPdfIcon style={{ fontSize: 13 }} /> View Resume
+                                  </a>
+                                  <button
+                                    onClick={() => handleDeleteTalent(sub._id)}
+                                    className="w-8 h-8 flex items-center justify-center transition-colors cursor-pointer border border-[var(--color-primary)] bg-[var(--color-primary)] hover:bg-[var(--color-primary-hover)] text-white rounded-[var(--radius-sm)]"
+                                    title="Delete Talent Submission"
+                                  >
+                                    <DeleteIcon fontSize="small" />
+                                  </button>
+                                </div>
+                              </td>
+                            </tr>
+                          );
+                        })}
+                      </tbody>
+                    </table>
+                  </div>
+
+                  {/* Mobile Card View */}
+                  <div className="block md:hidden space-y-4">
+                    {paginatedTalent.map((sub) => {
+                      const initials = sub.fullName.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2);
+                      const submittedDate = new Date(sub.createdAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+
+                      return (
+                        <div key={sub._id} className="border border-[var(--color-border)] rounded-[var(--radius-sm)] p-5 bg-white shadow-sm flex flex-col gap-3.5">
+                          <div className="flex items-center gap-3 text-left">
+                            <div className="w-10 h-10 rounded-full bg-[var(--color-primary)]/10 border border-[var(--color-primary)]/20 text-[var(--color-primary)] flex items-center justify-center font-bold text-sm shrink-0">
+                              {initials}
+                            </div>
+                            <div className="min-w-0">
+                              <h3 className="font-bold text-[var(--color-black)] text-sm leading-snug break-words" style={{ margin: 0 }}>
+                                {sub.fullName}
+                              </h3>
+                              <p className="text-xs text-[var(--color-black)] opacity-85 mt-0.5 truncate" style={{ margin: 0 }}>
+                                {sub.email}
+                              </p>
+                            </div>
+                          </div>
+
+                          <div className="flex flex-col gap-1.5 text-xs text-left pt-2.5 border-t border-[var(--color-border)]/50">
+                            <div className="flex justify-between items-center">
+                              <span className="text-[var(--color-black)] opacity-80 font-medium">Mobile</span>
+                              <span className="font-semibold text-[var(--color-black)]">{sub.mobile}</span>
+                            </div>
+                            <div className="flex justify-between items-center">
+                              <span className="text-[var(--color-black)] opacity-80 font-medium">Category</span>
+                              <span className="font-semibold text-[var(--color-primary)]">{sub.category}</span>
+                            </div>
+                          </div>
+
+                          <div className="flex justify-between items-center pt-2.5 border-t border-[var(--color-border)]/50 text-xs">
+                            <span className="text-[var(--color-black)] opacity-60">
+                              Submitted: {submittedDate}
+                            </span>
+
+                            <div className="flex items-center gap-2">
+                              <a
+                                href={sub.resumeUrl}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="px-2.5 py-1.5 bg-[var(--color-primary)]/10 hover:bg-[var(--color-primary)]/20 border border-[var(--color-primary)]/20 text-[var(--color-primary)] rounded-[var(--radius-sm)] transition-all font-semibold text-xs inline-flex items-center gap-1 cursor-pointer no-underline"
+                              >
+                                <PictureAsPdfIcon style={{ fontSize: 13 }} /> View Resume
+                              </a>
+                              <button
+                                onClick={() => handleDeleteTalent(sub._id)}
+                                className="px-2.5 py-1.5 flex items-center justify-center gap-1 transition-colors cursor-pointer border border-[var(--color-primary)] bg-[var(--color-primary)] hover:bg-[var(--color-primary-hover)] text-white text-xs font-semibold rounded-[var(--radius-sm)]"
+                              >
+                                <DeleteIcon style={{ fontSize: 13 }} /> Delete
+                              </button>
+                            </div>
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+
+                  {totalTalentPages > 1 && (
+                    <div className="flex items-center justify-center gap-4 mt-6 pt-4 border-t border-[var(--color-border)]">
+                      <button
+                        disabled={currentTalentPage === 1}
+                        onClick={() => setTalentPage(p => Math.max(1, p - 1))}
+                        className="px-3 py-1.5 border border-[var(--color-border)] hover:bg-[var(--color-sub-bg)] text-[var(--color-paragraph)] text-xs rounded-[var(--radius-sm)] transition-all cursor-pointer font-semibold bg-transparent"
+                      >
+                        &lt;
+                      </button>
+                      <span className="text-xs text-[var(--color-paragraph)] opacity-60">
+                        Page {currentTalentPage} of {totalTalentPages}
+                      </span>
+                      <button
+                        disabled={currentTalentPage === totalTalentPages}
+                        onClick={() => setTalentPage(p => Math.min(totalTalentPages, p + 1))}
+                        className="px-3 py-1.5 border border-[var(--color-border)] hover:bg-[var(--color-sub-bg)] text-[var(--color-paragraph)] text-xs rounded-[var(--radius-sm)] transition-all cursor-pointer font-semibold bg-transparent"
+                      >
+                        &gt;
+                      </button>
+                    </div>
+                  )}
+                </>
+              )}
+            </div>
+          )}
 
 
-            <div id="active-job-listings-section" className="card p-5 shadow-card relative overflow-hidden scroll-mt-24">
-              <div className="mb-5">
-                <h2 style={{ fontSize: 'var(--text-paragraph)', fontWeight: 'var(--font-bold)', color: 'var(--color-black)', margin: 0 }}>Active Job Listings</h2>
+            {activeSubTab === 'jobs' && (
+              <div id="active-job-listings-section" className="card bg-white p-5 shadow-card relative overflow-hidden scroll-mt-24 border border-[var(--color-border)] rounded-[var(--radius-sm)]">
+              <div className="flex justify-between items-center mb-5 gap-2">
+                <h2 className="text-primary" style={{ fontSize: 'var(--text-paragraph)', fontWeight: 'var(--font-bold)', margin: 0 }}>Active Job Listings</h2>
+                <button
+                  onClick={() => navigate('/admin/create-job')}
+                  className="btn px-2.5 py-1.5 flex items-center justify-center gap-1 cursor-pointer border-none h-8 text-xs font-normal"
+                >
+                  <AddIcon style={{ fontSize: 13 }} /> Create New Job
+                </button>
               </div>
 
               {loading ? (
@@ -877,15 +1226,15 @@ const CareerAdmin = () => {
                 <>
                   {/* Desktop View Table */}
                   <div className="hidden md:block overflow-x-auto">
-                    <table className="w-full text-left border-collapse min-w-[650px] table-fixed">
+                    <table className="w-full text-left border-collapse min-w-[750px]">
                       <thead>
-                        <tr className="border-b border-[var(--color-border)] text-[var(--color-paragraph)] opacity-50 text-xs font-semibold uppercase tracking-wider">
-                          <th className="pb-3 pr-2 font-semibold w-[30%]">Job Title</th>
-                          <th className="pb-3 px-2 font-semibold w-[20%]">Department</th>
-                          <th className="pb-3 px-2 font-semibold w-[20%]">Location</th>
-                          <th className="pb-3 px-2 font-semibold w-[10%] text-center">Apps</th>
-                          <th className="pb-3 px-2 font-semibold w-[10%] text-center">Status</th>
-                          <th className="pb-3 pl-2 font-semibold text-right w-[10%]">Actions</th>
+                        <tr className="border-b border-[var(--color-border)] text-[var(--color-black)] text-xs font-bold uppercase tracking-wider">
+                          <th className="pb-4 px-6 font-bold">Job Title</th>
+                          <th className="pb-4 px-6 font-bold">Department</th>
+                          <th className="pb-4 px-6 font-bold">Location</th>
+                          <th className="pb-4 px-6 font-bold text-center">Apps</th>
+                          <th className="pb-4 px-6 font-bold text-center">Status</th>
+                          <th className="pb-4 px-6 font-bold text-center">Actions</th>
                         </tr>
                       </thead>
                       <tbody className="divide-y divide-[var(--color-border)] text-sm">
@@ -893,20 +1242,20 @@ const CareerAdmin = () => {
                           const appCountForJob = applications.filter(app => app.appliedPosition.toLowerCase().trim() === job.title.toLowerCase().trim()).length;
                           return (
                             <tr key={job._id} className="hover:bg-[var(--color-sub-bg)]/40 transition-colors">
-                              <td className="py-2.5 pr-2 font-semibold text-[var(--color-black)] text-sm truncate">{job.title}</td>
-                              <td className="py-2.5 px-2 text-[var(--color-paragraph)] opacity-80 text-xs truncate">{job.department}</td>
-                              <td className="py-2.5 px-2 text-[var(--color-paragraph)] opacity-70 text-xs truncate">{job.location}</td>
-                              <td className="py-2.5 px-2 font-semibold text-[var(--color-primary)] text-center text-xs">{appCountForJob}</td>
-                              <td className="py-2.5 px-2 text-center">
-                                <span className={`px-2 py-0.5 rounded-full text-[10px] font-semibold ${job.status === 'Closed' ? 'bg-gray-100 text-gray-500 border border-gray-200' : 'bg-emerald-500/10 text-emerald-600 border border-emerald-500/20'
+                              <td className="py-4 px-6 font-semibold text-[var(--color-black)] text-sm truncate">{job.title}</td>
+                              <td className="py-4 px-6 text-[var(--color-black)] text-xs truncate">{job.department}</td>
+                              <td className="py-4 px-6 text-[var(--color-black)] text-xs truncate">{job.location}</td>
+                              <td className="py-4 px-6 font-semibold text-[var(--color-primary)] text-center text-xs">{appCountForJob}</td>
+                              <td className="py-4 px-6 text-center">
+                                <span className={`px-2 py-0.5 rounded-full text-[10px] font-semibold ${job.status === 'Closed' ? 'bg-gray-100 text-gray-500 border border-gray-200' : 'bg-[var(--color-primary)]/10 text-[var(--color-primary)] border border-[var(--color-primary)]/20'
                                   }`}>
                                   {job.status || 'Active'}
                                 </span>
                               </td>
-                              <td className="py-2.5 pl-2 text-right">
-                                <div className="flex items-center justify-end gap-1.5">
+                              <td className="py-4 px-6 text-center">
+                                <div className="flex items-center justify-center gap-1.5">
                                   <button
-                                    onClick={() => handleOpenEditModal(job)}
+                                    onClick={() => navigate(`/admin/edit-job/${job._id}`)}
                                     className="w-7 h-7 flex items-center justify-center transition-colors cursor-pointer border border-[var(--color-border)] bg-[var(--color-main-bg)] text-[var(--color-paragraph)] opacity-70 hover:opacity-100"
                                     style={{ borderRadius: 'var(--radius-sm)' }}
                                     title="Edit Job"
@@ -915,7 +1264,7 @@ const CareerAdmin = () => {
                                   </button>
                                   <button
                                     onClick={() => handleDeleteJob(job._id)}
-                                    className="w-7 h-7 flex items-center justify-center transition-colors cursor-pointer border border-red-500/20 bg-red-500/5 text-red-600 hover:bg-red-500/10"
+                                    className="w-7 h-7 flex items-center justify-center transition-colors cursor-pointer border border-[var(--color-primary)] bg-[var(--color-primary)] hover:bg-[var(--color-primary-hover)] text-white"
                                     style={{ borderRadius: 'var(--radius-sm)' }}
                                     title="Delete Job"
                                   >
@@ -935,39 +1284,38 @@ const CareerAdmin = () => {
                     {jobs.map((job) => {
                       const appCountForJob = applications.filter(app => app.appliedPosition.toLowerCase().trim() === job.title.toLowerCase().trim()).length;
                       return (
-                        <div key={job._id} className="border border-[var(--color-border)] rounded-[var(--radius-sm)] p-4 bg-[var(--color-sub-bg)]/20 hover:bg-[var(--color-sub-bg)]/40 transition-colors flex flex-col gap-3">
+                        <div key={job._id} className="border border-[var(--color-border)] rounded-[var(--radius-sm)] p-5 bg-white shadow-sm flex flex-col gap-3.5">
                           <div className="flex justify-between items-start gap-2 text-left">
                             <div>
-                              <h3 className="font-bold text-[var(--color-black)] text-sm leading-snug break-words">
+                              <h3 className="font-bold text-[var(--color-black)] text-sm leading-snug break-words" style={{ margin: 0 }}>
                                 {job.title}
                               </h3>
-                              <p className="text-xs text-[var(--color-paragraph)] opacity-60 mt-1">
+                              <p className="text-xs text-[var(--color-black)] opacity-85 mt-1" style={{ margin: 0 }}>
                                 {job.department} • {job.location}
                               </p>
                             </div>
-                            <span className={`px-2 py-0.5 rounded-full text-[10px] font-semibold shrink-0 ${job.status === 'Closed' ? 'bg-gray-100 text-gray-500 border border-gray-200' : 'bg-emerald-500/10 text-emerald-600 border border-emerald-500/20'
+                            <span className={`px-2 py-0.5 rounded-full text-[10px] font-semibold shrink-0 ${job.status === 'Closed' ? 'bg-gray-100 text-gray-500 border border-gray-200' : 'bg-[var(--color-primary)]/10 text-[var(--color-primary)] border border-[var(--color-primary)]/20'
                               }`}>
                               {job.status || 'Active'}
                             </span>
                           </div>
                           
                           <div className="flex justify-between items-center pt-2.5 border-t border-[var(--color-border)]/50 text-xs">
-                            <span className="text-[var(--color-paragraph)] opacity-70">
+                            <span className="text-[var(--color-black)] opacity-85">
                               Applications: <span className="font-semibold text-[var(--color-primary)]">{appCountForJob}</span>
                             </span>
                             
                             <div className="flex items-center gap-2">
                               <button
-                                onClick={() => handleOpenEditModal(job)}
-                                className="px-2.5 py-1.5 flex items-center justify-center gap-1.5 transition-colors cursor-pointer border border-[var(--color-border)] bg-[var(--color-main-bg)] text-[var(--color-paragraph)] text-xs font-semibold"
+                                onClick={() => navigate(`/admin/edit-job/${job._id}`)}
+                                className="px-2.5 py-1.5 flex items-center justify-center gap-1.5 transition-colors cursor-pointer border border-[var(--color-border)] bg-[var(--color-main-bg)] text-[var(--color-black)] text-xs font-semibold"
                                 style={{ borderRadius: 'var(--radius-sm)' }}
                               >
                                 <EditIcon style={{ fontSize: 13 }} /> Edit
                               </button>
                               <button
                                 onClick={() => handleDeleteJob(job._id)}
-                                className="px-2.5 py-1.5 flex items-center justify-center gap-1.5 transition-colors cursor-pointer border border-red-500/20 bg-red-500/5 text-red-600 hover:bg-red-500/10 text-xs font-semibold"
-                                style={{ borderRadius: 'var(--radius-sm)' }}
+                                className="px-2.5 py-1.5 flex items-center justify-center gap-1.5 transition-colors cursor-pointer border border-[var(--color-primary)] bg-[var(--color-primary)] hover:bg-[var(--color-primary-hover)] text-white text-xs font-semibold rounded-[var(--radius-sm)]"
                               >
                                 <DeleteIcon style={{ fontSize: 13 }} /> Delete
                               </button>
@@ -980,156 +1328,11 @@ const CareerAdmin = () => {
                 </>
               )}
             </div>
-          </div>
-
-
-          <div className="lg:col-span-3 flex flex-col gap-6">
-
-
-            <div className="card p-5 shadow-card relative overflow-hidden">
-              <div className="flex flex-col gap-1.5 mb-4 pb-3 border-b border-[var(--color-border)]">
-                <div className="flex items-center gap-1.5">
-                  <NotificationsIcon className="text-[var(--color-primary)]" style={{ fontSize: 20 }} />
-                  <h2 style={{ fontSize: 'var(--text-paragraph)', fontWeight: 'var(--font-bold)', color: 'var(--color-black)', margin: 0 }}>
-                    Notifications
-                  </h2>
-                </div>
-                <div className="flex justify-between items-center mt-1">
-                  <span className="text-[10px] text-[var(--color-paragraph)] opacity-60">Recent alerts</span>
-                  <button
-                    onClick={() => {
-                      setClearedNotificationsTime(new Date());
-                      setNotifPage(1);
-                      toast.success("All notifications marked as read");
-                    }}
-                    className="hover:underline transition-colors border-none bg-transparent cursor-pointer font-semibold"
-                    style={{ fontSize: '11px', color: 'var(--color-primary)', padding: 0 }}
-                  >
-                    Mark all as read
-                  </button>
-                </div>
-              </div>
-
-              <div className="flex flex-col gap-3 min-h-[220px]">
-                {paginatedNotifications.length === 0 ? (
-                  <div className="py-8 text-center text-[var(--color-paragraph)] opacity-50 text-sm border border-dashed border-[var(--color-border)] rounded-[var(--radius-sm)] bg-[var(--color-sub-bg)]/20 my-auto">
-                    No new notifications
-                  </div>
-                ) : (
-                  paginatedNotifications.map((notif, index) => (
-                    <div key={index} className="flex items-start gap-3 p-3 bg-[var(--color-sub-bg)]/50 border border-[var(--color-border)] rounded-[var(--radius-sm)] hover:border-[var(--color-primary)]/20 transition-colors">
-                      <span className={`w-2 h-2 rounded-full mt-1.5 shrink-0 ${notif.color}`}></span>
-                      <div className="min-w-0">
-                        <p className="text-xs text-[var(--color-paragraph)] leading-snug">{notif.text}</p>
-                        <span className="text-[10px] text-[var(--color-paragraph)] opacity-60 block mt-1">{notif.time}</span>
-                      </div>
-                    </div>
-                  ))
-                )}
-              </div>
-
-              {totalNotifPages > 1 && (
-                <div className="flex items-center justify-between mt-4 pt-3 border-t border-[var(--color-border)]">
-                  <button
-                    disabled={currentNotifPage === 1}
-                    onClick={() => setNotifPage(p => Math.max(1, p - 1))}
-                    className="px-2 py-1 border border-[var(--color-border)] hover:bg-[var(--color-sub-bg)] text-[var(--color-paragraph)] text-[10px] rounded-[var(--radius-sm)] transition-all cursor-pointer font-semibold bg-transparent disabled:opacity-40"
-                  >
-                    Prev
-                  </button>
-                  <span className="text-[10px] text-[var(--color-paragraph)] opacity-60">
-                    Page {currentNotifPage} of {totalNotifPages}
-                  </span>
-                  <button
-                    disabled={currentNotifPage === totalNotifPages}
-                    onClick={() => setNotifPage(p => Math.min(totalNotifPages, p + 1))}
-                    className="px-2 py-1 border border-[var(--color-border)] hover:bg-[var(--color-sub-bg)] text-[var(--color-paragraph)] text-[10px] rounded-[var(--radius-sm)] transition-all cursor-pointer font-semibold bg-transparent disabled:opacity-40"
-                  >
-                    Next
-                  </button>
-                </div>
-              )}
-            </div>
-
-
-            <div className="card p-5 shadow-card relative overflow-hidden">
-              <h2 style={{ fontSize: 'var(--text-paragraph)', fontWeight: 'var(--font-bold)', color: 'var(--color-black)', margin: '0 0 20px 0' }}>Applications Overview</h2>
-
-              <div className="flex flex-col items-center gap-6">
-
-                <div className="relative w-32 h-32">
-                  <svg className="w-full h-full transform -rotate-90" viewBox="0 0 100 100">
-
-                    <circle cx="50" cy="50" r="40" fill="transparent" stroke="var(--color-border)" strokeWidth="12" />
-
-                    {donutSegments.map((segment, idx) => {
-                      return (
-                        <circle
-                          key={idx}
-                          cx="50"
-                          cy="50"
-                          r={radius}
-                          fill="transparent"
-                          stroke={segment.color}
-                          strokeWidth="12"
-                          strokeDasharray={circumference}
-                          strokeDashoffset={segment.strokeOffset}
-                          strokeLinecap="round"
-                          style={{ transition: 'stroke-dashoffset 0.8s ease' }}
-                        />
-                      );
-                    })}
-                  </svg>
-                  <div className="absolute inset-0 flex flex-col items-center justify-center">
-                    <span className="text-2xl font-extrabold text-[var(--color-black)]">{applications.length}</span>
-                    <span className="text-[10px] text-[var(--color-paragraph)] opacity-50 uppercase tracking-widest">Total</span>
-                  </div>
-                </div>
-
-                <div className="w-full flex flex-col gap-2.5">
-                  <div className="flex justify-between items-center text-xs">
-                    <div className="flex items-center gap-2">
-                      <span className="w-3 h-3 rounded-full bg-blue-500"></span>
-                      <span className="text-[var(--color-paragraph)] opacity-80">New</span>
-                    </div>
-                    <span className="font-semibold text-[var(--color-black)]">{appCounts.pending} ({statusPercentages.pending}%)</span>
-                  </div>
-                  <div className="flex justify-between items-center text-xs">
-                    <div className="flex items-center gap-2">
-                      <span className="w-3 h-3 rounded-full bg-yellow-500"></span>
-                      <span className="text-[var(--color-paragraph)] opacity-80">Under Review</span>
-                    </div>
-                    <span className="font-semibold text-[var(--color-black)]">{appCounts.reviewed} ({statusPercentages.reviewed}%)</span>
-                  </div>
-                  <div className="flex justify-between items-center text-xs">
-                    <div className="flex items-center gap-2">
-                      <span className="w-3 h-3 rounded-full bg-purple-500"></span>
-                      <span className="text-[var(--color-paragraph)] opacity-80">Referred to HR</span>
-                    </div>
-                    <span className="font-semibold text-[var(--color-black)]">{appCounts.referred} ({statusPercentages.referred}%)</span>
-                  </div>
-                  <div className="flex justify-between items-center text-xs">
-                    <div className="flex items-center gap-2">
-                      <span className="w-3 h-3 rounded-full bg-emerald-500"></span>
-                      <span className="text-[var(--color-paragraph)] opacity-80">Approved</span>
-                    </div>
-                    <span className="font-semibold text-[var(--color-black)]">{appCounts.accepted} ({statusPercentages.accepted}%)</span>
-                  </div>
-                  <div className="flex justify-between items-center text-xs">
-                    <div className="flex items-center gap-2">
-                      <span className="w-3 h-3 rounded-full bg-red-500"></span>
-                      <span className="text-[var(--color-paragraph)] opacity-80">Rejected</span>
-                    </div>
-                    <span className="font-semibold text-[var(--color-black)]">{appCounts.rejected} ({statusPercentages.rejected}%)</span>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-
+          )}
           </div>
         </div>
       </motion.div>
+      </div>
 
       <Dialog
         open={openJobModal}
@@ -1492,127 +1695,192 @@ const CareerAdmin = () => {
         </DialogActions>
       </Dialog>
 
-
-      <Dialog
-        open={openTalentModal}
-        onClose={() => setOpenTalentModal(false)}
-        maxWidth="md"
-        fullWidth
-        scroll="paper"
-        sx={{
-          "& .MuiDialog-paper": {
-            background: "var(--color-main-bg) !important",
-            color: "var(--color-paragraph) !important",
-            border: "1px solid var(--color-border)",
-            borderRadius: "var(--radius-sm)",
-            maxHeight: "90vh",
-            display: "flex",
-            flexDirection: "column"
-          }
-        }}
-      >
-        <DialogTitle sx={{ fontStyle: "normal", fontWeight: 'var(--font-semibold)', fontSize: 'var(--text-card-heading)', px: 3, pt: 3, pb: 2, borderBottom: "1px solid var(--color-border)", color: "var(--color-black)" }}>
-          Talent Network Submissions
-        </DialogTitle>
-        <DialogContent sx={{ px: 3, py: 2.5, display: "flex", flexDirection: "column" }}>
-          {loadingTalent ? (
-            <div className="py-12 flex justify-center"><div className="w-8 h-8 border-4 border-emerald-500 border-t-transparent rounded-full animate-spin"></div></div>
-          ) : talentSubmissions.length === 0 ? (
-            <div className="py-12 text-center text-[var(--color-paragraph)] opacity-50 border border-[var(--color-border)] bg-[var(--color-sub-bg)] rounded-[var(--radius-sm)]">
-              No resumes submitted to the Talent Network yet.
-            </div>
-          ) : (
-            <div className="overflow-x-auto">
-              <table className="w-full text-left border-collapse min-w-[750px]">
-                <thead>
-                  <tr className="border-b border-[var(--color-border)] text-[var(--color-paragraph)] opacity-50 text-xs font-semibold uppercase tracking-wider">
-                    <th className="pb-3 pr-4 font-semibold">Candidate</th>
-                    <th className="pb-3 px-4 font-semibold">Mobile</th>
-                    <th className="pb-3 px-4 font-semibold">Category</th>
-                    <th className="pb-3 px-4 font-semibold">Submitted On</th>
-                    <th className="pb-3 pl-4 font-semibold text-right">Resume</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-[var(--color-border)] text-sm">
-                  {paginatedTalent.map((sub) => {
-                    const initials = sub.fullName.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2);
-                    const submittedDate = new Date(sub.createdAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
-
-                    return (
-                      <tr key={sub._id} className="hover:bg-[var(--color-sub-bg)]/40 transition-colors">
-                        <td className="py-4 pr-4">
-                          <div className="flex items-center gap-3">
-                            <div className="w-10 h-10 rounded-full bg-emerald-600/20 border border-emerald-600/30 text-emerald-600 flex items-center justify-center font-bold text-sm shrink-0">
-                              {initials}
-                            </div>
-                            <div className="min-w-0">
-                              <p className="font-bold text-[var(--color-black)] truncate">{sub.fullName}</p>
-                              <p className="text-xs text-[var(--color-paragraph)] opacity-60 truncate mt-0.5">{sub.email}</p>
-                            </div>
-                          </div>
-                        </td>
-                        <td className="py-4 px-4 text-[var(--color-paragraph)] opacity-80">{sub.mobile}</td>
-                        <td className="py-4 px-4 text-[var(--color-paragraph)] opacity-80 font-medium">{sub.category}</td>
-                        <td className="py-4 px-4 text-[var(--color-paragraph)] opacity-70">{submittedDate}</td>
-                        <td className="py-4 pl-4 text-right">
-                          <div className="flex items-center justify-end gap-2">
-                            <a
-                              href={sub.resumeUrl}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              className="px-3 py-1.5 bg-emerald-600/10 hover:bg-emerald-600/20 border border-emerald-500/20 text-emerald-600 rounded-[var(--radius-sm)] transition-all font-semibold text-xs inline-flex items-center gap-1 cursor-pointer no-underline"
-                            >
-                              <PictureAsPdfIcon style={{ fontSize: 13 }} /> View Resume
-                            </a>
-                            <button
-                              onClick={() => handleDeleteTalent(sub._id)}
-                              className="w-8 h-8 flex items-center justify-center transition-colors cursor-pointer border border-red-500/20 bg-red-500/5 text-red-600 hover:bg-red-500/10"
-                              style={{ borderRadius: 'var(--radius-sm)' }}
-                              title="Delete Talent Submission"
-                            >
-                              <DeleteIcon fontSize="small" />
-                            </button>
-                          </div>
-                        </td>
-                      </tr>
-                    );
-                  })}
-                </tbody>
-              </table>
-
-              {totalTalentPages > 1 && (
-                <div className="flex items-center justify-center gap-4 mt-6 pt-4 border-t border-[var(--color-border)]">
-                  <button
-                    disabled={currentTalentPage === 1}
-                    onClick={() => setTalentPage(p => Math.max(1, p - 1))}
-                    className="px-3 py-1.5 border border-[var(--color-border)] hover:bg-[var(--color-sub-bg)] text-[var(--color-paragraph)] text-xs rounded-[var(--radius-sm)] transition-all cursor-pointer font-semibold"
-                  >
-                    Previous
-                  </button>
-                  <span className="text-xs text-[var(--color-paragraph)] opacity-60">
-                    Page {currentTalentPage} of {totalTalentPages}
-                  </span>
-                  <button
-                    disabled={currentTalentPage === totalTalentPages}
-                    onClick={() => setTalentPage(p => Math.min(totalTalentPages, p + 1))}
-                    className="px-3 py-1.5 border border-[var(--color-border)] hover:bg-[var(--color-sub-bg)] text-[var(--color-paragraph)] text-xs rounded-[var(--radius-sm)] transition-all cursor-pointer font-semibold"
-                  >
-                    Next
-                  </button>
+      {showAnalyticsModal &&
+        createPortal(
+          <div className="fixed inset-0 z-[99999] flex items-center justify-center bg-black/70 backdrop-blur-sm p-4 overflow-y-auto">
+            <div className="w-full max-w-4xl border border-[var(--color-border)] bg-white shadow-xl overflow-hidden my-8" style={{ borderRadius: 'var(--radius-sm)', fontFamily: 'var(--font-primary)' }}>
+              {/* Header */}
+              <div className="flex items-center justify-between border-b border-[var(--color-border)] px-6 py-4 bg-white">
+                <div>
+                  <h2 className="text-lg font-bold text-primary" style={{ margin: 0 }}>
+                    RECRUITMENT & APPLICATION ANALYTICS
+                  </h2>
+                  <p className="text-xs text-[var(--color-paragraph)] opacity-60 mt-1">
+                    Real-time status overview of jobs, applications, and talent network
+                  </p>
                 </div>
-              )}
+                <button
+                  onClick={() => setShowAnalyticsModal(false)}
+                  className="w-8 h-8 rounded-full bg-[var(--color-white)] hover:bg-[var(--color-sub-bg)] transition flex items-center justify-center text-[var(--color-paragraph)] cursor-pointer text-xs border border-[var(--color-border)] shrink-0"
+                >
+                  ✕
+                </button>
+              </div>
+
+              {/* Body */}
+              <div className="p-6 bg-[var(--color-sub-bg)]/35">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  {/* Left Column: Donut Chart / Overview */}
+                  <div className="card p-5 bg-white shadow-sm border border-[var(--color-border)] rounded-[var(--radius-sm)] flex flex-col items-center justify-center text-center">
+                    <h3 className="text-xs font-bold text-[var(--color-black)] uppercase tracking-wider mb-4" style={{ margin: 0 }}>
+                      Applications Overview
+                    </h3>
+
+                    <div className="relative w-36 h-36 mb-4">
+                      <svg className="w-full h-full transform -rotate-90" viewBox="0 0 100 100">
+                        <circle cx="50" cy="50" r="40" fill="transparent" stroke="var(--color-border)" strokeWidth="10" />
+                        {donutSegments.map((segment, idx) => (
+                          <circle
+                            key={idx}
+                            cx="50"
+                            cy="50"
+                            r={radius}
+                            fill="transparent"
+                            stroke={segment.color}
+                            strokeWidth="10"
+                            strokeDasharray={circumference}
+                            strokeDashoffset={segment.strokeOffset}
+                            strokeLinecap="round"
+                            style={{ transition: 'stroke-dashoffset 0.8s ease' }}
+                          />
+                        ))}
+                      </svg>
+                      <div className="absolute inset-0 flex flex-col items-center justify-center">
+                        <span className="text-2xl font-extrabold text-[var(--color-black)]">{applications.length}</span>
+                        <span className="text-[9px] text-[var(--color-paragraph)] opacity-50 uppercase tracking-widest">Total</span>
+                      </div>
+                    </div>
+
+                    <div className="grid grid-cols-2 gap-x-6 gap-y-2 text-xs w-full max-w-[280px]">
+                      <div className="flex justify-between items-center">
+                        <div className="flex items-center gap-1.5">
+                          <span className="w-2.5 h-2.5 rounded-full bg-blue-500"></span>
+                          <span className="text-[var(--color-paragraph)] opacity-85">New</span>
+                        </div>
+                        <span className="font-semibold text-[var(--color-black)]">{appCounts.pending}</span>
+                      </div>
+                      <div className="flex justify-between items-center">
+                        <div className="flex items-center gap-1.5">
+                          <span className="w-2.5 h-2.5 rounded-full bg-yellow-500"></span>
+                          <span className="text-[var(--color-paragraph)] opacity-85">Review</span>
+                        </div>
+                        <span className="font-semibold text-[var(--color-black)]">{appCounts.reviewed}</span>
+                      </div>
+                      <div className="flex justify-between items-center">
+                        <div className="flex items-center gap-1.5">
+                          <span className="w-2.5 h-2.5 rounded-full bg-purple-500"></span>
+                          <span className="text-[var(--color-paragraph)] opacity-85">Referred</span>
+                        </div>
+                        <span className="font-semibold text-[var(--color-black)]">{appCounts.referred}</span>
+                      </div>
+                      <div className="flex justify-between items-center">
+                        <div className="flex items-center gap-1.5">
+                          <span className="w-2.5 h-2.5 rounded-full bg-emerald-500"></span>
+                          <span className="text-[var(--color-paragraph)] opacity-85">Approved</span>
+                        </div>
+                        <span className="font-semibold text-[var(--color-black)]">{appCounts.accepted}</span>
+                      </div>
+                      <div className="flex justify-between items-center col-span-2 mt-1 pt-1 border-t border-[var(--color-border)]">
+                        <div className="flex items-center gap-1.5">
+                          <span className="w-2.5 h-2.5 rounded-full bg-red-500"></span>
+                          <span className="text-[var(--color-paragraph)] opacity-85">Rejected</span>
+                        </div>
+                        <span className="font-semibold text-[var(--color-black)]">{appCounts.rejected}</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Right Column: Recruitment Metrics */}
+                  <div className="flex flex-col gap-4">
+                    <div className="card p-4 bg-white shadow-sm border border-[var(--color-border)] rounded-[var(--radius-sm)] flex justify-between items-center">
+                      <div className="text-left">
+                        <p className="text-[10px] text-[var(--color-paragraph)] opacity-60 font-semibold uppercase tracking-wider mb-0.5" style={{ margin: 0 }}>Total Active Jobs</p>
+                        <p className="text-xl font-extrabold text-[var(--color-black)]" style={{ margin: 0, lineHeight: 1 }}>{stats.totalJobs || jobs.length}</p>
+                      </div>
+                      <button
+                        onClick={() => {
+                          setShowAnalyticsModal(false);
+                          setActiveSubTab('jobs');
+                          const element = document.getElementById('active-job-listings-section');
+                          if (element) {
+                            setTimeout(() => element.scrollIntoView({ behavior: 'smooth' }), 150);
+                          }
+                        }}
+                        className="text-xs font-bold text-[var(--color-primary)] hover:underline bg-transparent border-none cursor-pointer p-0 transition-colors"
+                      >
+                        View Listings
+                      </button>
+                    </div>
+
+                    <div className="card p-4 bg-white shadow-sm border border-[var(--color-border)] rounded-[var(--radius-sm)] flex justify-between items-center">
+                      <div className="text-left">
+                        <p className="text-[10px] text-[var(--color-paragraph)] opacity-60 font-semibold uppercase tracking-wider mb-0.5" style={{ margin: 0 }}>Total Applications</p>
+                        <p className="text-xl font-extrabold text-[var(--color-black)]" style={{ margin: 0, lineHeight: 1 }}>{stats.totalApplications || applications.length}</p>
+                      </div>
+                      <button
+                        onClick={() => {
+                          setShowAnalyticsModal(false);
+                          setActiveSubTab('applications');
+                          setActiveFilter('all');
+                          toast.info("Showing all applications.");
+                        }}
+                        className="text-xs font-bold text-[var(--color-primary)] hover:underline bg-transparent border-none cursor-pointer p-0 transition-colors"
+                      >
+                        Show All
+                      </button>
+                    </div>
+
+                    <div className="card p-4 bg-white shadow-sm border border-[var(--color-border)] rounded-[var(--radius-sm)] flex justify-between items-center">
+                      <div className="text-left">
+                        <p className="text-[10px] text-[var(--color-paragraph)] opacity-60 font-semibold uppercase tracking-wider mb-0.5" style={{ margin: 0 }}>Talent Network</p>
+                        <p className="text-xl font-extrabold text-[var(--color-black)]" style={{ margin: 0, lineHeight: 1 }}>{stats.talentSubmissions || talentSubmissions.length}</p>
+                      </div>
+                      <button
+                        onClick={() => {
+                          setShowAnalyticsModal(false);
+                          setActiveSubTab('talent');
+                          toast.info("Showing Talent Network submissions.");
+                        }}
+                        className="text-xs font-bold text-[var(--color-primary)] hover:underline bg-transparent border-none cursor-pointer p-0 transition-colors"
+                      >
+                        View Network
+                      </button>
+                    </div>
+
+                    <div className="card p-4 bg-white shadow-sm border border-[var(--color-border)] rounded-[var(--radius-sm)] flex justify-between items-center">
+                      <div className="text-left">
+                        <p className="text-[10px] text-[var(--color-paragraph)] opacity-60 font-semibold uppercase tracking-wider mb-0.5" style={{ margin: 0 }}>Pending Actions</p>
+                        <p className="text-xl font-extrabold text-[var(--color-black)]" style={{ margin: 0, lineHeight: 1 }}>{stats.pendingActions || applications.filter(a => a.status === 'pending').length}</p>
+                      </div>
+                      <button
+                        onClick={() => {
+                          setShowAnalyticsModal(false);
+                          setActiveSubTab('applications');
+                          setActiveFilter('pending');
+                          toast.info("Filtering table: Pending actions only.");
+                        }}
+                        className="text-xs font-bold text-[var(--color-primary)] hover:underline bg-transparent border-none cursor-pointer p-0 transition-colors"
+                      >
+                        Filter Pending
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Footer */}
+              <div className="flex justify-end border-t border-[var(--color-border)] px-6 py-4 bg-white">
+                <button
+                  onClick={() => setShowAnalyticsModal(false)}
+                  className="px-6 py-2 bg-[var(--color-primary)] hover:bg-[var(--color-primary-hover)] text-white text-sm transition font-semibold cursor-pointer rounded-[var(--radius-sm)] h-10 border-none"
+                >
+                  Close
+                </button>
+              </div>
             </div>
-          )}
-        </DialogContent>
-        <DialogActions sx={{ px: 3, pb: 2, pt: 3, borderTop: "1px solid var(--color-border)" }}>
-          <Button
-            onClick={() => setOpenTalentModal(false)}
-            sx={{ color: "var(--color-paragraph)", opacity: 0.6, "&:hover": { opacity: 1 }, textTransform: "none", fontWeight: 600, ml: "auto" }}
-          >
-            Close
-          </Button>
-        </DialogActions>
-      </Dialog>
+          </div>,
+          document.body
+        )}
     </div>
   );
 };

@@ -4,7 +4,7 @@
 @theme {
 
   /* Fonts */
-  --font-primary: "Inter",sans-serif;
+  --font-primary: "Inter", sans-serif;
   --font-secondary: "Inter", sans-serif;
 
   /* Brand Colors */
@@ -77,7 +77,7 @@
 
   * {
     margin: 0;
-    padding:0;
+    padding: 0;
     box-sizing: border-box;
     font-family: var(--font-primary);
   }
@@ -150,6 +150,7 @@
     .main-heading {
       font-size: 38px;
     }
+
     .sub-heading {
       font-size: 28px;
     }
@@ -167,7 +168,8 @@
     font-weight: var(--font-normal);
     line-height: 1.5;
   }
-  .pre-heading{
+
+  .pre-heading {
     font-size: 18px;
     font-weight: var(--font-semibold);
     color: var(--color-primary);
@@ -177,7 +179,7 @@
     display: inline-block;
   }
 
-/* buttons */
+  /* buttons */
 
   .btn {
     background-color: var(--color-primary);
@@ -204,7 +206,7 @@
     transform: translateY(-2px);
   }
 
-/* cards */
+  /* cards */
 
   .card {
     border-radius: var(--radius-sm);
@@ -213,7 +215,7 @@
     padding: 24px;
   }
 
-/* navbar */
+  /* navbar */
 
   .navbar {
     height: var(--navbar-height);
@@ -221,7 +223,7 @@
     background: white;
   }
 
-/* input */
+  /* input */
 
   .input {
     width: 100%;
@@ -317,6 +319,7 @@ a,
 .clickable-card {
   cursor: pointer !important;
 }
+
 html,
 body,
 #root {
@@ -328,4 +331,151 @@ body,
 .MuiInputBase-root,
 .MuiFormLabel-root {
   font-family: var(--font-primary) !important;
+}
+
+/* Table contents in black */
+table th,
+table td {
+  color: var(--color-black);
+}
+
+/* Card descriptions in black */
+.card p,
+.card .text-paragraph,
+.card .small-description {
+  color: var(--color-black) !important;
+}
+
+/* Customize Sonner Toast background, centered and compact */
+[data-sonner-toast] {
+  background-color: var(--color-primary) !important;
+  border-color: rgba(255, 255, 255, 0.15) !important;
+  color: #ffffff !important;
+  width: fit-content !important;
+  min-width: 220px !important;
+  max-width: 340px !important;
+  padding: 10px 20px !important;
+  justify-content: center !important;
+  align-items: center !important;
+  gap: 10px !important;
+  border-radius: var(--radius-sm) !important;
+  margin: 0 auto !important;
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3), 0 8px 10px -6px rgba(0, 0, 0, 0.3) !important;
+}
+
+/* Success toast: elegant emerald green background */
+[data-sonner-toast][data-type="success"] {
+  background-color: #10B981 !important; /* Emerald green background */
+}
+
+/* Error toast: soft but clear red background */
+[data-sonner-toast][data-type="error"] {
+  background-color: #EF4444 !important; /* Red background */
+}
+
+/* Info and default toasts: primary blue background */
+[data-sonner-toast][data-type="info"],
+[data-sonner-toast][data-type="default"] {
+  background-color: var(--color-primary) !important;
+}
+
+[data-sonner-toast] [data-icon] {
+  margin: 0 !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+
+/* Force white SVGs inside colored toasts */
+[data-sonner-toast] [data-icon] svg {
+  color: #ffffff !important;
+  fill: currentColor !important;
+}
+
+[data-sonner-toast] [data-content] {
+  margin: 0 !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  text-align: center !important;
+}
+
+[data-sonner-toast] [data-title] {
+  color: #ffffff !important;
+  font-family: var(--font-primary) !important;
+  font-size: 13px !important;
+  font-weight: 500 !important; /* Normal/medium font weight */
+  text-align: center !important;
+  margin: 0 !important;
+}
+
+[data-sonner-toast] [data-description] {
+  color: rgba(255, 255, 255, 0.9) !important;
+  font-family: var(--font-primary) !important;
+  font-size: 11px !important;
+  font-weight: 400 !important; /* Normal font weight */
+  text-align: center !important;
+  margin: 0 !important;
+}
+
+/* Customize React-Toastify Toast to match centered and compact style */
+.Toastify__toast-container {
+  width: fit-content !important;
+  min-width: 220px !important;
+  max-width: 340px !important;
+  left: 50% !important;
+  transform: translateX(-50%) !important;
+}
+
+.Toastify__toast {
+  background-color: var(--color-primary) !important;
+  color: #ffffff !important;
+  border-radius: var(--radius-sm) !important;
+  width: fit-content !important;
+  min-width: 220px !important;
+  max-width: 340px !important;
+  padding: 10px 20px !important;
+  margin: 8px auto !important;
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3), 0 8px 10px -6px rgba(0, 0, 0, 0.3) !important;
+  border: 1px solid rgba(255, 255, 255, 0.15) !important;
+}
+
+.Toastify__toast--success {
+  background-color: #10B981 !important;
+}
+
+.Toastify__toast--error {
+  background-color: #EF4444 !important;
+}
+
+.Toastify__toast-body {
+  margin: 0 !important;
+  padding: 0 !important;
+  display: flex !important;
+  justify-content: center !important;
+  align-items: center !important;
+  gap: 8px !important;
+  text-align: center !important;
+  font-family: var(--font-primary) !important;
+  font-size: 13px !important;
+  font-weight: 500 !important; /* Normal/medium font weight */
+  color: #ffffff !important;
+}
+
+.Toastify__toast-icon {
+  margin: 0 !important;
+  width: 16px !important;
+  height: 16px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+
+.Toastify__toast-icon svg {
+  fill: #ffffff !important;
+  color: #ffffff !important;
+}
+
+.Toastify__close-button {
+  display: none !important;
 }

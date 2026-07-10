@@ -9,6 +9,7 @@ const ResetPassword = () => {
   const [confirmPassword, setConfirmPassword] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [token, setToken] = useState('');
+  const [showRequirements, setShowRequirements] = useState(false);
   
   const navigate = useNavigate();
   const location = useLocation();
@@ -28,6 +29,21 @@ const ResetPassword = () => {
       toast.error('Please fill in all fields.');
       return;
     }
+
+    // Password validation criteria check
+    const minLength = newPassword.length >= 8;
+    const hasUpper = /[A-Z]/.test(newPassword);
+    const hasLower = /[a-z]/.test(newPassword);
+    const hasNumber = /[0-9]/.test(newPassword);
+    const hasSpecial = /[!@#$%^&*(),.?":{}|<>]/.test(newPassword);
+
+    if (!(minLength && hasUpper && hasLower && hasNumber && hasSpecial)) {
+      setNewPassword('');
+      setConfirmPassword('');
+      toast.error('Password does not meet expectation: must be at least 8 characters, with one uppercase letter, one lowercase letter, one special character, and one number.');
+      return;
+    }
+
     if (newPassword !== confirmPassword) {
       toast.error('Passwords do not match.');
       return;
@@ -59,7 +75,7 @@ const ResetPassword = () => {
         initial={{ opacity: 0, y: 30 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6, ease: "easeOut" }}
-        className="w-full max-w-md bg-white/5 backdrop-blur-xl border border-white/10 rounded-3xl p-8 shadow-2xl relative overflow-hidden"
+        className="w-full max-w-md bg-white/5 backdrop-blur-xl border border-white/10 rounded-3xl p-8 shadow-2xl relative overflow-visible"
       >
         <div className="absolute top-0 left-1/2 -translate-x-1/2 w-3/4 h-32 bg-blue-600/30 blur-[60px] -z-10 rounded-full pointer-events-none"></div>
 
@@ -83,9 +99,27 @@ const ResetPassword = () => {
                 type="password" 
                 value={newPassword}
                 onChange={(e) => setNewPassword(e.target.value)}
+                onFocus={() => setShowRequirements(true)}
+                onBlur={() => setShowRequirements(false)}
                 placeholder="••••••••"
                 className="w-full bg-black/40 border border-white/10 rounded-xl px-4 py-3 text-white placeholder:text-white/30 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-transparent transition-all"
               />
+
+              {/* Floating absolutely positioned requirements tooltip */}
+              {showRequirements && (
+                <div className="absolute z-30 left-0 right-0 md:left-full md:-top-6 md:ml-4 mt-2 md:mt-0 w-full md:w-64 bg-white border border-[var(--color-border)] rounded-[var(--radius-sm)] p-4 shadow-xl text-left text-black">
+                  <span className="text-[11px] font-bold uppercase tracking-wider block mb-1">
+                    Password Requirements:
+                  </span>
+                  <ul className="list-disc pl-4 text-xs flex flex-col gap-1 leading-relaxed text-[var(--color-paragraph)]">
+                    <li>Must be at least <strong>8 characters</strong> long</li>
+                    <li>Must contain at least <strong>one uppercase letter</strong></li>
+                    <li>Must contain at least <strong>one lowercase letter</strong></li>
+                    <li>Must contain at least <strong>one number</strong></li>
+                    <li>Must contain at least <strong>one special character</strong></li>
+                  </ul>
+                </div>
+              )}
             </div>
           </div>
 
