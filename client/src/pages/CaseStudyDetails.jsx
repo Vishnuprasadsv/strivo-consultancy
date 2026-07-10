@@ -3,6 +3,10 @@ import axios from "axios";
 import { useParams } from "react-router-dom";
 import { motion } from "framer-motion";
 import LoadingIndicator from "../Components/LoadingIndicator";
+import CalendarTodayOutlinedIcon from "@mui/icons-material/CalendarTodayOutlined";
+import PersonOutlineOutlinedIcon from "@mui/icons-material/PersonOutlineOutlined";
+import ScheduleOutlinedIcon from "@mui/icons-material/ScheduleOutlined";
+import StrategynSolution from "../assets/Strategy&Solution.jpg"
 
 const fadeUp = {
     hidden: { opacity: 0, y: 40 },
@@ -99,61 +103,81 @@ const CaseStudyDetails = () => {
         <div className=" bg-main  min-h-screen">
 
             {/* HERO SECTION */}
-            <motion.section
-                initial="hidden"
-                animate="visible"
-                variants={fadeUp}
-                className="max-w-[110rem] mx-auto px-8 py-16"
-            >
-                <div className="grid lg:grid-cols-2 gap-10 items-center">
+           <div className="max-w-[1440px] mx-auto px-6 md:px-16 lg:px-[180px] py-10 md:py-12">
+  <motion.section
+    initial="hidden"
+    animate="visible"
+    variants={fadeUp}
+  >
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
                     <div>
-                        <h1 className="main-heading  text-heading leading-tight">
+                        <h1 className="main-heading   leading-tight">
                             {study.title}
                         </h1>
-
+                         <div className="mt-5">
+  <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-[var(--color-sub-bg)] border border-gray-200">
+    <ScheduleOutlinedIcon
+      sx={{
+        fontSize: 18,
+        color: "var(--color-primary)",
+      }}
+    />
+    <span className="text-sm font-medium text-[var(--color-primary)]">
+      Project Duration:
+    </span>
+    <span className="text-sm text-[var(--color-paragraph)]">
+      {study.duration}
+    </span>
+  </div>
+</div>
                         <p className="paragraph  mt-6">
                             {study.summary}
                         </p>
 
-                        <div className="mt-6 flex flex-col sm:flex-row sm:flex-wrap gap-2 sm:gap-6 text-gray-400 text-sm">
-                            <span>{study.author}</span>
-                            <span>
-                                {study.publicationDate
-                                    ? new Date(study.publicationDate).toLocaleDateString()
-                                    : "-"}
-                            </span>
-                            <span>{study.authorRole}</span>
-                            <span>{study.duration}</span>
-                        </div>
+                        <div className="mt-6 flex flex-wrap items-center gap-6 text-[15px] text-gray-600">
+
+  {/* Date */}
+  <div className="flex items-center gap-2">
+    <CalendarTodayOutlinedIcon
+      sx={{ fontSize: 18, color: "var(--color-paragraph)" }}
+    />
+    <span>
+      {study.publicationDate
+        ? new Date(study.publicationDate).toLocaleDateString("en-GB", {
+            day: "2-digit",
+            month: "short",
+            year: "numeric",
+          })
+        : "-"}
+    </span>
+  </div>
+
+  {/* Author */}
+  <div className="flex items-center gap-2">
+    <PersonOutlineOutlinedIcon
+      sx={{ fontSize: 18, color: "var(--color-paragraph)" }}
+    />
+    <span>Published by {study.author}</span>
+  </div>
+
+</div>
                     </div>
 
-                    <div>
-                        <img
-                            src={study.coverImage}
-                            alt={study.title}
-                            className="w-full h-[400px] object-cover rounded-[3px]"
-                        />
-                    </div>
+                   <div className="h-64 sm:h-80 lg:h-auto min-h-[250px] relative w-full overflow-hidden rounded-[var(--radius-sm)]">
+    <img
+        src={study.coverImage}
+        alt={study.title}
+        className="absolute inset-0 w-full h-full object-cover"
+    />
+</div>
                 </div>
             </motion.section>
+            </div>
 
             {/* OTHER SECTIONS */}
-            <div className="bg-sub w-full py-16">
-                <div className="max-w-[110rem] mx-auto px-8 space-y-16">
-                    {/* EXECUTIVE SUMMARY */}
-                    <motion.section
-                        initial="hidden"
-                        whileInView="visible"
-                        viewport={{ once: true }}
-                        variants={fadeUp}
-                    >
-                        <h2 className="sub-heading mb-6">
-                            Executive Summary
-                        </h2>
-                        <p className="paragraph">
-                            {study.summary}
-                        </p>
-                    </motion.section>
+            <div className="bg-sub w-full py-10 md:py-12">
+    <div className="max-w-[1440px] mx-auto px-6 md:px-16 lg:px-[180px] space-y-12 md:space-y-16">
+                   
 
                     {/* BUSINESS CHALLENGE */}
                     <motion.section
@@ -162,7 +186,7 @@ const CaseStudyDetails = () => {
                         viewport={{ once: true }}
                         variants={fadeUp}
                     >
-                        <h2 className="sub-heading mb-6">
+                        <h2 className="sub-heading mb-6 md:mb-8">
                             Business Challenge
                         </h2>
                         <p className="paragraph mb-6">
@@ -177,37 +201,70 @@ const CaseStudyDetails = () => {
                         </motion.div>
                     </motion.section>
 
-                    {/* STRATEGY & SOLUTION */}
-                    <motion.section
-                        initial="hidden"
-                        whileInView="visible"
-                        viewport={{ once: true }}
-                        variants={fadeUp}
-                    >
-                        <h2 className="sub-heading mb-6">
-                            Strategy & Solution
-                        </h2>
-                        <motion.div
-                            variants={staggerContainer}
-                            initial="hidden"
-                            animate="visible"
-                            className="space-y-4 paragraph"
-                        >
-                            <div className="bg-main rounded-xl p-5">
-                               <span className="text-blue-500 pr-3">✓</span>  Enterprise Cloud Migration
-                            </div>
-                            <div className="bg-main rounded-xl p-5">
-                                <span className="text-blue-500 pr-3">✓</span> Process Automation & Workflow Optimization
-                            </div>
-                            <div className="bg-main rounded-xl p-5">
-                                <span className="text-blue-500 pr-3">✓</span> Advanced Analytics & Reporting Infrastructure
-                            </div>
-                            <div className="bg-main rounded-xl p-5">
-                                <span className="text-blue-500 pr-3">✓</span> Omnichannel Customer Experience Strategy
-                            </div>
-                        </motion.div>
-                    </motion.section>
+                   <motion.section
+  initial="hidden"
+  whileInView="visible"
+  viewport={{ once: true }}
+  variants={fadeUp}
+>
+  <h2 className="sub-heading mb-8">
+    Strategy & Solution
+  </h2>
 
+  <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+
+    {/* Left Content */}
+    <motion.div
+      variants={staggerContainer}
+      initial="hidden"
+      animate="visible"
+      className="space-y-4"
+    >
+      {[
+        "Enterprise Cloud Migration",
+        "Process Automation & Workflow Optimization",
+        "Advanced Analytics & Reporting Infrastructure",
+        "Omnichannel Customer Experience Strategy",
+      ].map((item, index) => (
+        <div
+          key={index}
+          className="bg-main rounded-xl p-5 border border-gray-200 hover:border-[var(--color-primary)] transition-all duration-300 hover:shadow-lg"
+        >
+          <div className="flex items-start gap-3">
+            <div className="w-8 h-8 rounded-full bg-[var(--color-primary)]/10 flex items-center justify-center shrink-0">
+              <span className="text-[var(--color-primary)] font-bold">
+                ✓
+              </span>
+            </div>
+
+            <div>
+              <h3 className="font-semibold text-[var(--color-primary)]">
+                {item}
+              </h3>
+            </div>
+          </div>
+        </div>
+      ))}
+    </motion.div>
+
+    {/* Right Image */}
+    <motion.div
+      variants={fadeUp}
+      className="relative"
+    >
+      <div className="overflow-hidden rounded-2xl shadow-xl border border-gray-200">
+        <img
+          src={StrategynSolution}   // or your own strategy image
+          alt="Strategy"
+          className="w-full h-[450px] object-cover hover:scale-105 transition-transform duration-700"
+        />
+      </div>
+
+    
+    </motion.div>
+
+  </div>
+</motion.section>
                     {/* RESULTS & IMPACT */}
                     <motion.section
                         initial="hidden"
@@ -215,7 +272,7 @@ const CaseStudyDetails = () => {
                         viewport={{ once: true }}
                         variants={fadeUp}
                     >
-                        <h2 className="sub-heading mb-8">
+                        <h2 className="sub-heading mb-6 md:mb-8">
                             Results & Impact
                         </h2>
                         <p className="paragraph mb-10">
@@ -227,32 +284,32 @@ const CaseStudyDetails = () => {
                             animate="visible"
                             className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6"
                         >
-                            <div className="bg-main  rounded-xl p-8 text-center">
-                                <h3 className="text-5xl font-bold text-blue-500 mb-3">
+                            <div className="bg-main rounded-[var(--radius-sm)] p-6 md:p-8 text-center">
+                                <h3 className="text-5xl font-bold text-[var(--color-primary)] mb-3">
                                     35%
                                 </h3>
                                 <p className="paragraph ">
                                     Revenue Growth
                                 </p>
                             </div>
-                            <div className="bg-main  rounded-xl p-8 text-center">
-                                <h3 className="text-5xl font-bold text-blue-500 mb-3">
+                            <div className="bg-main rounded-[var(--radius-sm)] p-6 md:p-8 text-center">
+                                <h3 className="text-5xl font-bold text-[var(--color-primary)] mb-3">
                                     28%
                                 </h3>
                                 <p className="paragraph ">
                                     Cost Reduction
                                 </p>
                             </div>
-                            <div className="bg-main  rounded-xl p-8 text-center">
-                                <h3 className="text-5xl font-bold text-blue-500 mb-3">
+                            <div className="bg-main rounded-[var(--radius-sm)] p-6 md:p-8 text-center">
+                                <h3 className="text-5xl font-bold text-[var(--color-primary)] mb-3">
                                     42%
                                 </h3>
                                 <p className="paragraph ">
                                     Productivity Increase
                                 </p>
                             </div>
-                            <div className="bg-main  rounded-xl p-8 text-center">
-                                <h3 className="text-5xl font-bold text-blue-500 mb-3">
+                            <div className="bg-main rounded-[var(--radius-sm)] p-6 md:p-8 text-center">
+                                <h3 className="text-5xl font-bold text-[var(--color-primary)] mb-3">
                                     90%
                                 </h3>
                                 <p className="paragraph ">
@@ -269,7 +326,7 @@ const CaseStudyDetails = () => {
                         viewport={{ once: true }}
                         variants={fadeUp}
                     >
-                        <h2 className="sub-heading mb-8">
+                        <h2 className="sub-heading mb-6 md:mb-8">
                             About the Author
                         </h2>
                         <motion.div
@@ -282,18 +339,18 @@ const CaseStudyDetails = () => {
                                 <img
                                     src={study.authorImage}
                                     alt="Author"
-                                    className="w-40 h-40 rounded-full object-cover border-4 border-blue-500"
+                                    className="w-40 h-40 rounded-full object-cover border-4 border-[var(--color-primary)] "
                                 />
                             </div>
                             <div>
-                                <p className=" text-3xl font-bold mt-2">
+                                <p className=" text-3xl font-bold mt-2  text-[var(--color-primary)]  ">
                                     {study.author}
                                 </p>
                                 <a
                                     href={study.authorWebsite}
                                     target="_blank"
                                     rel="noopener noreferrer"
-                                    className="text-sm font-bold hover:text-blue-500 transition break-all leading-relaxed inline-block max-w-full"
+                                    className="text-sm font-bold hover:text-[var(--color-primary-hover)] transition break-all leading-relaxed inline-block max-w-full"
                                 >
                                     {study.authorWebsite}
                                 </a>
@@ -302,16 +359,16 @@ const CaseStudyDetails = () => {
                                     {study.authorRole}
                                 </p>
                                 <div className="flex flex-wrap gap-3 mt-6">
-                                    <span className="px-4 py-2 bg-blue-500 rounded-full text-sm">
+                                    <span className="px-4 py-2 bg-[var(--color-primary)] text-white rounded-full text-sm">
                                         Strategy
                                     </span>
-                                    <span className="px-4 py-2 bg-blue-500 rounded-full text-sm">
+                                    <span className="px-4 py-2 bg-[var(--color-primary)] text-white rounded-full text-sm">
                                         Digital Transformation
                                     </span>
-                                    <span className="px-4 py-2 bg-blue-500 rounded-full text-sm">
+                                    <span className="px-4 py-2 bg-[var(--color-primary)] text-white rounded-full text-sm">
                                         Operations
                                     </span>
-                                    <span className="px-4 py-2 bg-blue-500 rounded-full text-sm">
+                                    <span className="px-4 py-2 bg-[var(--color-primary)] text-white rounded-full text-sm">
                                         Leadership
                                     </span>
                                 </div>

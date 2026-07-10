@@ -149,7 +149,7 @@ const Change = () => {
               className="grid grid-cols-1 lg:grid-cols-2 gap-0 lg:gap-8 items-stretch bg-white var(--radius-sm) overflow-hidden border border-black/5 shadow-[0_15px_35px_rgba(0,0,0,0.03)]"
             >
               <div className="p-6 sm:p-10 md:p-12 flex flex-col justify-center order-2 lg:order-1">
-                <h2 className="sub-heading mb-4">Change Management</h2>
+                <h2 className="sub-heading mb-4">Leading Organizational Change</h2>
                 <p className="paragraph mb-6 leading-relaxed text-sm md:text-base text-gray-700">
                   Help organizations navigate transformation successfully through leadership alignment, communication strategies, employee engagement, and behavioral adoption frameworks.
                 </p>
