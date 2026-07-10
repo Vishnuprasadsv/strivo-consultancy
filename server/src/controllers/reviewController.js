@@ -109,3 +109,46 @@ export const deleteReview = async (req, res) => {
     });
   }
 };
+
+// @desc    Update review status
+// @route   PUT /api/reviews/:id/status
+// @access  Private/Admin
+export const updateReviewStatus = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { status } = req.body;
+
+    if (!["Pending", "Approved", "Rejected"].includes(status)) {
+      return res.status(400).json({
+        success: false,
+        message: "Invalid status value. Must be Pending, Approved, or Rejected.",
+      });
+    }
+
+    const review = await Review.findByIdAndUpdate(
+      id,
+      { status },
+      { new: true, runValidators: true }
+    );
+
+    if (!review) {
+      return res.status(404).json({
+        success: false,
+        message: "Review not found",
+      });
+    }
+
+    return res.status(200).json({
+      success: true,
+      message: `Review status updated to ${status} successfully`,
+      data: review,
+    });
+  } catch (error) {
+    console.error("Error in updateReviewStatus controller:", error);
+    return res.status(500).json({
+      success: false,
+      message: "Internal server error. Failed to update review status.",
+      error: error.message,
+    });
+  }
+};

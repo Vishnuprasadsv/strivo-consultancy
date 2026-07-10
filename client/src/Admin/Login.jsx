@@ -47,7 +47,7 @@ const Login = () => {
         initial={{ opacity: 0, y: 30 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6, ease: "easeOut" }}
-        className="w-full max-w-md card py-6 px-8 relative overflow-hidden"
+        className="w-full max-w-md bg-white card py-6 px-8 relative overflow-hidden"
       >
         <div className="flex flex-col items-center gap-4 mb-5">
           {/* <img src={logo1} alt="Strivo Logo" className="h-9 object-contain" /> */}
@@ -60,9 +60,9 @@ const Login = () => {
             animate={{ opacity: 1 }}
             transition={{ delay: 0.3 }}
             className="mb-1 block text-center"
-            style={{ fontSize: 'var(--text-card-heading)', fontWeight: 'var(--font-semibold)', color: 'var(--color-black)' }}
+            style={{ fontSize: 'var(--text-card-heading)', fontWeight: 'var(--font-semibold)', color: 'var(--color-primary)' }}
           >
-            ADMIN PORTAL
+            ADMIN LOGIN
           </motion.h2>
           <p
             className="opacity-70 block text-center"
@@ -76,7 +76,7 @@ const Login = () => {
           <div className="space-y-1.5">
             <label
               className="ml-1 block"
-              style={{ fontSize: 'var(--text-small)', fontWeight: 'var(--font-medium)', color: 'var(--color-paragraph)' }}
+              style={{ fontSize: 'var(--text-small)', fontWeight: 'var(--font-normal)', color: 'var(--color-paragraph)' }}
             >
               USERNAME
             </label>
@@ -95,7 +95,7 @@ const Login = () => {
           <div className="space-y-1.5">
             <label
               className="ml-1 block"
-              style={{ fontSize: 'var(--text-small)', fontWeight: 'var(--font-medium)', color: 'var(--color-paragraph)' }}
+              style={{ fontSize: 'var(--text-small)', fontWeight: 'var(--font-normal)', color: 'var(--color-paragraph)' }}
             >
               PASSWORD
             </label>

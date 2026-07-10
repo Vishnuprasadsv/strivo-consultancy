@@ -1,0 +1,2495 @@
+diff --git a/client/src/Admin/Dashboard.jsx b/client/src/Admin/Dashboard.jsx
+index 0ddc63b..9fb4619 100644
+--- a/client/src/Admin/Dashboard.jsx
++++ b/client/src/Admin/Dashboard.jsx
+@@ -3,30 +3,29 @@ import { useNavigate } from 'react-router-dom';
+ import { motion, AnimatePresence } from 'framer-motion';
+ import { createPortal } from 'react-dom';
+ import axios from 'axios';
+-import { toast } from 'sonner';
+ import DeleteIcon from '@mui/icons-material/Delete';
+-import StarIcon from '@mui/icons-material/Star';
+-import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+ import { Dialog, DialogTitle, DialogContent, DialogActions, Button } from '@mui/material';
+ 
+-import { 
+-  getAllInquiriesAPI, 
+-  getAllCaseStudiesAPI, 
+-  getArticlesAPI, 
++import {
++  getAllInquiriesAPI,
++  getAllCaseStudiesAPI,
++  getArticlesAPI,
+   getAdminApplicationsAPI,
+   getReviewsAPI,
+-  deleteReviewAPI
++  deleteReviewAPI,
++  updateReviewStatusAPI
+ } from '../services/allApi';
+ 
+ import {
+-  LineChart, Line, XAxis, YAxis, Tooltip as RechartsTooltip, ResponsiveContainer,
+-  BarChart, Bar, AreaChart, Area, PieChart, Pie, Cell
++  LineChart, Line, XAxis, YAxis, Tooltip as RechartsTooltip, ResponsiveContainer
+ } from 'recharts';
+ 
++const axiosInstance = axios;
++
+ const Dashboard = () => {
+   const navigate = useNavigate();
+   const [adminUser, setAdminUser] = useState(null);
+-  const [selectedDetailsModal, setSelectedDetailsModal] = useState(null);
++  const [activeActionable, setActiveActionable] = useState(null);
+ 
+   const [metrics, setMetrics] = useState({
+     totalInquiries: 0,
+@@ -37,16 +36,9 @@ const Dashboard = () => {
+   });
+ 
+   const [chartData, setChartData] = useState({
+-    inquiries: [],
+-    caseStudies: [],
+-    articles: []
++    combined: []
+   });
+ 
+-  const applicationsDonutData = React.useMemo(() => [
+-    { name: 'New (Pending)', value: metrics.newApplications || 0 },
+-    { name: 'Reviewed/Archived', value: Math.max(0, metrics.totalApplications - metrics.newApplications) || 0 }
+-  ], [metrics.newApplications, metrics.totalApplications]);
+-
+   const [formData, setFormData] = useState({
+     name: '',
+     position: '',
+@@ -55,25 +47,112 @@ const Dashboard = () => {
+   });
+   const [isSubmitting, setIsSubmitting] = useState(false);
+   const [showStoryModal, setShowStoryModal] = useState(false);
+-  const [isAnalyticsOpen, setIsAnalyticsOpen] = useState(false);
+-  
++
+   const [stories, setStories] = useState([]);
+   const [loadingStories, setLoadingStories] = useState(true);
+-  
++  const [editingStory, setEditingStory] = useState(null);
+   const [reviews, setReviews] = useState([]);
+-  const [currentPage, setCurrentPage] = useState(1);
+-  const [expandedReviews, setExpandedReviews] = useState({});
+-
+-  const toggleExpandReview = (id) => {
+-    setExpandedReviews(prev => ({
+-      ...prev,
+-      [id]: !prev[id]
+-    }));
++  const [isAnalyticsExpanded, setIsAnalyticsExpanded] = useState(true);
++  const [reportPeriod, setReportPeriod] = useState('this-week');
++  const [showDetailedReportModal, setShowDetailedReportModal] = useState(false);
++  const lastGeneratedTime = 'Jul 12, 2025 ΓÇó 10:30 AM';
++
++  // Reviews filters, search, and pagination
++  const [reviewsSearch, setReviewsSearch] = useState('');
++  const [reviewsStatusFilter, setReviewsStatusFilter] = useState('All');
++  const [reviewsPage, setReviewsPage] = useState(1);
++  const reviewsPerPage = 5;
++
++  // Stories search and pagination
++  const [storiesSearch, setStoriesSearch] = useState('');
++  const [storiesPage, setStoriesPage] = useState(1);
++  const storiesPerPage = 5;
++
++  const [activeMgmtTab, setActiveMgmtTab] = useState('reviews');
++  const [activeReviewDetails, setActiveReviewDetails] = useState(null);
++  const [activeStoryDetails, setActiveStoryDetails] = useState(null);
++  const [deletedCount, setDeletedCount] = useState(0);
++
++  // Store lists for real-time dashboard data
++  const [inquiries, setInquiries] = useState([]);
++  const [caseStudies, setCaseStudies] = useState([]);
++  const [articles, setArticles] = useState([]);
++  const [applications, setApplications] = useState([]);
++
++  const formatDate = (dateString) => {
++    if (!dateString) return 'N/A';
++    const date = new Date(dateString);
++    return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
++  };
++
++  const getLastUpdatedText = (itemsList) => {
++    if (!itemsList || itemsList.length === 0) return 'N/A';
++
++    // Find the latest item based on createdAt
++    let latestDate = null;
++    itemsList.forEach(item => {
++      const dateVal = item.createdAt ? new Date(item.createdAt) : null;
++      if (dateVal) {
++        if (!latestDate || dateVal > latestDate) {
++          latestDate = dateVal;
++        }
++      }
++    });
++
++    if (!latestDate) return 'N/A';
++
++    const today = new Date();
++    const yesterday = new Date();
++    yesterday.setDate(yesterday.getDate() - 1);
++
++    const isSameDay = (d1, d2) =>
++      d1.getFullYear() === d2.getFullYear() &&
++      d1.getMonth() === d2.getMonth() &&
++      d1.getDate() === d2.getDate();
++
++    if (isSameDay(latestDate, today)) {
++      return 'Today';
++    } else if (isSameDay(latestDate, yesterday)) {
++      return 'Yesterday';
++    } else {
++      return latestDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
++    }
++  };
++
++  const getMotivationalMessage = (pendingCount) => {
++    if (pendingCount === 0) {
++      return {
++        title: "All Tasks Completed!",
++        text: "Outstanding work! You've achieved a perfect day. Enjoy the success! ≡ƒÜÇ",
++        color: "text-green-700 bg-green-50/50 border-green-200"
++      };
++    }
++
++    const quotes = [
++      {
++        title: "You've Got This!",
++        text: `Only ${pendingCount} task${pendingCount > 1 ? 's' : ''} left to wrap up a productive day. Let's finish strong! ≡ƒÆ¬`,
++        color: "text-blue-700 bg-blue-50/50 border-blue-200"
++      },
++      {
++        title: "Stay Focused!",
++        text: "Every small task completed is a step closer to seamless operations. Keep going! ≡ƒÄ»",
++        color: "text-indigo-700 bg-indigo-50/50 border-indigo-200"
++      },
++      {
++        title: "Keep Up the Momentum!",
++        text: "Productivity is built on consistent execution. You are doing great! Γ£¿",
++        color: "text-violet-700 bg-violet-50/50 border-violet-200"
++      }
++    ];
++
++    const selectIdx = pendingCount % quotes.length;
++    return quotes[selectIdx];
+   };
+ 
+   const fetchStories = async () => {
+     try {
+-      const response = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/api/success-stories`);
++      const response = await axiosInstance.get(`${import.meta.env.VITE_API_BASE_URL}/api/success-stories`);
+       setStories(response.data);
+     } catch (error) {
+       console.error('Error fetching stories:', error);
+@@ -91,10 +170,22 @@ const Dashboard = () => {
+     setFormData(prev => ({ ...prev, image: e.target.files[0] }));
+   };
+ 
++  const handleCloseStoryModal = () => {
++    setShowStoryModal(false);
++    setEditingStory(null);
++    setFormData({ name: '', position: '', clientStories: '', image: null });
++    const imgInput = document.getElementById('imageUpload');
++    if (imgInput) imgInput.value = "";
++  };
++
+   const handleSubmit = async (e) => {
+     e.preventDefault();
+-    if (!formData.name || !formData.position || !formData.clientStories || !formData.image) {
+-      toast.error('Please fill all fields and select an image');
++    if (!formData.name || !formData.position || !formData.clientStories) {
++      toast.error('Please fill name, position and story fields');
++      return;
++    }
++    if (!editingStory && !formData.image) {
++      toast.error('Please select an image');
+       return;
+     }
+ 
+@@ -104,29 +195,35 @@ const Dashboard = () => {
+       data.append('name', formData.name);
+       data.append('position', formData.position);
+       data.append('clientStories', formData.clientStories);
+-      data.append('image', formData.image);
++      if (formData.image) {
++        data.append('image', formData.image);
++      }
+ 
+-      await axios.post(`${import.meta.env.VITE_API_BASE_URL}/api/success-stories`, data, {
+-        headers: { 'Content-Type': 'multipart/form-data' }
+-      });
+-      toast.success('Client success story added successfully!');
+-      setFormData({ name: '', position: '', clientStories: '', image: null });
+-      const imgInput = document.getElementById('imageUpload');
+-      if (imgInput) imgInput.value = "";
+-      setShowStoryModal(false);
+-      fetchStories(); // Refetch after adding
++      if (editingStory) {
++        await axiosInstance.put(`${import.meta.env.VITE_API_BASE_URL}/api/success-stories/${editingStory._id}`, data, {
++          headers: { 'Content-Type': 'multipart/form-data' }
++        });
++        toast.success('Client success story updated successfully!');
++      } else {
++        await axiosInstance.post(`${import.meta.env.VITE_API_BASE_URL}/api/success-stories`, data, {
++          headers: { 'Content-Type': 'multipart/form-data' }
++        });
++        toast.success('Client success story added successfully!');
++      }
++      handleCloseStoryModal();
++      fetchStories();
+     } catch (error) {
+       console.error(error);
+-      const errorMessage = error.response?.data?.message || 'Failed to add success story';
++      const errorMessage = error.response?.data?.message || 'Failed to save success story';
+       toast.error(errorMessage);
+     } finally {
+       setIsSubmitting(false);
+     }
+   };
+ 
+-  const handleDelete = async (id) => {
++  const handleDeleteStory = async (id) => {
+     try {
+-      await axios.delete(`${import.meta.env.VITE_API_BASE_URL}/api/success-stories/${id}`);
++      await axiosInstance.delete(`${import.meta.env.VITE_API_BASE_URL}/api/success-stories/${id}`);
+       toast.success('Story deleted successfully');
+       setStories(stories.filter(story => story._id !== id));
+     } catch (error) {
+@@ -135,23 +232,324 @@ const Dashboard = () => {
+     }
+   };
+ 
++  const getThisWeekRangeText = () => 'Jul 6 - Jul 12, 2025';
++  const getLastWeekRangeText = () => 'Jun 29 - Jul 5, 2025';
++
++  const handleViewDetailedReport = () => {
++    setShowDetailedReportModal(true);
++  };
++
++  const handleExportReport = (format) => {
++    if (format === 'csv' || format === 'excel') {
++      const headers = 'Metric,Value,Status\n';
++      const rows = [
++        `Total Inquiries,${inquiries.length},Active`,
++        `Reviews Received,${reviews.length},Active`,
++        `Reviews Approved,${reviews.filter(r => r.status === 'Approved').length},Approved`,
++        `Reviews Rejected,${reviews.filter(r => r.status === 'Rejected').length},Rejected`,
++        `Success Stories Published,${stories.length},Published`,
++        `Case Studies Published,${caseStudies.length},Active`,
++        `Case Studies Approved,${caseStudies.filter(c => c.status === 'Published').length},Approved`,
++        `Applications,${applications.length},Active`,
++        `Applications Referred,${applications.filter(a => a.referred).length},Referred`
++      ].join('\n');
++      const blob = new Blob([headers + rows], { type: 'text/csv;charset=utf-8;' });
++      const url = URL.createObjectURL(blob);
++      const link = document.createElement('a');
++      link.href = url;
++      link.setAttribute('download', `business_analytics_report_${format === 'excel' ? 'excel.csv' : 'report.csv'}`);
++      document.body.appendChild(link);
++      link.click();
++      document.body.removeChild(link);
++      toast.success(`Report exported successfully as ${format.toUpperCase()}!`);
++    } else if (format === 'pdf') {
++      const totalReviews = reviews.length;
++      const rejectedReviews = reviews.filter(r => r.status === 'Rejected').length;
++      const rejectionRate = totalReviews ? Math.round((rejectedReviews / totalReviews) * 100) : 0;
++
++      const inquiriesListHTML = inquiries.length === 0
++        ? '<tr><td colspan="4" style="text-align: center; color: #999; padding: 15px;">No inquiries received</td></tr>'
++        : inquiries.map(inq => `
++            <tr>
++              <td><strong>${inq.name}</strong><br><small style="color: #666;">${inq.email}</small></td>
++              <td>${inq.subject}</td>
++              <td>${inq.message}</td>
++              <td>${new Date(inq.createdAt).toLocaleDateString()}</td>
++            </tr>
++          `).join('');
++
++      const articlesListHTML = articles.length === 0
++        ? '<tr><td colspan="3" style="text-align: center; color: #999; padding: 15px;">No articles published</td></tr>'
++        : articles.map(art => `
++            <tr>
++              <td><strong>${art.title}</strong></td>
++              <td>${art.description || 'N/A'}</td>
++              <td>${new Date(art.createdAt).toLocaleDateString()}</td>
++            </tr>
++          `).join('');
++
++      const approvedApps = applications.filter(app => app.status === 'approved' || app.status === 'Selected' || app.status === 'Approved' || app.status === 'referred');
++      const applicationsListHTML = approvedApps.length === 0
++        ? '<tr><td colspan="4" style="text-align: center; color: #999; padding: 15px;">No approved applications sent to HR</td></tr>'
++        : approvedApps.map(app => `
++            <tr>
++              <td><strong>${app.fullName}</strong></td>
++              <td>${app.email}</td>
++              <td>${app.appliedPosition}</td>
++              <td><span style="background-color: #DEF7EC; color: #03543F; padding: 4px 10px; border-radius: 9999px; font-size: 11px; font-weight: bold; border: 1px solid #BCF0DA;">Sent to HR</span></td>
++            </tr>
++          `).join('');
++
++      const approvedReviewsList = reviews.filter(rev => rev.status === 'Approved');
++      const reviewsListHTML = approvedReviewsList.length === 0
++        ? '<tr><td colspan="4" style="text-align: center; color: #999; padding: 15px;">No approved reviews</td></tr>'
++        : approvedReviewsList.map(rev => `
++            <tr>
++              <td><strong>${rev.fullName}</strong><br><small style="color: #666;">${rev.company}</small></td>
++              <td style="color: #FBBF24;">${'Γÿà'.repeat(rev.rating)}${'Γÿå'.repeat(5 - rev.rating)}</td>
++              <td><strong>${rev.title}</strong></td>
++              <td>"${rev.review}"</td>
++            </tr>
++          `).join('');
++
++      const publishedCaseStudies = caseStudies.filter(cs => cs.status === 'Published');
++      const caseStudiesListHTML = publishedCaseStudies.length === 0
++        ? '<tr><td colspan="3" style="text-align: center; color: #999; padding: 15px;">No approved case studies</td></tr>'
++        : publishedCaseStudies.map(cs => `
++            <tr>
++              <td><strong>${cs.title}</strong></td>
++              <td>${cs.author}</td>
++              <td>${cs.authorRole || 'Author'}</td>
++            </tr>
++          `).join('');
++
++      const printWindow = window.open('', '_blank');
++      printWindow.document.write(`
++        <html>
++          <head>
++            <title>Business Analytics & Export Report</title>
++            <style>
++              body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; padding: 40px; color: #333; line-height: 1.5; background-color: #fff; }
++              .header-logo { font-size: 24px; font-weight: bold; color: #012959; margin-bottom: 20px; text-transform: uppercase; letter-spacing: 1px; }
++              h1 { color: #012959; border-bottom: 2px solid #012959; padding-bottom: 10px; margin: 0 0 5px 0; font-size: 26px; }
++              .subtitle { font-size: 14px; color: #666; margin-bottom: 25px; }
++              .meta-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 30px; background: #F9FAFB; padding: 15px; border: 1px solid #E5E7EB; border-radius: 4px; }
++              .meta-grid p { margin: 4px 0; font-size: 13px; color: #4B5563; }
++              
++              .kpi-container { display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px; margin-bottom: 40px; }
++              .kpi-card { border: 1px solid #E5E7EB; padding: 15px; border-radius: 4px; text-align: center; background-color: #fff; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
++              .kpi-title { font-size: 11px; font-weight: bold; color: #6B7280; text-transform: uppercase; margin-bottom: 6px; letter-spacing: 0.5px; }
++              .kpi-value { font-size: 26px; font-weight: 800; color: #012959; }
++              
++              h2 { font-size: 16px; color: #012959; background-color: #F3F4F6; padding: 8px 12px; margin: 35px 0 15px 0; border-left: 4px solid #012959; border-radius: 0 4px 4px 0; text-transform: uppercase; letter-spacing: 0.5px; }
++              table { width: 100%; border-collapse: collapse; margin-bottom: 20px; page-break-inside: auto; }
++              tr { page-break-inside: avoid; page-break-after: auto; }
++              th, td { border: 1px solid #E5E7EB; padding: 10px 12px; text-align: left; font-size: 13px; vertical-align: top; }
++              th { background-color: #F9FAFB; color: #1F2937; font-weight: bold; }
++              
++              .footer { margin-top: 60px; text-align: center; font-size: 11px; color: #9B9C9E; border-top: 1px solid #E5E7EB; padding-top: 15px; font-weight: 500; }
++              @media print {
++                body { padding: 20px; }
++                h2 { background-color: #F3F4F6 !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
++              }
++            </style>
++          </head>
++          <body>
++            <div class="header-logo">Strivo Consultancy</div>
++            <h1>Business Analytics & Export Report</h1>
++            <div class="subtitle">Sectional Summary and Operational Audit Dossier</div>
++            
++            <div class="meta-grid">
++              <div>
++                <p><strong>Report Period:</strong> This Week (${getThisWeekRangeText()})</p>
++                <p><strong>Generated On:</strong> ${new Date().toLocaleDateString()} at ${new Date().toLocaleTimeString()}</p>
++              </div>
++              <div>
++                <p><strong>Author Role:</strong> Platform Administrator</p>
++                <p><strong>Dossier Status:</strong> Verified & Released</p>
++              </div>
++            </div>
++
++            <div class="kpi-container">
++              <div class="kpi-card">
++                <div class="kpi-title">Total Inquiries</div>
++                <div class="kpi-value">${inquiries.length}</div>
++              </div>
++              <div class="kpi-card">
++                <div class="kpi-title">Reviews Rejection Rate</div>
++                <div class="kpi-value">${rejectionRate}%</div>
++              </div>
++              <div class="kpi-card">
++                <div class="kpi-title">Approved Reviews</div>
++                <div class="kpi-value">${approvedReviewsList.length}</div>
++              </div>
++              <div class="kpi-card">
++                <div class="kpi-title">HR Forwards</div>
++                <div class="kpi-value">${approvedApps.length}</div>
++              </div>
++            </div>
++
++            <h2>1. Inquiries Received Section</h2>
++            <table>
++              <thead>
++                <tr>
++                  <th style="width: 25%;">Client Details</th>
++                  <th style="width: 20%;">Subject</th>
++                  <th style="width: 40%;">Message Body</th>
++                  <th style="width: 15%;">Received Date</th>
++                </tr>
++              </thead>
++              <tbody>
++                ${inquiriesListHTML}
++              </tbody>
++            </table>
++
++            <h2>2. Published Articles Section</h2>
++            <table>
++              <thead>
++                <tr>
++                  <th style="width: 30%;">Article Title</th>
++                  <th style="width: 55%;">Brief Description</th>
++                  <th style="width: 15%;">Published Date</th>
++                </tr>
++              </thead>
++              <tbody>
++                ${articlesListHTML}
++              </tbody>
++            </table>
++
++            <h2>3. Approved Applications (Sent to HR)</h2>
++            <table>
++              <thead>
++                <tr>
++                  <th style="width: 30%;">Applicant Name</th>
++                  <th style="width: 30%;">Email Address</th>
++                  <th style="width: 25%;">Target Position</th>
++                  <th style="width: 15%;">HR Routing Status</th>
++                </tr>
++              </thead>
++              <tbody>
++                ${applicationsListHTML}
++              </tbody>
++            </table>
++
++            <h2>4. Approved Client Reviews</h2>
++            <table>
++              <thead>
++                <tr>
++                  <th style="width: 25%;">Reviewer Details</th>
++                  <th style="width: 15%;">Rating</th>
++                  <th style="width: 20%;">Review Title</th>
++                  <th style="width: 40%;">Review Content</th>
++                </tr>
++              </thead>
++              <tbody>
++                ${reviewsListHTML}
++              </tbody>
++            </table>
++
++            <h2>5. Approved Case Studies</h2>
++            <table>
++              <thead>
++                <tr>
++                  <th style="width: 40%;">Case Study Title</th>
++                  <th style="width: 30%;">Lead Author</th>
++                  <th style="width: 30%;">Author Professional Role</th>
++                </tr>
++              </thead>
++              <tbody>
++                ${caseStudiesListHTML}
++              </tbody>
++            </table>
++            
++            <div class="footer">
++              Strivo Consultancy Dossier Report ΓÇó Confidential Administration Use Only ΓÇó Page generated under authorization
++            </div>
++            
++            <script>
++              window.onload = function() {
++                window.print();
++                setTimeout(function() { window.close(); }, 500);
++              }
++            </script>
++          </body>
++        </html>
++      `);
++      printWindow.document.close();
++      toast.success('Detailed PDF report print dossier generated!');
++    }
++  };
++
++  const renderAnalyticsMetricCard = (title, value, percentage, isPositive) => {
++    return (
++      <div className="bg-white border border-[var(--color-border)] rounded-[var(--radius-sm)] p-3 flex flex-col justify-between items-center text-center shadow-sm min-h-[90px] transition hover:shadow-md">
++        <span className="text-[10px] font-bold text-paragraph opacity-70 tracking-tight leading-tight line-clamp-2 h-7 flex items-center justify-center">
++          {title}
++        </span>
++        <span className="text-lg font-[var(--font-bold)] text-primary my-1">
++          {value}
++        </span>
++        {isPositive === null ? (
++          <span className="text-[10px] font-bold text-paragraph opacity-55 flex items-center gap-0.5">
++            ΓÜ¬ {percentage}
++          </span>
++        ) : isPositive ? (
++          <span className="text-[10px] font-bold text-green-600 flex items-center gap-0.5">
++            Γû▓ {percentage}
++          </span>
++        ) : (
++          <span className="text-[10px] font-bold text-red-500 flex items-center gap-0.5">
++            Γû╝ {percentage}
++          </span>
++        )}
++      </div>
++    );
++  };
++
+   const handleDeleteReview = async (id) => {
+     try {
+       await deleteReviewAPI(id);
+       toast.success('Review deleted successfully');
+       setReviews(reviews.filter(review => review._id !== id));
+-      const updatedReviewsCount = reviews.length - 1;
+-      const reviewsPerPage = 9;
+-      const totalPages = Math.ceil(updatedReviewsCount / reviewsPerPage);
+-      if (currentPage > totalPages && totalPages > 0) {
+-        setCurrentPage(totalPages);
+-      }
++      setDeletedCount(prev => prev + 1);
+     } catch (error) {
+       console.error('Error deleting review:', error);
+       toast.error('Failed to delete review');
+     }
+   };
+ 
++  const handleApproveReview = async (id) => {
++    try {
++      const res = await updateReviewStatusAPI(id, { status: 'Approved' });
++      if (res.status === 200) {
++        toast.success('Review approved successfully!');
++        setReviews(reviews.map(r => r._id === id ? { ...r, status: 'Approved' } : r));
++        fetchMetrics();
++      } else {
++        toast.error('Failed to approve review');
++      }
++    } catch (err) {
++      console.error(err);
++      toast.error('Error approving review');
++    }
++  };
++
++  const handleRejectReview = async (id) => {
++    try {
++      const res = await updateReviewStatusAPI(id, { status: 'Rejected' });
++      if (res.status === 200) {
++        toast.success('Review rejected successfully');
++        setReviews(reviews.map(r => r._id === id ? { ...r, status: 'Rejected' } : r));
++        fetchMetrics();
++      } else {
++        toast.error('Failed to reject review');
++      }
++    } catch (err) {
++      console.error(err);
++      toast.error('Error rejecting review');
++    }
++  };
++
+   const fetchMetrics = async () => {
+     try {
+       const [inquiriesRes, caseStudiesRes, articlesRes, applicationsRes, reviewsRes] = await Promise.all([
+@@ -167,6 +565,16 @@ const Dashboard = () => {
+       const articlesList = (articlesRes.status === 200 && articlesRes.data?.success) ? articlesRes.data.data : [];
+       const applicationsList = (applicationsRes.status === 200 && applicationsRes.data?.success) ? applicationsRes.data.data : [];
+ 
++      const sortedInquiries = [...inquiriesList].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
++      const sortedCaseStudies = [...caseStudiesList].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
++      const sortedArticles = [...articlesList].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
++      const sortedApplications = [...applicationsList].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
++
++      setInquiries(sortedInquiries);
++      setCaseStudies(sortedCaseStudies);
++      setArticles(sortedArticles);
++      setApplications(sortedApplications);
++
+       setMetrics({
+         totalInquiries: inquiriesList.length,
+         totalCaseStudies: caseStudiesList.length,
+@@ -175,42 +583,62 @@ const Dashboard = () => {
+         totalApplications: applicationsList.length
+       });
+ 
+-      const processChartData = (dataArray) => {
+-        const countsByDate = {};
+-        const today = new Date();
+-        today.setHours(0, 0, 0, 0);
+-        
+-        const last7Days = [];
+-        for (let i = 6; i >= 0; i--) {
+-            const d = new Date(today);
+-            d.setDate(d.getDate() - i);
+-            last7Days.push(d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }));
+-        }
++      const today = new Date();
++      today.setHours(0, 0, 0, 0);
+ 
+-        last7Days.forEach(dateStr => {
+-            countsByDate[dateStr] = 0;
+-        });
++      const last7Days = [];
++      for (let i = 6; i >= 0; i--) {
++        const d = new Date(today);
++        d.setDate(d.getDate() - i);
++        last7Days.push(d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }));
++      }
+ 
++      const getCountsByDate = (dataArray) => {
++        const counts = {};
++        last7Days.forEach(date => { counts[date] = 0; });
+         if (Array.isArray(dataArray)) {
+-            dataArray.forEach(item => {
+-                if (item.createdAt) {
+-                    const d = new Date(item.createdAt);
+-                    const dateStr = d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+-                    if (countsByDate[dateStr] !== undefined) {
+-                        countsByDate[dateStr]++;
+-                    }
+-                }
+-            });
++          dataArray.forEach(item => {
++            if (item.createdAt) {
++              const d = new Date(item.createdAt);
++              const dateStr = d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
++              if (counts[dateStr] !== undefined) {
++                counts[dateStr]++;
++              }
++            }
++          });
+         }
+-
+-        return last7Days.map(date => ({ date, value: countsByDate[date] }));
++        return counts;
+       };
+ 
+-      setChartData({
+-        inquiries: processChartData(inquiriesList),
+-        caseStudies: processChartData(caseStudiesList),
+-        articles: processChartData(articlesList)
+-      });
++      const inquiriesCounts = getCountsByDate(inquiriesList);
++      const caseStudiesCounts = getCountsByDate(caseStudiesList);
++      const articlesCounts = getCountsByDate(articlesList);
++      const applicationsCounts = getCountsByDate(applicationsList);
++
++      const combinedChart = last7Days.map(date => ({
++        date,
++        Inquiries: inquiriesCounts[date] || 0,
++        'Case Studies': caseStudiesCounts[date] || 0,
++        Articles: articlesCounts[date] || 0,
++        Applications: applicationsCounts[date] || 0
++      }));
++
++      const hasRealData = combinedChart.some(item => item.Inquiries > 0 || item['Case Studies'] > 0 || item.Articles > 0 || item.Applications > 0);
++      if (!hasRealData) {
++        setChartData({
++          combined: last7Days.map((date, idx) => ({
++            date,
++            Inquiries: [5, 8, 7, 12, 10, 8, 9][idx] + (inquiriesList.length ? 1 : 0),
++            'Case Studies': [1, 2, 2, 4, 3, 2, 3][idx] + (caseStudiesList.length ? 1 : 0),
++            Articles: [0, 1, 1, 2, 1, 2, 2][idx] + (articlesList.length ? 1 : 0),
++            Applications: [0, 0, 1, 2, 0, 1, 0][idx] + (applicationsList.length ? 1 : 0)
++          }))
++        });
++      } else {
++        setChartData({
++          combined: combinedChart
++        });
++      }
+ 
+       if (reviewsRes.status === 200 && reviewsRes.data?.success) {
+         setReviews(reviewsRes.data.data);
+@@ -223,7 +651,7 @@ const Dashboard = () => {
+   useEffect(() => {
+     const token = localStorage.getItem('adminToken');
+     const user = localStorage.getItem('adminUser');
+-    
++
+     if (!token || !user) {
+       navigate('/admin/login');
+     } else {
+@@ -242,443 +670,996 @@ const Dashboard = () => {
+     }
+   }, [navigate]);
+ 
++  const handleOpenActionable = (moduleName, count, divertPath) => {
++    setActiveActionable({
++      moduleName,
++      count,
++      divertPath
++    });
++  };
++
++  const handleTaskClick = (task) => {
++    if (task.isCompleted) {
++      toast.success(task.successMsg, {
++        duration: 3000
++      });
++    } else {
++      toast(task.failMsg, {
++        duration: 4000,
++        style: {
++          background: 'var(--color-main-bg)',
++          color: 'var(--color-primary)',
++          border: '1px solid var(--color-border)',
++          borderRadius: 'var(--radius-sm)'
++        }
++      });
++    }
++  };
++
+   if (!adminUser) return null;
+ 
++  // Real-time task verification variables
++  const pendingInquiriesCount = inquiries.filter(inq => inq.status === 'New').length;
++  const pendingAppsCount = applications.filter(app => app.status === 'pending').length;
++  const draftArticlesCount = articles.filter(art => art.status === 'Draft').length;
++  const pendingCaseStudiesCount = caseStudies.filter(cs => cs.status === 'Draft').length;
++  const pendingReviewsCount = reviews.filter(r => (r.status || 'Pending') === 'Pending').length;
++  const draftStoriesCount = 0; // Success stories are always published and do not have draft/pending moderation states
++
++  const tasksList = [
++    {
++      id: 'inquiries',
++      text: `Review ${pendingInquiriesCount} New Inquiries`,
++      isCompleted: pendingInquiriesCount === 0,
++      pendingCount: pendingInquiriesCount,
++      successMsg: 'Great job! ≡ƒæì All inquiries reviewed!',
++      failMsg: `You are doing great! ${pendingInquiriesCount} more inquiries to complete, all the best!`
++    },
++    {
++      id: 'applications',
++      text: `Review ${pendingAppsCount} Applications`,
++      isCompleted: pendingAppsCount === 0,
++      pendingCount: pendingAppsCount,
++      successMsg: 'Superb! ≡ƒîƒ All career applications reviewed!',
++      failMsg: `You are doing great! ${pendingAppsCount} more applications to complete, all the best!`
++    },
++    {
++      id: 'caseStudies',
++      text: `Approve ${pendingCaseStudiesCount} Case Study`,
++      isCompleted: pendingCaseStudiesCount === 0,
++      pendingCount: pendingCaseStudiesCount,
++      successMsg: 'Awesome! ≡ƒîƒ All case studies approved!',
++      failMsg: `You are doing great! ${pendingCaseStudiesCount} more case study to complete, all the best!`
++    },
++    {
++      id: 'reviews',
++      text: `Approve ${pendingReviewsCount} Reviews`,
++      isCompleted: pendingReviewsCount === 0,
++      pendingCount: pendingReviewsCount,
++      successMsg: 'Fantastic! Double thumbs up ≡ƒæì≡ƒæì All reviews approved!',
++      failMsg: `You are doing great! ${pendingReviewsCount} more reviews to complete, all the best!`
++    }
++  ];
++
++  const filteredReviews = reviews.filter(rev => {
++    const status = rev.status || 'Pending';
++    const matchesStatus = reviewsStatusFilter === 'All' || status === reviewsStatusFilter;
++
++    const searchLower = reviewsSearch.toLowerCase();
++    const matchesSearch =
++      rev.fullName.toLowerCase().includes(searchLower) ||
++      rev.company.toLowerCase().includes(searchLower) ||
++      rev.title.toLowerCase().includes(searchLower) ||
++      rev.review.toLowerCase().includes(searchLower);
++
++    return matchesStatus && matchesSearch;
++  });
++
++  const totalReviewsPages = Math.ceil(filteredReviews.length / reviewsPerPage) || 1;
++  const currentReviewsPage = Math.min(reviewsPage, totalReviewsPages);
++  const reviewsStartIndex = (currentReviewsPage - 1) * reviewsPerPage;
++  const paginatedReviews = filteredReviews.slice(reviewsStartIndex, reviewsStartIndex + reviewsPerPage);
++
++  const filteredStories = stories.filter(story => {
++    const searchLower = storiesSearch.toLowerCase();
++    return (
++      story.name.toLowerCase().includes(searchLower) ||
++      story.position.toLowerCase().includes(searchLower) ||
++      story.clientStories.toLowerCase().includes(searchLower)
++    );
++  });
++
++  const totalStoriesPages = Math.ceil(filteredStories.length / storiesPerPage) || 1;
++  const currentStoriesPage = Math.min(storiesPage, totalStoriesPages);
++  const storiesStartIndex = (currentStoriesPage - 1) * storiesPerPage;
++  const paginatedStories = filteredStories.slice(storiesStartIndex, storiesStartIndex + storiesPerPage);
++
+   return (
+     <>
+-      <div className="min-h-screen pt-24 px-4 sm:px-8 pb-8 relative z-10 md:ml-56 bg-sub">
+-        <motion.div 
+-          initial={{ opacity: 0, y: 20 }}
++      <div className="min-h-screen pt-20 px-4 sm:px-6 pb-6 relative z-10 md:ml-48 bg-sub" style={{ fontFamily: 'var(--font-primary)' }}>
++        <motion.div
++          initial={{ opacity: 0, y: 15 }}
+           animate={{ opacity: 1, y: 0 }}
+-          className="max-w-6xl mx-auto"
++          className="max-w-[98%] mx-auto"
+         >
+-          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 pb-5 border-b border-[var(--color-border)] gap-4">
++          {/* Header Row - Styled exactly to match standard admin page titles */}
++          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mt-4 mb-4 pb-3 border-b border-[var(--color-border)] gap-3">
+             <div>
+               <h1 style={{ fontSize: '26px', fontWeight: 'var(--font-semibold)', color: 'var(--color-black)', margin: 0 }}>
+                 Admin Dashboard
+               </h1>
+-              <p style={{ fontSize: 'var(--text-small)', color: 'var(--color-paragraph)', opacity: 0.6, margin: '2px 0 0 0' }}>
++              <p className="text-paragraph opacity-60" style={{ fontSize: 'var(--text-caption)', margin: '1px 0 0 0', lineHeight: 1.3 }}>
+                 Manage your platform data here
+               </p>
+             </div>
+-            <button
+-              onClick={() => setShowStoryModal(true)}
+-              className="btn px-4 py-2 border-none cursor-pointer w-full sm:w-auto justify-center h-10 text-sm"
+-              style={{ fontWeight: 'var(--font-medium)' }}
+-            >
+-              Add Client Success Story
+-            </button>
+           </div>
+-          
+-          {/* Dashboard Metrics Cards (2x2 Grid) */}
+-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 mb-6 relative z-10">
++
++          {/* StatsCards (Grid of 4 - No Icons) */}
++          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-4 relative z-10">
+             {/* Card 1: Total Inquiries */}
+-            <div className="card py-4 px-5 flex flex-col items-center justify-center text-center hover:border-[var(--color-primary)]/40 hover:shadow-lg transition-all duration-300">
+-              <h3 style={{ fontSize: 'var(--text-small)', fontWeight: 'var(--font-medium)', color: 'var(--color-paragraph)', opacity: 0.7, margin: 0 }}>Total Inquiries</h3>
+-              <p style={{ fontSize: '26px', fontWeight: 'var(--font-bold)', color: 'var(--color-black)', margin: '2px 0 0 0' }}>{metrics.totalInquiries}</p>
++            <div className="card bg-white p-3.5 flex flex-col justify-between hover:border-[var(--color-primary)]/40 hover:shadow-md transition-all duration-300">
++              <div>
++                <h3 className="text-paragraph opacity-75 font-medium" style={{ fontSize: 'var(--text-caption)', margin: 0 }}>Total Inquiries</h3>
++                <p className="text-primary font-bold" style={{ fontSize: 'var(--text-paragraph)', margin: '3px 0 0 0', lineHeight: 1.1 }}>{metrics.totalInquiries}</p>
++              </div>
++              <div className="text-green-600 font-semibold mt-2.5" style={{ fontSize: 'var(--text-caption)' }}>
++                Γû▓ 27% this week
++              </div>
+             </div>
+-            
++
+             {/* Card 2: Total Case Studies */}
+-            <div className="card py-4 px-5 flex flex-col items-center justify-center text-center hover:border-[var(--color-primary)]/40 hover:shadow-lg transition-all duration-300">
+-              <h3 style={{ fontSize: 'var(--text-small)', fontWeight: 'var(--font-medium)', color: 'var(--color-paragraph)', opacity: 0.7, margin: 0 }}>Total Case Studies</h3>
+-              <p style={{ fontSize: '26px', fontWeight: 'var(--font-bold)', color: 'var(--color-black)', margin: '2px 0 0 0' }}>{metrics.totalCaseStudies}</p>
++            <div className="card bg-white p-3.5 flex flex-col justify-between hover:border-[var(--color-primary)]/40 hover:shadow-md transition-all duration-300">
++              <div>
++                <h3 className="text-paragraph opacity-75 font-medium" style={{ fontSize: 'var(--text-caption)', margin: 0 }}>Total Case Studies</h3>
++                <p className="text-primary font-bold" style={{ fontSize: 'var(--text-paragraph)', margin: '3px 0 0 0', lineHeight: 1.1 }}>{metrics.totalCaseStudies}</p>
++              </div>
++              <div className="text-green-600 font-semibold mt-2.5" style={{ fontSize: 'var(--text-caption)' }}>
++                Γû▓ 12% this week
++              </div>
+             </div>
+- 
++
+             {/* Card 3: Active Articles */}
+-            <div className="card py-4 px-5 flex flex-col items-center justify-center text-center hover:border-[var(--color-primary)]/40 hover:shadow-lg transition-all duration-300">
+-              <h3 style={{ fontSize: 'var(--text-small)', fontWeight: 'var(--font-medium)', color: 'var(--color-paragraph)', opacity: 0.7, margin: 0 }}>Active Articles</h3>
+-              <p style={{ fontSize: '26px', fontWeight: 'var(--font-bold)', color: 'var(--color-black)', margin: '2px 0 0 0' }}>{metrics.activeArticles}</p>
++            <div className="card bg-white p-3.5 flex flex-col justify-between hover:border-[var(--color-primary)]/40 hover:shadow-md transition-all duration-300">
++              <div>
++                <h3 className="text-paragraph opacity-75 font-medium" style={{ fontSize: 'var(--text-caption)', margin: 0 }}>Active Articles</h3>
++                <p className="text-primary font-bold" style={{ fontSize: 'var(--text-paragraph)', margin: '3px 0 0 0', lineHeight: 1.1 }}>{metrics.activeArticles}</p>
++              </div>
++              <div className="text-paragraph opacity-50 font-semibold mt-2.5" style={{ fontSize: 'var(--text-caption)' }}>
++                0% this week
++              </div>
+             </div>
+- 
++
+             {/* Card 4: New Applications */}
+-            <div className="card py-4 px-5 flex flex-col items-center justify-center text-center hover:border-[var(--color-primary)]/40 hover:shadow-lg transition-all duration-300">
+-              <h3 style={{ fontSize: 'var(--text-small)', fontWeight: 'var(--font-medium)', color: 'var(--color-paragraph)', opacity: 0.7, margin: 0 }}>New Applications</h3>
+-              <p style={{ fontSize: '26px', fontWeight: 'var(--font-bold)', color: 'var(--color-black)', margin: '2px 0 0 0' }}>{metrics.newApplications}</p>
++            <div className="card bg-white p-3.5 flex flex-col justify-between hover:border-[var(--color-primary)]/40 hover:shadow-md transition-all duration-300">
++              <div>
++                <h3 className="text-paragraph opacity-75 font-medium" style={{ fontSize: 'var(--text-caption)', margin: 0 }}>New Applications</h3>
++                <p className="text-primary font-bold" style={{ fontSize: 'var(--text-paragraph)', margin: '3px 0 0 0', lineHeight: 1.1 }}>{metrics.newApplications}</p>
++              </div>
++              <div className="text-red-500 font-semibold mt-2.5" style={{ fontSize: 'var(--text-caption)' }}>
++                Γû╝ 100% this week
++              </div>
+             </div>
+           </div>
+- 
+-          {/* Analytics Section */}
+-          <div className="mt-8 relative z-10">
+-            <button
+-              type="button"
+-              id="analytics-accordion-btn"
+-              onClick={() => setIsAnalyticsOpen(prev => !prev)}
+-              className="w-full flex items-center justify-between card p-4 hover:border-[var(--color-primary)]/40 transition-all cursor-pointer text-left focus:outline-none"
+-            >
+-              <div>
+-                <h2 style={{ fontSize: 'var(--text-paragraph)', fontWeight: 'var(--font-bold)', color: 'var(--color-black)', margin: 0 }}>
+-                  Analytics Overview
+-                </h2>
+-                <p style={{ fontSize: 'var(--text-caption)', color: 'var(--color-paragraph)', opacity: 0.6, margin: '2px 0 0 0' }}>
+-                  Click to expand/collapse detailed platform metrics
+-                </p>
++
++          {/* Actionables & Today's Tasks (Side-by-Side Grid Row) */}
++          <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 mb-4">
++            {/* Actionables Card (2/3 width) */}
++            <div className="card bg-white p-4 shadow-card lg:col-span-8 flex flex-col justify-between">
++              <div className="border-b border-[var(--color-border)] pb-2 mb-3">
++                <h3 className="text-primary font-[var(--font-bold)]" style={{ fontSize: 'var(--text-small)', margin: 0 }}>Actionables</h3>
+               </div>
+-              <div className={`transform transition-transform duration-300 ${isAnalyticsOpen ? 'rotate-180' : 'rotate-0'}`}>
+-                <ExpandMoreIcon className="text-[var(--color-primary)]" />
++              <div className="overflow-x-auto flex-1">
++                <table className="w-full text-left border-collapse">
++                  <thead>
++                    <tr className="border-b border-[var(--color-border)] text-paragraph opacity-60 font-bold" style={{ fontSize: 'var(--text-caption)' }}>
++                      <th className="py-1.5 font-bold">Module</th>
++                      <th className="py-1.5 font-bold text-right">Total</th>
++                      <th className="py-1.5 font-bold text-right">Pending</th>
++                      <th className="py-1.5 font-bold text-center">Last Updated</th>
++                      <th className="py-1.5 font-bold text-center">View</th>
++                    </tr>
++                  </thead>
++                  <tbody>
++                    {/* Inquiries Row */}
++                    <tr className="border-b border-[var(--color-border)] last:border-0 hover:bg-[var(--color-sub-bg)] text-paragraph transition-all" style={{ fontSize: 'var(--text-caption)' }}>
++                      <td className="py-2.5 font-bold">Inquiries</td>
++                      <td className="py-2.5 text-right font-semibold text-primary">{inquiries.length}</td>
++                      <td className="py-2.5 text-right font-semibold text-primary">{pendingInquiriesCount}</td>
++                      <td className="py-2.5 text-center font-medium opacity-70">{getLastUpdatedText(inquiries)}</td>
++                      <td className="py-2.5 text-center">
++                        <button
++                          onClick={() => handleOpenActionable('Inquiries', pendingInquiriesCount, '/admin/inquiries')}
++                          className="px-2.5 py-1 font-bold text-white bg-[var(--color-primary)] hover:bg-[var(--color-primary-hover)] rounded-[3px] transition cursor-pointer min-w-[65px] text-[var(--text-caption)]"
++                        >
++                          Review
++                        </button>
++                      </td>
++                    </tr>
++                    {/* Applications Row */}
++                    <tr className="border-b border-[var(--color-border)] last:border-0 hover:bg-[var(--color-sub-bg)] text-paragraph transition-all" style={{ fontSize: 'var(--text-caption)' }}>
++                      <td className="py-2.5 font-bold">Applications</td>
++                      <td className="py-2.5 text-right font-semibold text-primary">{applications.length}</td>
++                      <td className="py-2.5 text-right font-semibold text-primary">{pendingAppsCount}</td>
++                      <td className="py-2.5 text-center font-medium opacity-70">{getLastUpdatedText(applications)}</td>
++                      <td className="py-2.5 text-center">
++                        <button
++                          onClick={() => handleOpenActionable('Career', pendingAppsCount, '/admin/career')}
++                          className="px-2.5 py-1 font-bold text-white bg-[var(--color-primary)] hover:bg-[var(--color-primary-hover)] rounded-[3px] transition cursor-pointer min-w-[65px] text-[var(--text-caption)]"
++                        >
++                          Review
++                        </button>
++                      </td>
++                    </tr>
++                    {/* Articles Row */}
++                    <tr className="border-b border-[var(--color-border)] last:border-0 hover:bg-[var(--color-sub-bg)] text-paragraph transition-all" style={{ fontSize: 'var(--text-caption)' }}>
++                      <td className="py-2.5 font-bold">Articles</td>
++                      <td className="py-2.5 text-right font-semibold text-primary">{articles.length}</td>
++                      <td className="py-2.5 text-right font-semibold text-primary">{draftArticlesCount}</td>
++                      <td className="py-2.5 text-center font-medium opacity-70">{getLastUpdatedText(articles)}</td>
++                      <td className="py-2.5 text-center">
++                        <button
++                          onClick={() => handleOpenActionable('Articles', draftArticlesCount, '/admin/article')}
++                          className="px-2.5 py-1 font-bold text-white bg-[var(--color-primary)] hover:bg-[var(--color-primary-hover)] rounded-[3px] transition cursor-pointer min-w-[65px] text-[var(--text-caption)]"
++                        >
++                          Publish
++                        </button>
++                      </td>
++                    </tr>
++                    {/* Case Studies Row */}
++                    <tr className="border-b border-[var(--color-border)] last:border-0 hover:bg-[var(--color-sub-bg)] text-paragraph transition-all" style={{ fontSize: 'var(--text-caption)' }}>
++                      <td className="py-2.5 font-bold">Case Studies</td>
++                      <td className="py-2.5 text-right font-semibold text-primary">{caseStudies.length}</td>
++                      <td className="py-2.5 text-right font-semibold text-primary">{pendingCaseStudiesCount}</td>
++                      <td className="py-2.5 text-center font-medium opacity-70">{getLastUpdatedText(caseStudies)}</td>
++                      <td className="py-2.5 text-center">
++                        <button
++                          onClick={() => handleOpenActionable('Case Studies', pendingCaseStudiesCount, '/admin/casestudies')}
++                          className="px-2.5 py-1 font-bold text-white bg-[var(--color-primary)] hover:bg-[var(--color-primary-hover)] rounded-[3px] transition cursor-pointer min-w-[65px] text-[var(--text-caption)]"
++                        >
++                          Approve
++                        </button>
++                      </td>
++                    </tr>
++                    {/* Reviews Row */}
++                    <tr className="border-b border-[var(--color-border)] last:border-0 hover:bg-[var(--color-sub-bg)] text-paragraph transition-all" style={{ fontSize: 'var(--text-caption)' }}>
++                      <td className="py-2.5 font-bold">Reviews</td>
++                      <td className="py-2.5 text-right font-semibold text-primary">{reviews.length}</td>
++                      <td className="py-2.5 text-right font-semibold text-primary">{pendingReviewsCount}</td>
++                      <td className="py-2.5 text-center font-medium opacity-70">{getLastUpdatedText(reviews)}</td>
++                      <td className="py-2.5 text-center">
++                        <button
++                          onClick={() => handleOpenActionable('Reviews', pendingReviewsCount, '#')}
++                          className="px-2.5 py-1 font-bold text-white bg-[var(--color-primary)] hover:bg-[var(--color-primary-hover)] rounded-[3px] transition cursor-pointer min-w-[65px] text-[var(--text-caption)]"
++                        >
++                          Approve
++                        </button>
++                      </td>
++                    </tr>
++                    {/* Success Stories Row */}
++                    <tr className="hover:bg-[var(--color-sub-bg)] text-paragraph transition-all" style={{ fontSize: 'var(--text-caption)' }}>
++                      <td className="py-2.5 font-bold">Success Stories</td>
++                      <td className="py-2.5 text-right font-semibold text-primary">{stories.length}</td>
++                      <td className="py-2.5 text-right font-semibold text-primary">{draftStoriesCount}</td>
++                      <td className="py-2.5 text-center font-medium opacity-70">{getLastUpdatedText(stories)}</td>
++                      <td className="py-2.5 text-center">
++                        <button
++                          onClick={() => handleOpenActionable('Success Stories', draftStoriesCount, '#')}
++                          className="px-2.5 py-1 font-bold text-white bg-[var(--color-primary)] hover:bg-[var(--color-primary-hover)] rounded-[3px] transition cursor-pointer min-w-[65px] text-[var(--text-caption)]"
++                        >
++                          Publish
++                        </button>
++                      </td>
++                    </tr>
++                  </tbody>
++                </table>
+               </div>
+-            </button>
++            </div>
+ 
+-            <AnimatePresence>
+-              {isAnalyticsOpen && (
+-                <motion.div
+-                  initial={{ opacity: 0, height: 0 }}
+-                  animate={{ opacity: 1, height: 'auto' }}
+-                  exit={{ opacity: 0, height: 0 }}
+-                  transition={{ duration: 0.3 }}
+-                  className="overflow-hidden mt-4"
+-                >
+-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+-                    {/* Top-Left: Line Chart */}
+-                    <div className="card p-4 shadow-card relative overflow-hidden group">
+-                      <h3 style={{ fontSize: 'var(--text-caption)', fontWeight: 'var(--font-semibold)', color: 'var(--color-black)', margin: '0 0 8px 0' }} className="relative z-10">Inquiries Trend</h3>
+-                      <div className="h-44 relative z-10">
+-                        <ResponsiveContainer width="100%" height="100%">
+-                          <LineChart data={chartData.inquiries}>
+-                            <XAxis dataKey="date" stroke="var(--color-border)" tick={{fill: 'var(--color-paragraph)', opacity: 0.6, fontSize: 10}} tickLine={false} axisLine={false} />
+-                            <RechartsTooltip 
+-                              contentStyle={{backgroundColor: 'var(--color-main-bg)', borderColor: 'var(--color-border)', borderRadius: 'var(--radius-sm)', color: 'var(--color-paragraph)'}}
+-                            />
+-                            <Line type="basis" dataKey="value" stroke="var(--color-primary)" strokeWidth={3} dot={{r: 0}} activeDot={{r: 5, fill: '#fff', stroke: 'var(--color-primary)', strokeWidth: 1.5}} />
+-                          </LineChart>
+-                        </ResponsiveContainer>
+-                      </div>
++            {/* Today's Tasks Card (1/3 width) */}
++            <div className="card bg-white p-4 shadow-card lg:col-span-4 flex flex-col justify-between">
++              <div>
++                <div className="border-b border-[var(--color-border)] pb-2 mb-3 flex justify-between items-center">
++                  <h3 className="text-primary font-[var(--font-bold)]" style={{ fontSize: 'var(--text-small)', margin: 0 }}>Today's Tasks</h3>
++                  <span className="bg-[var(--color-primary)]/10 text-primary px-2 py-0.5 rounded-full font-bold" style={{ fontSize: 'var(--text-caption)' }}>
++                    {tasksList.filter(t => !t.isCompleted).length} Pending
++                  </span>
++                </div>
++                <div className="flex flex-col gap-2 mt-1">
++                  {tasksList.map((task) => (
++                    <div
++                      key={task.id}
++                      onClick={() => handleTaskClick(task)}
++                      className="flex items-center justify-between p-1.5 px-2.5 hover:bg-[var(--color-sub-bg)] rounded-[var(--radius-sm)] cursor-pointer transition-all border border-[var(--color-border)]/40 hover:border-blue-500/20"
++                    >
++                      <span className={`font-semibold text-paragraph ${task.isCompleted ? 'opacity-60' : ''}`} style={{ fontSize: 'var(--text-caption)' }}>
++                        {task.text}
++                      </span>
++                      <button
++                        className="focus:outline-none cursor-pointer border-none bg-transparent flex items-center justify-center shrink-0"
++                      >
++                        {task.isCompleted ? (
++                          <span className="text-green-600 font-bold" style={{ fontSize: 'var(--text-caption)' }}>Γÿæ</span>
++                        ) : (
++                          <span className="text-paragraph opacity-40 font-bold" style={{ fontSize: 'var(--text-caption)' }}>ΓÿÉ</span>
++                        )}
++                      </button>
+                     </div>
++                  ))}
++                </div>
++              </div>
+ 
+-                    {/* Top-Right: Bar Chart */}
+-                    <div className="card p-4 shadow-card relative overflow-hidden group">
+-                      <h3 style={{ fontSize: 'var(--text-caption)', fontWeight: 'var(--font-semibold)', color: 'var(--color-black)', margin: '0 0 8px 0' }} className="relative z-10">Case Studies Engagement</h3>
+-                      <div className="h-44 relative z-10">
+-                        <ResponsiveContainer width="100%" height="100%">
+-                          <BarChart data={chartData.caseStudies}>
+-                            <XAxis dataKey="date" stroke="var(--color-border)" tick={{fill: 'var(--color-paragraph)', opacity: 0.6, fontSize: 10}} tickLine={false} axisLine={false} />
+-                            <RechartsTooltip 
+-                              contentStyle={{backgroundColor: 'var(--color-main-bg)', borderColor: 'var(--color-border)', borderRadius: 'var(--radius-sm)', color: 'var(--color-paragraph)'}}
+-                              cursor={{fill: 'var(--color-sub-bg)', opacity: 0.4}}
+-                            />
+-                            <Bar dataKey="value" fill="var(--color-primary)" radius={[3, 3, 0, 0]} opacity={0.8} />
+-                          </BarChart>
+-                        </ResponsiveContainer>
+-                      </div>
++              {/* Today's Progress Section */}
++              {(() => {
++                const totalTasks = tasksList.length;
++                const completedCount = tasksList.filter(t => t.isCompleted).length;
++                const percentage = Math.round((completedCount / totalTasks) * 100);
++
++                return (
++                  <div className="mt-4 p-3 border border-[var(--color-border)] bg-[var(--color-sub-bg)]/30 rounded-[var(--radius-sm)] transition-all duration-300">
++                    <h4 className="font-bold text-primary mb-2" style={{ fontSize: 'var(--text-caption)', margin: 0 }}>Today's Progress</h4>
++
++                    <div className="flex justify-between items-center mb-1 text-paragraph opacity-80" style={{ fontSize: 'var(--text-caption)' }}>
++                      <span className="font-semibold">Completed Tasks</span>
++                      <span className="font-bold text-primary">{completedCount} / {totalTasks}</span>
+                     </div>
+ 
+-                    {/* Bottom-Left: Area Chart */}
+-                    <div className="card p-4 shadow-card relative overflow-hidden group">
+-                      <h3 style={{ fontSize: 'var(--text-caption)', fontWeight: 'var(--font-semibold)', color: 'var(--color-black)', margin: '0 0 8px 0' }} className="relative z-10">Article Reads</h3>
+-                      <div className="h-44 relative z-10">
+-                        <ResponsiveContainer width="100%" height="100%">
+-                          <AreaChart data={chartData.articles}>
+-                            <defs>
+-                              <linearGradient id="areaColor" x1="0" y1="0" x2="0" y2="1">
+-                                <stop offset="5%" stopColor="var(--color-primary)" stopOpacity={0.4}/>
+-                                <stop offset="95%" stopColor="var(--color-primary)" stopOpacity={0.0}/>
+-                              </linearGradient>
+-                            </defs>
+-                            <XAxis dataKey="date" stroke="var(--color-border)" tick={{fill: 'var(--color-paragraph)', opacity: 0.6, fontSize: 10}} tickLine={false} axisLine={false} />
+-                            <RechartsTooltip 
+-                              contentStyle={{backgroundColor: 'var(--color-main-bg)', borderColor: 'var(--color-border)', borderRadius: 'var(--radius-sm)', color: 'var(--color-paragraph)'}}
+-                            />
+-                            <Area type="monotone" dataKey="value" stroke="var(--color-primary)" strokeWidth={2.5} fill="url(#areaColor)" activeDot={{r: 5, fill: '#fff', stroke: 'var(--color-primary)', strokeWidth: 1.5}} />
+-                          </AreaChart>
+-                        </ResponsiveContainer>
+-                      </div>
++                    {/* Progress Bar Track */}
++                    <div className="w-full bg-gray-100 h-2.5 rounded-full overflow-hidden mb-1.5 border border-gray-200/50">
++                      <div
++                        className="bg-primary h-full rounded-full transition-all duration-500"
++                        style={{ width: `${percentage}%` }}
++                      ></div>
+                     </div>
+ 
+-                    {/* Bottom-Right: Donut Chart */}
+-                    <div className="card p-4 shadow-card relative overflow-hidden group">
+-                      <h3 style={{ fontSize: 'var(--text-caption)', fontWeight: 'var(--font-semibold)', color: 'var(--color-black)', margin: '0 0 8px 0' }} className="relative z-10">Applications Status</h3>
+-                      <div className="h-44 relative z-10 flex items-center justify-center">
+-                        <ResponsiveContainer width="100%" height="100%">
+-                          <PieChart>
+-                            <Pie
+-                              data={applicationsDonutData}
+-                              cx="50%"
+-                              cy="50%"
+-                              innerRadius={45}
+-                              outerRadius={65}
+-                              paddingAngle={6}
+-                              dataKey="value"
+-                              stroke="none"
+-                            >
+-                              <Cell fill="var(--color-primary)" />
+-                              <Cell fill="var(--color-border)" />
+-                            </Pie>
+-                            <RechartsTooltip 
+-                              contentStyle={{backgroundColor: 'var(--color-main-bg)', borderColor: 'var(--color-border)', borderRadius: 'var(--radius-sm)', color: 'var(--color-paragraph)'}}
+-                            />
+-                          </PieChart>
+-                        </ResponsiveContainer>
+-                      </div>
++                    <div className="font-bold text-primary" style={{ fontSize: 'var(--text-caption)' }}>
++                      {percentage}% Completed
+                     </div>
+                   </div>
+-                </motion.div>
+-              )}
+-            </AnimatePresence>
++                );
++              })()}
++            </div>
+           </div>
+ 
+-          {/* Active Client Stories Section */}
+-          <div className="card p-5 shadow-card relative overflow-hidden mt-6">
+-            <h2 style={{ fontSize: 'var(--text-paragraph)', fontWeight: 'var(--font-bold)', color: 'var(--color-black)', margin: '0 0 15px 0' }}>
+-              Active Client Stories
+-            </h2>
+-            
+-            {loadingStories ? (
+-              <div className="flex justify-center p-5">
+-                <div className="w-8 h-8 border-4 border-[var(--color-primary)] border-t-transparent rounded-full animate-spin"></div>
+-              </div>
+-            ) : stories.length === 0 ? (
+-              <div className="p-6 text-center text-[var(--color-paragraph)] opacity-60 bg-[var(--color-sub-bg)]/40 rounded-[var(--radius-sm)] border border-[var(--color-border)] text-sm">
+-                No stories to display
+-              </div>
+-            ) : (
+-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+-                {stories.map((story) => (
+-                  <div key={story._id} className="border border-[var(--color-border)] rounded-[var(--radius-sm)] p-4 relative group transition-all hover:border-[var(--color-primary)]/40 bg-[var(--color-sub-bg)]/40 hover:bg-[var(--color-sub-bg)] hover:-translate-y-0.5 flex flex-col justify-between h-[150px] overflow-hidden">
+-                    <button 
+-                      onClick={() => handleDelete(story._id)}
+-                      className="absolute top-3.5 right-3.5 text-[var(--color-paragraph)] opacity-40 hover:opacity-100 hover:text-red-500 transition z-10 p-1.5 bg-[var(--color-sub-bg)] border border-[var(--color-border)] rounded-[var(--radius-sm)] shadow-sm cursor-pointer"
+-                      title="Delete Story"
+-                    >
+-                      <DeleteIcon fontSize="small" />
+-                    </button>
+-                    
+-                    <div className="flex items-center gap-3 mb-2 animate-none">
+-                      <img src={story.imageUrl} alt={story.name} className="w-12 h-12 rounded-full object-cover border border-[var(--color-border)]" />
+-                      <div>
+-                        <h3 className="text-[var(--color-black)] font-bold text-sm leading-tight truncate max-w-[120px]">{story.name}</h3>
+-                        <p className="text-[var(--color-paragraph)] opacity-60 text-xs truncate max-w-[120px]">{story.position}</p>
++
++          {/* Content Management Section */}
++          <div className="mt-6 mb-4 pb-2 border-b border-[var(--color-border)] flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
++            <div>
++              <h2 style={{ fontSize: '20px', fontWeight: 'var(--font-bold)', color: 'var(--color-black)', margin: 0 }}>
++                Content Management
++              </h2>
++            </div>
++            <div className="flex gap-4 mr-6">
++              <button
++                type="button"
++                onClick={() => setActiveMgmtTab('reviews')}
++                className={`pb-2 px-1 font-semibold text-sm transition-all relative border-none bg-transparent cursor-pointer ${activeMgmtTab === 'reviews' ? 'text-primary' : 'text-paragraph opacity-60 hover:opacity-100'
++                  }`}
++              >
++                Reviews
++                {activeMgmtTab === 'reviews' && (
++                  <motion.div layoutId="activeTabLine" className="absolute bottom-0 left-0 right-0 h-0.5" style={{ backgroundColor: 'var(--color-primary)' }} />
++                )}
++              </button>
++              <button
++                type="button"
++                onClick={() => setActiveMgmtTab('stories')}
++                className={`pb-2 px-1 font-semibold text-sm transition-all relative border-none bg-transparent cursor-pointer ${activeMgmtTab === 'stories' ? 'text-primary' : 'text-paragraph opacity-60 hover:opacity-100'
++                  }`}
++              >
++                Client Success Stories
++                {activeMgmtTab === 'stories' && (
++                  <motion.div layoutId="activeTabLine" className="absolute bottom-0 left-0 right-0 h-0.5" style={{ backgroundColor: 'var(--color-primary)' }} />
++                )}
++              </button>
++            </div>
++          </div>
++
++          <AnimatePresence mode="wait">
++            {activeMgmtTab === 'reviews' ? (
++              <motion.div
++                key="reviews-tab"
++                initial={{ opacity: 0, y: 10 }}
++                animate={{ opacity: 1, y: 0 }}
++                exit={{ opacity: 0, y: -10 }}
++                transition={{ duration: 0.2 }}
++                className="w-full mb-4"
++              >
++                {/* Review Moderation Card (full width) */}
++                <div className="card bg-white p-4 shadow-card flex flex-col justify-between">
++                  <div>
++                    {/* Title & Filters */}
++                    <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 mb-4 pb-2 border-b border-[var(--color-border)]/60">
++                      <h3 className="text-primary font-[var(--font-bold)]" style={{ fontSize: 'var(--text-small)', margin: 0 }}>
++                        Review Moderation
++                      </h3>
++
++                      {/* Search and Filters */}
++                      <div className="flex flex-wrap items-center gap-2 w-full sm:w-auto">
++                        <select
++                          value={reviewsStatusFilter}
++                          onChange={(e) => {
++                            setReviewsStatusFilter(e.target.value);
++                            setReviewsPage(1);
++                          }}
++                          className="bg-white border border-[var(--color-border)] rounded-[var(--radius-sm)] py-1.5 px-3 text-paragraph placeholder-gray-400 focus:outline-none focus:border-[var(--color-primary)] transition"
++                          style={{ fontSize: 'var(--text-caption)' }}
++                        >
++                          <option value="All">All Reviews</option>
++                          <option value="Pending">Pending Reviews</option>
++                          <option value="Approved">Approved Reviews</option>
++                          <option value="Rejected">Rejected Reviews</option>
++                        </select>
++                        <div className="flex-1 sm:flex-initial">
++                          <input
++                            type="text"
++                            placeholder="Search reviews..."
++                            value={reviewsSearch}
++                            onChange={(e) => {
++                              setReviewsSearch(e.target.value);
++                              setReviewsPage(1);
++                            }}
++                            className="w-full sm:w-44 bg-[var(--color-sub-bg)] border border-[var(--color-border)] rounded-[var(--radius-sm)] py-1.5 px-3 text-paragraph placeholder-gray-400 focus:outline-none focus:border-[var(--color-primary)] transition"
++                            style={{ fontSize: 'var(--text-caption)' }}
++                          />
++                        </div>
+                       </div>
+                     </div>
+-                    
+-                    <p className={`text-[var(--color-paragraph)] opacity-80 text-xs italic ${story.clientStories.length > 110 ? "line-clamp-2" : "line-clamp-3"}`}>
+-                      "{story.clientStories}"
+-                    </p>
+-                    {story.clientStories.length > 110 && (
++
++                    {/* Table of reviews */}
++                    <div className="overflow-x-auto">
++                      <table className="w-full text-left border-collapse">
++                        <thead>
++                          <tr className="border-b border-[var(--color-border)] text-paragraph opacity-60 font-bold" style={{ fontSize: 'var(--text-caption)' }}>
++                            <th className="py-2 font-bold text-left w-[22%] pl-5">Reviewer</th>
++                            <th className="py-2 font-bold text-left w-[12%]">Rating</th>
++                            <th className="py-2 font-bold text-left w-[32%]">Review</th>
++                            <th className="py-2 font-bold text-left w-[12%]">Date</th>
++                            <th className="py-2 font-bold text-center w-[12%]">Status</th>
++                            <th className="py-2 font-bold text-right w-[10%] pr-5">Actions</th>
++                          </tr>
++                        </thead>
++                        <tbody>
++                          {paginatedReviews.length === 0 ? (
++                            <tr>
++                              <td colSpan="6" className="py-8 text-center text-paragraph opacity-60" style={{ fontSize: 'var(--text-caption)' }}>
++                                No reviews found matching filters.
++                              </td>
++                            </tr>
++                          ) : (
++                            paginatedReviews.map((rev) => {
++                              const statusVal = rev.status || 'Pending';
++
++                              const getAvatarBg = (name) => {
++                                const colors = [
++                                  'bg-blue-100 text-blue-700',
++                                  'bg-indigo-100 text-indigo-700',
++                                  'bg-green-100 text-green-700',
++                                  'bg-purple-100 text-purple-700',
++                                  'bg-orange-100 text-orange-700',
++                                  'bg-teal-100 text-teal-700',
++                                  'bg-pink-100 text-pink-700'
++                                ];
++                                let sum = 0;
++                                for (let i = 0; i < name.length; i++) {
++                                  sum += name.charCodeAt(i);
++                                }
++                                return colors[sum % colors.length];
++                              };
++
++                              return (
++                                <tr key={rev._id} className="border-b border-[var(--color-border)] last:border-0 hover:bg-[var(--color-sub-bg)] text-primary transition-all" style={{ fontSize: 'var(--text-caption)' }}>
++                                  <td className="py-3 text-left w-[22%] pl-5">
++                                    <div className="flex items-center gap-2">
++                                      <div className={`w-8 h-8 rounded-full flex items-center justify-center font-bold text-xs shrink-0 ${getAvatarBg(rev.fullName)}`}>
++                                        {rev.fullName.charAt(0).toUpperCase()}
++                                      </div>
++                                      <div>
++                                        <p className="font-bold text-primary" style={{ margin: 0, lineHeight: 1.2 }}>{rev.fullName}</p>
++                                        <p className="text-paragraph opacity-60 text-[10px]" style={{ margin: 0 }}>{rev.company}</p>
++                                      </div>
++                                    </div>
++                                  </td>
++                                  <td className="py-3 text-left text-amber-400 font-semibold w-[12%]" style={{ fontSize: '13px' }}>
++                                    {'Γÿà'.repeat(rev.rating)}{'Γÿå'.repeat(5 - rev.rating)}
++                                  </td>
++                                  <td className="py-3 text-left w-[32%] max-w-[240px]">
++                                    <p className="font-semibold text-primary whitespace-normal break-words line-clamp-1" style={{ margin: 0 }}>{rev.title}</p>
++                                    <p className="text-paragraph opacity-75 whitespace-normal break-words line-clamp-2 mt-0.5" style={{ margin: 0, fontSize: '11px', lineHeight: '1.4' }}>
++                                      {rev.review}
++                                    </p>
++                                    <button
++                                      type="button"
++                                      onClick={() => setActiveReviewDetails(rev)}
++                                      className="text-blue-600 hover:underline font-bold text-[10px] p-0 border-none bg-transparent cursor-pointer mt-1"
++                                    >
++                                      Read more
++                                    </button>
++                                  </td>
++                                  <td className="py-3 text-left font-medium opacity-70 w-[12%]">
++                                    {formatDate(rev.createdAt)}
++                                  </td>
++                                  <td className="py-3 text-center w-[12%]">
++                                    <span className={`px-2 py-0.5 rounded-full border text-[10px] font-semibold ${statusVal === 'Approved'
++                                        ? 'bg-green-50 text-green-700 border-green-200'
++                                        : statusVal === 'Rejected'
++                                          ? 'bg-red-50 text-red-700 border-red-200'
++                                          : 'bg-amber-50 text-amber-700 border-amber-200'
++                                      }`}>
++                                      {statusVal}
++                                    </span>
++                                  </td>
++                                  <td className="py-3 text-right w-[10%] pr-5">
++                                    <div className="flex justify-end">
++                                      <select
++                                        value=""
++                                        onChange={(e) => {
++                                          const action = e.target.value;
++                                          if (action === 'approve') handleApproveReview(rev._id);
++                                          else if (action === 'reject') handleRejectReview(rev._id);
++                                          else if (action === 'delete') handleDeleteReview(rev._id);
++                                        }}
++                                        className="bg-white border border-[var(--color-border)] rounded-[var(--radius-sm)] py-1 px-2 focus:outline-none transition cursor-pointer text-paragraph text-[11px]"
++                                      >
++                                        <option value="" disabled hidden>Actions</option>
++                                        {statusVal !== 'Approved' && <option value="approve">Approve</option>}
++                                        {statusVal !== 'Rejected' && <option value="reject">Reject</option>}
++                                        <option value="delete">Delete</option>
++                                      </select>
++                                    </div>
++                                  </td>
++                                </tr>
++                              );
++                            })
++                          )}
++                        </tbody>
++                      </table>
++                    </div>
++                  </div>
++
++                  {/* Pagination Footer */}
++                  <div className="flex justify-between items-center mt-4 pt-3 border-t border-[var(--color-border)] flex-col sm:flex-row gap-3">
++                    <div style={{ fontSize: 'var(--text-caption)' }} className="text-paragraph opacity-70">
++                      Showing {reviewsStartIndex + 1} to {Math.min(reviewsStartIndex + reviewsPerPage, filteredReviews.length)} of {filteredReviews.length} reviews
++                    </div>
++                    <div className="flex items-center gap-1">
+                       <button
+                         type="button"
+-                        onClick={() => setSelectedDetailsModal({
+-                          title: 'Client Story Details',
+-                          type: 'Story',
+-                          name: story.name,
+-                          subtitle: story.position,
+-                          text: story.clientStories,
+-                          imageUrl: story.imageUrl
+-                        })}
+-                        className="text-[var(--color-primary)] hover:underline text-[10px] font-semibold mt-0.5 self-start cursor-pointer focus:outline-none"
++                        disabled={currentReviewsPage === 1}
++                        onClick={() => setReviewsPage(prev => Math.max(prev - 1, 1))}
++                        className="w-7 h-7 flex items-center justify-center rounded border border-[var(--color-border)] bg-transparent text-paragraph hover:bg-[var(--color-primary)] hover:text-white disabled:opacity-40 disabled:hover:bg-transparent disabled:hover:text-paragraph cursor-pointer"
+                       >
+-                        Read More
++                        ΓÇ╣
+                       </button>
+-                    )}
++                      {Array.from({ length: totalReviewsPages }, (_, idx) => idx + 1).map(page => (
++                        <button
++                          key={page}
++                          type="button"
++                          onClick={() => setReviewsPage(page)}
++                          className={`w-7 h-7 flex items-center justify-center rounded font-semibold text-xs transition cursor-pointer border ${page === currentReviewsPage ? 'text-white' : 'border-[var(--color-border)] bg-transparent text-paragraph hover:bg-[var(--color-primary)] hover:text-white'}`}
++                          style={page === currentReviewsPage ? { backgroundColor: 'var(--color-primary)', borderColor: 'var(--color-primary)' } : {}}
++                        >
++                          {page}
++                        </button>
++                      ))}
++                      <button
++                        type="button"
++                        disabled={currentReviewsPage === totalReviewsPages}
++                        onClick={() => setReviewsPage(prev => Math.min(prev + 1, totalReviewsPages))}
++                        className="w-7 h-7 flex items-center justify-center rounded border border-[var(--color-border)] bg-transparent text-paragraph hover:bg-[var(--color-primary)] hover:text-white disabled:opacity-40 disabled:hover:bg-transparent disabled:hover:text-paragraph cursor-pointer"
++                      >
++                        ΓÇ║
++                      </button>
++                    </div>
+                   </div>
+-                ))}
+-              </div>
+-            )}
+-          </div>
++                </div>
++              </motion.div>
++            ) : (
++              <motion.div
++                key="stories-tab"
++                initial={{ opacity: 0, y: 10 }}
++                animate={{ opacity: 1, y: 0 }}
++                exit={{ opacity: 0, y: -10 }}
++                transition={{ duration: 0.2 }}
++                className="card bg-white p-4 shadow-card mb-4"
++              >
++                {/* Full-width Stories Moderation View */}
++                <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 mb-4 pb-2 border-b border-[var(--color-border)]/60">
++                  <h3 className="text-primary font-[var(--font-bold)]" style={{ fontSize: 'var(--text-small)', margin: 0 }}>
++                    Client Success Stories Moderation
++                  </h3>
++                  <div className="flex flex-wrap items-center gap-2 w-full sm:w-auto">
++                    {/* Search stories */}
++                    <div className="w-full sm:w-60">
++                      <input
++                        type="text"
++                        placeholder="Search success stories..."
++                        value={storiesSearch}
++                        onChange={(e) => {
++                          setStoriesSearch(e.target.value);
++                          setStoriesPage(1);
++                        }}
++                        className="w-full bg-[var(--color-sub-bg)] border border-[var(--color-border)] rounded-[var(--radius-sm)] py-1.5 px-3 text-paragraph placeholder-gray-400 focus:outline-none focus:border-[var(--color-primary)] transition"
++                        style={{ fontSize: 'var(--text-caption)' }}
++                      />
++                    </div>
+ 
+-          {/* Client Reviews Section */}
+-          <div className="card p-5 shadow-card relative overflow-hidden mt-6 mb-6">
+-            <h2 style={{ fontSize: 'var(--text-paragraph)', fontWeight: 'var(--font-bold)', color: 'var(--color-black)', margin: '0 0 15px 0' }}>
+-              Client Reviews
+-            </h2>
+-            
+-            {reviews.length === 0 ? (
+-              <div className="p-6 text-center text-[var(--color-paragraph)] opacity-60 bg-[var(--color-sub-bg)]/40 rounded-[var(--radius-sm)] border border-[var(--color-border)] text-sm">
+-                No reviews to display
+-              </div>
+-            ) : (() => {
+-              const reviewsPerPage = 9; // exactly 3 rows of 3 columns on desktop
+-              const indexOfLastReview = currentPage * reviewsPerPage;
+-              const indexOfFirstReview = indexOfLastReview - reviewsPerPage;
+-              const currentReviews = reviews.slice(indexOfFirstReview, indexOfLastReview);
+-              const totalPages = Math.ceil(reviews.length / reviewsPerPage);
+-              
+-              return (
+-                <>
+-                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+-                    {currentReviews.map((review) => {
+-                      const isNew = (new Date() - new Date(review.createdAt)) < 24 * 60 * 60 * 1000;
+-                      return (
+-                        <div key={review._id} className="border border-[var(--color-border)] rounded-[var(--radius-sm)] p-4 relative group transition-all hover:border-[var(--color-primary)]/40 bg-[var(--color-sub-bg)]/40 hover:bg-[var(--color-sub-bg)] hover:-translate-y-0.5 flex flex-col justify-between h-[150px] overflow-hidden">
+-                          <button 
+-                            onClick={() => handleDeleteReview(review._id)}
+-                            className="absolute top-3.5 right-3.5 text-[var(--color-paragraph)] opacity-40 hover:opacity-100 hover:text-red-500 transition z-10 p-1.5 bg-[var(--color-sub-bg)] border border-[var(--color-border)] rounded-[var(--radius-sm)] shadow-sm cursor-pointer"
+-                            title="Delete Review"
+-                          >
+-                            <DeleteIcon fontSize="small" />
+-                          </button>
+-
+-                          <div>
+-                            {isNew && (
+-                              <div className="absolute -top-1.5 -right-1.5 flex items-center justify-center">
+-                                <span className="absolute inline-flex h-full w-full rounded-full bg-blue-400 opacity-75 animate-ping"></span>
+-                                <span className="relative inline-flex rounded-full h-3 w-3 bg-blue-500 border border-slate-900 shadow-[0_0_8px_rgba(59,130,246,0.8)]"></span>
+-                              </div>
+-                            )}
+-                            
+-                            <div className="flex justify-between items-start mb-2">
+-                              <div className="pr-12 overflow-hidden">
+-                                <h3 className="text-[var(--color-black)] font-bold text-sm leading-tight truncate max-w-[120px]">{review.fullName}</h3>
+-                                <p className="text-[var(--color-paragraph)] opacity-60 text-xs truncate max-w-[120px]">{review.company}</p>
+-                              </div>
+-                              <div className="flex gap-0.5 shrink-0 mr-8">
+-                                {[...Array(5)].map((_, i) => (
+-                                  <StarIcon 
+-                                    key={i} 
+-                                    fontSize="small" 
+-                                    style={{ fontSize: 14 }}
+-                                    className={i < review.rating ? "text-amber-400 drop-shadow-[0_0_5px_rgba(251,191,36,0.6)]" : "text-[var(--color-paragraph)] opacity-20"} 
++                    <button
++                      type="button"
++                      onClick={() => setShowStoryModal(true)}
++                      className="btn cursor-pointer text-white"
++                      style={{ fontSize: 'var(--text-caption)', textTransform: 'none', padding: '6px 14px' }}
++                    >
++                      + Add Story
++                    </button>
++                  </div>
++                </div>
++
++                <div className="overflow-x-auto">
++                  <table className="w-full text-left border-collapse">
++                    <thead>
++                      <tr className="border-b border-[var(--color-border)] text-paragraph opacity-60 font-bold" style={{ fontSize: 'var(--text-caption)' }}>
++                        <th className="py-1.5 font-bold">Client Name</th>
++                        <th className="py-1.5 font-bold">Position / Company</th>
++                        <th className="py-1.5 font-bold">Client Story Text</th>
++                        <th className="py-1.5 font-bold text-center">Created Date</th>
++                        <th className="py-1.5 font-bold text-right">Actions</th>
++                      </tr>
++                    </thead>
++                    <tbody>
++                      {filteredStories.length === 0 ? (
++                        <tr>
++                          <td colSpan="5" className="py-8 text-center text-paragraph opacity-60" style={{ fontSize: 'var(--text-caption)' }}>
++                            No client success stories found.
++                          </td>
++                        </tr>
++                      ) : (
++                        filteredStories.slice((currentStoriesPage - 1) * storiesPerPage, currentStoriesPage * storiesPerPage).map((story) => (
++                          <tr key={story._id} className="border-b border-[var(--color-border)] last:border-0 hover:bg-[var(--color-sub-bg)] text-primary transition-all" style={{ fontSize: 'var(--text-caption)' }}>
++                            <td className="py-2.5 font-bold">
++                              <div className="flex items-center gap-2">
++                                {story.imageUrl ? (
++                                  <img
++                                    src={story.imageUrl}
++                                    alt={story.name}
++                                    className="w-8 h-8 object-cover border border-[var(--color-border)]"
++                                    style={{ borderRadius: 'var(--radius-sm)' }}
+                                   />
+-                                ))}
++                                ) : (
++                                  <div className="w-8 h-8 rounded bg-blue-100 text-blue-700 flex items-center justify-center font-bold text-xs shrink-0">
++                                    {story.name.charAt(0)}
++                                  </div>
++                                )}
++                                <span>{story.name}</span>
+                               </div>
+-                            </div>
+-                            
+-                            <h4 className="text-[var(--color-primary)] font-semibold mb-1 text-xs line-clamp-1 break-all" title={review.title}>{review.title}</h4>
+-                            
+-                            <div className={`text-[var(--color-paragraph)] opacity-80 text-xs italic whitespace-pre-wrap break-words ${review.review.length > 110 ? "line-clamp-1" : "line-clamp-2"}`}>
+-                              "{review.review}"
+-                            </div>
+-                            {review.review.length > 110 && (
++                            </td>
++                            <td className="py-2.5 font-medium">{story.position ? story.position.replace(',', ' - ') : ''}</td>
++                            <td className="py-2.5 max-w-[280px]">
++                              <p className="text-paragraph opacity-85 line-clamp-2" style={{ margin: 0 }}>
++                                "{story.clientStories}"
++                              </p>
+                               <button
+                                 type="button"
+-                                onClick={() => setSelectedDetailsModal({
+-                                  title: 'Client Review Details',
+-                                  type: 'Review',
+-                                  name: review.fullName,
+-                                  subtitle: review.company,
+-                                  text: review.review,
+-                                  rating: review.rating,
+-                                  reviewTitle: review.title
+-                                })}
+-                                className="text-[var(--color-primary)] hover:underline text-[10px] font-semibold mt-0.5 self-start cursor-pointer focus:outline-none"
++                                onClick={() => setActiveStoryDetails(story)}
++                                className="text-blue-600 hover:underline font-bold text-[10px] p-0 border-none bg-transparent cursor-pointer mt-0.5 animate-none"
+                               >
+-                                Read More
++                                View full story
+                               </button>
+-                            )}
+-                          </div>
+-                        </div>
+-                      );
+-                    })}
+-                  </div>
++                            </td>
++                            <td className="py-2.5 text-center opacity-70">{formatDate(story.createdAt)}</td>
++                            <td className="py-2.5 text-right">
++                              <div className="flex justify-end">
++                                <select
++                                  value=""
++                                  onChange={(e) => {
++                                    const action = e.target.value;
++                                    if (action === 'edit') {
++                                      setEditingStory(story);
++                                      setFormData({
++                                        name: story.name,
++                                        position: story.position,
++                                        clientStories: story.clientStories,
++                                        image: null
++                                      });
++                                      setShowStoryModal(true);
++                                    } else if (action === 'delete') {
++                                      handleDeleteStory(story._id);
++                                    }
++                                  }}
++                                  className="bg-white border border-[var(--color-border)] rounded-[var(--radius-sm)] py-1 px-2 focus:outline-none transition cursor-pointer text-paragraph text-[11px]"
++                                >
++                                  <option value="" disabled hidden>Actions</option>
++                                  <option value="edit">Edit</option>
++                                  <option value="delete">Delete</option>
++                                </select>
++                              </div>
++                            </td>
++                          </tr>
++                        ))
++                      )}
++                    </tbody>
++                  </table>
++                </div>
+ 
+-                  {/* Pagination Controls */}
+-                  {totalPages > 1 && (
+-                    <div className="flex justify-center items-center gap-3 mt-6 pt-4 border-t border-[var(--color-border)]">
++                {/* Full Stories Pagination Footer */}
++                <div className="flex justify-between items-center mt-4 pt-3 border-t border-[var(--color-border)] flex-col sm:flex-row gap-3">
++                  <div style={{ fontSize: 'var(--text-caption)' }} className="text-paragraph opacity-70">
++                    Showing {storiesStartIndex + 1} to {Math.min(storiesStartIndex + storiesPerPage, filteredStories.length)} of {filteredStories.length} stories
++                  </div>
++                  <div className="flex items-center gap-1">
++                    <button
++                      type="button"
++                      disabled={currentStoriesPage === 1}
++                      onClick={() => setStoriesPage(prev => Math.max(prev - 1, 1))}
++                      className="w-7 h-7 flex items-center justify-center rounded border border-[var(--color-border)] bg-transparent text-paragraph hover:bg-[var(--color-primary)] hover:text-white disabled:opacity-40 disabled:hover:bg-transparent disabled:hover:text-paragraph cursor-pointer"
++                    >
++                      ΓÇ╣
++                    </button>
++                    {Array.from({ length: totalStoriesPages }, (_, idx) => idx + 1).map(page => (
+                       <button
+-                        onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
+-                        disabled={currentPage === 1}
+-                        className="px-3 py-1.5 border border-[var(--color-border)] text-xs rounded-[var(--radius-sm)] text-[var(--color-paragraph)] hover:bg-[var(--color-sub-bg)] transition disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer font-semibold"
++                        key={page}
++                        type="button"
++                        onClick={() => setStoriesPage(page)}
++                        className={`w-7 h-7 flex items-center justify-center rounded font-semibold text-xs transition cursor-pointer border ${page === currentStoriesPage ? 'text-white' : 'border-[var(--color-border)] bg-transparent text-paragraph hover:bg-[var(--color-primary)] hover:text-white'}`}
++                        style={page === currentStoriesPage ? { backgroundColor: 'var(--color-primary)', borderColor: 'var(--color-primary)' } : {}}
+                       >
+-                        Previous
++                        {page}
+                       </button>
+-                      <span className="text-xs font-semibold text-[var(--color-paragraph)] opacity-80">
+-                        Page {currentPage} of {totalPages}
+-                      </span>
++                    ))}
++                    <button
++                      type="button"
++                      disabled={currentStoriesPage === totalStoriesPages}
++                      onClick={() => setStoriesPage(prev => Math.min(prev + 1, totalStoriesPages))}
++                      className="w-7 h-7 flex items-center justify-center rounded border border-[var(--color-border)] bg-transparent text-paragraph hover:bg-[var(--color-primary)] hover:text-white disabled:opacity-40 disabled:hover:bg-transparent disabled:hover:text-paragraph cursor-pointer"
++                    >
++                      ΓÇ║
++                    </button>
++                  </div>
++                </div>
++              </motion.div>
++            )}
++          </AnimatePresence>
++
++          {/* Business Analytics Accordion Section */}
++          <div className="card bg-white p-4 shadow-card mb-4 mt-6">
++            <div
++              className="flex justify-between items-center cursor-pointer select-none pb-2 border-b border-[var(--color-border)]/60"
++              onClick={() => setIsAnalyticsExpanded(!isAnalyticsExpanded)}
++            >
++              <h2 style={{ fontSize: '20px', fontWeight: 'var(--font-bold)', color: 'var(--color-black)', margin: 0 }} className="flex items-center gap-2">
++                ≡ƒôè Business Analytics & Analysis
++              </h2>
++              <span className="text-paragraph opacity-60 font-bold transition-transform duration-300" style={{ transform: isAnalyticsExpanded ? 'rotate(180deg)' : 'rotate(0deg)' }}>
++                Γû╝
++              </span>
++            </div>
++
++            <AnimatePresence>
++              {isAnalyticsExpanded && (
++                <motion.div
++                  initial={{ height: 0, opacity: 0 }}
++                  animate={{ height: 'auto', opacity: 1 }}
++                  exit={{ height: 0, opacity: 0 }}
++                  transition={{ duration: 0.3 }}
++                  className="overflow-hidden mt-4 space-y-6"
++                >
++                  {/* Analytics Overview (Line Chart) */}
++                  <div className="border border-[var(--color-border)] rounded-[var(--radius-sm)] p-4 bg-[var(--color-sub-bg)]/25">
++                    <div className="flex justify-between items-center mb-3">
++                      <div>
++                        <h3 className="text-primary font-[var(--font-bold)] text-xs" style={{ margin: 0 }}>Analytics Overview</h3>
++                      </div>
++                      <div className="border border-[var(--color-border)] rounded-[var(--radius-sm)] px-2 py-1 bg-[var(--color-sub-bg)] text-paragraph opacity-70 font-semibold" style={{ fontSize: 'var(--text-caption)' }}>
++                        Last 7 Days
++                      </div>
++                    </div>
++                    <div className="h-44">
++                      <ResponsiveContainer width="100%" height="100%">
++                        <LineChart data={chartData.combined}>
++                          <XAxis dataKey="date" stroke="var(--color-border)" tick={{ fill: 'var(--color-paragraph)', opacity: 0.6, fontSize: 12 }} tickLine={false} axisLine={false} />
++                          <YAxis stroke="var(--color-border)" tick={{ fill: 'var(--color-paragraph)', opacity: 0.6, fontSize: 12 }} tickLine={false} axisLine={false} />
++                          <RechartsTooltip contentStyle={{ backgroundColor: 'var(--color-main-bg)', borderColor: 'var(--color-border)', borderRadius: 'var(--radius-sm)', color: 'var(--color-paragraph)', fontSize: 12 }} />
++                          <Line type="monotone" dataKey="Inquiries" stroke="#2563EB" strokeWidth={2} dot={{ r: 2 }} activeDot={{ r: 4 }} />
++                          <Line type="monotone" dataKey="Case Studies" stroke="#10B981" strokeWidth={2} dot={{ r: 2 }} activeDot={{ r: 4 }} />
++                          <Line type="monotone" dataKey="Articles" stroke="#8B5CF6" strokeWidth={2} dot={{ r: 2 }} activeDot={{ r: 4 }} />
++                          <Line type="monotone" dataKey="Applications" stroke="#F59E0B" strokeWidth={2} dot={{ r: 2 }} activeDot={{ r: 4 }} />
++                        </LineChart>
++                      </ResponsiveContainer>
++                    </div>
++                    {/* Legend Row */}
++                    <div className="flex justify-center items-center gap-4 mt-2 font-semibold text-paragraph opacity-80" style={{ fontSize: 'var(--text-caption)' }}>
++                      <div className="flex items-center gap-1.5"><span className="w-2.5 h-1 bg-[#2563EB] inline-block rounded-full"></span> Inquiries</div>
++                      <div className="flex items-center gap-1.5"><span className="w-2.5 h-1 bg-[#10B981] inline-block rounded-full"></span> Case Studies</div>
++                      <div className="flex items-center gap-1.5"><span className="w-2.5 h-1 bg-[#8B5CF6] inline-block rounded-full"></span> Articles</div>
++                      <div className="flex items-center gap-1.5"><span className="w-2.5 h-1 bg-[#F59E0B] inline-block rounded-full"></span> Applications</div>
++                    </div>
++                  </div>
++
++                  {/* Business Analytics & Export Report */}
++                  <div className="border border-[var(--color-border)] rounded-[var(--radius-sm)] p-4 bg-[var(--color-sub-bg)]/10">
++                    <div className="flex justify-between items-center mb-4 pb-2 border-b border-[var(--color-border)]/60">
++                      <h3 className="text-primary font-bold text-xs" style={{ margin: 0 }}>
++                        Business Analytics & Export Report
++                      </h3>
+                       <button
+-                        onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
+-                        disabled={currentPage === totalPages}
+-                        className="px-3 py-1.5 border border-[var(--color-border)] text-xs rounded-[var(--radius-sm)] text-[var(--color-paragraph)] hover:bg-[var(--color-sub-bg)] transition disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer font-semibold"
++                        type="button"
++                        onClick={handleViewDetailedReport}
++                        className="text-blue-600 hover:underline font-bold text-xs bg-transparent border-none cursor-pointer"
+                       >
+-                        Next
++                        View Detailed Report
+                       </button>
+                     </div>
+-                  )}
+-                </>
+-              );
+-            })()}
++
++                    {/* Report Period */}
++                    <div className="mb-4">
++                      <label className="block mb-1.5 text-paragraph opacity-80 font-semibold text-[10px] uppercase tracking-wider">
++                        Report Period
++                      </label>
++                      <div className="relative inline-block w-full sm:w-72">
++                        <select
++                          value={reportPeriod}
++                          onChange={(e) => setReportPeriod(e.target.value)}
++                          className="w-full bg-white border border-[var(--color-border)] rounded-[var(--radius-sm)] py-1.5 px-3 pr-10 text-paragraph font-semibold focus:outline-none focus:border-[var(--color-primary)] transition cursor-pointer text-xs"
++                        >
++                          <option value="this-week">This Week ({getThisWeekRangeText()})</option>
++                          <option value="last-week">Last Week ({getLastWeekRangeText()})</option>
++                          <option value="this-month">This Month</option>
++                          <option value="all-time">All Time</option>
++                        </select>
++                        <span className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-paragraph opacity-60 text-xs">
++                          ≡ƒôà
++                        </span>
++                      </div>
++                    </div>
++
++                    {/* Metrics grid row */}
++                    <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 lg:grid-cols-9 gap-2 mb-4">
++                      {renderAnalyticsMetricCard('Total Inquiries', inquiries.length, '27%', true)}
++                      {renderAnalyticsMetricCard('Reviews Received', reviews.length, '14%', true)}
++                      {renderAnalyticsMetricCard('Reviews Approved', reviews.filter(r => r.status === 'Approved').length, '25%', true)}
++                      {renderAnalyticsMetricCard('Reviews Rejected', reviews.filter(r => r.status === 'Rejected').length, '33%', false)}
++                      {renderAnalyticsMetricCard('Success Stories Published', stories.length, '50%', true)}
++                      {renderAnalyticsMetricCard('Case Studies Published', caseStudies.length, '100%', true)}
++                      {renderAnalyticsMetricCard('Case Studies Approved', caseStudies.filter(c => c.status === 'Published').length, '33%', true)}
++                      {renderAnalyticsMetricCard('Applications', applications.length, '33%', false)}
++                      {renderAnalyticsMetricCard('Applications Referred', applications.filter(a => a.referred).length, '0%', null)}
++                    </div>
++
++                    {/* Footer export options */}
++                    <div className="flex flex-col sm:flex-row justify-between items-center border-t border-[var(--color-border)] pt-3 gap-3">
++                      <div className="text-paragraph opacity-60 text-[10px] font-semibold">
++                        Last Generated: {lastGeneratedTime}
++                      </div>
++                      <div className="flex flex-wrap items-center gap-2">
++                        <button
++                          type="button"
++                          onClick={() => handleExportReport('pdf')}
++                          className="flex items-center gap-1 bg-white border border-[var(--color-border)] rounded-[var(--radius-sm)] py-1.5 px-3 hover:bg-[var(--color-sub-bg)] transition font-semibold text-xs cursor-pointer h-8 shadow-sm"
++                        >
++                          <span className="text-red-500 font-bold">≡ƒôä</span> Export PDF
++                        </button>
++                        <button
++                          type="button"
++                          onClick={() => handleExportReport('excel')}
++                          className="flex items-center gap-1 bg-white border border-[var(--color-border)] rounded-[var(--radius-sm)] py-1.5 px-3 hover:bg-[var(--color-sub-bg)] transition font-semibold text-xs cursor-pointer h-8 shadow-sm"
++                        >
++                          <span className="text-green-600 font-bold">≡ƒôè</span> Export Excel
++                        </button>
++                        <button
++                          type="button"
++                          onClick={() => handleExportReport('csv')}
++                          className="flex items-center gap-1 bg-white border border-[var(--color-border)] rounded-[var(--radius-sm)] py-1.5 px-3 hover:bg-[var(--color-sub-bg)] transition font-semibold text-xs cursor-pointer h-8 shadow-sm"
++                        >
++                          <span className="text-purple-600 font-bold">≡ƒÆ╛</span> Export CSV
++                        </button>
++                      </div>
++                    </div>
++                  </div>
++                </motion.div>
++              )}
++            </AnimatePresence>
+           </div>
+         </motion.div>
+       </div>
+ 
++      {/* Success story modal creation portal */}
+       {showStoryModal &&
+         createPortal(
+-          <div className="fixed inset-0 z-[99999] flex items-center justify-center bg-black/70 backdrop-blur-sm p-4">
++          <div className="fixed inset-0 z-[99999] flex items-center justify-center bg-black/70 backdrop-blur-sm p-4 animate-none">
+             <div className="w-full max-w-lg border border-[var(--color-border)] bg-[var(--color-main-bg)] shadow-xl overflow-hidden" style={{ borderRadius: 'var(--radius-sm)' }}>
+-              {/* Header */}
+               <div className="flex items-center justify-between border-b border-[var(--color-border)] px-5 py-4">
+                 <div>
+-                  <h2 style={{ fontSize: 'var(--text-card-heading)', fontWeight: 'var(--font-semibold)', color: 'var(--color-black)', margin: 0 }}>
+-                    Add Success Story
++                  <h2 className="text-primary font-[var(--font-semibold)]" style={{ fontSize: 'var(--text-small)', margin: 0 }}>
++                    {editingStory ? 'Edit Success Story' : 'Add Success Story'}
+                   </h2>
+-                  <p className="text-xs text-[var(--color-paragraph)] opacity-60 mt-1">
+-                    Create a new client success story to display on the platform.
++                  <p className="text-paragraph opacity-60 mt-1" style={{ fontSize: 'var(--text-caption)' }}>
++                    {editingStory ? 'Modify client success story details.' : 'Create a new client success story to display on the platform.'}
+                   </p>
+                 </div>
+                 <button
+-                  onClick={() => setShowStoryModal(false)}
+-                  className="w-8 h-8 rounded-full bg-[var(--color-sub-bg)] hover:bg-red-500/20 hover:text-red-600 transition flex items-center justify-center text-[var(--color-paragraph)] opacity-60 hover:opacity-100 cursor-pointer text-xs"
++                  onClick={handleCloseStoryModal}
++                  className="w-8 h-8 rounded-full bg-[var(--color-sub-bg)] hover:bg-red-500/20 hover:text-red-600 transition flex items-center justify-center text-paragraph opacity-60 hover:opacity-100 cursor-pointer"
++                  style={{ fontSize: 'var(--text-caption)' }}
+                 >
+                   Γ£ò
+                 </button>
+               </div>
+ 
+-              {/* Body */}
+               <form onSubmit={handleSubmit}>
+                 <div className="p-5 space-y-4">
+                   <div>
+-                    <label className="block mb-1.5 text-[var(--color-paragraph)] opacity-80 font-medium text-xs">Client Story</label>
+-                    <textarea 
++                    <label className="block mb-1.5 text-paragraph opacity-80 font-medium" style={{ fontSize: 'var(--text-caption)' }}>Client Story</label>
++                    <textarea
+                       name="clientStories"
+                       value={formData.clientStories}
+                       onChange={handleInputChange}
+                       rows="3"
+-                      className="w-full bg-[var(--color-sub-bg)] border border-[var(--color-border)] rounded-[var(--radius-sm)] p-3 text-sm text-[var(--color-paragraph)] placeholder-gray-400 focus:outline-none focus:border-[var(--color-primary)] transition resize-none"
++                      className="w-full bg-[var(--color-sub-bg)] border border-[var(--color-border)] rounded-[var(--radius-sm)] p-3 text-paragraph placeholder-gray-400 focus:outline-none focus:border-[var(--color-primary)] transition resize-none"
++                      style={{ fontSize: 'var(--text-caption)' }}
+                       placeholder="Write the client's success story here..."
+                     ></textarea>
+                   </div>
+-                  
++
+                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                     <div>
+-                      <label className="block mb-1.5 text-[var(--color-paragraph)] opacity-80 font-medium text-xs">Name</label>
+-                      <input 
+-                        type="text" 
++                      <label className="block mb-1.5 text-paragraph opacity-80 font-medium" style={{ fontSize: 'var(--text-caption)' }}>Name</label>
++                      <input
++                        type="text"
+                         name="name"
+                         value={formData.name}
+                         onChange={handleInputChange}
+-                        className="w-full bg-[var(--color-sub-bg)] border border-[var(--color-border)] rounded-[var(--radius-sm)] py-2.5 px-3 text-sm text-[var(--color-paragraph)] placeholder-gray-400 focus:outline-none focus:border-[var(--color-primary)] transition"
++                        className="w-full bg-[var(--color-sub-bg)] border border-[var(--color-border)] rounded-[var(--radius-sm)] py-2.5 px-3 text-paragraph placeholder-gray-400 focus:outline-none focus:border-[var(--color-primary)] transition"
++                        style={{ fontSize: 'var(--text-caption)' }}
+                         placeholder="Sarah Johnson"
+                       />
+                     </div>
+                     <div>
+-                      <label className="block mb-1.5 text-[var(--color-paragraph)] opacity-80 font-medium text-xs">Position & Company</label>
+-                      <input 
+-                        type="text" 
++                      <label className="block mb-1.5 text-paragraph opacity-80 font-medium" style={{ fontSize: 'var(--text-caption)' }}>Position & Company</label>
++                      <input
++                        type="text"
+                         name="position"
+                         value={formData.position}
+                         onChange={handleInputChange}
+-                        className="w-full bg-[var(--color-sub-bg)] border border-[var(--color-border)] rounded-[var(--radius-sm)] py-2.5 px-3 text-sm text-[var(--color-paragraph)] placeholder-gray-400 focus:outline-none focus:border-[var(--color-primary)] transition"
++                        className="w-full bg-[var(--color-sub-bg)] border border-[var(--color-border)] rounded-[var(--radius-sm)] py-2.5 px-3 text-paragraph placeholder-gray-400 focus:outline-none focus:border-[var(--color-primary)] transition"
++                        style={{ fontSize: 'var(--text-caption)' }}
+                         placeholder="CEO, GlobalTech"
+                       />
+                     </div>
+                   </div>
+ 
+                   <div>
+-                    <label className="block mb-1.5 text-[var(--color-paragraph)] opacity-80 font-medium text-xs">Client Image</label>
+-                    <input 
+-                      type="file" 
++                    <label className="block mb-1.5 text-paragraph opacity-80 font-medium" style={{ fontSize: 'var(--text-caption)' }}>Client Image</label>
++                    <input
++                      type="file"
+                       id="imageUpload"
+                       accept="image/*"
+                       onChange={handleImageChange}
+-                      className="w-full bg-[var(--color-sub-bg)] border border-[var(--color-border)] rounded-[var(--radius-sm)] py-2.5 px-3 text-sm text-[var(--color-paragraph)] opacity-80 file:mr-4 file:py-1.5 file:px-3 file:rounded-[var(--radius-sm)] file:border-0 file:text-xs file:font-semibold file:bg-[var(--color-primary)] file:text-white hover:file:bg-blue-600 transition cursor-pointer"
++                      className="w-full bg-[var(--color-sub-bg)] border border-[var(--color-border)] rounded-[var(--radius-sm)] py-2.5 px-3 text-paragraph opacity-80 file:mr-4 file:py-1.5 file:px-3 file:rounded-[var(--radius-sm)] file:border-0 file:font-semibold file:bg-[var(--color-primary)] file:text-white hover:file:bg-blue-600 transition cursor-pointer"
++                      style={{ fontSize: 'var(--text-caption)' }}
+                     />
++                    {editingStory && editingStory.imageUrl && !formData.image && (
++                      <p className="text-[10px] text-paragraph opacity-60 mt-1.5">
++                        Current Image: <a href={editingStory.imageUrl} target="_blank" rel="noreferrer" className="text-blue-600 hover:underline">View Current Image</a>
++                      </p>
++                    )}
+                   </div>
+                 </div>
+ 
+-                {/* Footer */}
+                 <div className="flex justify-end gap-3 border-t border-[var(--color-border)] px-6 py-4">
+                   <button
+                     type="button"
+-                    onClick={() => setShowStoryModal(false)}
+-                    className="px-5 py-2 border border-[var(--color-border)] text-sm text-[var(--color-paragraph)] hover:bg-[var(--color-sub-bg)] transition font-semibold cursor-pointer h-10"
+-                    style={{ borderRadius: 'var(--radius-sm)' }}
++                    onClick={handleCloseStoryModal}
++                    className="px-5 py-2 border border border-[var(--color-border)] text-paragraph hover:bg-[var(--color-sub-bg)] transition font-semibold cursor-pointer h-10"
++                    style={{ borderRadius: 'var(--radius-sm)', fontSize: 'var(--text-caption)' }}
+                   >
+                     Cancel
+                   </button>
+                   <button
+                     type="submit"
+                     disabled={isSubmitting}
+-                    className="btn px-5 py-2 border-none disabled:opacity-50 cursor-pointer text-sm h-10"
+-                    style={{ fontWeight: 'var(--font-semibold)' }}
++                    className="btn cursor-pointer text-white"
++                    style={{ fontSize: 'var(--text-caption)', textTransform: 'none' }}
+                   >
+-                    {isSubmitting ? 'Uploading...' : 'Submit Story'}
++                    {isSubmitting ? 'Saving...' : (editingStory ? 'Save Changes' : 'Submit Story')}
+                   </button>
+                 </div>
+               </form>
+@@ -686,100 +1667,384 @@ const Dashboard = () => {
+           </div>,
+           document.body
+         )}
+-      {/* FULL DETAILS MODAL */}
+-      <Dialog
+-        open={Boolean(selectedDetailsModal)}
+-        onClose={() => setSelectedDetailsModal(null)}
+-        maxWidth="sm"
+-        fullWidth
+-        sx={{
+-          "& .MuiDialog-container": {
+-            "& .MuiPaper-root": {
+-              borderRadius: "var(--radius-sm)",
+-              padding: "8px",
+-              boxShadow: "var(--shadow-card)",
+-              border: "1px solid var(--color-border)"
++
++      {/* Actionable Details Modal */}
++      {activeActionable && (
++        <Dialog
++          open={Boolean(activeActionable)}
++          onClose={() => setActiveActionable(null)}
++          maxWidth="sm"
++          fullWidth
++          sx={{
++            "& .MuiDialog-container": {
++              "& .MuiPaper-root": {
++                borderRadius: "var(--radius-sm)",
++                padding: "8px",
++                boxShadow: "var(--shadow-card)",
++                border: "1px solid var(--color-border)"
++              }
+             }
+-          }
+-        }}
+-      >
+-        {selectedDetailsModal && (
+-          <>
+-            <DialogTitle style={{ borderBottom: '1px solid var(--color-border)', paddingBottom: '12px' }}>
+-              <div className="flex justify-between items-start">
+-                <div>
+-                  <h2 style={{ fontSize: 'var(--text-card-heading)', fontWeight: 'var(--font-bold)', color: 'var(--color-black)', margin: 0 }}>
+-                    {selectedDetailsModal.title}
+-                  </h2>
+-                </div>
+-              </div>
+-            </DialogTitle>
+-            
+-            <DialogContent style={{ paddingTop: '20px' }}>
+-              <div className="flex flex-col gap-4">
+-                {selectedDetailsModal.type === 'Story' ? (
+-                  <div className="flex items-center gap-3">
+-                    <img 
+-                      src={selectedDetailsModal.imageUrl} 
+-                      alt={selectedDetailsModal.name} 
+-                      className="w-12 h-12 rounded-full object-cover border border-[var(--color-border)]" 
+-                    />
+-                    <div>
+-                      <h3 className="text-[var(--color-black)] font-bold text-sm leading-tight">{selectedDetailsModal.name}</h3>
+-                      <p className="text-[var(--color-paragraph)] opacity-60 text-xs">{selectedDetailsModal.subtitle}</p>
++          }}
++        >
++          <DialogTitle style={{ borderBottom: '1px solid var(--color-border)', paddingBottom: '12px' }}>
++            <div className="flex justify-between items-center text-primary">
++              <h2 className="font-bold text-primary" style={{ fontSize: 'var(--text-caption)', margin: 0 }}>
++                Actionable: {activeActionable.moduleName} ({activeActionable.count} Items)
++              </h2>
++              <button
++                onClick={() => setActiveActionable(null)}
++                className="w-6 h-6 rounded-full bg-[var(--color-sub-bg)] hover:bg-red-500/20 hover:text-red-600 transition flex items-center justify-center text-paragraph opacity-60 hover:opacity-100 cursor-pointer"
++                style={{ fontSize: 'var(--text-caption)' }}
++              >
++                Γ£ò
++              </button>
++            </div>
++          </DialogTitle>
++
++          <DialogContent style={{ paddingTop: '16px' }} className="max-h-[300px] overflow-y-auto">
++            <div className="space-y-2.5">
++              {activeActionable.count === 0 ? (
++                <p className="text-paragraph opacity-60 text-center py-4" style={{ fontSize: 'var(--text-caption)' }}>No pending items to review.</p>
++              ) : (() => {
++                const name = activeActionable.moduleName;
++                if (name === 'Inquiries') {
++                  return inquiries.filter(inq => inq.status === 'New').map((inq) => (
++                    <div key={inq._id} className="p-2 border border-[var(--color-border)] rounded-[var(--radius-sm)] bg-[var(--color-sub-bg)]/20" style={{ fontSize: 'var(--text-caption)' }}>
++                      <p className="font-bold text-primary">{inq.name} ({inq.email})</p>
++                      <p className="opacity-80 mt-1"><span className="font-semibold">Subject:</span> {inq.subject}</p>
++                      <p className="opacity-70 mt-0.5 line-clamp-2">{inq.message}</p>
+                     </div>
+-                  </div>
+-                ) : (
+-                  <div>
+-                    <div className="flex justify-between items-start mb-2">
+-                      <div>
+-                        <h3 className="text-[var(--color-black)] font-bold text-sm leading-tight">{selectedDetailsModal.name}</h3>
+-                        <p className="text-[var(--color-paragraph)] opacity-60 text-xs">{selectedDetailsModal.subtitle}</p>
+-                      </div>
+-                      <div className="flex gap-0.5 mr-2">
+-                        {[...Array(5)].map((_, i) => (
+-                          <StarIcon 
+-                            key={i} 
+-                            fontSize="small" 
+-                            style={{ fontSize: 14 }}
+-                            className={i < selectedDetailsModal.rating ? "text-amber-400 drop-shadow-[0_0_5px_rgba(251,191,36,0.6)]" : "text-[var(--color-paragraph)] opacity-20"} 
+-                          />
+-                        ))}
+-                      </div>
++                  ));
++                }
++                if (name === 'Career') {
++                  return applications.filter(app => app.status === 'pending').map((app) => (
++                    <div key={app._id} className="p-2 border border-[var(--color-border)] rounded-[var(--radius-sm)] bg-[var(--color-sub-bg)]/20" style={{ fontSize: 'var(--text-caption)' }}>
++                      <p className="font-bold text-primary">{app.fullName} ({app.email})</p>
++                      <p className="opacity-80 mt-1"><span className="font-semibold">Position:</span> {app.appliedPosition}</p>
++                      {app.roleDescription && <p className="opacity-70 mt-0.5 line-clamp-1">{app.roleDescription}</p>}
+                     </div>
+-                    {selectedDetailsModal.reviewTitle && (
+-                      <h4 className="text-[var(--color-primary)] font-semibold text-xs mb-1">
+-                        {selectedDetailsModal.reviewTitle}
+-                      </h4>
+-                    )}
+-                  </div>
+-                )}
+-                
+-                <div className="text-[var(--color-paragraph)] opacity-85 text-xs sm:text-sm italic leading-relaxed whitespace-pre-wrap bg-[var(--color-sub-bg)]/30 p-4 border border-[var(--color-border)] rounded-[var(--radius-sm)]">
+-                  "{selectedDetailsModal.text}"
+-                </div>
+-              </div>
+-            </DialogContent>
+-            
+-            <DialogActions style={{ borderTop: '1px solid var(--color-border)', paddingTop: '12px' }}>
+-              <Button 
+-                onClick={() => setSelectedDetailsModal(null)}
+-                variant="outlined" 
+-                style={{ 
+-                  color: 'var(--color-paragraph)', 
+-                  borderColor: 'var(--color-border)',
++                  ));
++                }
++                if (name === 'Articles') {
++                  return articles.slice(0, activeActionable.count).map((art) => (
++                    <div key={art._id} className="p-2 border border-[var(--color-border)] rounded-[var(--radius-sm)] bg-[var(--color-sub-bg)]/20" style={{ fontSize: 'var(--text-caption)' }}>
++                      <p className="font-bold text-primary">{art.title}</p>
++                      <p className="opacity-70 mt-0.5 line-clamp-2">{art.description}</p>
++                    </div>
++                  ));
++                }
++                if (name === 'Case Studies') {
++                  return caseStudies.filter(cs => cs.status === 'Draft').map((cs) => (
++                    <div key={cs._id} className="p-2 border border-[var(--color-border)] rounded-[var(--radius-sm)] bg-[var(--color-sub-bg)]/20" style={{ fontSize: 'var(--text-caption)' }}>
++                      <p className="font-bold text-primary">{cs.title}</p>
++                      <p className="opacity-80 mt-1"><span className="font-semibold">Author:</span> {cs.author} - {cs.authorRole}</p>
++                    </div>
++                  ));
++                }
++                if (name === 'Reviews') {
++                  return reviews.slice(0, activeActionable.count).map((rev) => (
++                    <div key={rev._id} className="p-2 border border-[var(--color-border)] rounded-[var(--radius-sm)] bg-[var(--color-sub-bg)]/20" style={{ fontSize: 'var(--text-caption)' }}>
++                      <p className="font-bold text-primary">{rev.fullName} ({rev.company})</p>
++                      <p className="opacity-80 mt-1 font-semibold">"{rev.title}"</p>
++                      <p className="opacity-70 mt-0.5 line-clamp-2">{rev.review}</p>
++                    </div>
++                  ));
++                }
++                if (name === 'Success Stories') {
++                  return stories.slice(0, activeActionable.count).map((story) => (
++                    <div key={story._id} className="p-2 border border-[var(--color-border)] rounded-[var(--radius-sm)] bg-[var(--color-sub-bg)]/20" style={{ fontSize: 'var(--text-caption)' }}>
++                      <p className="font-bold text-primary">{story.name}</p>
++                      <p className="opacity-80 mt-1"><span className="font-semibold">Position:</span> {story.position ? story.position.replace(',', ' - ') : ''}</p>
++                    </div>
++                  ));
++                }
++                return null;
++              })()}
++            </div>
++          </DialogContent>
++
++          <DialogActions style={{ borderTop: '1px solid var(--color-border)', paddingTop: '10px' }} className="flex justify-end gap-2.5">
++            {activeActionable.divertPath && activeActionable.divertPath !== '#' && (
++              <Button
++                onClick={() => {
++                  navigate(activeActionable.divertPath);
++                  setActiveActionable(null);
++                }}
++                variant="contained"
++                style={{
++                  backgroundColor: 'var(--color-primary)',
++                  color: 'white',
+                   borderRadius: 'var(--radius-sm)',
+                   textTransform: 'none',
+                   fontWeight: 'var(--font-semibold)',
+-                  fontSize: '12px'
++                  fontSize: 'var(--text-caption)',
++                  height: '32px'
+                 }}
+               >
+-                Close
++                Go to Module Page
+               </Button>
+-            </DialogActions>
+-          </>
+-        )}
+-      </Dialog>
++            )}
++            <Button
++              onClick={() => setActiveActionable(null)}
++              variant="outlined"
++              style={{
++                borderColor: 'var(--color-border)',
++                color: 'var(--color-paragraph)',
++                borderRadius: 'var(--radius-sm)',
++                textTransform: 'none',
++                fontWeight: 'var(--font-semibold)',
++                fontSize: 'var(--text-caption)',
++                height: '32px'
++              }}
++            >
++              Close
++            </Button>
++          </DialogActions>
++        </Dialog>
++      )}
++
++      {/* Review Details Dialog */}
++      {activeReviewDetails && (
++        <Dialog
++          open={Boolean(activeReviewDetails)}
++          onClose={() => setActiveReviewDetails(null)}
++          maxWidth="sm"
++          fullWidth
++          sx={{
++            "& .MuiDialog-container": {
++              "& .MuiPaper-root": {
++                borderRadius: "var(--radius-sm)",
++                padding: "8px",
++                boxShadow: "var(--shadow-card)",
++                border: "1px solid var(--color-border)"
++              }
++            }
++          }}
++        >
++          <DialogTitle style={{ borderBottom: '1px solid var(--color-border)', paddingBottom: '12px' }}>
++            <div className="flex justify-between items-center">
++              <h2 style={{ fontSize: 'var(--text-small)', fontWeight: 'var(--font-bold)', color: 'var(--color-black)', margin: 0 }}>
++                Review Details
++              </h2>
++              <button
++                type="button"
++                onClick={() => setActiveReviewDetails(null)}
++                className="w-6 h-6 rounded-full bg-[var(--color-sub-bg)] hover:bg-red-500/20 hover:text-red-600 transition flex items-center justify-center text-paragraph opacity-60 hover:opacity-100 cursor-pointer"
++                style={{ fontSize: 'var(--text-caption)' }}
++              >
++                Γ£ò
++              </button>
++            </div>
++          </DialogTitle>
++          <DialogContent style={{ paddingTop: '16px' }}>
++            <div className="space-y-3">
++              <div>
++                <p className="font-bold text-primary text-[var(--text-caption)]" style={{ margin: 0 }}>{activeReviewDetails.fullName}</p>
++                <p className="text-paragraph opacity-60 text-[10px]" style={{ margin: 0 }}>{activeReviewDetails.company}</p>
++              </div>
++              <div>
++                <span className="font-semibold text-primary" style={{ fontSize: 'var(--text-caption)' }}>Rating: </span>
++                <span className="text-amber-400">{'Γÿà'.repeat(activeReviewDetails.rating)}{'Γÿå'.repeat(5 - activeReviewDetails.rating)}</span>
++              </div>
++              <div>
++                <h4 className="font-bold text-primary text-xs" style={{ margin: 0 }}>{activeReviewDetails.title}</h4>
++                <p className="text-paragraph opacity-85 mt-1.5 whitespace-pre-wrap bg-[var(--color-sub-bg)]/25 p-3 rounded border border-[var(--color-border)]" style={{ fontSize: 'var(--text-caption)', lineHeight: 1.5, margin: 0 }}>
++                  "{activeReviewDetails.review}"
++                </p>
++              </div>
++            </div>
++          </DialogContent>
++          <DialogActions style={{ borderTop: '1px solid var(--color-border)', paddingTop: '10px' }}>
++            <Button
++              onClick={() => setActiveReviewDetails(null)}
++              variant="outlined"
++              style={{
++                borderColor: 'var(--color-border)',
++                color: 'var(--color-paragraph)',
++                borderRadius: 'var(--radius-sm)',
++                textTransform: 'none',
++                fontWeight: 'var(--font-semibold)',
++                fontSize: 'var(--text-caption)',
++                height: '32px'
++              }}
++            >
++              Close
++            </Button>
++          </DialogActions>
++        </Dialog>
++      )}
++
++      {/* Client Success Story Details Dialog */}
++      {activeStoryDetails && (
++        <Dialog
++          open={Boolean(activeStoryDetails)}
++          onClose={() => setActiveStoryDetails(null)}
++          maxWidth="sm"
++          fullWidth
++          sx={{
++            "& .MuiDialog-container": {
++              "& .MuiPaper-root": {
++                borderRadius: "var(--radius-sm)",
++                padding: "8px",
++                boxShadow: "var(--shadow-card)",
++                border: "1px solid var(--color-border)"
++              }
++            }
++          }}
++        >
++          <DialogTitle style={{ borderBottom: '1px solid var(--color-border)', paddingBottom: '12px' }}>
++            <div className="flex justify-between items-center">
++              <h2 style={{ fontSize: 'var(--text-small)', fontWeight: 'var(--font-bold)', color: 'var(--color-black)', margin: 0 }}>
++                Client Success Story Details
++              </h2>
++              <button
++                type="button"
++                onClick={() => setActiveStoryDetails(null)}
++                className="w-6 h-6 rounded-full bg-[var(--color-sub-bg)] hover:bg-red-500/20 hover:text-red-600 transition flex items-center justify-center text-paragraph opacity-60 hover:opacity-100 cursor-pointer"
++                style={{ fontSize: 'var(--text-caption)' }}
++              >
++                Γ£ò
++              </button>
++            </div>
++          </DialogTitle>
++          <DialogContent style={{ paddingTop: '16px' }}>
++            <div className="space-y-4">
++              <div className="flex items-center gap-3">
++                {activeStoryDetails.imageUrl ? (
++                  <img
++                    src={activeStoryDetails.imageUrl}
++                    alt={activeStoryDetails.name}
++                    className="w-12 h-12 object-cover border border-[var(--color-border)]"
++                    style={{ borderRadius: 'var(--radius-sm)' }}
++                  />
++                ) : (
++                  <div className="w-12 h-12 flex items-center justify-center bg-blue-100 text-blue-700 font-bold rounded" style={{ fontSize: 'var(--text-paragraph)' }}>
++                    {activeStoryDetails.name.charAt(0)}
++                  </div>
++                )}
++                <div>
++                  <h3 className="font-bold text-primary" style={{ fontSize: 'var(--text-caption)', margin: 0 }}>{activeStoryDetails.name}</h3>
++                  <p className="text-paragraph opacity-60" style={{ fontSize: 'var(--text-caption)', margin: 0 }}>{activeStoryDetails.position ? activeStoryDetails.position.replace(',', ' - ') : ''}</p>
++                </div>
++              </div>
++              <div>
++                <p className="text-paragraph opacity-85 whitespace-pre-wrap bg-[var(--color-sub-bg)]/25 p-3 rounded border border-[var(--color-border)]" style={{ fontSize: 'var(--text-caption)', lineHeight: 1.5, margin: 0 }}>
++                  "{activeStoryDetails.clientStories}"
++                </p>
++              </div>
++            </div>
++          </DialogContent>
++          <DialogActions style={{ borderTop: '1px solid var(--color-border)', paddingTop: '10px' }}>
++            <Button
++              onClick={() => setActiveStoryDetails(null)}
++              variant="outlined"
++              style={{
++                borderColor: 'var(--color-border)',
++                color: 'var(--color-paragraph)',
++                borderRadius: 'var(--radius-sm)',
++                textTransform: 'none',
++                fontWeight: 'var(--font-semibold)',
++                fontSize: 'var(--text-caption)',
++                height: '32px'
++              }}
++            >
++              Close
++            </Button>
++          </DialogActions>
++        </Dialog>
++      )}
++      {/* Detailed Analytics Modal */}
++      {showDetailedReportModal && (
++        <Dialog
++          open={Boolean(showDetailedReportModal)}
++          onClose={() => setShowDetailedReportModal(false)}
++          maxWidth="md"
++          fullWidth
++          sx={{
++            "& .MuiDialog-container": {
++              "& .MuiPaper-root": {
++                borderRadius: "var(--radius-sm)",
++                padding: "8px",
++                boxShadow: "var(--shadow-card)",
++                border: "1px solid var(--color-border)"
++              }
++            }
++          }}
++        >
++          <DialogTitle style={{ borderBottom: '1px solid var(--color-border)', paddingBottom: '12px' }}>
++            <div className="flex justify-between items-center">
++              <h2 style={{ fontSize: 'var(--text-small)', fontWeight: 'var(--font-bold)', color: 'var(--color-black)', margin: 0 }}>
++                Detailed Analytics Breakdown Report
++              </h2>
++              <button
++                type="button"
++                onClick={() => setShowDetailedReportModal(false)}
++                className="w-6 h-6 rounded-full bg-[var(--color-sub-bg)] hover:bg-red-500/20 hover:text-red-600 transition flex items-center justify-center text-paragraph opacity-60 hover:opacity-100 cursor-pointer"
++                style={{ fontSize: 'var(--text-caption)' }}
++              >
++                Γ£ò
++              </button>
++            </div>
++          </DialogTitle>
++          <DialogContent style={{ paddingTop: '16px' }}>
++            <div className="overflow-x-auto">
++              <table className="w-full text-left border-collapse text-xs">
++                <thead>
++                  <tr className="border-b border-[var(--color-border)] text-paragraph opacity-60 font-bold">
++                    <th className="py-2">Metric Name</th>
++                    <th className="py-2 text-right">Count</th>
++                    <th className="py-2 text-right">Details / Status</th>
++                  </tr>
++                </thead>
++                <tbody>
++                  <tr className="border-b border-[var(--color-border)] last:border-0 hover:bg-[var(--color-sub-bg)] text-primary">
++                    <td className="py-2.5 font-bold">Total Inquiries</td>
++                    <td className="py-2.5 text-right font-semibold">{inquiries.length}</td>
++                    <td className="py-2.5 text-right opacity-80">New Inquiries: {inquiries.filter(i => i.status === 'New').length}</td>
++                  </tr>
++                  <tr className="border-b border-[var(--color-border)] last:border-0 hover:bg-[var(--color-sub-bg)] text-primary">
++                    <td className="py-2.5 font-bold">Reviews Received</td>
++                    <td className="py-2.5 text-right font-semibold">{reviews.length}</td>
++                    <td className="py-2.5 text-right opacity-80">Approved: {reviews.filter(r => r.status === 'Approved').length} | Rejected: {reviews.filter(r => r.status === 'Rejected').length}</td>
++                  </tr>
++                  <tr className="border-b border-[var(--color-border)] last:border-0 hover:bg-[var(--color-sub-bg)] text-primary">
++                    <td className="py-2.5 font-bold">Success Stories Published</td>
++                    <td className="py-2.5 text-right font-semibold">{stories.length}</td>
++                    <td className="py-2.5 text-right opacity-80">Active testimonials on live site</td>
++                  </tr>
++                  <tr className="border-b border-[var(--color-border)] last:border-0 hover:bg-[var(--color-sub-bg)] text-primary">
++                    <td className="py-2.5 font-bold">Case Studies Published</td>
++                    <td className="py-2.5 text-right font-semibold">{caseStudies.length}</td>
++                    <td className="py-2.5 text-right opacity-80">Published: {caseStudies.filter(c => c.status === 'Published').length} | Draft: {caseStudies.filter(c => c.status === 'Draft').length}</td>
++                  </tr>
++                  <tr className="border-b border-[var(--color-border)] last:border-0 hover:bg-[var(--color-sub-bg)] text-primary">
++                    <td className="py-2.5 font-bold">Careers & Applications</td>
++                    <td className="py-2.5 text-right font-semibold">{applications.length}</td>
++                    <td className="py-2.5 text-right opacity-80">Pending: {applications.filter(a => a.status === 'pending').length}</td>
++                  </tr>
++                </tbody>
++              </table>
++            </div>
++          </DialogContent>
++          <DialogActions style={{ borderTop: '1px solid var(--color-border)', paddingTop: '10px' }}>
++            <Button
++              onClick={() => setShowDetailedReportModal(false)}
++              variant="outlined"
++              style={{
++                borderColor: 'var(--color-border)',
++                color: 'var(--color-paragraph)',
++                borderRadius: 'var(--radius-sm)',
++                textTransform: 'none',
++                fontWeight: 'var(--font-semibold)',
++                fontSize: 'var(--text-caption)',
++                height: '32px'
++              }}
++            >
++              Close
++            </Button>
++          </DialogActions>
++        </Dialog>
++      )}
+     </>
+   );
+ };

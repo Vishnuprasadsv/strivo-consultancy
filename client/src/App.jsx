@@ -2,6 +2,8 @@ import React, { Suspense, lazy, useEffect, useState } from 'react';
 import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import { Toaster } from 'sonner';
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import Navbar from './Components/Navbar';
 import AdminNavbar from './Components/AdminNavbar';
 import Footer from './Components/Footer';
@@ -44,14 +46,22 @@ const Inquiries = lazy(() => import('./Admin/Inquiries'));
 const CaseStudiesAdmin = lazy(() => import('./Admin/CaseStudies'));
 const CreateCaseStudy = lazy(() => import('./Admin/CreateCaseStudy'));
 const EditCaseStudy = lazy(() => import('./Admin/EditCaseStudy'));
+const CreateArticle = lazy(() => import('./Admin/CreateArticle'));
+const EditArticle = lazy(() => import('./Admin/EditArticle'));
+const CreateJob = lazy(() => import('./Admin/CreateJob'));
+const EditJob = lazy(() => import('./Admin/EditJob'));
 const Profile = lazy(() => import('./Admin/Profile'));
 const clientTheme = createTheme({
   typography: {
-    fontFamily: 'var(--font-poppins)',
+    fontFamily: 'var(--font-primary)',
   },
 });
 
-const adminTheme = createTheme();
+const adminTheme = createTheme({
+  typography: {
+    fontFamily: 'var(--font-primary)',
+  },
+});
 
 const DynamicThemeProvider = ({ children }) => {
   const { pathname } = useLocation();
@@ -169,6 +179,22 @@ const AppLayout = () => {
               path="/admin/edit-case-study/:id"
               element={<EditCaseStudy />}
             />
+            <Route
+              path="/admin/create-article"
+              element={<CreateArticle />}
+            />
+            <Route
+              path="/admin/edit-article/:id"
+              element={<EditArticle />}
+            />
+            <Route
+              path="/admin/create-job"
+              element={<CreateJob />}
+            />
+            <Route
+              path="/admin/edit-job/:id"
+              element={<EditJob />}
+            />
             <Route path="/admin/article" element={<ArticlesAdmin />} />
             <Route path="/admin/career" element={<CareerAdmin />} />
             <Route path="/admin/profile" element={<Profile />} />
@@ -188,7 +214,8 @@ const App = () => {
     <BrowserRouter>
       <DynamicThemeProvider>
         <ScrollToTop />
-        <Toaster position="top-right" theme="dark" />
+        <Toaster position="top-center" theme="dark" />
+        <ToastContainer position="top-center" autoClose={3500} hideProgressBar style={{ zIndex: 999999 }} />
         <AppLayout />
       </DynamicThemeProvider>
     </BrowserRouter>

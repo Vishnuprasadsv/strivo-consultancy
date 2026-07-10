@@ -77,3 +77,38 @@ export const deleteStory = async (req, res) => {
     res.status(500).json({ message: 'Server error' });
   }
 };
+
+export const updateStory = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { name, position, clientStories } = req.body;
+
+    const story = await SuccessStory.findById(id);
+    if (!story) {
+      return res.status(404).json({ message: 'Story not found' });
+    }
+
+    story.name = name || story.name;
+    story.position = position || story.position;
+    story.clientStories = clientStories || story.clientStories;
+
+    if (req.file) {
+      // Delete old image from Cloudinary if it exists
+      if (story.imageId) {
+        try {
+          await cloudinary.uploader.destroy(story.imageId);
+        } catch (cloudinaryError) {
+          console.error('Error deleting old image from Cloudinary during update:', cloudinaryError);
+        }
+      }
+      story.imageUrl = req.file.path;
+      story.imageId = req.file.filename;
+    }
+
+    await story.save();
+    res.status(200).json(story);
+  } catch (error) {
+    console.error('Error updating success story:', error);
+    res.status(500).json({ message: 'Server error' });
+  }
+};

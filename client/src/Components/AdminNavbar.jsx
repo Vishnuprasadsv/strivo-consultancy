@@ -1,17 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { motion } from 'framer-motion';
-import DashboardIcon from '@mui/icons-material/Dashboard';
-import QuestionAnswerIcon from '@mui/icons-material/QuestionAnswer';
-import LibraryBooksIcon from '@mui/icons-material/LibraryBooks';
-import ArticleIcon from '@mui/icons-material/Article';
-import WorkIcon from '@mui/icons-material/Work';
-import SettingsIcon from '@mui/icons-material/Settings';
-import LogoutIcon from '@mui/icons-material/Logout';
-import NotificationsIcon from '@mui/icons-material/Notifications';
-import AccountCircleIcon from '@mui/icons-material/AccountCircle';
-import MenuIcon from '@mui/icons-material/Menu';
-import CloseIcon from '@mui/icons-material/Close';
+import { motion, AnimatePresence } from 'framer-motion';
+import { FiBell, FiChevronDown, FiMenu, FiX, FiUser, FiLogOut } from 'react-icons/fi';
 import {
   getAdminStatsAPI,
   getAdminApplicationsAPI,
@@ -20,13 +10,12 @@ import {
 } from '../services/allApi';
 import Logo from '../assets/strivo logo.svg?react';
 
-
 const navLinks = [
-  { name: 'Dashboard', path: '/admin/dashboard', icon: <DashboardIcon /> },
-  { name: 'Inquiries', path: '/admin/inquiries', icon: <QuestionAnswerIcon /> },
-  { name: 'Case Studies', path: '/admin/casestudies', icon: <LibraryBooksIcon /> },
-  { name: 'Article', path: '/admin/article', icon: <ArticleIcon /> },
-  { name: 'Career', path: '/admin/career', icon: <WorkIcon /> },
+  { name: 'Dashboard', path: '/admin/dashboard' },
+  { name: 'Inquiries', path: '/admin/inquiries' },
+  { name: 'Case Studies', path: '/admin/casestudies' },
+  { name: 'Articles', path: '/admin/article' },
+  { name: 'Careers', path: '/admin/career' },
 ];
 
 const AdminNavbar = () => {
@@ -36,7 +25,11 @@ const AdminNavbar = () => {
   const [notificationCount, setNotificationCount] = useState(0);
   const [notifications, setNotifications] = useState([]);
   const [showDropdown, setShowDropdown] = useState(false);
-  const dropdownRef = React.useRef(null);
+  const [showProfileDropdown, setShowProfileDropdown] = useState(false);
+  
+  const dropdownRef = useRef(null);
+  const profileDropdownRef = useRef(null);
+  
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
   const [lastViewed, setLastViewed] = useState(() => {
@@ -49,14 +42,17 @@ const AdminNavbar = () => {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
         setShowDropdown(false);
       }
+      if (profileDropdownRef.current && !profileDropdownRef.current.contains(event.target)) {
+        setShowProfileDropdown(false);
+      }
     };
-    if (showDropdown) {
+    if (showDropdown || showProfileDropdown) {
       document.addEventListener('mousedown', handleClickOutside);
     }
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);
     };
-  }, [showDropdown]);
+  }, [showDropdown, showProfileDropdown]);
 
   const handleToggleDropdown = () => {
     const nextShow = !showDropdown;
@@ -72,7 +68,6 @@ const AdminNavbar = () => {
   // Fetch count of pending actions and list of top 5 new applications
   const fetchNotifications = async () => {
     try {
-
       const [statsRes, appsRes, inquiryRes, reviewsRes] =
         await Promise.all([
           getAdminStatsAPI(),
@@ -81,62 +76,30 @@ const AdminNavbar = () => {
           getReviewsAPI()
         ]);
 
-
       // Applications
-
       let applicationNotifications = [];
-
       if (appsRes.status === 200 && appsRes.data?.success) {
-
-        const pendingApps =
-          appsRes.data.data.filter(
-            app => app.status === "pending"
-          );
-
-        applicationNotifications =
-          pendingApps.map(app => ({
-
-            id: app._id,
-
-            type: "career",
-
-            text:
-              `New application: ${app.fullName} for ${app.appliedPosition}`,
-
-            time:
-              new Date(app.createdAt)
-
-          }));
-
+        const pendingApps = appsRes.data.data.filter(
+          app => app.status === "pending"
+        );
+        applicationNotifications = pendingApps.map(app => ({
+          id: app._id,
+          type: "career",
+          text: `New application: ${app.fullName} for ${app.appliedPosition}`,
+          time: new Date(app.createdAt)
+        }));
       }
-
 
       // Inquiries
-
       let inquiryNotifications = [];
-
       if (inquiryRes.status === 200) {
-
-        inquiryNotifications = inquiryRes.data.map(
-
-          inquiry => ({
-
-            id: inquiry._id,
-
-            type: "inquiry",
-
-            text:
-              `${inquiry.fullName} requested ${inquiry.service}`,
-
-            time:
-              new Date(inquiry.createdAt)
-
-          })
-
-        );
-
+        inquiryNotifications = inquiryRes.data.map(inquiry => ({
+          id: inquiry._id,
+          type: "inquiry",
+          text: `${inquiry.fullName} requested ${inquiry.service}`,
+          time: new Date(inquiry.createdAt)
+        }));
       }
-
 
       // Reviews
       let reviewNotifications = [];
@@ -165,18 +128,11 @@ const AdminNavbar = () => {
 
       const unreadCount = allNotifications.filter(n => n.time > lastViewed).length;
       setNotificationCount(unreadCount);
-
-    }
-
-    catch (err) {
-
-      console.error(
-        "Failed to fetch notifications in navbar:",
-        err
-      );
-
+    } catch (err) {
+      console.error("Failed to fetch notifications in navbar:", err);
     }
   };
+
   const handleLogout = () => {
     setShowLogoutConfirm(false);
     localStorage.removeItem('adminToken');
@@ -216,56 +172,77 @@ const AdminNavbar = () => {
 
   return (
     <>
-      {/* Top Navbar */}
+      {/* Top horizontal Navbar */}
       <motion.nav
         initial={{ y: -100, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
-        transition={{ duration: 0.6, ease: "easeOut" }}
-        className="fixed top-0 left-0 md:left-56 right-0 h-20 bg-white/80 backdrop-blur-xl border-b border-[var(--color-border)] z-40 flex items-center justify-between px-4 md:px-8"
+        transition={{ duration: 0.5, ease: "easeOut" }}
+        className="fixed top-0 left-0 right-0 h-16 bg-white/95 backdrop-blur-md border-b border-[var(--color-border)] z-40 flex items-center justify-between px-8 md:px-16 lg:px-24"
+        style={{ fontFamily: 'var(--font-primary)' }}
       >
-        <div className="flex items-center gap-4">
-          {/* Mobile Hamburger Menu */}
-          <button
-            className="md:hidden text-[var(--color-paragraph)] opacity-70 hover:opacity-100 transition-opacity cursor-pointer border-none bg-transparent"
-            onClick={() => setIsMobileMenuOpen(true)}
-          >
-            <MenuIcon />
-          </button>
+        {/* Left: Logo */}
+        <Link to="/admin/dashboard" className="flex items-center gap-2 flex-shrink-0">
+          <Logo className="h-7 text-[var(--color-primary)] fill-[var(--color-primary)]" />
+        </Link>
 
-          {/* Search - Removed as per user request */}
-          <div></div>
+        {/* Center: Navigation Links (Desktop) */}
+        <div className="hidden md:flex items-center gap-8 h-full">
+          {navLinks.map((link) => {
+            const isActive = location.pathname === link.path;
+            return (
+              <Link
+                key={link.name}
+                to={link.path}
+                className={`relative h-full flex items-center px-1 text-sm font-semibold transition-all duration-200 cursor-pointer ${
+                  isActive 
+                    ? 'text-[var(--color-primary)]' 
+                    : 'text-[var(--color-black)] hover:text-[var(--color-primary)]'
+                }`}
+              >
+                {link.name}
+                {isActive && (
+                  <motion.div
+                    layoutId="adminNavUnderline"
+                    className="absolute bottom-0 left-0 right-0 h-[3px] bg-[var(--color-primary)] rounded-t-full"
+                    transition={{ type: "spring", stiffness: 380, damping: 30 }}
+                  />
+                )}
+              </Link>
+            );
+          })}
         </div>
 
-        {/* Right Icons */}
-        <div className="flex items-center gap-4 md:gap-6">
+        {/* Right: Actions */}
+        <div className="flex items-center gap-4 h-full flex-shrink-0">
+          {/* Notification Bell */}
           <div className="relative" ref={dropdownRef}>
             <button
               onClick={handleToggleDropdown}
-              className="relative text-[var(--color-paragraph)] opacity-70 hover:opacity-100 transition-all cursor-pointer border-none bg-transparent flex items-center justify-center"
+              className="relative text-[var(--color-primary)] transition-all cursor-pointer border-none bg-transparent flex items-center justify-center p-2"
               title="Notifications"
             >
-              <NotificationsIcon />
+              <FiBell size={20} />
               {notificationCount > 0 && (
-                <span className="absolute -top-1.5 -right-1.5 min-w-[18px] h-[18px] px-1 bg-blue-600 text-white rounded-full flex items-center justify-center text-[10px] font-bold border border-white">
+                <span className="absolute top-1.5 right-1.5 min-w-[16px] h-[16px] px-1 bg-red-500 text-white rounded-full flex items-center justify-center text-[9px] font-bold border border-white">
                   {notificationCount}
                 </span>
               )}
             </button>
 
             {showDropdown && (
-              <div className="absolute right-0 mt-3 w-80 bg-black border border-white/10 rounded-2xl p-4 shadow-2xl z-50 text-white flex flex-col gap-3">
-                <div className="flex justify-between items-center pb-2 border-b border-white/10">
+              <div className="absolute right-0 mt-3 w-80 bg-white border border-[var(--color-border)] rounded-[var(--radius-sm)] p-4 shadow-2xl z-50 text-[var(--color-black)] flex flex-col gap-3">
+                <div className="flex justify-between items-center pb-2 border-b border-[var(--color-border)]">
                   <span className="text-sm font-bold">Recent Notifications</span>
-                  <span className="text-xxs text-blue-400 font-semibold">{notificationCount} Pending</span>
+                  <span className="text-[10px] text-blue-600 font-semibold">{notificationCount} Pending</span>
                 </div>
                 <div className="flex flex-col gap-2 max-h-60 overflow-y-auto">
                   {notifications.length === 0 ? (
-                    <p className="text-xs text-white/40 text-center py-4">No new notifications</p>
+                    <p className="text-xs text-[var(--color-paragraph)] opacity-60 text-center py-4">No new notifications</p>
                   ) : (
                     notifications.map((n) => (
                       <div
                         key={n.id}
-                        className="p-2 hover:bg-white/5 rounded-lg transition-colors cursor-pointer"
+                        className="p-2 hover:bg-[var(--color-sub-bg)] rounded transition-colors cursor-pointer text-left"
                         onClick={() => {
                           if (n.type === "career") {
                             navigate("/admin/career");
@@ -277,8 +254,8 @@ const AdminNavbar = () => {
                           setShowDropdown(false);
                         }}
                       >
-                        <p className="text-xs text-white/80 leading-snug">{n.text}</p>
-                        <span className="text-[9px] text-white/40 block mt-1">
+                        <p className="text-xs text-[var(--color-black)] leading-snug">{n.text}</p>
+                        <span className="text-[9px] text-[var(--color-paragraph)] opacity-60 block mt-1">
                           {Math.floor((new Date() - n.time) / 60000) < 60
                             ? `${Math.max(0, Math.floor((new Date() - n.time) / 60000))}m ago`
                             : n.time.toLocaleDateString()}
@@ -291,105 +268,149 @@ const AdminNavbar = () => {
             )}
           </div>
 
-          <Link to="/admin/profile" className="flex items-center gap-3 cursor-pointer pl-4 border-l border-[var(--color-border)]">
-            <div className="text-right hidden md:block text-left">
-              {adminUser?.username && <p className="text-sm font-medium text-[var(--color-black)]">{adminUser.username}</p>}
-              {adminUser?.role && <p className="text-xs text-[var(--color-paragraph)] opacity-60">{adminUser.role}</p>}
-            </div>
-            {adminUser?.profileImage ? (
-              <img src={adminUser.profileImage} alt="Profile" className="w-10 h-10 rounded-full object-cover border border-[var(--color-border)]" />
-            ) : (
-              <AccountCircleIcon className="text-slate-400 w-10 h-10" style={{ fontSize: '40px' }} />
+          {/* Vertical Separator (Desktop) */}
+          <div className="h-6 w-[1px] bg-[var(--color-border)] hidden md:block"></div>
+
+          {/* Admin Profile Dropdown (Desktop) */}
+          <div className="relative hidden md:block" ref={profileDropdownRef}>
+            <button 
+              onClick={() => setShowProfileDropdown(!showProfileDropdown)}
+              className="flex items-center gap-3 cursor-pointer border-none bg-transparent py-1.5 focus:outline-none"
+            >
+              <div className="text-right">
+                {adminUser?.username && <p className="text-xs font-bold text-[var(--color-black)] leading-tight">{adminUser.username}</p>}
+              </div>
+              {adminUser?.profileImage ? (
+                <img src={adminUser.profileImage} alt="Profile" className="w-8 h-8 rounded-full object-cover border border-[var(--color-border)]" />
+              ) : (
+                <div className="w-8 h-8 rounded-full bg-slate-100 text-slate-500 flex items-center justify-center border border-[var(--color-border)]">
+                  <FiUser size={16} />
+                </div>
+              )}
+              <FiChevronDown size={14} className={`text-[var(--color-paragraph)] opacity-60 transition-transform duration-200 ${showProfileDropdown ? 'rotate-180' : ''}`} />
+            </button>
+
+            {showProfileDropdown && (
+              <div className="absolute right-0 mt-2.5 w-48 bg-white border border-[var(--color-border)] rounded-[var(--radius-sm)] shadow-xl py-1 z-50 text-left">
+                <Link
+                  to="/admin/profile"
+                  onClick={() => setShowProfileDropdown(false)}
+                  className="flex items-center gap-2 px-4 py-2 text-xs font-semibold text-[var(--color-paragraph)] hover:bg-[var(--color-sub-bg)] transition-colors"
+                >
+                  <FiUser size={14} />
+                  View Profile
+                </Link>
+                <button
+                  onClick={() => {
+                    setShowProfileDropdown(false);
+                    setShowLogoutConfirm(true);
+                  }}
+                  className="w-full flex items-center gap-2 px-4 py-2 text-xs font-semibold text-[var(--color-primary)] hover:bg-[var(--color-sub-bg)] transition-colors border-none bg-transparent text-left cursor-pointer"
+                >
+                  <FiLogOut size={14} />
+                  Logout
+                </button>
+              </div>
             )}
-          </Link>
+          </div>
+
+          {/* Mobile Hamburger Toggle */}
+          <button
+            className="md:hidden text-[var(--color-paragraph)] opacity-70 hover:opacity-100 transition-opacity cursor-pointer border-none bg-transparent p-2"
+            onClick={() => setIsMobileMenuOpen(true)}
+          >
+            <FiMenu size={22} />
+          </button>
         </div>
       </motion.nav>
 
-      {/* Mobile Overlay */}
-      {isMobileMenuOpen && (
-        <div
-          className="fixed inset-0 bg-black/60 backdrop-blur-sm z-40 md:hidden"
-          onClick={() => setIsMobileMenuOpen(false)}
-        />
-      )}
+      {/* Mobile Slide-over Drawer Menu */}
+      <AnimatePresence>
+        {isMobileMenuOpen && (
+          <>
+            {/* Backdrop */}
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 md:hidden animate-fade"
+              onClick={() => setIsMobileMenuOpen(false)}
+            />
+            {/* Drawer */}
+            <motion.aside
+              initial={{ x: '100%' }}
+              animate={{ x: 0 }}
+              exit={{ x: '100%' }}
+              transition={{ type: 'tween', duration: 0.25 }}
+              className="fixed top-0 right-0 bottom-0 w-64 bg-white z-50 md:hidden flex flex-col p-6 shadow-2xl"
+              style={{ fontFamily: 'var(--font-primary)' }}
+            >
+              {/* Header */}
+              <div className="flex justify-between items-center mb-6">
+                <Logo className="h-6 text-[var(--color-primary)] fill-[var(--color-primary)]" />
+                <button
+                  onClick={() => setIsMobileMenuOpen(false)}
+                  className="text-[var(--color-paragraph)] hover:text-black border-none bg-transparent cursor-pointer p-1"
+                >
+                  <FiX size={20} />
+                </button>
+              </div>
 
-      {/* Left Sidebar */}
-      <motion.aside
-        initial={{ x: -300, opacity: 0 }}
-        animate={{ x: 0, opacity: 1 }}
-        transition={{ duration: 0.6, ease: "easeOut" }}
-        className={`fixed top-0 left-0 h-screen w-56 bg-[var(--color-btn-bg)] backdrop-blur-xl border-r border-white/10 z-50 flex flex-col transition-transform duration-300 ${isMobileMenuOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'}`}
-      >
-        {/* Mobile Close Button */}
-        <button
-          className="md:hidden absolute top-4 right-4 text-white/50 hover:text-white"
-          onClick={() => setIsMobileMenuOpen(false)}
-        >
-          <CloseIcon />
-        </button>
+              <div className="border-b border-[var(--color-border)] mb-6"></div>
 
-        {/* Logo Section */}
-        <div className="flex flex-col items-center justify-center py-6 gap-2">
-          {/* <img src={logo} alt="Strivo Logo" className="h-10 w-auto brightness-0 invert" /> */}
-                     <Logo className="h-10 text-[var(--color-primary)]" />
-        
-        </div>
+              {/* Links */}
+              <div className="flex flex-col gap-4 flex-1 text-left">
+                {navLinks.map((link) => {
+                  const isActive = location.pathname === link.path;
+                  return (
+                    <Link
+                      key={link.name}
+                      to={link.path}
+                      onClick={() => setIsMobileMenuOpen(false)}
+                      className={`text-sm font-semibold transition-colors py-1.5 ${
+                        isActive ? 'text-[var(--color-primary)] font-bold' : 'text-[var(--color-black)] hover:text-[var(--color-primary)]'
+                      }`}
+                    >
+                      {link.name}
+                    </Link>
+                  );
+                })}
+              </div>
 
-        <div className="mx-6 border-b border-white/10 mb-6"></div>
-
-        {/* Nav Links */}
-        <div className="flex-1 px-4 flex flex-col gap-2 relative">
-          {navLinks.map((link) => {
-            const isActive = location.pathname === link.path;
-            return (
-              <Link
-                key={link.name}
-                to={link.path}
-                onClick={() => setIsMobileMenuOpen(false)}
-                className={`relative flex items-center px-4 py-3 rounded-xl transition-colors duration-300 group cursor-pointer ${isActive ? 'text-white font-bold bg-white/10' : 'text-white hover:bg-white/5 font-bold'
-                  }`}
-              >
-                {isActive && (
-                  <motion.div
-                    layoutId="active-admin-nav-bg"
-                    className="absolute inset-0 bg-blue-600/10 rounded-xl border-r-[3px] border-blue-400"
-                    initial={false}
-                    transition={{ type: "spring", stiffness: 350, damping: 30 }}
-                  />
-                )}
-                <span className="relative z-10">{link.name}</span>
-              </Link>
-            );
-          })}
-        </div>
-
-        {/* Bottom Profile and Logout */}
-        <div className="p-4 mt-auto mb-4 flex flex-col gap-2">
-          <Link
-            to="/admin/profile"
-            onClick={() => setIsMobileMenuOpen(false)}
-            className={`relative flex items-center px-4 py-3 rounded-xl transition-colors duration-300 group cursor-pointer ${location.pathname === '/admin/profile' ? 'text-white font-bold bg-white/10' : 'text-white hover:bg-white/5 font-bold'
-              }`}
-          >
-            {location.pathname === '/admin/profile' && (
-              <motion.div
-                layoutId="active-admin-nav-bg"
-                className="absolute inset-0 bg-blue-600/10 rounded-xl border-r-[3px] border-blue-400"
-                initial={false}
-                transition={{ type: "spring", stiffness: 350, damping: 30 }}
-              />
-            )}
-            <span className="relative z-10">Profile</span>
-          </Link>
-
-          <button
-            onClick={() => setShowLogoutConfirm(true)}
-            className="relative flex items-center px-4 py-3 rounded-xl transition-colors duration-300 group cursor-pointer text-white hover:bg-white/5 w-full text-left font-bold"
-          >
-            <span className="relative z-10">Logout</span>
-          </button>
-        </div>
-      </motion.aside>
+              {/* Bottom user profile section */}
+              <div className="border-t border-[var(--color-border)] pt-6 mt-auto flex flex-col gap-4 text-left">
+                <Link 
+                  to="/admin/profile" 
+                  onClick={() => setIsMobileMenuOpen(false)}
+                  className="flex items-center gap-3"
+                >
+                  {adminUser?.profileImage ? (
+                    <img src={adminUser.profileImage} alt="Profile" className="w-9 h-9 rounded-full object-cover border border-[var(--color-border)]" />
+                  ) : (
+                    <div className="w-9 h-9 rounded-full bg-slate-100 text-slate-500 flex items-center justify-center border border-[var(--color-border)]">
+                      <FiUser size={16} />
+                    </div>
+                  )}
+                  <div>
+                    {adminUser?.username && <p className="text-xs font-bold text-[var(--color-black)] leading-tight">{adminUser.username}</p>}
+                  </div>
+                </Link>
+                
+                <button
+                  onClick={() => {
+                    setIsMobileMenuOpen(false);
+                    setShowLogoutConfirm(true);
+                  }}
+                  className="w-full flex items-center gap-2 px-3 py-2 text-xs font-bold text-[var(--color-primary)] hover:bg-[var(--color-sub-bg)] transition-colors border border-[var(--color-border)] rounded-[var(--radius-sm)] bg-transparent justify-center cursor-pointer"
+                >
+                  <FiLogOut size={14} />
+                  Logout
+                </button>
+              </div>
+            </motion.aside>
+          </>
+        )}
+      </AnimatePresence>
 
       {/* Logout Confirmation Modal */}
       {showLogoutConfirm && (
@@ -397,20 +418,22 @@ const AdminNavbar = () => {
           <motion.div
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
-            className="bg-[var(--color-main-bg)] border border-[var(--color-border)] rounded-[var(--radius-sm)] p-6 max-w-sm w-full shadow-2xl relative"
+            className="bg-[var(--color-main-bg)] border border-[var(--color-border)] rounded-[var(--radius-sm)] p-6 max-w-sm w-full shadow-2xl relative text-left"
           >
             <h3 className="text-lg font-bold text-[var(--color-black)] mb-2">Confirm Logout</h3>
             <p className="text-[var(--color-paragraph)] opacity-80 text-sm mb-6">Are you sure you want to log out of the admin panel?</p>
             <div className="flex gap-4">
               <button
                 onClick={() => setShowLogoutConfirm(false)}
-                className="flex-1 px-4 py-2.5 border border-[var(--color-border)] rounded-[var(--radius-sm)] text-[var(--color-paragraph)] hover:bg-[var(--color-sub-bg)] bg-transparent transition-colors font-medium cursor-pointer"
+                className="flex-1 px-4 py-2 border border-[var(--color-border)] rounded-[var(--radius-sm)] text-[var(--color-paragraph)] hover:bg-[var(--color-sub-bg)] bg-transparent transition-colors font-semibold cursor-pointer text-xs"
+                style={{ height: '34px' }}
               >
                 Cancel
               </button>
               <button
                 onClick={handleLogout}
-                className="flex-1 px-4 py-2.5 border-none rounded-[var(--radius-sm)] bg-[var(--color-primary)] hover:bg-blue-600 text-white transition-colors font-semibold cursor-pointer shadow-md shadow-blue-500/10"
+                className="flex-1 px-4 py-2 border-none rounded-[var(--radius-sm)] bg-[var(--color-primary)] hover:bg-[var(--color-primary-hover)] text-white transition-colors font-semibold cursor-pointer text-xs"
+                style={{ height: '34px' }}
               >
                 Logout
               </button>

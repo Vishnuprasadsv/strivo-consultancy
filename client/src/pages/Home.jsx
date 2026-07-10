@@ -489,7 +489,7 @@ function Home() {
             .filter(story => story.name && story.clientStories)
             .map(story => ({
               name: story.name,
-              role: story.position || "Client",
+              role: story.position ? story.position.replace(',', ' - ') : "Client",
               image: story.imageUrl,
               review: story.clientStories
             }));

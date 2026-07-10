@@ -85,6 +85,10 @@ export const deleteReviewAPI = async (id) => {
   return await commonAPI("DELETE", `${SERVER_URL}/api/reviews/${id}`, "", "");
 };
 
+export const updateReviewStatusAPI = async (id, statusData) => {
+  return await commonAPI("PUT", `${SERVER_URL}/api/reviews/${id}/status`, statusData, "");
+};
+
 // article and insights 
 
 export const createArticleAPI = async (articleData) => {

@@ -166,3 +166,23 @@ export const sendReply = async (req, res) => {
         });
     }
 };
+
+export const deleteInquiry = async (req, res) => {
+    try {
+        const inquiry = await Inquiry.findByIdAndDelete(req.params.id);
+        if (!inquiry) {
+            return res.status(404).json({
+                message: "Inquiry not found"
+            });
+        }
+        res.json({
+            success: true,
+            message: "Inquiry deleted successfully"
+        });
+    } catch (err) {
+        console.log(err);
+        res.status(500).json({
+            message: err.message
+        });
+    }
+};

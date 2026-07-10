@@ -83,7 +83,7 @@ const Navbar = () => {
               py-2
               text-sm xl:text-base
               font-bold
-              text-[var(--color-primary)]
+              text-[var(--color-black)]
               transition-all
             "
           >
@@ -162,7 +162,7 @@ const Navbar = () => {
                       onClick={() => {
                         setIsMobileMenuOpen(false);
                       }}
-                      className={`block px-4 py-3 rounded-lg transition-colors font-bold text-navlink ${activeTab === link.name ? 'bg-[var(--color-sub-bg)]' : 'hover:bg-gray-900 hover:text-[var(--color-primary)]'
+                      className={`block px-4 py-3 rounded-lg transition-all font-bold text-[var(--color-black)] ${activeTab === link.name ? 'bg-[var(--color-sub-bg)] text-[var(--color-primary)]' : 'hover:bg-[var(--color-sub-bg)] hover:text-[var(--color-primary)]'
                         }`}
                     >
                       {link.name}
@@ -174,7 +174,7 @@ const Navbar = () => {
                         e.preventDefault();
                         setIsMobileMenuOpen(false);
                       }}
-                      className={`block px-4 py-3 rounded-lg transition-colors font-bold text-navlink ${activeTab === link.name ? 'bg-gray-900' : 'hover:bg-gray-900 hover:text-[var(--color-primary)]'
+                      className={`block px-4 py-3 rounded-lg transition-all font-bold text-[var(--color-black)] ${activeTab === link.name ? 'bg-[var(--color-sub-bg)] text-[var(--color-primary)]' : 'hover:bg-[var(--color-sub-bg)] hover:text-[var(--color-primary)]'
                         }`}
                     >
                       {link.name}

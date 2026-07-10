@@ -32,6 +32,15 @@ const articleSchema = new mongoose.Schema(
       type: Boolean,
       default: true,
     },
+    publicationDate: {
+      type: Date,
+      default: Date.now,
+    },
+    status: {
+      type: String,
+      enum: ["Published", "Draft"],
+      default: "Published",
+    },
   },
   {
     // Automatically manage createdAt and updatedAt fields for our articles

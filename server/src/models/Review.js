@@ -30,6 +30,11 @@ const reviewSchema = new mongoose.Schema(
       trim: true,
       minlength: [20, "Review must be at least 20 characters long"],
     },
+    status: {
+      type: String,
+      enum: ["Pending", "Approved", "Rejected"],
+      default: "Pending",
+    },
   },
   {
     // Automatically creates 'createdAt' and 'updatedAt' fields in our database records

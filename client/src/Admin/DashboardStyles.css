@@ -1,0 +1,71 @@
+/* Dashboard Styles conforming to guidelines */
+
+.dashboard-title {
+  font-size: 32px !important;
+  font-weight: 700 !important;
+  color: var(--color-primary) !important;
+}
+
+.dashboard-subtitle {
+  font-size: 14px !important;
+  font-weight: 400 !important;
+  color: var(--color-paragraph) !important;
+}
+
+.section-heading {
+  font-size: 24px !important;
+  font-weight: 600 !important;
+  color: var(--color-primary) !important;
+}
+
+.card-title-custom {
+  font-size: 14px !important;
+  font-weight: 500 !important;
+  color: var(--color-paragraph) !important;
+}
+
+.stats-number {
+  font-size: 24px !important;
+  font-weight: 700 !important;
+  color: var(--color-primary) !important;
+}
+
+.table-header-cell {
+  font-size: 14px !important;
+  font-weight: 600 !important;
+  color: var(--color-paragraph) !important;
+}
+
+.table-data-cell {
+  font-size: 14px !important;
+  font-weight: 400 !important;
+  color: var(--color-paragraph) !important;
+}
+
+.small-description {
+  font-size: 13px !important;
+  font-weight: 400 !important;
+  color: var(--color-paragraph);
+}
+
+.btn-text-custom {
+  font-size: 12px !important;
+  font-weight: 400 !important;
+  color: #ffffff !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  height: 28px !important;
+  width: 75px !important;
+}
+
+.status-badge-custom {
+  font-size: 12px !important;
+  font-weight: 500 !important;
+}
+
+.heading-link {
+  font-size: 14px !important;
+  font-weight: 500 !important;
+  color: var(--color-heading) !important;
+}

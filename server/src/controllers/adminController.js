@@ -17,7 +17,13 @@ export const loginAdmin = async (req, res) => {
   const { username, password } = req.body;
 
   try {
-    const admin = await Admin.findOne({ username });
+    // Perform a case-insensitive search matching either username or email
+    const admin = await Admin.findOne({
+      $or: [
+        { username: { $regex: new RegExp(`^${username}$`, 'i') } },
+        { email: { $regex: new RegExp(`^${username}$`, 'i') } }
+      ]
+    });
 
     if (admin && (await admin.matchPassword(password))) {
       res.json({
@@ -269,5 +275,22 @@ export const uploadProfileImage = async (req, res) => {
     });
   } catch (error) {
     res.status(500).json({ message: 'Server error', error: error.message });
+  }
+};
+
+// @desc    Verify current password
+// @route   POST /api/admin/verify-password
+// @access  Public
+export const verifyPassword = async (req, res) => {
+  const { username, password } = req.body;
+  try {
+    const admin = await Admin.findOne({ username });
+    if (admin && (await admin.matchPassword(password))) {
+      res.json({ success: true, message: 'Password matches' });
+    } else {
+      res.status(401).json({ success: false, message: 'Invalid current password' });
+    }
+  } catch (error) {
+    res.status(500).json({ success: false, message: 'Server error', error: error.message });
   }
 };

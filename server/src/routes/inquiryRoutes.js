@@ -5,7 +5,8 @@ import {
     getInquiries,
     updateInquiryStatus,
     sendReply,
-    getNewInquiries
+    getNewInquiries,
+    deleteInquiry
 } from "../controllers/inquiryController.js";
 
 const router = express.Router();
@@ -24,5 +25,7 @@ getNewInquiries
 router.put("/:id", updateInquiryStatus);
 
 router.post("/reply", sendReply);
+
+router.delete("/:id", deleteInquiry);
 
 export default router;

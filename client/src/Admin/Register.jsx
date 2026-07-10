@@ -34,6 +34,7 @@ const Register = () => {
   // Status states
   const [isLoading, setIsLoading] = useState(false);
   const [isAlreadyRegistered, setIsAlreadyRegistered] = useState(false);
+  const [showRequirements, setShowRequirements] = useState(false);
 
   const navigate = useNavigate();
 
@@ -64,15 +65,23 @@ const Register = () => {
       return;
     }
 
-    // Check if password and confirm password match
-    if (password !== confirmPassword) {
-      toast.error('Passwords do not match. Please verify.', { icon: null });
+    // Password validation criteria check
+    const minLength = password.length >= 8;
+    const hasUpper = /[A-Z]/.test(password);
+    const hasLower = /[a-z]/.test(password);
+    const hasNumber = /[0-9]/.test(password);
+    const hasSpecial = /[!@#$%^&*(),.?":{}|<>]/.test(password);
+
+    if (!(minLength && hasUpper && hasLower && hasNumber && hasSpecial)) {
+      setPassword('');
+      setConfirmPassword('');
+      toast.error('Password does not meet expectation: must be at least 8 characters, with one uppercase letter, one lowercase letter, one special character, and one number.', { icon: null });
       return;
     }
 
-    // Passwords should be secure (minimum 6 characters)
-    if (password.length < 6) {
-      toast.error('Password must be at least 6 characters long.', { icon: null });
+    // Check if password and confirm password match
+    if (password !== confirmPassword) {
+      toast.error('Passwords do not match. Please verify.', { icon: null });
       return;
     }
 
@@ -151,158 +160,152 @@ const Register = () => {
 
   // Regular registration form UI
   return (
-    <div className="min-h-screen flex items-center justify-center relative z-10 px-4 bg-sub">
+    <div className="min-h-screen flex items-center justify-center relative z-10 px-4 bg-sub pt-16">
       <motion.div
         initial={{ opacity: 0, y: 30 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6, ease: 'easeOut' }}
-        className="w-full max-w-md card p-8 relative overflow-hidden"
+        className="w-full max-w-md bg-white shadow-card border border-[var(--color-border)] rounded-[var(--radius-sm)] overflow-visible"
       >
-        {/* Logo container */}
-        <div className="flex flex-col items-center gap-4 mb-6">
-         <Logo className="h-10 text-[var(--color-primary)]" />
-        </div>
-
-        {/* Heading Section */}
-        <div className="text-center mb-8">
-          <h2
-            className="mb-2 block text-center tracking-wide"
-            style={{ fontSize: 'var(--text-card-heading)', fontWeight: 'var(--font-semibold)', color: 'var(--color-black)' }}
-          >
-            ADMIN REGISTER
+        {/* Header with primary BG color */}
+        <div className="bg-[var(--color-primary)] py-4 px-6 text-center rounded-t-[var(--radius-sm)]">
+          <h2 className="text-base font-bold text-white uppercase tracking-wider m-0">
+            Admin Register
           </h2>
-          <p
-            className="opacity-70 block text-center"
-            style={{ fontSize: 'var(--text-small)', fontWeight: 'var(--font-normal)', color: 'var(--color-paragraph)' }}
-          >
-            Create the primary administrator account
-          </p>
         </div>
 
-        {/* Form Fields */}
-        <form onSubmit={handleRegister} className="space-y-5">
-          
-          {/* Username Field */}
-          <div className="space-y-2">
-            <label
-              className="ml-1 block uppercase"
-              style={{ fontSize: 'var(--text-caption)', fontWeight: 'var(--font-medium)', color: 'var(--color-paragraph)' }}
-            >
-              Username
-            </label>
-            <input
-              type="text"
-              required
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
-              placeholder="Enter admin username"
-              className="input placeholder:text-[var(--color-paragraph)] placeholder:opacity-40 transition-all text-sm"
-              style={{ color: 'var(--color-paragraph)' }}
-            />
-          </div>
-
-          {/* Email Field */}
-          <div className="space-y-2">
-            <label
-              className="ml-1 block uppercase"
-              style={{ fontSize: 'var(--text-caption)', fontWeight: 'var(--font-medium)', color: 'var(--color-paragraph)' }}
-            >
-              Email Address
-            </label>
-            <input
-              type="email"
-              required
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              placeholder="admin@strivo.com"
-              className="input placeholder:text-[var(--color-paragraph)] placeholder:opacity-40 transition-all text-sm"
-              style={{ color: 'var(--color-paragraph)' }}
-            />
-          </div>
-
-          {/* Password Field */}
-          <div className="space-y-2">
-            <label
-              className="ml-1 block uppercase"
-              style={{ fontSize: 'var(--text-caption)', fontWeight: 'var(--font-medium)', color: 'var(--color-paragraph)' }}
-            >
-              Password
-            </label>
-            <div className="relative">
+        {/* Body with white BG */}
+        <div className="p-6">
+          <form onSubmit={handleRegister} className="space-y-4">
+            {/* Username Field */}
+            <div className="space-y-1">
+              <label className="block text-[11px] font-bold text-[var(--color-black)] uppercase tracking-wider text-left">
+                Username
+              </label>
               <input
-                type={showPassword ? 'text' : 'password'}
+                type="text"
                 required
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                placeholder="••••••••"
-                className="input pr-12 placeholder:text-[var(--color-paragraph)] placeholder:opacity-40 transition-all text-sm"
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
+                placeholder="Enter admin username"
+                className="input py-2 px-3 placeholder:text-[var(--color-paragraph)] placeholder:opacity-40 transition-all text-sm h-10 w-full bg-[var(--color-sub-bg)] border border-[var(--color-border)] rounded-[var(--radius-sm)]"
                 style={{ color: 'var(--color-paragraph)' }}
               />
-              <button
-                type="button"
-                onClick={() => setShowPassword(!showPassword)}
-                className="absolute right-3 top-1/2 -translate-y-1/2 opacity-50 hover:opacity-85 transition-opacity cursor-pointer bg-transparent border-none p-0 flex items-center justify-center"
-                style={{ color: 'var(--color-paragraph)' }}
-              >
-                {showPassword ? <VisibilityOff fontSize="small" /> : <Visibility fontSize="small" />}
-              </button>
             </div>
-          </div>
 
-          {/* Confirm Password Field */}
-          <div className="space-y-2">
-            <label
-              className="ml-1 block uppercase"
-              style={{ fontSize: 'var(--text-caption)', fontWeight: 'var(--font-medium)', color: 'var(--color-paragraph)' }}
-            >
-              Confirm Password
-            </label>
-            <div className="relative">
+            {/* Email Field */}
+            <div className="space-y-1">
+              <label className="block text-[11px] font-bold text-[var(--color-black)] uppercase tracking-wider text-left">
+                Email Address
+              </label>
               <input
-                type={showConfirmPassword ? 'text' : 'password'}
+                type="email"
                 required
-                value={confirmPassword}
-                onChange={(e) => setConfirmPassword(e.target.value)}
-                placeholder="••••••••"
-                className="input pr-12 placeholder:text-[var(--color-paragraph)] placeholder:opacity-40 transition-all text-sm"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder="admin@strivo.com"
+                className="input py-2 px-3 placeholder:text-[var(--color-paragraph)] placeholder:opacity-40 transition-all text-sm h-10 w-full bg-[var(--color-sub-bg)] border border-[var(--color-border)] rounded-[var(--radius-sm)]"
                 style={{ color: 'var(--color-paragraph)' }}
               />
-              <button
-                type="button"
-                onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                className="absolute right-3 top-1/2 -translate-y-1/2 opacity-50 hover:opacity-85 transition-opacity cursor-pointer bg-transparent border-none p-0 flex items-center justify-center"
-                style={{ color: 'var(--color-paragraph)' }}
-              >
-                {showConfirmPassword ? <VisibilityOff fontSize="small" /> : <Visibility fontSize="small" />}
-              </button>
             </div>
+
+            {/* Password Field */}
+            <div className="space-y-1">
+              <label className="block text-[11px] font-bold text-[var(--color-black)] uppercase tracking-wider text-left">
+                Password
+              </label>
+              <div className="relative">
+                <input
+                  type={showPassword ? 'text' : 'password'}
+                  required
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  onFocus={() => setShowRequirements(true)}
+                  onBlur={() => setShowRequirements(false)}
+                  placeholder="••••••••"
+                  className="input py-2 px-3 pr-10 placeholder:text-[var(--color-paragraph)] placeholder:opacity-40 transition-all text-sm h-10 w-full bg-[var(--color-sub-bg)] border border-[var(--color-border)] rounded-[var(--radius-sm)]"
+                  style={{ color: 'var(--color-paragraph)' }}
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 opacity-50 hover:opacity-85 transition-opacity cursor-pointer bg-transparent border-none p-0 flex items-center justify-center"
+                  style={{ color: 'var(--color-paragraph)' }}
+                >
+                  {showPassword ? <VisibilityOff fontSize="small" /> : <Visibility fontSize="small" />}
+                </button>
+
+                {/* Floating absolutely positioned requirements tooltip */}
+                {showRequirements && (
+                  <div className="absolute z-30 left-0 right-0 md:left-full md:-top-6 md:ml-4 mt-2 md:mt-0 w-full md:w-64 bg-white border border-[var(--color-border)] rounded-[var(--radius-sm)] p-4 shadow-xl text-left text-black">
+                    <span className="text-[11px] font-bold uppercase tracking-wider block mb-1">
+                      Password Requirements:
+                    </span>
+                    <ul className="list-disc pl-4 text-xs flex flex-col gap-1 leading-relaxed text-[var(--color-paragraph)]">
+                      <li>Must be at least <strong>8 characters</strong> long</li>
+                      <li>Must contain at least <strong>one uppercase letter</strong></li>
+                      <li>Must contain at least <strong>one lowercase letter</strong></li>
+                      <li>Must contain at least <strong>one number</strong></li>
+                      <li>Must contain at least <strong>one special character</strong></li>
+                    </ul>
+                  </div>
+                )}
+              </div>
+            </div>
+
+            {/* Confirm Password Field */}
+            <div className="space-y-1">
+              <label className="block text-[11px] font-bold text-[var(--color-black)] uppercase tracking-wider text-left">
+                Confirm Password
+              </label>
+              <div className="relative">
+                <input
+                  type={showConfirmPassword ? 'text' : 'password'}
+                  required
+                  value={confirmPassword}
+                  onChange={(e) => setConfirmPassword(e.target.value)}
+                  placeholder="••••••••"
+                  className="input py-2 px-3 pr-10 placeholder:text-[var(--color-paragraph)] placeholder:opacity-40 transition-all text-sm h-10 w-full bg-[var(--color-sub-bg)] border border-[var(--color-border)] rounded-[var(--radius-sm)]"
+                  style={{ color: 'var(--color-paragraph)' }}
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 opacity-50 hover:opacity-85 transition-opacity cursor-pointer bg-transparent border-none p-0 flex items-center justify-center"
+                  style={{ color: 'var(--color-paragraph)' }}
+                >
+                  {showConfirmPassword ? <VisibilityOff fontSize="small" /> : <Visibility fontSize="small" />}
+                </button>
+              </div>
+            </div>
+
+            {/* Register Button */}
+            <div className="pt-2">
+              <motion.button
+                whileHover={{ scale: 1.01 }}
+                whileTap={{ scale: 0.99 }}
+                disabled={isLoading}
+                type="submit"
+                className="btn w-full flex items-center justify-center gap-2 cursor-pointer h-10 text-xs font-bold uppercase tracking-wider"
+              >
+                {isLoading ? (
+                  <span className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin"></span>
+                ) : (
+                  'Register Admin'
+                )}
+              </motion.button>
+            </div>
+          </form>
+
+          {/* Footer Redirect to Login */}
+          <div className="text-center mt-4">
+            <Link
+              to="/admin/login"
+              className="hover:underline transition-colors block text-center text-xs font-bold uppercase tracking-wider text-[var(--color-primary)]"
+            >
+              Already have an account? Sign In
+            </Link>
           </div>
-
-          {/* Register Button */}
-          <motion.button
-            whileHover={{ scale: 1.01 }}
-            whileTap={{ scale: 0.99 }}
-            disabled={isLoading}
-            type="submit"
-            className="btn w-full flex items-center justify-center gap-2 mt-6 cursor-pointer"
-          >
-            {isLoading ? (
-              <span className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin"></span>
-            ) : (
-              'Register Admin'
-            )}
-          </motion.button>
-        </form>
-
-        {/* Footer Redirect to Login */}
-        <div className="text-center mt-6">
-          <Link
-            to="/admin/login"
-            className="hover:underline transition-colors block text-center"
-            style={{ fontSize: 'var(--text-small)', fontWeight: 'var(--font-medium)', color: 'var(--color-primary)' }}
-          >
-            Already have an account? Sign In
-          </Link>
         </div>
       </motion.div>
     </div>
