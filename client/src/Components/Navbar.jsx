@@ -78,14 +78,14 @@ const Navbar = () => {
         >
           <Link
             to={link.path}
-            className="
+            className={`
               px-2 xl:px-3
               py-2
               text-sm xl:text-base
-              font-bold
-              text-[var(--color-black)]
+              font-[var(--font-bold)]
               transition-all
-            "
+              ${activeTab === link.name ? "text-[var(--color-primary-hover)]" : "text-[var(--color-primary)]"}
+            `}
           >
             {link.name}
           </Link>
@@ -162,7 +162,7 @@ const Navbar = () => {
                       onClick={() => {
                         setIsMobileMenuOpen(false);
                       }}
-                      className={`block px-4 py-3 rounded-lg transition-all font-bold text-[var(--color-black)] ${activeTab === link.name ? 'bg-[var(--color-sub-bg)] text-[var(--color-primary)]' : 'hover:bg-[var(--color-sub-bg)] hover:text-[var(--color-primary)]'
+                      className={`block px-4 py-3 rounded-lg transition-colors font-bold text-navlink ${activeTab === link.name ? 'bg-[var(--color-sub-bg)]' : 'hover:bg-gray-900 hover:text-[var(--color-primary)]'
                         }`}
                     >
                       {link.name}
@@ -174,7 +174,7 @@ const Navbar = () => {
                         e.preventDefault();
                         setIsMobileMenuOpen(false);
                       }}
-                      className={`block px-4 py-3 rounded-lg transition-all font-bold text-[var(--color-black)] ${activeTab === link.name ? 'bg-[var(--color-sub-bg)] text-[var(--color-primary)]' : 'hover:bg-[var(--color-sub-bg)] hover:text-[var(--color-primary)]'
+                      className={`block px-4 py-3 rounded-lg transition-colors font-bold text-navlink ${activeTab === link.name ? 'bg-gray-900' : 'hover:bg-gray-900 hover:text-[var(--color-primary)]'
                         }`}
                     >
                       {link.name}

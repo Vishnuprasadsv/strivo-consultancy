@@ -162,7 +162,7 @@ const Insight = () => {
   const featuredArticle = articles.length > 0 ? (articles.find(a => a.id === 1) || articles[0]) : null;
 
   return (
-    <div className="bg-sub min-h-screen font-sans">
+    <div className="bg-main min-h-screen font-sans">
       <motion.section
         id="hero-section"
         initial="hidden"
@@ -170,10 +170,10 @@ const Insight = () => {
         variants={fadeUpVariants}
         className="w-full h-[500px] bg-primary py-20 md:py-28"
       >
-        <div className="max-w-7xl mx-auto px-6 md:px-12">
-          <motion.div variants={containerVariants} className="mx-auto text-center max-w-7xl" style={{filter: "drop-shadow(0px 8px 16px rgba(0, 0, 0, 0.6))"}}>
+        <div className="max-w-7xl mx-auto px-6 md:px-[90px] lg:px-[90px]">
+          <motion.div variants={containerVariants} className="mx-auto text-center max-w-7xl">
             <motion.div variants={cardVariants}>
-              <h1 className="main-heading text-white text-4xl sm:text-5xl md:text-6xl lg:text-7xl leading-tight mb-6">
+              <h1 className="main-heading text-white text-4xl sm:text-5xl md:text-6xl leading-tight mb-6">
                 Precision Strategy for the Modern Enterprise.
               </h1>
             </motion.div>
@@ -186,7 +186,7 @@ const Insight = () => {
         </div>
       </motion.section>
 
-      <div className="bg-sub max-w-7xl mx-auto px-6 md:px-12 py-16 md:py-24 space-y-24">
+      <div className="bg-main max-w-7xl mx-auto px-6 md:px-[180px] lg:px-[60px] py-16 md:py-24 space-y-24">
 
         {/* Section 2: Featured Article */}
         {featuredArticle && (
@@ -195,7 +195,7 @@ const Insight = () => {
             whileInView="visible"
             viewport={{ once: true, amount: 0.2 }}
             variants={fadeUpVariants}
-            className="bg-main grid grid-cols-1 lg:grid-cols-2 gap-12 items-center  rounded-xl overflow-hidden "
+            className="bg-sub grid grid-cols-1 lg:grid-cols-2 gap-12 items-center  rounded-[var(--radius-sm)] overflow-hidden "
           >
             <div className="p-10 flex flex-col justify-center h-full order-2 lg:order-1">
               <span className="pre-heading inline-block px-3 py-1 bg-[#1F2937] text-gray-300 text-xs  uppercase tracking-wider rounded-md mb-6 w-max">
@@ -226,7 +226,7 @@ const Insight = () => {
     h-72 md:h-96 lg:h-full
     min-h-[280px] lg:min-h-[400px]
     overflow-hidden
-    rounded-t-xl lg:rounded-t-none lg:rounded-r-xl
+    rounded-t-xl lg:rounded-t-none lg:rounded-r-[var(--radius-sm)]
   "
             >
               <img
@@ -243,8 +243,8 @@ const Insight = () => {
     absolute inset-y-0 left-0
     w-40
     bg-gradient-to-r
-    from-[var(--color-main-bg)]
-    via-[var(--color-main-bg)]/70
+    from-[var(--color-sub-bg)]
+    via-[var(--color-sub-bg)]/45
     to-transparent
     z-10
   "
@@ -261,7 +261,7 @@ const Insight = () => {
           whileInView="visible"
           viewport={{ once: true, amount: 0.1 }}
           variants={fadeUpVariants}
-          className="bg-sub rounded-2xl p-6 md:p-8"
+          className="bg-main rounded-2xl p-6 md:p-8"
         >
           <div className="flex flex-col md:flex-row md:items-end justify-between mb-8 gap-6">
             <h2 className="sub-heading ">All Articles</h2>
@@ -301,7 +301,7 @@ const Insight = () => {
                       animate="visible"
                       exit="exit"
                       key={article._id || article.id}
-                      className="group relative card border border-white-800/80 overflow-hidden bg-main backdrop-blur-md hover:border-white-500/50 hover:-translate-y-2 hover:shadow-[0_20px_40px_rgba(59,130,246,0.08)] transition-all duration-500 flex flex-col h-full shadow-md/30 cursor-pointer"
+                      className="group relative card p-0 border border-gray-300/80 overflow-hidden bg-sub rounded-[var(--radius-sm)] backdrop-blur-md hover:border-gray-500/50  flex flex-col h-full cursor-pointer"
                       onClick={() => navigate(`/article/${article._id || article.id}`)}
                     >
                       {/* Image Header with Container */}
@@ -315,7 +315,7 @@ const Insight = () => {
                           }}
                         />
                         <div className="absolute inset-0 bg-gradient-to-t from-[#0a0f1d] via-transparent to-transparent opacity-20 pointer-events-none" />
-                        <span className="absolute top-4 left-4 bg-blue-500/10 backdrop-blur-md border border-blue-500/20 text-blue-400 text-[10px] font-bold uppercase tracking-wider px-3 py-1 rounded-full shadow-lg z-10">
+                        <span className="absolute top-4 left-4 bg-white/50 backdrop-blur-md border border-blue-500/20 text-(--color-primary) text-[10px] font-bold uppercase tracking-wider px-3 py-1 rounded-full shadow-lg z-10">
                           {article.category}
                         </span>
                       </div>
@@ -323,7 +323,7 @@ const Insight = () => {
                       {/* Card Body */}
                       <div className="p-6 flex flex-col flex-grow">
                         {/* Truncated Title (2 lines max) */}
-                        <h3 className="text-xl font-bold text-(--color-primary) mb-3 group-hover:text-blue-400 transition-colors duration-300 leading-snug line-clamp-2">
+                        <h3 className="text-xl font-bold text-(--color-primary) mb-3 group-hover:text-(--color-primary-hover) transition-colors duration-300 leading-snug line-clamp-2">
                           {article.title}
                         </h3>
 
@@ -443,7 +443,7 @@ transition"
           whileInView="visible"
           viewport={{ once: true, amount: 0.2 }}
           variants={fadeUpVariants}
-          className="bg-main rounded-[--radius-sm] p-8 md:p-12 flex flex-col lg:flex-row items-center justify-between gap-8"
+          className="bg-sub rounded-[--radius-sm] p-8 md:p-12 flex flex-col lg:flex-row items-center justify-between gap-8"
         >
           <div className="max-w-xl">
             <h3 className="text-2xl sub-heading mb-2">Stay Updated With Our Latest Insights</h3>
@@ -467,7 +467,7 @@ transition"
               value={newsletterEmail}
               onChange={(e) => setNewsletterEmail(e.target.value)}
               placeholder="Enter your work email"
-              className=" bg-sub input  text-black placeholder-black/60 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500 w-full md:w-72"
+              className=" bg-main input  text-black placeholder-black/60 px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 w-full md:w-72"
             />
             <button
               type="submit"

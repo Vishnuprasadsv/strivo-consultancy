@@ -120,7 +120,7 @@ function Aboutus() {
         }}
       >
         <Box
-          className="max-w-[110rem] mx-auto px-6 md:px-42"
+          className="max-w-[110rem] mx-auto px-6 md:px-[180px] lg:px-[180px]"
           sx={{ width: "100%" }}
         >
           <Box
@@ -148,37 +148,31 @@ function Aboutus() {
                 transition={{ duration: 0.8 }}
               >
                 <Box sx={{ textAlign: "left", width: "100%", maxWidth: "680px" }}>
-                  <Typography
-                    component="h1"
-                    sx={{
-                      fontFamily: "var(--font-primary)",
-                      fontSize: { xs: "38px", md: "var(--text-main-heading)" },
-                      fontWeight: "var(--font-normal)",
-                      lineHeight: 1.2,
-                      letterSpacing: "-0.5px",
-                      color: "var(--color-white)",
-                      mb: 3,
-                    }}
+                  <Box
+                     component='h1'
+                  className='main-heading text-white'
+                  sx={{
+                    fontFamily: "var(--font-primary)",
+                    letterSpacing: "-0.5px",
+                    mb: 2,
+                    textAlign: "left",
+                  }}
                   >
                     Strategic Thinking
                     <br />
                     Meaningful Impact
-                  </Typography>
+                  </Box>
 
-                  <Typography
-                    component="p"
-                    sx={{
-                      fontSize: { xs: "1rem", md: "1.1rem" },
-                      color: "rgba(255, 255, 255, 0.85)",
-                      lineHeight: 1.7,
-                      maxWidth: "680px",
-                      textAlign: "justify",
-                      textJustify: "inter-word",
-                      hyphens: "auto",
-                    }}
+                  <Box
+                  component="p"
+                  className="main-paragraph"
+                  sx={{
+                    maxWidth: "700px",
+                    mb: 3,
+                  }}
                   >
                     We are a passionate team of advisors who believe in the power of true collaboration. By working closely with your teams, we combine deep strategy with real-world execution to build lasting success together.
-                  </Typography>
+                  </Box>
                 </Box>
               </motion.div>
             </Box>
@@ -204,9 +198,9 @@ function Aboutus() {
                   src={aboutHeroImg}
                   alt="Team Collaboration Illustration"
                   sx={{
-                    width: "100%",
+                    width: { xs: "100%", lg: "85%" },
                     height: "auto",
-                    maxHeight: "380px",
+                    maxHeight: { xs: "380px", lg: "300px" },
                     objectFit: "contain",
                     objectPosition: { xs: "center", lg: "right" },
                     display: "block",
@@ -228,7 +222,7 @@ function Aboutus() {
           alignItems: "center",
         }}
       >
-        <Box className="max-w-[110rem] mx-auto px-6 md:px-42" sx={{ width: "100%" }}>
+        <Box className="max-w-[110rem] mx-auto px-6 md:px-[180px] lg:px-[180px]" sx={{ width: "100%" }}>
           <Box
             sx={{
               display: "flex",
@@ -341,7 +335,7 @@ function Aboutus() {
           borderBottom: "1px solid var(--color-border)",
         }}
       >
-        <Box className="max-w-[110rem] mx-auto px-6 md:px-42" sx={{ width: "100%" }}>
+        <Box className="max-w-[110rem] mx-auto px-6 md:px-[180px] lg:px-[180px]" sx={{ width: "100%" }}>
           <Box
             sx={{
               display: "flex",
@@ -372,7 +366,6 @@ function Aboutus() {
                   mb: 2,
                   display: "block",
                   textAlign: "left",
-                  color: "var(--color-black)",
                 }}
               >
                 Who We Are
@@ -694,7 +687,7 @@ function Aboutus() {
           background: "var(--color-main-bg)",
         }}
       >
-        <Box className="max-w-[110rem] mx-auto px-6 md:px-42">
+        <Box className="max-w-[110rem] mx-auto px-6 md:px-[180px] lg:px-[180px]">
           {/* Heading */}
           <Box sx={{ textAlign: "center", mb: 6 }}>
             <Box
@@ -704,7 +697,6 @@ function Aboutus() {
                 mb: 1.5,
                 display: "block",
                 textAlign: "center",
-                color: "var(--color-black)",
               }}
             >
               What Drives Us
@@ -793,7 +785,7 @@ function Aboutus() {
 
                 <Typography
                   sx={{
-                    color: "var(--color-paragraph)",
+                    color: "var(--color-primary)",
                     fontWeight: 700,
                     fontSize: {
                       xs: "1.1rem",
@@ -806,13 +798,13 @@ function Aboutus() {
                 </Typography>
 
                 <Typography
+                component='p'
+                className='paragraph'
                   sx={{
-                    color: "var(--color-paragraph)",
                     fontSize: {
                       xs: "0.85rem",
                       md: "0.92rem",
                     },
-                    lineHeight: 1.7,
                     maxWidth: "90%",
                     textAlign: "justify",
                     textJustify: "inter-word",
@@ -901,7 +893,7 @@ function Aboutus() {
 
                 <Typography
                   sx={{
-                    color: "var(--color-paragraph)",
+                    color: "var(--color-primary)",
                     fontWeight: 700,
                     fontSize: {
                       xs: "1.1rem",
@@ -914,8 +906,9 @@ function Aboutus() {
                 </Typography>
 
                 <Typography
+                component='p'
+                className='paragraph'
                   sx={{
-                    color: "var(--color-paragraph)",
                     fontSize: {
                       xs: "0.85rem",
                       md: "0.92rem",
@@ -1020,7 +1013,7 @@ function Aboutus() {
 
                   <Typography
                     sx={{
-                      color: "var(--color-paragraph)",
+                      color: "var(--color-primary)",
                       fontWeight: 600,
                       fontSize: { xs: "0.95rem", md: "1.1rem" },
                       mb: 1,
@@ -1030,10 +1023,10 @@ function Aboutus() {
                   </Typography>
 
                   <Typography
+                  component='p'
+                  className='paragraph'
                     sx={{
-                      color: "var(--color-paragraph)",
                       fontSize: { xs: "0.8rem", md: "0.9rem" },
-                      lineHeight: 1.7,
                       textAlign: "justify",
                       textJustify: "inter-word",
                       hyphens: "auto",
@@ -1060,7 +1053,7 @@ function Aboutus() {
           borderTop: "1px solid var(--color-border)",
         }}
       >
-        <Box className="max-w-[110rem] mx-auto px-6 md:px-42">
+        <Box className="max-w-[110rem] mx-auto px-6 md:px-[180px] lg:px-[180px]">
           {/* Heading */}
           <Box textAlign="center" mb={5}>
             <Box
@@ -1185,10 +1178,10 @@ function Aboutus() {
                 </Typography>
 
                 <Typography
+                component='p'
+                className='paragraph'
                   sx={{
-                    color: "var(--color-paragraph)",
                     fontSize: { xs: "11px", sm: "13px" },
-                    lineHeight: 1.7,
                     textAlign: "justify",
                     textJustify: "inter-word",
                     hyphens: "auto",
@@ -1219,7 +1212,7 @@ function Aboutus() {
           borderTop: "1px solid var(--color-border)",
         }}
       >
-        <Box className="max-w-[110rem] mx-auto px-6 md:px-42">
+        <Box className="max-w-[110rem] mx-auto px-6 md:px-[180px] lg:px-[180px]">
           {/* Header */}
           <Box sx={{ textAlign: "center", mb: 8 }}>
             <Box

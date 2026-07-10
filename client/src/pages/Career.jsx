@@ -383,48 +383,43 @@ function Career() {
                   }}
                 >
                   <Typography
+                  className='pre-heading'
                     sx={{
                       color: "var(--color-white)",
-                      letterSpacing: "3px",
-                      fontWeight: 600,
+                      letterSpacing: "1px",
+                      fontWeight: 700,
                       textTransform: "uppercase",
-                      fontSize: "var(--text-small)",
                       mb: 2,
-                      opacity: 0.9,
                     }}
                   >
                     Careers At Strivo
                   </Typography>
 
-                  <Typography
-                    sx={{
-                      color: "var(--color-white)",
-                      fontWeight: "var(--font-semibold)",
-                      lineHeight: 1.2,
-                      mb: 3,
-                      fontSize: {
-                        xs: "1.8rem",
-                        md: "2.8rem",
-                      },
-                    }}
-                  >
+                  <Box
+                      component='h1'
+                      className='main-heading text-white'
+                      sx={{
+                      fontFamily: "var(--font-primary)",
+                      letterSpacing: "-0.5px",
+                      mb: 2,
+                      textAlign: "left",
+                      }}
+                      >
                     Build The Future With Us
-                  </Typography>
+                  </Box>
 
-                  <Typography
+                  <Box
+                  component='p'
+                  className='main-paragraph'
                     sx={{
-                      color: "var(--color-white)",
                       maxWidth: "580px",
                       mx: { xs: "auto", md: "0" },
-                      lineHeight: 1.6,
                       mb: 5,
-                      opacity: 0.85,
-                      fontSize: "var(--text-paragraph)",
                     }}
                   >
                     Join a team of innovators, consultants, and technology
                     experts solving complex challenges for businesses worldwide.
-                  </Typography>
+                  </Box>
 
                   <Box
                     sx={{
@@ -453,7 +448,6 @@ function Career() {
                           fontWeight: "var(--font-bold)",
                           textTransform: "none",
                           fontSize: "var(--text-small)",
-                          boxShadow: "var(--shadow-button)",
                           border: "1px solid transparent",
                           "&:hover": {
                             background: "var(--color-sub-bg)",
@@ -480,7 +474,8 @@ function Career() {
                           border: "1px solid rgba(255,255,255,.4)",
                           "&:hover": {
                             borderColor: "var(--color-white)",
-                            background: "rgba(255,255,255,.1)",
+                            color: "var(--color-primary)",
+                            background: "var(--color-white)",
                           },
                         }}
                       >
@@ -854,32 +849,22 @@ function Career() {
               mb: 2,
             }}
           >
-            <Typography
+            <Box
+            component='p'
+            className='pre-heading'
               sx={{
-                color: "var(--color-black)",
-                fontWeight: "var(--font-bold)",
-                fontSize: "13px",
-                letterSpacing: 2,
-                textTransform: "uppercase",
                 mb: 0.5,
               }}
             >
               Life At Strivo
-            </Typography>
+            </Box>
 
-            <Typography
-              sx={{
-                color: "var(--color-primary)",
-                fontWeight: "var(--font-semibold)",
-                lineHeight: 1.3,
-                fontSize: {
-                  xs: "1.8rem",
-                  md: "var(--text-sub-heading)",
-                },
-              }}
+            <Box
+            component='h2'
+            className='sub-heading'
             >
               Our Culture & Workspace
-            </Typography>
+            </Box>
           </Box>
 
           {/* Interactive Tabs Row */}
@@ -1014,32 +999,25 @@ function Career() {
               mb: 8,
             }}
           >
-            <Typography
+            <Box
+            component='p'
+            className='pre-heading'
               sx={{
-                color: "var(--color-black)",
-                fontWeight: 700,
-                letterSpacing: 4,
-                textTransform: "uppercase",
                 mb: 2,
               }}
             >
               Open Positions
-            </Typography>
+            </Box>
 
-            <Typography
+            <Box
+            component='p'
+            className='sub-heading'
               sx={{
-                color: "var(--color-primary)",
-                fontWeight: "var(--font-semibold)",
-                lineHeight: 1.3,
                 mb: 3,
-                fontSize: {
-                  xs: "1.8rem",
-                  md: "var(--text-sub-heading)",
-                },
               }}
             >
               Find Your Next Opportunity
-            </Typography>
+            </Box>
 
             <Typography
               sx={{
@@ -1713,11 +1691,10 @@ function Career() {
               <Box sx={{ width: "45px", height: "3px", backgroundColor: "var(--color-white)", mb: 2.5 }} />
 
               {/* Description */}
-              <Typography
+              <Box
+              component='p'
+              className='main-paragraph'
                 sx={{
-                  color: "rgba(255,255,255,0.7)",
-                  lineHeight: 1.8,
-                  fontSize: "0.95rem",
                   maxWidth: "480px",
                   mb: 3.5,
                   textAlign: "justify",
@@ -1728,7 +1705,7 @@ function Career() {
                 We are always looking for exceptional talent to join our team.
                 Send us your resume and we'll reach out when a relevant position
                 becomes available.
-              </Typography>
+              </Box>
 
               {/* CTA Button */}
               <Button
@@ -1762,9 +1739,10 @@ function Career() {
             {/* Right Side: Image */}
             <Box
               sx={{
-                flex: { xs: "1 1 100%", sm: "1 1 50%" },
+                flex: { xs: "none", sm: "1 1 50%" },
                 width: { xs: "100%", sm: "50%" },
-                display: "flex",
+                position: "relative",
+                minHeight: { xs: "300px", sm: "auto" },
               }}
             >
               <Box
@@ -1772,10 +1750,13 @@ function Career() {
                 src={perfectFitImg}
                 alt="Strivo Team"
                 sx={{
+                  position: "absolute",
+                  top: 0,
+                  left: 0,
                   width: "100%",
                   height: "100%",
-                  minHeight: { xs: "300px", sm: "100%" },
                   objectFit: "cover",
+                  objectPosition: "center",
                 }}
               />
             </Box>

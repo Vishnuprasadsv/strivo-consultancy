@@ -18,6 +18,7 @@
   /* Text Colors */
   --color-heading: #4764FF;
   --color-sub-heading: #4764FF;
+  --color-main-paragraph: #FFFFFF;
   --color-paragraph: #454545;
   --color-sub-paragraph: #E0E0E0;
   --color-navlink: #4764FF;
@@ -39,7 +40,7 @@
   /* Font Sizes */
   --text-main-heading: 54px;
   --text-sub-heading: 38px;
-  --text-paragraph: 18px;
+  --text-paragraph: 16px;
   --text-small: 14px;
   --text-caption: 12px;
 
@@ -155,19 +156,25 @@
     }
   }
 
+  .main-paragraph {
+    color : var(--color-main-paragraph);
+    font-weight: var(--font-normal);
+    font-size: var(--text-paragraph);
+    line-height: 1.5;
+  }
   .paragraph {
     font-size: var(--text-paragraph);
     color: var(--color-paragraph);
     font-weight: var(--font-normal);
-    line-height: 1.7;
+    line-height: 1.5;
   }
 
   .pre-heading {
     font-size: 18px;
-    font-weight: var(--font-normal);
-    color: var(--color-black);
+    font-weight: var(--font-semibold);
+    color: var(--color-primary);
     text-transform: uppercase;
-    letter-spacing: 1.3px;
+    letter-spacing: 1px;
     margin-bottom: 10px;
     display: inline-block;
   }

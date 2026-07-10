@@ -16,7 +16,6 @@ import CareerAdmin from './Admin/Admincareers';
 
 import ArticlesAdmin from './Admin/ArticlesAdmin';
 
-
 // Lazy load all pages for code splitting and performance optimization
 const Home = lazy(() => import('./pages/Home'));
 const Aboutus = lazy(() => import('./pages/About'));

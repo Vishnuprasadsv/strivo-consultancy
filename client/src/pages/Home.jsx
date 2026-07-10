@@ -529,6 +529,7 @@ function Home() {
           position: "relative",
           minHeight: "700px",
           py: { xs: 6, lg: 0 },
+          px: { xs: 2, lg: "160px" },
           display: "flex",
           alignItems: "center",
           overflow: "hidden",
@@ -585,7 +586,7 @@ function Home() {
             <Box
               sx={{
                 filter: "drop-shadow(0px 8px 16px rgba(0, 0, 0, 0.6))",
-                marginLeft: "110px"
+                marginLeft: "-6px"
               }}
             >
               <motion.div
@@ -619,11 +620,9 @@ function Home() {
               >
                 <Box
                   component="p"
-                  className="paragraph"
+                  className="main-paragraph"
                   sx={{
-                    maxWidth: "720px",
-                    color: "white",
-                    fontWeight: "medium",
+                    maxWidth: "700px",
                     mb: 3,
                   }}
                 >
@@ -749,6 +748,7 @@ function Home() {
         sx={{
           backgroundColor: "var(--color-main-bg)",
           py: { xs: 6, md: 8 },
+          px: { xs: 2, lg: "155px" },
         }}
       >
         {/* TRUSTED BY SECTION */}
@@ -777,12 +777,13 @@ function Home() {
                 Trusted by Industry Leaders
               </Box>
               <Typography
+                component={"p"}
+                className="paragraph"
                 sx={{
-                  color: "var(--color-paragraph)",
-                  fontSize: "1.1rem",
-                  maxWidth: "600px",
+                  // color: "var(--color-paragraph)",
+                  // fontSize: "1.1rem",
+                  // maxWidth: "600px",
                   mx: "auto",
-                  lineHeight: 1.6,
                 }}
               >
                 We collaborate with forward-thinking companies who share our vision for innovation and excellence.
@@ -829,7 +830,7 @@ function Home() {
                   <Typography
                     sx={{
                       fontWeight: 800,
-                      fontSize: "1.3rem",
+                      fontSize: "1.2rem",
                       letterSpacing: "0.5px",
                       color: "inherit",
                     }}
@@ -938,6 +939,7 @@ function Home() {
         sx={{
           backgroundColor: "var(--color-sub-bg)",
           py: { xs: 6, md: 8 },
+          px: { xs: 2, lg: "160px" },
         }}
       >
         <Container maxWidth="lg">
@@ -1086,7 +1088,7 @@ function Home() {
                     <Typography
                       sx={{
                         color: "var(--color-paragraph)",
-                        fontWeight: 700,
+                        fontWeight: 600,
                         mb: { xs: 1, md: 2 },
                         fontSize: "var(--text-paragraph)",
                       }}
@@ -1118,6 +1120,7 @@ function Home() {
         sx={{
           backgroundColor: "var(--color-main-bg)",
           py: { xs: 6, md: 8 },
+          px: { xs: 2, lg: "160px" },
           position: "relative",
           overflow: "hidden",
         }}
@@ -1370,6 +1373,7 @@ function Home() {
         sx={{
           backgroundColor: "var(--color-sub-bg)",
           py: { xs: 6, md: 8 },
+          px: { xs: 2, lg: "180px" },
           overflow: "hidden",
           position: "relative"
         }}
