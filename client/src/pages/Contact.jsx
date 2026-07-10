@@ -242,7 +242,7 @@ const Contact = () => {
       <div className="w-full flex-grow py-16 px-6 md:px-16 lg:px-[180px]">
         <div className="max-w-[1440px] mx-auto space-y-20">
           
-          {/* Section 2: Contact Info & Form - lg:items-stretch makes equal columns */}
+          {/* Section 2: Contact Info & Form */}
           <motion.section
             initial="hidden"
             whileInView="visible"
@@ -281,7 +281,7 @@ const Contact = () => {
                 </div>
               </div>
               
-              {/* Map scales dynamically to fill remaining grid box frame */}
+              {/* Map container */}
               <div className="bg-[var(--color-sub-bg)] rounded-[var(--radius-sm)] border border-gray-200 overflow-hidden min-h-[240px] flex-grow w-full">
                 <iframe
                   src="https://www.google.com/maps?q=Kochi,Kerala&output=embed"
@@ -337,22 +337,32 @@ const Contact = () => {
                       />
                       {errors.email && <span className="text-xs text-red-400 mt-0.5">{errors.email}</span>}
                     </div>
+                    
+                    {/* Integrated Unified Phone Textbox */}
                     <div className="flex flex-col gap-2">
                       <label className="paragraph text-sm text-black font-medium">Phone Number</label>
-                      <div className="flex items-center gap-2 w-full">
-                        <div className="relative w-[72px] shrink-0" ref={dropdownRef}>
+                      <div 
+                        className={`flex items-center w-full bg-white rounded-[var(--radius-sm)] border transition-colors focus-within:ring-2 ${
+                          errors.phone 
+                            ? "border-red-500 focus-within:ring-red-500/30" 
+                            : "border-gray-300 focus-within:ring-blue-500"
+                        }`}
+                      >
+                        {/* Country Code Dropdown Container (Minimized layout width) */}
+                        <div className="relative shrink-0" ref={dropdownRef}>
                           <button
                             type="button"
                             onClick={() => {
                               setIsDropdownOpen(!isDropdownOpen);
                               setSearchQuery("");
                             }}
-                            className="paragraph w-full flex items-center justify-between bg-white text-black rounded-[var(--radius-sm)] pl-3 pr-1.5 py-3 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors text-left text-sm"
+                            className="paragraph h-full flex items-center justify-between text-black pl-3 pr-1 py-3 bg-transparent focus:outline-none text-sm w-auto max-w-[64px]"
                           >
                             <span className="truncate">{formData.countryCode}</span>
                             <ExpandMoreIcon fontSize="small" className="text-gray-500 shrink-0 ml-0.5" />
                           </button>
 
+                          {/* Dropdown Options List */}
                           {isDropdownOpen && (
                             <div className="absolute left-0 mt-1 w-64 bg-white border border-gray-300 rounded-[var(--radius-sm)] shadow-xl z-50 overflow-hidden paragraph">
                               <div className="p-2 border-b border-gray-200 bg-white">
@@ -362,7 +372,7 @@ const Contact = () => {
                                   value={searchQuery}
                                   onChange={(e) => setSearchQuery(e.target.value)}
                                   className="w-full bg-white text-black text-xs rounded-[var(--radius-sm)] px-2 py-1.5 border border-gray-300 focus:outline-none focus:ring-1 focus:ring-blue-500"
-                                />
+                                operational />
                               </div>
                               <div className="max-h-48 overflow-y-auto">
                                 {filteredCountryCodes.length > 0 ? (
@@ -387,13 +397,15 @@ const Contact = () => {
                             </div>
                           )}
                         </div>
+
+                        {/* Phone Number Input Field (Expands to occupy full remainder) */}
                         <input
                           type="tel"
                           name="phone"
                           value={formData.phone}
                           onChange={handleChange}
                           placeholder="(555) 000-0000"
-                          className={`paragraph min-w-0 flex-1 bg-white text-black placeholder-gray-500 rounded-[var(--radius-sm)] px-4 py-3 border focus:outline-none focus:ring-2 transition-colors ${errors.phone ? "border-red-500 focus:ring-red-500/30" : "border-gray-300 focus:ring-blue-500"}`}
+                          className="paragraph min-w-0 flex-1 bg-transparent text-black placeholder-gray-500 pl-2 pr-4 py-3 focus:outline-none"
                         />
                       </div>
                       {errors.phone && <span className="text-xs text-red-400 mt-0.5">{errors.phone}</span>}
