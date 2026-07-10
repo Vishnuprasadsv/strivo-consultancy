@@ -83,7 +83,7 @@ const Services = () => {
           initial="hidden"
           animate="visible"
           variants={fadeUpVariants}
-          className="max-w-[110rem] w-full mx-auto px-8 py-16"
+          className="max-w-[110rem] w-full mx-auto px-8 md:px-[180px] lg:px-[180px] py-16"
           style={{
             filter: "drop-shadow(0px 8px 16px rgba(0, 0, 0, 0.6))"
           }}
@@ -110,7 +110,7 @@ const Services = () => {
               <img
                 src={heroImage}
                 alt="Services"
-                className="w-full h-[400px] object-cover rounded-[3px]"
+                className="w-full h-[300px] lg:h-[320px] object-cover rounded-[3px]"
               />
             </div>
           </div>
@@ -124,7 +124,7 @@ const Services = () => {
           whileInView="visible"
           viewport={{ once: true }}
           variants={fadeUpVariants}
-          className="max-w-7xl mx-auto px-6 "
+          className="max-w-7xl mx-auto px-6 md:px-[50px] lg:px-[50px]"
         >
           <div className="text-center max-w-3xl mx-auto mb-14">
             <h2 className="sub-heading mb-4">
@@ -252,7 +252,7 @@ const Services = () => {
 
       {/* Detailed Service Sections */}
       <div className="h-100vh w-100vw bg-sub-bg">
-        <section className="max-w-[89%] mx-auto px-6 pt-16 pb-16">
+        <section className="max-w-[89%] mx-auto px-6 md:px-[90px] lg:px-[90px] pt-16 pb-16">
 
           {/* Section Heading & Subheading */}
           <div className="mb-12 text-center">

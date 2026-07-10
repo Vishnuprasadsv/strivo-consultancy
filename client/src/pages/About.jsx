@@ -120,7 +120,7 @@ function Aboutus() {
         }}
       >
         <Box
-          className="max-w-[110rem] mx-auto px-6 md:px-42"
+          className="max-w-[110rem] mx-auto px-6 md:px-[180px] lg:px-[180px]"
           sx={{ width: "100%" }}
         >
           <Box
@@ -198,9 +198,9 @@ function Aboutus() {
                   src={aboutHeroImg}
                   alt="Team Collaboration Illustration"
                   sx={{
-                    width: "100%",
+                    width: { xs: "100%", lg: "85%" },
                     height: "auto",
-                    maxHeight: "380px",
+                    maxHeight: { xs: "380px", lg: "300px" },
                     objectFit: "contain",
                     objectPosition: { xs: "center", lg: "right" },
                     display: "block",
@@ -222,7 +222,7 @@ function Aboutus() {
           alignItems: "center",
         }}
       >
-        <Box className="max-w-[110rem] mx-auto px-6 md:px-42" sx={{ width: "100%" }}>
+        <Box className="max-w-[110rem] mx-auto px-6 md:px-[180px] lg:px-[180px]" sx={{ width: "100%" }}>
           <Box
             sx={{
               display: "flex",
@@ -335,7 +335,7 @@ function Aboutus() {
           borderBottom: "1px solid var(--color-border)",
         }}
       >
-        <Box className="max-w-[110rem] mx-auto px-6 md:px-42" sx={{ width: "100%" }}>
+        <Box className="max-w-[110rem] mx-auto px-6 md:px-[180px] lg:px-[180px]" sx={{ width: "100%" }}>
           <Box
             sx={{
               display: "flex",
@@ -687,7 +687,7 @@ function Aboutus() {
           background: "var(--color-main-bg)",
         }}
       >
-        <Box className="max-w-[110rem] mx-auto px-6 md:px-42">
+        <Box className="max-w-[110rem] mx-auto px-6 md:px-[180px] lg:px-[180px]">
           {/* Heading */}
           <Box sx={{ textAlign: "center", mb: 6 }}>
             <Box
@@ -1053,7 +1053,7 @@ function Aboutus() {
           borderTop: "1px solid var(--color-border)",
         }}
       >
-        <Box className="max-w-[110rem] mx-auto px-6 md:px-42">
+        <Box className="max-w-[110rem] mx-auto px-6 md:px-[180px] lg:px-[180px]">
           {/* Heading */}
           <Box textAlign="center" mb={5}>
             <Box
@@ -1212,7 +1212,7 @@ function Aboutus() {
           borderTop: "1px solid var(--color-border)",
         }}
       >
-        <Box className="max-w-[110rem] mx-auto px-6 md:px-42">
+        <Box className="max-w-[110rem] mx-auto px-6 md:px-[180px] lg:px-[180px]">
           {/* Header */}
           <Box sx={{ textAlign: "center", mb: 8 }}>
             <Box
