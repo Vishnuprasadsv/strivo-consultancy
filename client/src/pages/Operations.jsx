@@ -15,6 +15,7 @@ import {
   WorkspacePremium, 
   
 } from "@mui/icons-material";
+import precisionProcess from '../assets/precisionProcess.jpg'
 
 const fadeUpVariants = {
   hidden: { opacity: 0, y: 30 },
@@ -206,7 +207,7 @@ const Operations = () => {
         >
           <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
             <div className="order-2 md:order-1 relative w-full aspect-square md:aspect-auto md:h-[500px] rounded-2xl overflow-hidden flex items-center justify-center p-8">
-              <img alt="Operational efficiency workflow visualization" className="object-contain w-full h-full opacity-90 drop-shadow-[0_0_30px_rgba(37,99,235,0.2)]" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCm_KBVAgfaPgwoYpyM1P40sQ54CoO107p_1JBVcN4vjJdMGJBq_OJ5nrGankemaIDcoCQtDU-OQYRz4K6L1cFKNTHMIDjSSAhr04BDJmudBALrgEryjkZWV05ib5NvOx_s0BZHXyqVvl3fyRj_spL8WIA2oq31GJhSsvtWSmSlurtIzkTXn8PyFrD_MaOdwV6P_ERvAaHPqmwG5nE_wBgki0tuWKWCh5I5xqEx-6vggUmgnaF7w6KcXiW-omCJ2BZ7tmw-LPf5vQ" />
+              <img alt="Operational efficiency workflow visualization" className="object-contain w-full h-full opacity-90 drop-shadow-[0_0_30px_rgba(37,99,235,0.2)]" src={precisionProcess} />
             </div>
             <div className="order-1 md:order-2 space-y-8">
               <div className="flex items-center gap-3">
