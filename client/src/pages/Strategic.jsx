@@ -15,6 +15,7 @@ import {
   WorkspacePremium, 
   
 } from "@mui/icons-material";
+import sustainableGrowth from '../assets/sustainableGrowth.jpg'
 
 const fadeUpVariants = {
   hidden: { opacity: 0, y: 30 },
@@ -209,7 +210,7 @@ const Strategic = () => {
         >
           <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
             <div className="order-2 md:order-1 relative w-full aspect-square md:aspect-auto md:h-[500px] rounded-2xl overflow-hidden flex items-center justify-center p-8">
-              <img alt="Strategic Service Overview" className="object-contain w-full h-full opacity-90 drop-shadow-[0_0_30px_rgba(37,99,235,0.2)]" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAnaZPRqgp5-0qAJ5fUPAFjw_vWJ0DZbGpj7hSYyHBDOCXi6TW0Df3CyMxFt24jvrKMtKIYi09UJaHU0sfq1MLtztLykDCi1MN-eLzjig4LE1cbtNRFb6tt97CqusV0pbj9nd39Eo5xGYG-Ny-eiJZMgXavzQTdHva57tUby2XQTLTq5A8YCkoC1mkpRR9jgfIvl1xQYrBq4AHauCrzRBMbHIzpJB-X4V7kq-pKTOIkPV9AiPMQPoY0aDcAGF0ofN3NOPvOjSgf7Q" />
+              <img alt="Strategic Service Overview" className="object-contain w-full h-full opacity-90 drop-shadow-[0_0_30px_rgba(37,99,235,0.2)]" src={sustainableGrowth} />
             </div>
             <div className="order-1 md:order-2 space-y-8">
               <div className="flex items-center gap-3">
