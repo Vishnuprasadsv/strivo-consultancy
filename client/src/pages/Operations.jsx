@@ -1,7 +1,20 @@
-import React, { useEffect } from 'react';
+
+import React, { useState, useEffect, useRef } from 'react';
 import { motion } from 'framer-motion';
 import { Link, useNavigate } from 'react-router-dom';
 import { Button } from '@mui/material';
+import {
+  Box,
+  Typography
+ 
+} from '@mui/material';
+import {
+  AccountTree,
+  Settings,       
+  AutoGraph,      
+  WorkspacePremium, 
+  
+} from "@mui/icons-material";
 
 const fadeUpVariants = {
   hidden: { opacity: 0, y: 30 },
@@ -10,7 +23,78 @@ const fadeUpVariants = {
 
 const Operations = () => {
   const navigate = useNavigate();
-
+  const AnimatedCounter = ({ target, duration = 1500, suffix = "" }) => {
+    const [count, setCount] = useState(0);
+    const elementRef = useRef(null);
+    const [hasStarted, setHasStarted] = useState(false);
+  
+    useEffect(() => {
+      const observer = new IntersectionObserver(
+        ([entry]) => {
+          if (entry.isIntersecting) {
+            setHasStarted(true);
+            observer.disconnect();
+          }
+        },
+        { threshold: 0.1 }
+      );
+  
+      if (elementRef.current) {
+        observer.observe(elementRef.current);
+      }
+  
+      return () => observer.disconnect();
+    }, []);
+  
+    useEffect(() => {
+      if (!hasStarted) return;
+  
+      let startTime = null;
+      const endVal = parseInt(target, 10);
+  
+      const animate = (timestamp) => {
+        if (!startTime) startTime = timestamp;
+        const progress = timestamp - startTime;
+        const rate = Math.min(progress / duration, 1);
+        setCount(Math.floor(rate * endVal));
+        if (progress < duration) {
+          requestAnimationFrame(animate);
+        } else {
+          setCount(endVal);
+        }
+      };
+  
+      requestAnimationFrame(animate);
+    }, [hasStarted, target, duration]);
+  
+    return <span ref={elementRef}>{count}{suffix}</span>;
+  };
+    const impactMetrics = [
+      {
+        value: 40,
+        suffix: "%",
+        label: "OPERATIONAL EFFICIENCY",
+        icon: <Settings sx={{ fontSize: 32 }} />,
+      },
+      {
+        value: 65,
+        suffix: "%",
+        label: "REVENUE GROWTH",
+        icon: <AutoGraph sx={{ fontSize: 32 }} />,
+      },
+      {
+        value: 30,
+        suffix: "%",
+        label: "TIME REDUCTION",
+        icon: <AccountTree sx={{ fontSize: 32 }} />,
+      },
+      {
+        value: 3,
+        suffix: "x",
+        label: "MARKET EXPANSION",
+        icon: <WorkspacePremium sx={{ fontSize: 32 }} />,
+      },
+    ];
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
@@ -171,7 +255,7 @@ const Operations = () => {
               <p className="paragraph">
                 Partner with our specialists to optimize workflows and reduce inefficiencies. Engage with us to discuss your immediate challenges.
               </p>
-              <Link to="/contact" className="btn inline-flex items-center justify-center text-sm px-8 py-4 mt-4 transition-colors shadow-[0_0_15px_rgba(37,99,235,0.3)] hover:shadow-[0_0_25px_rgba(37,99,235,0.5)]">
+              <Link to="/contact" className="btn inline-flex items-center justify-center text-sm px-8 py-4 mt-4 ">
                 Schedule a Consultation
               </Link>
             </div>
@@ -273,38 +357,142 @@ const Operations = () => {
             <p className="paragraph mb-10 max-w-3xl mx-auto">
               The difference between market leaders and followers is relentless optimization. Let’s build your blueprint for tomorrow.
             </p>
-            <Link to="/contact" className="btn inline-flex items-center justify-center text-sm px-8 py-4 mt-4 transition-colors shadow-[0_0_15px_rgba(37,99,235,0.3)]">
+            <Link to="/contact" className="btn inline-flex items-center justify-center text-sm px-8 py-4 mt-4 ">
               Contact Our Team
             </Link>
           </div>
         </motion.section>
       </div>
       
-      {/* Section 5: Impact Metrics */}
-      <div className="max-w-[1440px] mx-auto px-6 md:px-16 lg:px-[180px]">
-        <motion.section
-          initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.2 }} variants={fadeUpVariants}
-          className="w-full py-6 md:py-12"
-        >
-          <div>
-            <h2 className="sub-heading mb-12">Impact Metrics</h2>
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-8 p-8 divide-x divide-[var(--color-border-color)]">
-              {[
-                { val: '35%', label: 'Operational Cost Reduction' },
-                { val: '60%', label: 'Process Efficiency Improvement' },
-                { val: '95%', label: 'Project Success Rate' },
-                { val: '3-5 Yrs', label: 'Sustainable Performance Gains' }
-              ].map((metric, idx) => (
-                <div key={idx} className="text-center px-4">
-                  <div className="text-4xl md:text-5xl font-bold text-[var(--color-primary)] mb-2">{metric.val}</div>
-                  <div className="paragraph uppercase tracking-wider">{metric.label}</div>
-                </div>
-              ))}
+     {/* Impact Metrics Section */}
+          <Box
+            component="section"
+            id="impact-metrics-section"
+            sx={{
+              backgroundColor: "var(--color-main-bg)",
+              py: { xs: 6, md: 8 },
+              px: { xs: 2, lg: "155px" },
+            }}
+          >
+            <div className="max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8">
+    
+              {/* Section Header */}
+              <Box sx={{ textAlign: "center", mb: 6 }}>
+                <Box
+                  component="p"
+                  className="pre-heading"
+                  sx={{
+                    textTransform: "uppercase",
+                    mb: 1.5,
+                  }}
+                >
+                  Proven Results
+                </Box>
+                <Box
+                  component="h2"
+                  className="sub-heading"
+                  sx={{
+                    color: "var(--color-primary)",
+                    mb: 2,
+                  }}
+                >
+                  Our Impact Metrics
+                </Box>
+              </Box>
+    
+              {/* Styled Grid Card Container */}
+              <Box
+                className="card"
+                sx={{
+                  background: "var(--color-primary)",
+                  p: { xs: 5, md: 7 },
+                  display: "grid",
+                  gridTemplateColumns: { xs: "1fr", sm: "1fr 1fr", md: "repeat(4, 1fr)" },
+                  gap: { xs: 4, md: 2 },
+                  boxShadow: "0 20px 40px rgba(1, 41, 89, 0.15)",
+                }}
+              >
+                {impactMetrics.map((metric, index) => (
+                  <Box
+                    key={index}
+                    sx={{
+                      display: "flex",
+                      flexDirection: "column",
+                      alignItems: "center",
+                      textAlign: "center",
+                      position: "relative",
+                      "&::after": {
+                        content: '""',
+                        position: "absolute",
+                        right: 0,
+                        top: "15%",
+                        height: "70%",
+                        width: "1px",
+                        background: "rgba(255,255,255,0.15)",
+                        display: index !== impactMetrics.length - 1 ? { xs: "none", md: "block" } : "none",
+                      }
+                    }}
+                  >
+                    {/* Circular Icon Wrapper */}
+                    <Box
+                      sx={{
+                        width: 64,
+                        height: 64,
+                        borderRadius: "50%",
+                        background: "rgba(255,255,255,0.08)",
+                        border: "1px solid rgba(255,255,255,0.15)",
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        mb: 2.5,
+                        color: "#fff",
+                      }}
+                    >
+                      {metric.icon}
+                    </Box>
+    
+                    {/* Counter Numbers */}
+                    <Box sx={{ display: "flex", alignItems: "baseline", mb: 0.5 }}>
+                      <Typography
+                        sx={{
+                          color: "#fff",
+                          fontSize: "2.8rem",
+                          fontWeight: 700,
+                          lineHeight: 1,
+                        }}
+                      >
+                        <AnimatedCounter target={metric.value} />
+                      </Typography>
+                      <Typography
+                        sx={{
+                          color: "#fff",
+                          fontSize: "2.8rem",
+                          fontWeight: 700,
+                          lineHeight: 1,
+                        }}
+                      >
+                        {metric.suffix}
+                      </Typography>
+                    </Box>
+    
+                    {/* Subtitle / Description */}
+                    <Typography
+                      sx={{
+                        color: "rgba(255,255,255,0.7)",
+                        fontSize: "0.8rem",
+                        fontWeight: 600,
+                        letterSpacing: "1px",
+                        textTransform: "uppercase",
+                      }}
+                    >
+                      {metric.label}
+                    </Typography>
+                  </Box>
+                ))}
+              </Box>
             </div>
-          </div>
-        </motion.section>
-      </div>
-
+          </Box>
+    
       {/* Section 6: Strategic Excellence in Action */}
       <div className="max-w-[1440px] mx-auto px-6 md:px-16 lg:px-[180px]">
         <motion.section
