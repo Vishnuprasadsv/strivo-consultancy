@@ -171,31 +171,27 @@ const Article = () => {
   return (
     <div className="min-h-screen">
       <section className="bg-main pt-24 pb-20">
-        <div className="max-w-[110rem] mx-auto px-8">
+        <div className="max-w-[110rem] mx-auto px-8 md:px-[180px] lg:px-[180px]">
 
           <motion.div
             initial="hidden" animate="visible" variants={fadeUpVariants}
             className="flex flex-col md:flex-row justify-between items-start md:items-center mb-12 gap-4"
           >
-            <Link to="/insights" className="text-blue-400 hover:text-white hover:bg-blue-400 transition-colors flex items-center border border-blue-500/30 rounded-full px-5 py-2 text-sm font-medium hover:border-blue-500">
+            <Link to="/insights" className="text-[var(--color-primary)] hover:text-white hover:bg-[var(--color-primary-hover)] transition-colors flex items-center border border-blue-500/30 rounded-[var(--radius-sm)] px-5 py-2 text-sm font-medium hover:border-blue-500">
               ← Back to Insights
             </Link>
             <div className="text-gray-400 text-sm font-medium flex flex-wrap items-center gap-2">
-              Insights <span className="text-gray-600">›</span> <span className="text-blue-500 whitespace-nowrap">{article.category}</span>
+              Insights <span className="text-gray-600">›</span> <span className="text-[var(--color-primary)] whitespace-nowrap">{article.category}</span>
             </div>
           </motion.div>
           <div className="grid lg:grid-cols-2 gap-12 items-center">
             <motion.div initial="hidden" animate="visible" variants={fadeUpVariants}>
               <div className="flex justify-between items-start flex-col lg:flex-row gap-8">
                 <div className="max-w-4xl">
-                  <span className="pre-heading inline-block px-3 py-1 border border-blue-500/30 tracking-wider rounded-full mb-6">{article.category}</span>
+                  <span className="pre-heading inline-block px-3 py-1 tracking-wider mb-6">{article.category}</span>
                   <motion.h1
                     className="
     main-heading
-    text-4xl
-    sm:text-5xl
-    md:text-6xl
-    lg:text-7xl
     leading-tight
     mb-6
   "
@@ -215,23 +211,23 @@ text-sm
                     {tags.map((tag) => (
                       <span
                         key={tag}
-                        className="px-4 py-2 rounded-full bg-[#1F2937] border border-[#374151] text-gray-300 text-sm font-medium"
+                        className="px-4 py-2 rounded-[var(--radius-sm)] bg-[var(--color-primary)]/5 backdrop-blur-md border border-[var(--color-primary)]/30 text-[var(--color-primary)] text-sm font-bold"
                       >
                         {tag}
                       </span>
                     ))}
                   </div>
-                  <p className="paragraph md:text-xl leading-relaxed p-5">
+                  <p className="paragraph leading-relaxed p-5">
                     {article.description}
                   </p>
 
                   <div className="flex items-center gap-6 text-sm text-gray-400 font-medium">
                     <div className="flex items-center gap-2">
-                      <svg className="w-4 h-4 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                      <svg className="w-4 h-4 text-[var(--color-primary)]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
                       <span>{article.createdAt ? new Date(article.createdAt).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' }) : "October 24, 2024"}</span>
                     </div>
                     <div className="flex items-center gap-2">
-                      <svg className="w-4 h-4 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                      <svg className="w-4 h-4 text-[var(--color-primary)]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
                       <span>12 min read</span>
                     </div>
                   </div>
@@ -242,7 +238,7 @@ text-sm
 
             <motion.div
               initial="hidden" animate="visible" variants={fadeUpVariants}
-              className="mt-12 w-full h-[500px] lg:h-[550px] rounded-3xl sm:h-[280px] md:h-[350px]  relative  overflow-hidden border border-[#374151]"
+              className="mt-12 w-full h-[500px] lg:h-[550px] rounded-[var(--radius-sm)] sm:h-[280px] md:h-[350px]  relative overflow-hidden border border-[#374151]"
             >
               <img src={article.imageUrl} alt={article.title} className="w-full h-full object-cover" onError={(e) => {
                 e.target.src = "https://images.unsplash.com/photo-1488590528505-98d2b5aba04b?q=80&w=1200";
@@ -252,7 +248,7 @@ text-sm
         </div>
       </section>
       <section className="bg-sub py-24">
-        <div className="max-w-[110rem] mx-auto px-8">
+        <div className="max-w-[110rem] mx-auto px-8 md:px-[180px] lg:px-[180px]">
           <div className="flex flex-col lg:flex-row gap-12">
             <motion.div
               initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.1 }} variants={fadeUpVariants}
@@ -264,8 +260,8 @@ text-sm
                 </div>
               ) : (
                 <>
-                  <div className="bg-main border-l border-l-blue-500 border-l-4 rounded-r-xl p-8">
-                    <h3 className="sub-heading text-blue-500 mb-4 flex items-center gap-2">
+                  <div className="bg-main border-l border-l-[var(--color-primary)] border-l-4 rounded-r-xl p-8">
+                    <h3 className="sub-heading text-[var(--color-primary)] mb-4 flex items-center gap-2">
                       <svg className="w-5 h-5 " fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
                       Executive Summary
                     </h3>
@@ -283,7 +279,7 @@ text-sm
                     </p>
                   </div>
 
-                  <blockquote className="bg-main paragraph border-l border-l-blue-500 border-l-4 rounded-r-xl p-8 text-blue-500">
+                  <blockquote className="bg-main paragraph border-l border-l-[var(--color-primary)] border-l-4 rounded-r-xl p-8 text-[var(--color-primary)]">
                     "Strategic adaptation is no longer an option—it is the baseline for enterprise survival."
                     <footer className="text-black text-sm font-semibold mt-4 not-italic">— Maria Halstead, Nexus Insights Global</footer>
                   </blockquote>
@@ -310,8 +306,8 @@ text-sm
               initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.1 }} variants={fadeUpVariants}
               className="lg:w-1/3 xl:w-1/4 shrink-0 flex flex-col gap-8 "
             >
-              <div className=" bg-main rounded-xl p-6">
-                <h3 className="text-blue-500 pre-heading font-bold text-sm uppercase tracking-wider mb-4">Share Article</h3>
+              <div className=" bg-main rounded-[var9--radius-sm] p-6">
+                <h3 className="text-[var(--color-primary)] pre-heading font-bold text-sm uppercase tracking-wider mb-4">Share Article</h3>
                 <div className="flex flex-wrap gap-3">
                   <a href={`https://twitter.com/intent/tweet?url=${encodeURIComponent(window.location.href)}&text=${encodeURIComponent(article.title)}`} target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-full bg-[#1F2937] flex items-center justify-center text-white hover:text-white hover:bg-blue-600 transition-colors" aria-label="Share on Twitter">
                     <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M24 4.557c-.883.392-1.832.656-2.828.775 1.017-.609 1.798-1.574 2.165-2.724-.951.564-2.005.974-3.127 1.195-.897-.957-2.178-1.555-3.594-1.555-3.179 0-5.515 2.966-4.797 6.045-4.091-.205-7.719-2.165-10.148-5.144-1.29 2.213-.669 5.108 1.523 6.574-.806-.026-1.566-.247-2.229-.616-.054 2.281 1.581 4.415 3.949 4.89-.693.188-1.452.232-2.224.084.626 1.956 2.444 3.379 4.6 3.419-2.07 1.623-4.678 2.348-7.29 2.04 2.179 1.397 4.768 2.212 7.548 2.212 9.142 0 14.307-7.721 13.995-14.646.962-.695 1.797-1.562 2.457-2.549z" /></svg>
@@ -329,7 +325,7 @@ text-sm
               </div>
 
               {article.showSubscription !== false && (
-                <div className="bg-main rounded-xl p-6">
+                <div className="bg-main rounded-[var9--radius-sm] p-6">
                   <h3 className="sub-heading font-bold text-lg mb-2">Nexus Insights Daily</h3>
                   <p className="paragraph text-sm mb-4">The latest strategic intelligence delivered to your inbox.</p>
                   <form onSubmit={handleSubscribe} className="flex flex-col gap-3">
@@ -357,7 +353,7 @@ text-sm
 
           <motion.div
             initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.2 }} variants={fadeUpVariants}
-            className="mt-24 bg-main rounded-2xl p-8 md:p-12 text-center"
+            className="mt-24 bg-main rounded-[var9--radius-sm] p-8 md:p-12 text-center"
           >
             <h2 className="sub-heading  mb-4">Want expert guidance?</h2>
             <p className=" max-w-2xl mx-auto mb-8 pragraph">
@@ -367,7 +363,7 @@ text-sm
               <Link to="/contact" className="btn w-full sm:w-auto px-8 py-3 transition-colors cursor-pointer">
                 Schedule Consultation
               </Link>
-              <Link to="/insights" className="w-full h-[42px] flex items-center justify-center sm:w-auto bg-transparent border border-blue-500 hover:bg-blue-600 hover:text-white text-black px-8 py-3 rounded-sm font-black transition-colors text-center cursor-pointer">
+              <Link to="/insights" className="w-full h-[42px] flex items-center justify-center sm:w-auto bg-transparent border border-[var(--color-primary)] hover:bg-[var(--color-primary-hover)] hover:text-white text-black px-8 py-3 rounded-sm font-black transition-colors text-center cursor-pointer">
                 Explore More Insights
               </Link>
             </div>
@@ -383,7 +379,7 @@ text-sm
                 <motion.article
                   key={relArticle._id || relArticle.id}
                   whileHover={{ y: -5 }}
-                  className="group relative card border border-white-800/80 overflow-hidden bg-main backdrop-blur-md hover:border-white-500/50 hover:-translate-y-2 hover:shadow-[0_20px_40px_rgba(59,130,246,0.08)] transition-all duration-500 flex flex-col h-full shadow-md/30 cursor-pointer"
+                  className="group relative card p-0 border border-white-800/80 overflow-hidden bg-main transition-all duration-500 flex flex-col h-full shadow-md/30 cursor-pointer"
                 >
                   <Link to={`/article/${relArticle._id || relArticle.id}`} className="flex flex-col h-full">
                     <div className="h-48 w-full relative overflow-hidden">
@@ -394,11 +390,11 @@ text-sm
                       />
                     </div>
                     <div className="p-6 flex flex-col flex-grow">
-                      <span className="text-blue-500 text-xs font-semibold mb-2 uppercase">{relArticle.category}</span>
+                      <span className="text-[var(--color-primary)] text-xs font-semibold mb-2 uppercase">{relArticle.category}</span>
                       <h3 className="
   text-xl
   font-bold
-  text-[#4764FF]
+  text-[var(--color-primary)]
   mb-3
   line-clamp-2
   leading-snug

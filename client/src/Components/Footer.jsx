@@ -61,28 +61,28 @@ const Footer = () => {
         {/* Column 2: Company */}
         <div className="flex flex-col gap-4">
           <h3 className="text-white font-[var(--font-bold)] text-base mb-1">Company</h3>
-          <Link to="/about" className="text-[var(--color-main-paragraph)] hover:text-blue-400 transition-colors text-sm">About Us</Link>
-          <Link to="/casestudies" className="text-[var(--color-main-paragraph)] hover:text-blue-400 transition-colors text-sm">Case Studies</Link>
-          <Link to="/careerstrivo" className="text-[var(--color-main-paragraph)] hover:text-blue-400 transition-colors text-sm">Careers</Link>
-          <Link to="/insights" className="text-[var(--color-main-paragraph)] hover:text-blue-400 transition-colors text-sm">Insights</Link>
+          <Link to="/about" className="text-[var(--color-main-paragraph)] hover:text-[var(--color-primary-hover)] transition-colors text-sm">About Us</Link>
+          <Link to="/casestudies" className="text-[var(--color-main-paragraph)] hover:text-[var(--color-primary-hover)] transition-colors text-sm">Case Studies</Link>
+          <Link to="/careerstrivo" className="text-[var(--color-main-paragraph)] hover:text-[var(--color-primary-hover)] transition-colors text-sm">Careers</Link>
+          <Link to="/insights" className="text-[var(--color-main-paragraph)] hover:text-[var(--color-primary-hover)] transition-colors text-sm">Insights</Link>
         </div>
 
         {/* Column 3: Services */}
         <div className="flex flex-col gap-4">
           <h3 className="text-white font-[var(--font-bold)] text-base mb-1">Services</h3>
-          <Link to="/strategic" className="text-[var(--color-main-paragraph)] hover:text-blue-400 transition-colors text-sm">Strategic Planning</Link>
-          <Link to="/operations" className="text-[var(--color-main-paragraph)] hover:text-blue-400 transition-colors text-sm">Operations Optimizations</Link>
-          <Link to="/digital" className="text-[var(--color-main-paragraph)] hover:text-blue-400 transition-colors text-sm">Digital Transformation</Link>
-          <Link to="/change" className="text-[var(--color-main-paragraph)] hover:text-blue-400 transition-colors text-sm">Change Management</Link>
+          <Link to="/strategic" className="text-[var(--color-main-paragraph)] hover:text-[var(--color-primary-hover)] transition-colors text-sm">Strategic Planning</Link>
+          <Link to="/operations" className="text-[var(--color-main-paragraph)] hover:text-[var(--color-primary-hover)] transition-colors text-sm">Operations Optimizations</Link>
+          <Link to="/digital" className="text-[var(--color-main-paragraph)] hover:text-[var(--color-primary-hover)] transition-colors text-sm">Digital Transformation</Link>
+          <Link to="/change" className="text-[var(--color-main-paragraph)] hover:text-[var(--color-primary-hover)] transition-colors text-sm">Change Management</Link>
         </div>
 
         {/* Column 4: Get in Touch */}
         <div className="flex flex-col gap-4">
           <h3 className="text-white font-[var(--font-bold)] text-base mb-1">Get in Touch</h3>
-          <Link to="/contact" className="text-[var(--color-main-paragraph)] hover:text-blue-400 transition-colors text-sm">Contact Us</Link>
-          <Link to="/review" className="text-[var(--color-main-paragraph)] hover:text-blue-400 transition-colors text-sm">Add Review</Link>
-          <Link to="/privacy-policy" className="text-[var(--color-main-paragraph)] hover:text-blue-400 transition-colors text-sm">Privacy Policy</Link>
-          <Link to="/terms-and-conditions" className="text-[var(--color-main-paragraph)] hover:text-blue-400 transition-colors text-sm">Terms & Conditions</Link>
+          <Link to="/contact" className="text-[var(--color-main-paragraph)] hover:text-[var(--color-primary-hover)] transition-colors text-sm">Contact Us</Link>
+          <Link to="/review" className="text-[var(--color-main-paragraph)] hover:text-[var(--color-primary-hover)] transition-colors text-sm">Add Review</Link>
+          <Link to="/privacy-policy" className="text-[var(--color-main-paragraph)] hover:text-[var(--color-primary-hover)] transition-colors text-sm">Privacy Policy</Link>
+          <Link to="/terms-and-conditions" className="text-[var(--color-main-paragraph)] hover:text-[var(--color-primary-hover)] transition-colors text-sm">Terms & Conditions</Link>
         </div>
       </div>
     </motion.footer>
@@ -99,7 +99,7 @@ const Footer = () => {
             onClick={() => {
               window.scrollTo({ top: 0, behavior: "smooth" });
             }}
-            className="w-10 h-10 md:w-[50px] md:h-[50px] rounded-full bg-[var(--color-primary)] shadow-[0_8px_25px_rgba(71,100,255,0.4)] flex items-center justify-center cursor-pointer transition-all duration-300 ease-in-out hover:bg-[#3b55d9] hover:-translate-y-1 hover:shadow-[0_12px_30px_rgba(71,100,255,0.6)]"
+            className="w-10 h-10 md:w-[50px] md:h-[50px] rounded-full bg-[var(--color-primary)] shadow-[0_8px_25px_var(--color-primary)] flex items-center justify-center cursor-pointer transition-all duration-300 ease-in-out hover:bg-[var(--color-primary-hover)] hover:-translate-y-1 hover:shadow-[0_12px_30px_rgba(71,100,255,0.6)]"
           >
             <svg className="w-5 h-5 md:w-6 md:h-6" viewBox="0 0 24 24" fill="none" stroke="#ffffff" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
               <path d="M18 15l-6-6-6 6" />

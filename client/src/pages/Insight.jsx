@@ -170,7 +170,7 @@ const Insight = () => {
         variants={fadeUpVariants}
         className="w-full h-[500px] bg-primary py-20 md:py-28"
       >
-        <div className="max-w-7xl mx-auto px-6 md:px-12">
+        <div className="max-w-7xl mx-auto px-6 md:px-[90px] lg:px-[90px]">
           <motion.div variants={containerVariants} className="mx-auto text-center max-w-7xl">
             <motion.div variants={cardVariants}>
               <h1 className="main-heading text-white text-4xl sm:text-5xl md:text-6xl leading-tight mb-6">
@@ -186,7 +186,7 @@ const Insight = () => {
         </div>
       </motion.section>
 
-      <div className="bg-main max-w-7xl mx-auto px-6 md:px-12 py-16 md:py-24 space-y-24">
+      <div className="bg-main max-w-7xl mx-auto px-6 md:px-[180px] lg:px-[60px] py-16 md:py-24 space-y-24">
 
         {/* Section 2: Featured Article */}
         {featuredArticle && (
