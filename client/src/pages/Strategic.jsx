@@ -246,23 +246,24 @@ const Strategic = () => {
       {/* Section 7: CTA Banner */}
       <div className="max-w-[1440px] mx-auto px-6 md:px-16 lg:px-[180px]">
         {/* Adjusted padding to half */}
-        <motion.section
-          initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.2 }} variants={fadeUpVariants}
-          className="w-full py-4 md:py-8"
-        >
-          <div className="bg-main var(--radius-sm) p-12 text-center relative overflow-hidden">
-            <div className="absolute inset-0 pointer-events-none"></div>
-            <div className="relative z-10 max-w-2xl mx-auto space-y-6">
-              <h2 className="sub-heading">Ready to Build a Future-Proof Strategy?</h2>
-              <p className="paragraph">
-                Engage with our senior partners to discuss your immediate challenges and explore how our strategic framework can drive measurable transformation.
-              </p>
-              <Link to="/contact" className="btn inline-flex items-center justify-center text-sm px-8 py-4 mt-4 ">
-                Schedule a Consultation
-              </Link>
-            </div>
-          </div>
-        </motion.section>
+        {/* Want Expert Guidance */}
+              <motion.div
+                initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.2 }} variants={fadeUpVariants}
+                className="mt-24 bg-main rounded-[var(--radius-sm)] p-8 md:p-12 text-center"
+              >
+                <h2 className="sub-heading mb-4">Want expert guidance?</h2>
+                <p className="max-w-2xl mx-auto mb-8 pragraph">
+                  Our global team of consultants helps organizations navigate technical complexity and unlock transformative value through tailored strategic frameworks.
+                </p>
+                <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
+                  <Link to="/contact" className="btn w-full sm:w-auto px-8 py-3 transition-colors cursor-pointer">
+                    Schedule Consultation
+                  </Link>
+                  <Link to="/insights" className="w-full h-[42px] flex items-center justify-center sm:w-auto bg-transparent border border-[var(--color-primary)] hover:bg-[var(--color-primary-hover)] hover:text-white text-black px-8 py-3 rounded-sm font-black transition-colors text-center cursor-pointer">
+                    Explore More Insights
+                  </Link>
+                </div>
+              </motion.div>
       </div>
 
       {/* Section 3: Core Capabilities */}
