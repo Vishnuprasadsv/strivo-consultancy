@@ -3,7 +3,6 @@ import { Link, useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   Box,
-  Container,
   Typography,
   TextField,
   Button,
@@ -13,12 +12,9 @@ import {
   FormControlLabel,
 } from "@mui/material";
 
-
 import { submitReviewAPI } from "../services/allApi";
 import { toast } from "sonner";
 import homeHero from "../assets/homehero.jpg";
-
-
 
 import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 import StarIcon from "@mui/icons-material/Star";
@@ -28,15 +24,12 @@ import AutoAwesomeIcon from "@mui/icons-material/AutoAwesome";
 import FormatQuoteIcon from "@mui/icons-material/FormatQuote";
 import CheckCircleOutlineIcon from "@mui/icons-material/CheckCircleOutlineOutlined";
 
-
-
 const StarRating = ({ value, onChange }) => {
   const [hovered, setHovered] = useState(0);
-
   const labels = ["", "Poor", "Fair", "Good", "Very Good", "Excellent"];
 
   return (
-    <Box>
+    <Box sx={{ display: "flex", justifyContent: "center" }}>
       <Stack direction="row" spacing={0.5} alignItems="center">
         {[1, 2, 3, 4, 5].map((star) => {
           const isHighlighted = star <= (hovered || value);
@@ -91,7 +84,6 @@ const StarRating = ({ value, onChange }) => {
   );
 };
 
-
 const fieldSx = {
   "& .MuiOutlinedInput-root": {
     color: "var(--color-black)",
@@ -108,7 +100,6 @@ const fieldSx = {
   "& .MuiInputLabel-root": { color: "var(--color-paragraph)", fontSize: "0.9rem" },
   "& .MuiInputLabel-root.Mui-focused": { color: "var(--color-primary)" },
 };
-
 
 const guidelines = [
   {
@@ -128,7 +119,6 @@ const guidelines = [
     desc: "Avoid sharing sensitive financial data or proprietary company information.",
   },
 ];
-
 
 const SuccessScreen = ({ onReset }) => {
   return (
@@ -182,7 +172,6 @@ const SuccessScreen = ({ onReset }) => {
     </Box>
   );
 };
-
 
 export default function Review() {
   const navigate = useNavigate();
@@ -247,9 +236,7 @@ export default function Review() {
 
     setLoading(true);
     try {
-
       const response = await submitReviewAPI(form);
-
 
       if (response.status === 201 || response.status === 200) {
         if (response.data?.success) {
@@ -268,7 +255,6 @@ export default function Review() {
       setLoading(false);
     }
   };
-
 
   const handleReset = () => {
     setForm({
@@ -291,7 +277,7 @@ export default function Review() {
         id="hero-section"
         sx={{
           position: { xs: "relative", md: "sticky" },
-          top: "80px", // Header navbar height
+          top: "80px",
           zIndex: 1,
           height: { xs: "auto", md: "600px" },
           minHeight: { xs: "auto", md: "600px" },
@@ -312,7 +298,7 @@ export default function Review() {
             height: { xs: "320px", md: "100%" },
             backgroundImage: `url(${homeHero})`,
             backgroundSize: "cover",
-            backgroundPosition: "right top", // Prevents cutting off the man's head!
+            backgroundPosition: "right top",
             zIndex: 1,
             order: { xs: 1, md: 2 },
           }}
@@ -320,7 +306,7 @@ export default function Review() {
 
         {/* Left Column Container: Content Aligned to Navbar */}
         <Box
-          className="max-w-[110rem] mx-auto px-8"
+          className="max-w-[1440px] mx-auto px-6 md:px-16 lg:px-[180px]"
           sx={{
             position: "relative",
             zIndex: 2,
@@ -423,12 +409,15 @@ export default function Review() {
         sx={{
           minHeight: { md: "640px", xs: "auto" },
           position: "relative",
-          zIndex: 10, // Slides OVER the sticky hero!
+          zIndex: 10,
           py: { xs: 6, md: 8 },
-          backgroundColor: "var(--color-main-bg)", // Solid background color
+          backgroundColor: "var(--color-main-bg)",
         }}
       >
-        <Container maxWidth="xl" sx={{ position: "relative", zIndex: 1 }}>
+        <Box
+          className="max-w-[1440px] mx-auto px-6 md:px-16 lg:px-[180px]"
+          sx={{ position: "relative", zIndex: 1 }}
+        >
 
           {/* Header Section */}
           <motion.div
@@ -436,7 +425,7 @@ export default function Review() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.7 }}
           >
-            <Box sx={{ mb: { xs: 2, md: 3.5 } }}>
+            <Box sx={{ mb: { xs: 4, md: 5 }, textAlign: "center", display: "flex", flexDirection: "column", alignItems: "center" }}>
               {/* Top Badge */}
               <Box
                 sx={{
@@ -465,27 +454,19 @@ export default function Review() {
                 </Typography>
               </Box>
 
-
               <Box
-              component='h2'
-              className="sub-heading"
+                component='h2'
+                className="sub-heading"
                 sx={{
                   mb: 1,
+                  textAlign: "center",
+                  fontSize: { xs: "1.8rem", md: "2.4rem" },
+                  fontWeight: 700,
+                  color: "var(--color-black)"
                 }}
               >
-                Share Your{" "}
-                {/* <Box
-                  component="span"
-                  sx={{
-                    background: "linear-gradient(90deg, var(--color-primary), #60A5FA)",
-                    WebkitBackgroundClip: "text",
-                    WebkitTextFillColor: "transparent",
-                  }}
-                > */}
-                  Success Story
-                </Box>
-              {/* </Typography> */}
-
+                Share Your Success Story
+              </Box>
 
               <Typography
                 sx={{
@@ -493,6 +474,7 @@ export default function Review() {
                   maxWidth: 640,
                   lineHeight: 1.5,
                   fontSize: { xs: "0.82rem", md: "0.88rem" },
+                  textAlign: "center"
                 }}
               >
                 Your insights help us refine our approach and guide other enterprises
@@ -531,10 +513,11 @@ export default function Review() {
                 exit={{ opacity: 0, y: -20 }}
                 transition={{ duration: 0.5 }}
               >
-                <Grid container spacing={3} alignItems="stretch">
+                {/* Grid Container centered */}
+                <Grid container spacing={4} justifyContent="center" wrap="nowrap" sx={{ mx: "auto" }}>
 
-                  {/* Guidelines Box (on the left now) */}
-                  <Grid item xs={12} md={5}>
+                  {/* Guidelines Box */}
+                  <Grid item xs={5} sx={{ display: "flex", justifyContent: "center" }}>
                     <Box
                       sx={{
                         p: { xs: 2.5, md: 3 },
@@ -545,13 +528,16 @@ export default function Review() {
                         top: { md: 100 },
                         minHeight: { md: "420px", xs: "auto" },
                         height: "100%",
+                        width: "100%",
+                        maxWidth: "460px",
                         display: "flex",
                         flexDirection: "column",
                         justifyContent: "space-between",
+                        textAlign: "center"
                       }}
                     >
                       <Box>
-                        <Stack direction="row" spacing={1.5} alignItems="center" sx={{ mb: "24px" }}>
+                        <Stack direction="row" spacing={1.5} alignItems="center" justifyContent="center" sx={{ mb: "24px" }}>
                           <Box
                             sx={{
                               width: 34, height: 34,
@@ -567,17 +553,20 @@ export default function Review() {
                           </Typography>
                         </Stack>
 
-                        <Stack spacing={1.5} sx={{ mt: "24px" }}>
+                        <Stack spacing={1.5} sx={{ mt: "24px", alignItems: "center" }}>
                           {guidelines.map((g, i) => (
                             <Box
                               key={i}
                               sx={{
                                 display: "flex",
+                                alignItems: "center",
+                                textAlign: "left",
                                 gap: 1.5, p: 1.5,
                                 borderRadius: "3px",
                                 background: "var(--color-main-bg)",
                                 border: "1px solid var(--color-border)",
                                 transition: "all 0.25s ease",
+                                width: "100%",
                                 "&:hover": {
                                   background: "rgba(71,100,255,0.08)",
                                   border: "1px solid rgba(71,100,255,0.2)",
@@ -588,7 +577,6 @@ export default function Review() {
                                 sx={{
                                   color: "var(--color-primary)",
                                   fontSize: 20,
-                                  mt: 0.2,
                                   flexShrink: 0,
                                 }}
                               />
@@ -606,11 +594,12 @@ export default function Review() {
 
                         <Box
                           sx={{
-                            mt: 2,
+                            mt: 3,
                             p: 1.5,
                             borderRadius: "3px",
                             background: "rgba(71,100,255,0.05)",
                             borderLeft: "3px solid var(--color-primary)",
+                            textAlign: "left"
                           }}
                         >
                           <Typography sx={{ color: "var(--color-black)", fontWeight: 700, fontSize: "0.8rem", mb: 0.5 }}>
@@ -628,7 +617,6 @@ export default function Review() {
                           borderRadius: "3px",
                           background: "rgba(71,100,255,0.06)",
                           border: "1px solid rgba(71,100,255,0.12)",
-                          textAlign: "center",
                         }}
                       >
                         <Typography sx={{ color: "var(--color-paragraph)", fontSize: "0.68rem", lineHeight: 1.4 }}>
@@ -639,8 +627,8 @@ export default function Review() {
                     </Box>
                   </Grid>
 
-                  {/* Review Form Box (on the right now) */}
-                  <Grid item xs={12} md={7}>
+                  {/* Review Form Box */}
+                  <Grid item xs={7} sx={{ display: "flex", justifyContent: "center" }}>
                     <Box
                       component="form"
                       ref={formRef}
@@ -653,9 +641,12 @@ export default function Review() {
                         position: "relative",
                         minHeight: { md: "420px", xs: "auto" },
                         height: "100%",
+                        width: "100%",
+                        maxWidth: "600px",
                         display: "flex",
                         flexDirection: "column",
                         justifyContent: "space-between",
+                        textAlign: "center",
                         "&::before": {
                           content: '""',
                           position: "absolute",
@@ -665,7 +656,6 @@ export default function Review() {
                         },
                       }}
                     >
-
                       <Box
                         sx={{
                           position: "absolute",
@@ -676,11 +666,11 @@ export default function Review() {
                         <FormatQuoteIcon sx={{ fontSize: 90, color: "var(--color-primary)" }} />
                       </Box>
 
-                      <Stack spacing={2} sx={{ position: "relative", zIndex: 1, flexGrow: 1 }}>
+                      <Stack spacing={2.5} sx={{ position: "relative", zIndex: 1, flexGrow: 1 }}>
 
                         {/* Name & Company Input Fields */}
                         <Grid container spacing={2}>
-                          <Grid item xs={12} sm={6} sx={{ width: "100%" }}>
+                          <Grid item xs={12} sm={6}>
                             <TextField
                               fullWidth
                               size="small"
@@ -695,7 +685,7 @@ export default function Review() {
                               FormHelperTextProps={{ sx: { color: "var(--color-danger)" } }}
                             />
                           </Grid>
-                          <Grid item xs={12} sm={6} sx={{ width: "100%" }}>
+                          <Grid item xs={12} sm={6}>
                             <TextField
                               fullWidth
                               size="small"
@@ -711,7 +701,6 @@ export default function Review() {
                             />
                           </Grid>
                         </Grid>
-
 
                         <Box
                           sx={{
@@ -740,7 +729,6 @@ export default function Review() {
                           )}
                         </Box>
 
-
                         <TextField
                           fullWidth
                           size="small"
@@ -754,7 +742,6 @@ export default function Review() {
                           sx={fieldSx}
                           FormHelperTextProps={{ sx: { color: "var(--color-danger)" } }}
                         />
-
 
                         <TextField
                           fullWidth
@@ -779,8 +766,9 @@ export default function Review() {
                           }}
                         />
 
-                        <Box sx={{ mt: 1 }}>
+                        <Box sx={{ mt: 1, display: "flex", justifyContent: "center" }}>
                           <FormControlLabel
+                            sx={{ m: 0 }}
                             control={
                               <Checkbox
                                 checked={acceptedPolicy}
@@ -792,6 +780,7 @@ export default function Review() {
                                 }}
                                 sx={{
                                   p: 0.5,
+                                  mr: 1,
                                   color: errors.acceptedPolicy ? "var(--color-danger)" : "var(--color-paragraph)",
                                   "&.Mui-checked": {
                                     color: "var(--color-primary)",
@@ -800,13 +789,11 @@ export default function Review() {
                               />
                             }
                             label={
-                              <Typography sx={{ color: "var(--color-paragraph)", fontSize: "0.75rem", userSelect: "none" }}>
+                              <Typography sx={{ color: "var(--color-paragraph)", fontSize: "0.75rem", userSelect: "none", textAlign: "left" }}>
                                 I accept the{" "}
                                 <Link
                                   to="/privacy-policy"
-                                  onClick={(e) => {
-                                    e.stopPropagation();
-                                  }}
+                                  onClick={(e) => e.stopPropagation()}
                                   style={{
                                     color: "var(--color-primary)",
                                     textDecoration: "underline",
@@ -818,24 +805,22 @@ export default function Review() {
                               </Typography>
                             }
                           />
-                          {errors.acceptedPolicy && (
-                            <Typography sx={{ color: "var(--color-danger)", fontSize: "0.72rem", mt: 0.5, pl: 3.5 }}>
-                              {errors.acceptedPolicy}
-                            </Typography>
-                          )}
                         </Box>
+                        {errors.acceptedPolicy && (
+                          <Typography sx={{ color: "var(--color-danger)", fontSize: "0.72rem", mt: 0.5 }}>
+                            {errors.acceptedPolicy}
+                          </Typography>
+                        )}
                       </Stack>
 
-                      <Box sx={{ display: "flex", justifyContent: "flex-end", mt: 1.5, position: "relative", zIndex: 1 }}>
+                      <Box sx={{ display: "flex", justifyContent: "center", mt: 3, position: "relative", zIndex: 1 }}>
                         <Button
                           type="submit"
                           variant="contained"
                           disabled={loading}
                           sx={{
-                            background: loading
-                              ? "var(--color-primary"
-                              : "var(--color-primary)",
-                            px: 4, py: 1.1,
+                            background: "var(--color-primary)",
+                            px: 5, py: 1.2,
                             borderRadius: "3px",
                             textTransform: "none",
                             fontWeight: 700,
@@ -858,7 +843,7 @@ export default function Review() {
             )}
           </AnimatePresence>
 
-        </Container>
+        </Box>
       </Box>
     </>
   );
