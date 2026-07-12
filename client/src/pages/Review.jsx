@@ -524,12 +524,20 @@ export default function Review() {
                         borderRadius: "3px",
                         background: "var(--color-sub-bg)",
                         border: "1px solid var(--color-border)",
-                        position: { md: "sticky" },
-                        top: { md: 100 },
+                        position: {
+  xs: "static",
+  md: "sticky",
+},
+top: {
+  md: 100,
+},
                         minHeight: { md: "420px", xs: "auto" },
                         height: "100%",
                         width: "100%",
-                        maxWidth: "460px",
+                        maxWidth: {
+  xs: "100%",
+  md: "460px",
+},
                         display: "flex",
                         flexDirection: "column",
                         justifyContent: "space-between",
@@ -642,7 +650,10 @@ export default function Review() {
                         minHeight: { md: "420px", xs: "auto" },
                         height: "100%",
                         width: "100%",
-                        maxWidth: "600px",
+                        maxWidth: {
+  xs: "100%",
+  md: "600px",
+},
                         display: "flex",
                         flexDirection: "column",
                         justifyContent: "space-between",
@@ -652,7 +663,7 @@ export default function Review() {
                           position: "absolute",
                           top: 0, left: 0, right: 0,
                           height: "3px",
-                          background: "linear-gradient(90deg, var(--color-primary), #7A90FF)",
+                          background: "linear-gradient(90deg, var(--color-primary), var(--color-primary-hover))",
                         },
                       }}
                     >
