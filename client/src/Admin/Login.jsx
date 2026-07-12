@@ -32,8 +32,17 @@ const Login = () => {
       localStorage.setItem('adminToken', response.data.token);
       localStorage.setItem('adminUser', JSON.stringify(response.data));
 
+      // Store token as cookie
+      document.cookie = `token=${response.data.token}; path=/; max-age=${30 * 24 * 60 * 60}; SameSite=Lax`;
+
       toast.success('Login successful!');
-      navigate('/admin/dashboard'); // Or wherever you want them to go
+      
+      const role = response.data.role ? response.data.role.toLowerCase() : '';
+      if (role === 'hr') {
+        navigate('/admin/career');
+      } else {
+        navigate('/admin/dashboard');
+      }
     } catch (error) {
       toast.error(error.response?.data?.message || 'Login failed. Please try again.');
     } finally {
@@ -41,42 +50,47 @@ const Login = () => {
     }
   };
 
+  // UI Expert custom styles for compact input height and labels
+  const inputStyle = {
+    height: '34px',
+    padding: '6px 12px',
+    fontSize: '13px',
+    color: 'var(--color-paragraph)'
+  };
+
   return (
-    <div className="min-h-screen flex items-center justify-center relative z-10 px-4 bg-sub">
+    <div className="min-h-screen flex items-center justify-center relative z-10 px-4 bg-sub py-6">
       <motion.div
-        initial={{ opacity: 0, y: 30 }}
+        initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6, ease: "easeOut" }}
-        className="w-full max-w-md bg-white card py-6 px-8 relative overflow-hidden"
+        transition={{ duration: 0.5, ease: "easeOut" }}
+        className="w-full max-w-sm bg-white shadow-card border border-[var(--color-border)] rounded-[var(--radius-sm)] p-5 relative overflow-hidden"
       >
-        <div className="flex flex-col items-center gap-4 mb-5">
-          {/* <img src={logo1} alt="Strivo Logo" className="h-9 object-contain" /> */}
-            <Logo className="h-10 text-[var(--color-primary)]" />
+        <div className="flex flex-col items-center mb-3">
+          <Logo className="h-6 text-[var(--color-primary)]" />
         </div>
 
-        <div className="text-center mb-5">
+        <div className="text-center mb-4">
           <motion.h2
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            transition={{ delay: 0.3 }}
-            className="mb-1 block text-center"
-            style={{ fontSize: 'var(--text-card-heading)', fontWeight: 'var(--font-semibold)', color: 'var(--color-primary)' }}
+            transition={{ delay: 0.2 }}
+            className="mb-1 block text-center text-sm font-bold tracking-wider uppercase text-[var(--color-primary)]"
           >
-            ADMIN LOGIN
+            Management Login
           </motion.h2>
           <p
-            className="opacity-70 block text-center"
-            style={{ fontSize: 'var(--text-small)', fontWeight: 'var(--font-normal)', color: 'var(--color-paragraph)' }}
+            className="opacity-70 block text-center text-xs"
+            style={{ color: 'var(--color-paragraph)' }}
           >
             Secure access to Strivo management
           </p>
         </div>
 
-        <form onSubmit={handleLogin} className="space-y-4">
-          <div className="space-y-1.5">
+        <form onSubmit={handleLogin} className="space-y-3">
+          <div className="space-y-0.5">
             <label
-              className="ml-1 block"
-              style={{ fontSize: 'var(--text-small)', fontWeight: 'var(--font-normal)', color: 'var(--color-paragraph)' }}
+              className="block text-[10px] font-bold text-[var(--color-black)] uppercase tracking-wider text-left"
             >
               USERNAME
             </label>
@@ -86,16 +100,15 @@ const Login = () => {
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
                 placeholder="Enter your username"
-                className="input placeholder:text-[var(--color-paragraph)] placeholder:opacity-40 transition-all text-sm py-2.5"
-                style={{ color: 'var(--color-paragraph)' }}
+                className="input placeholder:text-[var(--color-paragraph)] placeholder:opacity-40 transition-all"
+                style={inputStyle}
               />
             </div>
           </div>
 
-          <div className="space-y-1.5">
+          <div className="space-y-0.5">
             <label
-              className="ml-1 block"
-              style={{ fontSize: 'var(--text-small)', fontWeight: 'var(--font-normal)', color: 'var(--color-paragraph)' }}
+              className="block text-[10px] font-bold text-[var(--color-black)] uppercase tracking-wider text-left"
             >
               PASSWORD
             </label>
@@ -105,8 +118,8 @@ const Login = () => {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 placeholder="••••••••"
-                className="input pr-12 placeholder:text-[var(--color-paragraph)] placeholder:opacity-40 transition-all text-sm py-2.5"
-                style={{ color: 'var(--color-paragraph)' }}
+                className="input pr-12 placeholder:text-[var(--color-paragraph)] placeholder:opacity-40 transition-all"
+                style={inputStyle}
               />
               <button
                 type="button"
@@ -120,28 +133,39 @@ const Login = () => {
             <div className="flex justify-end pt-0.5">
               <Link
                 to="/admin/forgot-password"
-                className="hover:underline transition-colors block text-right"
-                style={{ fontSize: 'var(--text-caption)', fontWeight: 'var(--font-medium)', color: 'var(--color-primary)' }}
+                className="hover:underline transition-colors block text-right text-xs font-semibold text-[var(--color-primary)]"
               >
                 Forgot Password?
               </Link>
             </div>
           </div>
 
-          <motion.button
-            whileHover={{ scale: 1.02 }}
-            whileTap={{ scale: 0.98 }}
-            disabled={isLoading}
-            type="submit"
-            className="btn w-full flex items-center justify-center gap-2 h-11"
-          >
-            {isLoading ? (
-              <span className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin"></span>
-            ) : (
-              'Sign In'
-            )}
-          </motion.button>
+          <div className="pt-2">
+            <motion.button
+              whileHover={{ scale: 1.01 }}
+              whileTap={{ scale: 0.99 }}
+              disabled={isLoading}
+              type="submit"
+              className="btn w-full flex items-center justify-center gap-2 text-xs font-bold uppercase tracking-wider"
+              style={{ height: '36px' }}
+            >
+              {isLoading ? (
+                <span className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin"></span>
+              ) : (
+                'Sign In'
+              )}
+            </motion.button>
+          </div>
         </form>
+
+        <div className="text-center mt-3">
+          <Link
+            to="/admin/register"
+            className="hover:underline transition-colors block text-center text-xs font-bold uppercase tracking-wider text-[var(--color-primary)]"
+          >
+            Create an Account
+          </Link>
+        </div>
       </motion.div>
     </div>
   );

@@ -1,6 +1,7 @@
 import express from 'express';
 import multer from 'multer';
 import { submitTalent, getTalentSubmissions, deleteTalentSubmission } from '../controllers/talentController.js';
+import { protect, authorize } from '../middlewares/authMiddleware.js';
 
 const router = express.Router();
 
@@ -15,7 +16,7 @@ const upload = multer({
 router.post("/submit", upload.single("resume"), submitTalent);
 
 
-router.get("/submissions", getTalentSubmissions);
-router.delete("/submissions/:id", deleteTalentSubmission);
+router.get("/submissions", protect, authorize('Admin', 'Administrator', 'Hr'), getTalentSubmissions);
+router.delete("/submissions/:id", protect, authorize('Admin', 'Administrator', 'Hr'), deleteTalentSubmission);
 
 export default router;

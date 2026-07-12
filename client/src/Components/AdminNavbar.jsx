@@ -22,6 +22,14 @@ const AdminNavbar = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const [adminUser, setAdminUser] = useState(null);
+  const userRole = adminUser?.role ? adminUser.role.toLowerCase() : '';
+  const filteredNavLinks = navLinks.filter((link) => {
+    if (userRole === 'hr') {
+      return link.name === 'Careers';
+    } else {
+      return link.name !== 'Careers';
+    }
+  });
   const [notificationCount, setNotificationCount] = useState(0);
   const [notifications, setNotifications] = useState([]);
   const [showDropdown, setShowDropdown] = useState(false);
@@ -137,6 +145,7 @@ const AdminNavbar = () => {
     setShowLogoutConfirm(false);
     localStorage.removeItem('adminToken');
     localStorage.removeItem('adminUser');
+    document.cookie = "token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 UTC; SameSite=Lax";
     navigate('/admin/login');
   };
 
@@ -158,11 +167,25 @@ const AdminNavbar = () => {
       const handleUpdate = () => fetchNotifications();
       window.addEventListener('notificationUpdate', handleUpdate);
 
+      // Connect EventSource for real-time inquiry events
+      const eventSource = new EventSource(`${import.meta.env.VITE_API_BASE_URL}/api/inquiries/events`);
+      eventSource.onmessage = (event) => {
+        try {
+          const parsed = JSON.parse(event.data);
+          if (parsed.type === "new_inquiry") {
+            fetchNotifications();
+          }
+        } catch (err) {
+          console.error("SSE parse error in navbar:", err);
+        }
+      };
+
       // Periodically refresh notifications in backend (every 15 seconds)
       const interval = setInterval(fetchNotifications, 15000);
 
       return () => {
         window.removeEventListener('notificationUpdate', handleUpdate);
+        eventSource.close();
         clearInterval(interval);
       };
     }
@@ -181,13 +204,13 @@ const AdminNavbar = () => {
         style={{ fontFamily: 'var(--font-primary)' }}
       >
         {/* Left: Logo */}
-        <Link to="/admin/dashboard" className="flex items-center gap-2 flex-shrink-0">
+        <Link to={adminUser?.role?.toLowerCase() === 'hr' ? "/admin/career" : "/admin/dashboard"} className="flex items-center gap-2 flex-shrink-0">
           <Logo className="h-7 text-[var(--color-primary)] fill-[var(--color-primary)]" />
         </Link>
 
         {/* Center: Navigation Links (Desktop) */}
         <div className="hidden md:flex items-center gap-8 h-full">
-          {navLinks.map((link) => {
+          {filteredNavLinks.map((link) => {
             const isActive = location.pathname === link.path;
             return (
               <Link
@@ -360,7 +383,7 @@ const AdminNavbar = () => {
 
               {/* Links */}
               <div className="flex flex-col gap-4 flex-1 text-left">
-                {navLinks.map((link) => {
+                {filteredNavLinks.map((link) => {
                   const isActive = location.pathname === link.path;
                   return (
                     <Link

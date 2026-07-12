@@ -386,13 +386,13 @@ const ArticlesAdmin = () => {
                   <div className="hidden md:block overflow-x-auto">
                     <table className="w-full text-left border-collapse min-w-[700px]">
                       <thead>
-                        <tr className="border-b border-[var(--color-border)] text-[var(--color-black)] text-xs font-bold uppercase tracking-wider">
-                          <th className="pb-4 pl-8 pr-6 font-bold">Cover</th>
-                          <th className="pb-4 px-6 font-bold">Title</th>
-                          <th className="pb-4 px-6 font-bold">Category</th>
-                          <th className="pb-4 px-6 font-bold">Publishing Date</th>
-                          <th className="pb-4 px-6 font-bold">Status</th>
-                          <th className="pb-4 pl-6 pr-8 text-right font-bold">Actions</th>
+                        <tr className="border-b border-[var(--color-border)] text-[var(--color-heading)] text-xs font-normal uppercase tracking-wider">
+                          <th className="pb-4 pl-8 pr-6 font-normal">Cover</th>
+                          <th className="pb-4 px-6 font-normal">Title</th>
+                          <th className="pb-4 px-6 font-normal">Category</th>
+                          <th className="pb-4 px-6 font-normal">Publishing Date</th>
+                          <th className="pb-4 px-6 font-normal">Status</th>
+                          <th className="pb-4 pl-6 pr-8 text-right font-normal">Actions</th>
                         </tr>
                       </thead>
                       <tbody className="divide-y divide-[var(--color-border)] text-sm">
@@ -592,7 +592,7 @@ const ArticlesAdmin = () => {
                   <div className="hidden md:block overflow-x-auto">
                     <table className="w-full text-left border-collapse min-w-[500px]">
                       <thead>
-                        <tr className="border-b border-[var(--color-border)] text-[var(--color-black)] text-xs font-bold uppercase tracking-wider">
+                        <tr className="border-b border-[var(--color-border)] text-[var(--color-heading)] text-xs font-normal uppercase tracking-wider">
                           <th className="pb-2 pl-8 pr-6 w-[50%]">Email Address</th>
                           <th className="pb-2 px-6 w-[35%]">Subscribed On</th>
                           <th className="pb-2 pl-6 pr-8 text-right w-[15%]">Actions</th>

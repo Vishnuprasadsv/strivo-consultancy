@@ -26,13 +26,23 @@ export const loginAdmin = async (req, res) => {
     });
 
     if (admin && (await admin.matchPassword(password))) {
+      const token = generateToken(admin._id);
+      
+      // Set secure cookie
+      res.cookie('token', token, {
+        httpOnly: false,
+        secure: process.env.NODE_ENV === 'production',
+        sameSite: 'lax',
+        maxAge: 30 * 24 * 60 * 60 * 1000 // 30 days
+      });
+
       res.json({
         _id: admin._id,
         username: admin.username,
         email: admin.email,
         role: admin.role,
         profileImage: admin.profileImage,
-        token: generateToken(admin._id),
+        token: token,
       });
     } else {
       res.status(401).json({ message: 'Invalid username or password' });
@@ -42,57 +52,96 @@ export const loginAdmin = async (req, res) => {
   }
 };
 
-// @desc    Register a new admin
+// @desc    Register a new admin or hr
 // @route   POST /api/admin/register
-// @access  Public (or Private depending on your security needs)
+// @access  Public
 export const registerAdmin = async (req, res) => {
   const { username, email, role, password } = req.body;
 
   try {
-    // Check if any admin is already registered in the system
-    const count = await Admin.countDocuments({});
+    const targetRole = role === 'Hr' || role === 'HR' ? 'Hr' : 'Admin';
+
+    // Password criteria check (backend validation for safety)
+    const minLength = password && password.length >= 8;
+    const hasUpper = /[A-Z]/.test(password);
+    const hasLower = /[a-z]/.test(password);
+    const hasNumber = /[0-9]/.test(password);
+    const hasSpecial = /[!@#$%^&*(),.?":{}|<>]/.test(password);
+
+    if (!(minLength && hasUpper && hasLower && hasNumber && hasSpecial)) {
+      return res.status(400).json({ 
+        message: 'Password must be at least 8 characters, and contain at least one uppercase letter, one lowercase letter, one number, and one special character.' 
+      });
+    }
+
+    // Check if user with that role is already registered
+    const count = await Admin.countDocuments({ role: targetRole });
     if (count > 0) {
-      return res.status(400).json({ message: 'Multiple admin registration not allowed' });
+      return res.status(400).json({ 
+        message: `Multiple ${targetRole === 'Hr' ? 'HR' : 'Admin'} registration not allowed` 
+      });
     }
 
     const adminExists = await Admin.findOne({ username });
-
     if (adminExists) {
-      return res.status(400).json({ message: 'Admin already exists' });
+      return res.status(400).json({ message: 'Username already exists' });
     }
 
     const admin = await Admin.create({
       username,
       email,
-      role: role || 'Administrator',
+      role: targetRole,
       password,
     });
 
     if (admin) {
+      const token = generateToken(admin._id);
+
+      // Set secure cookie
+      res.cookie('token', token, {
+        httpOnly: false,
+        secure: process.env.NODE_ENV === 'production',
+        sameSite: 'lax',
+        maxAge: 30 * 24 * 60 * 60 * 1000 // 30 days
+      });
+
       res.status(201).json({
         _id: admin._id,
         username: admin.username,
         email: admin.email,
         role: admin.role,
         profileImage: admin.profileImage,
-        token: generateToken(admin._id),
-        message: 'Admin created successfully'
+        token: token,
+        message: `${targetRole} created successfully`
       });
     } else {
-      res.status(400).json({ message: 'Invalid admin data' });
+      res.status(400).json({ message: 'Invalid registration data' });
     }
   } catch (error) {
     res.status(500).json({ message: 'Server error', error: error.message });
   }
 };
 
-// @desc    Check if any admin is already registered
+// @desc    Logout admin/hr
+// @route   POST /api/admin/logout
+// @access  Public
+export const logoutAdmin = async (req, res) => {
+  res.clearCookie('token');
+  res.json({ message: 'Logged out successfully' });
+};
+
+// @desc    Check registration availability for roles
 // @route   GET /api/admin/check-registered
 // @access  Public
 export const checkAdminRegistered = async (req, res) => {
   try {
-    const count = await Admin.countDocuments({});
-    res.json({ registered: count > 0 });
+    const adminCount = await Admin.countDocuments({ role: 'Admin' });
+    const hrCount = await Admin.countDocuments({ role: 'Hr' });
+    res.json({ 
+      registered: adminCount > 0 && hrCount > 0,
+      adminRegistered: adminCount > 0,
+      hrRegistered: hrCount > 0
+    });
   } catch (error) {
     res.status(500).json({ message: 'Server error', error: error.message });
   }
@@ -122,46 +171,74 @@ export const forgotPassword = async (req, res) => {
     await admin.save();
 
     // Send Email
-    const transporter = nodemailer.createTransport({
-      host: "smtp.gmail.com",
-  port: 587,
-  secure: false,
-      tls: { rejectUnauthorized: false },
-      family: 4,
-      auth: {
-        user: process.env.EMAIL,
-        pass: process.env.EMAIL_PASSWORD,
-      },
-    });
+    const emailUser = process.env.EMAIL_USER || process.env.EMAIL;
+    const emailPass = process.env.EMAIL_PASS || process.env.EMAIL_PASSWORD;
 
-    const emailTemplate = `
-      <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
-        <h2>Password reset OTP</h2>
-        <p>Dear ${admin.email},</p>
-        <p>Please use the following One-Time Password (OTP) to complete your verification process:</p>
-        <div style="background-color: #f4f4f4; padding: 15px; text-align: center; font-size: 24px; font-weight: bold; letter-spacing: 5px; margin: 20px 0;">
-          ${otp}
+    if (!emailUser || !emailPass) {
+      console.log('--- DEVELOPMENT OTP CODE ---');
+      console.log(`Email credentials not set. OTP for ${admin.email} is: ${otp}`);
+      console.log('----------------------------');
+      return res.json({ 
+        message: 'OTP sent successfully (Development Mode: OTP logged to console)',
+        otp: process.env.NODE_ENV !== 'production' ? otp : undefined
+      });
+    }
+
+    try {
+      const transporter = nodemailer.createTransport({
+        host: "smtp.gmail.com",
+        port: 587,
+        secure: false,
+        tls: { rejectUnauthorized: false },
+        family: 4,
+        auth: {
+          user: emailUser,
+          pass: emailPass,
+        },
+      });
+
+      const emailTemplate = `
+        <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+          <h2>Password reset OTP</h2>
+          <p>Dear ${admin.email},</p>
+          <p>Please use the following One-Time Password (OTP) to complete your verification process:</p>
+          <div style="background-color: #f4f4f4; padding: 15px; text-align: center; font-size: 24px; font-weight: bold; letter-spacing: 5px; margin: 20px 0;">
+            ${otp}
+          </div>
+          <p>Note: This OTP is valid for only 5 minutes.</p>
+          <p>For your security, please do not share this code with anyone. Strivo Consultancy will never call or email you to ask for your OTP.</p>
+          <p>If you did not request this verification code, please ignore this email or immediately contact our support team.</p>
+          <br/>
+          <p>Best regards,</p>
+          <p><strong>Strivo Consultancy Private Limited</strong></p>
+          <div style="margin-top: 20px;">
+            <img src="https://strivo.com/logo.png" alt="Strivo Logo" style="height: 40px;" />
+          </div>
         </div>
-        <p>Note: This OTP is valid for only 5 minutes.</p>
-        <p>For your security, please do not share this code with anyone. Strivo Consultancy will never call or email you to ask for your OTP.</p>
-        <p>If you did not request this verification code, please ignore this email or immediately contact our support team.</p>
-        <br/>
-        <p>Best regards,</p>
-        <p><strong>Strivo Consultancy Private Limited</strong></p>
-        <div style="margin-top: 20px;">
-          <img src="https://strivo.com/logo.png" alt="Strivo Logo" style="height: 40px;" />
-        </div>
-      </div>
-    `;
+      `;
 
-    await transporter.sendMail({
-      from: process.env.EMAIL,
-      to: admin.email,
-      subject: 'Password reset OTP',
-      html: emailTemplate,
-    });
+      await transporter.sendMail({
+        from: emailUser,
+        to: admin.email,
+        subject: 'Password reset OTP',
+        html: emailTemplate,
+      });
 
-    res.json({ message: 'OTP sent successfully to email' });
+      res.json({ message: 'OTP sent successfully to email' });
+    } catch (emailError) {
+      console.error('Failed to send OTP email via SMTP:', emailError.message);
+      console.log('--- DEVELOPMENT OTP CODE (SMTP FAILED) ---');
+      console.log(`OTP for ${admin.email} is: ${otp}`);
+      console.log('------------------------------------------');
+
+      if (process.env.NODE_ENV !== 'production') {
+        return res.json({ 
+          message: 'OTP sent successfully (Development Fallback: OTP logged to console)',
+          otp: otp
+        });
+      }
+      return res.status(500).json({ message: 'Failed to send OTP email', error: emailError.message });
+    }
   } catch (error) {
     res.status(500).json({ message: 'Server error', error: error.message });
   }
@@ -208,6 +285,19 @@ export const resetPassword = async (req, res) => {
     return res.status(400).json({ message: 'Please provide token and new password' });
   }
 
+  // Password criteria check
+  const minLength = newPassword && newPassword.length >= 8;
+  const hasUpper = /[A-Z]/.test(newPassword);
+  const hasLower = /[a-z]/.test(newPassword);
+  const hasNumber = /[0-9]/.test(newPassword);
+  const hasSpecial = /[!@#$%^&*(),.?":{}|<>]/.test(newPassword);
+
+  if (!(minLength && hasUpper && hasLower && hasNumber && hasSpecial)) {
+    return res.status(400).json({ 
+      message: 'Password must be at least 8 characters, and contain at least one uppercase letter, one lowercase letter, one number, and one special character.' 
+    });
+  }
+
   try {
     const decoded = jwt.verify(resetToken, process.env.JWT_SECRET);
     const admin = await Admin.findById(decoded.id);
@@ -230,9 +320,22 @@ export const resetPassword = async (req, res) => {
 
 // @desc    Change password
 // @route   PUT /api/admin/change-password
-// @access  Public (should ideally be private, but matching current style)
+// @access  Private (protected by protect middleware)
 export const changePassword = async (req, res) => {
   const { username, currentPassword, newPassword } = req.body;
+
+  // Password criteria check
+  const minLength = newPassword && newPassword.length >= 8;
+  const hasUpper = /[A-Z]/.test(newPassword);
+  const hasLower = /[a-z]/.test(newPassword);
+  const hasNumber = /[0-9]/.test(newPassword);
+  const hasSpecial = /[!@#$%^&*(),.?":{}|<>]/.test(newPassword);
+
+  if (!(minLength && hasUpper && hasLower && hasNumber && hasSpecial)) {
+    return res.status(400).json({ 
+      message: 'Password must be at least 8 characters, and contain at least one uppercase letter, one lowercase letter, one number, and one special character.' 
+    });
+  }
 
   try {
     const admin = await Admin.findOne({ username });

@@ -60,9 +60,9 @@ const CaseStudyTable = ({ caseStudies, onStatusChange, onDelete, currentPage, to
           px-8
           lg:px-10
           py-4
-          text-[var(--color-black)]
+          text-[var(--color-heading)]
           text-xs
-          font-bold
+          font-normal
           uppercase
           tracking-wider
           border-b

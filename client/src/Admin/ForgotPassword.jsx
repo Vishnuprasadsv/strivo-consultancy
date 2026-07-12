@@ -51,8 +51,12 @@ const ForgotPassword = () => {
 
     setIsLoading(true);
     try {
-      await axios.post(`${import.meta.env.VITE_API_BASE_URL}/api/admin/forgot-password`, { email });
-      toast.success('OTP sent successfully to your email!');
+      const response = await axios.post(`${import.meta.env.VITE_API_BASE_URL}/api/admin/forgot-password`, { email });
+      if (response.data.otp) {
+        toast.success(`OTP (Dev Mode): ${response.data.otp}`, { duration: 15000 });
+      } else {
+        toast.success('OTP sent successfully to your email!');
+      }
       setStep(2);
       setTimer(300); // Reset timer
       setOtp(['', '', '', '', '', '']);
@@ -144,17 +148,24 @@ const ForgotPassword = () => {
     }
   };
 
+  // UI Expert custom styles for compact input height and labels
+  const inputStyle = {
+    height: '34px',
+    padding: '6px 12px',
+    fontSize: '13px',
+    color: 'var(--color-paragraph)'
+  };
+
   return (
-    <div className="min-h-screen flex items-center justify-center relative z-10 px-4 bg-sub pt-16">
+    <div className="min-h-screen flex items-center justify-center relative z-10 px-4 bg-sub py-6">
       <motion.div
-        initial={{ opacity: 0, y: 30 }}
+        initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6, ease: "easeOut" }}
-        className="w-full max-w-md card p-8 relative overflow-visible"
+        transition={{ duration: 0.5, ease: "easeOut" }}
+        className="w-full max-w-sm bg-white shadow-card border border-[var(--color-border)] rounded-[var(--radius-sm)] p-5 relative overflow-hidden"
       >
-        <div className="flex flex-col items-center gap-4 mb-8">
-          {/* <img src={logo} alt="Strivo Logo" className="h-10 object-contain" /> */}
-          <Logo className="h-10 text-[var(--color-primary)]" />
+        <div className="flex flex-col items-center mb-3">
+          <Logo className="h-6 text-[var(--color-primary)]" />
         </div>
 
         <AnimatePresence mode="wait">
@@ -167,26 +178,24 @@ const ForgotPassword = () => {
               transition={{ duration: 0.3 }}
               className="w-full"
             >
-              <div className="text-center mb-8">
+              <div className="text-center mb-4">
                 <h2
-                  className="mb-2 block text-center"
-                  style={{ fontSize: 'var(--text-card-heading)', fontWeight: 'var(--font-semibold)', color: 'var(--color-black)' }}
+                  className="mb-1 block text-center text-sm font-bold tracking-wider uppercase text-[var(--color-primary)]"
                 >
                   RESET PASSWORD
                 </h2>
                 <p
-                  className="opacity-70 block text-center"
-                  style={{ fontSize: 'var(--text-paragraph)', fontWeight: 'var(--font-normal)', color: 'var(--color-paragraph)' }}
+                  className="opacity-70 block text-center text-xs"
+                  style={{ color: 'var(--color-paragraph)' }}
                 >
                   Enter your email ID to receive an OTP
                 </p>
               </div>
 
-              <form onSubmit={handleSendOtp} className="space-y-6">
-                <div className="space-y-2">
+              <form onSubmit={handleSendOtp} className="space-y-3">
+                <div className="space-y-0.5">
                   <label
-                    className="ml-1 block"
-                    style={{ fontSize: 'var(--text-small)', fontWeight: 'var(--font-medium)', color: 'var(--color-paragraph)' }}
+                    className="block text-[10px] font-bold text-[var(--color-black)] uppercase tracking-wider text-left"
                   >
                     EMAIL ID
                   </label>
@@ -198,22 +207,25 @@ const ForgotPassword = () => {
                       onChange={(e) => setEmail(e.target.value)}
                       placeholder="Enter your email address"
                       className="input placeholder:text-[var(--color-paragraph)] placeholder:opacity-40 transition-all"
-                      style={{ fontSize: 'var(--text-paragraph)', color: 'var(--color-paragraph)' }}
+                      style={inputStyle}
                     />
                   </div>
                 </div>
 
-                <button
-                  disabled={isLoading}
-                  type="submit"
-                  className="btn w-full flex items-center justify-center gap-2"
-                >
-                  {isLoading ? (
-                    <span className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin"></span>
-                  ) : (
-                    'Send OTP'
-                  )}
-                </button>
+                <div className="pt-2">
+                  <button
+                    disabled={isLoading}
+                    type="submit"
+                    className="btn w-full flex items-center justify-center gap-2 text-xs font-bold uppercase tracking-wider"
+                    style={{ height: '36px' }}
+                  >
+                    {isLoading ? (
+                      <span className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin"></span>
+                    ) : (
+                      'Send OTP'
+                    )}
+                  </button>
+                </div>
               </form>
             </motion.div>
           )}
@@ -227,23 +239,22 @@ const ForgotPassword = () => {
               transition={{ duration: 0.3 }}
               className="w-full"
             >
-              <div className="text-center mb-8">
+              <div className="text-center mb-4">
                 <h2
-                  className="mb-2 block text-center"
-                  style={{ fontSize: 'var(--text-card-heading)', fontWeight: 'var(--font-semibold)', color: 'var(--color-black)' }}
+                  className="mb-1 block text-center text-sm font-bold tracking-wider uppercase text-[var(--color-primary)]"
                 >
                   Enter OTP
                 </h2>
                 <p
-                  className="opacity-70 block text-center"
-                  style={{ fontSize: 'var(--text-small)', fontWeight: 'var(--font-normal)', color: 'var(--color-paragraph)' }}
+                  className="opacity-70 block text-center text-xs"
+                  style={{ color: 'var(--color-paragraph)' }}
                 >
                   We sent a 6-digit code to <br />
-                  <span style={{ fontWeight: 'var(--font-bold)', color: 'var(--color-black)' }}>{email}</span>
+                  <span style={{ fontWeight: 'bold', color: 'var(--color-black)' }}>{email}</span>
                 </p>
               </div>
 
-              <form onSubmit={handleVerifyOtp} className="space-y-8">
+              <form onSubmit={handleVerifyOtp} className="space-y-4">
                 <div className="grid grid-cols-6 gap-2 w-full max-w-xs mx-auto">
                   {otp.map((digit, index) => (
                     <input
@@ -254,7 +265,7 @@ const ForgotPassword = () => {
                       value={digit}
                       onChange={(e) => handleOtpChange(index, e.target.value)}
                       onKeyDown={(e) => handleOtpKeyDown(index, e)}
-                      className="w-full h-14 text-center text-xl font-bold transition-all border"
+                      className="w-full h-10 text-center text-lg font-bold transition-all border"
                       style={{ borderRadius: 'var(--radius-sm)', border: '1px solid var(--color-border)', backgroundColor: 'var(--color-white)', color: 'var(--color-black)' }}
                     />
                   ))}
@@ -263,17 +274,16 @@ const ForgotPassword = () => {
                 <div className="text-center">
                   {timer > 0 ? (
                     <p
-                      className="opacity-70 text-center"
-                      style={{ fontSize: 'var(--text-small)', fontWeight: 'var(--font-normal)', color: 'var(--color-paragraph)' }}
+                      className="opacity-70 text-center text-xs"
+                      style={{ color: 'var(--color-paragraph)' }}
                     >
-                      Code expires in <span style={{ color: 'var(--color-primary)', fontWeight: 'var(--font-bold)', fontFamily: 'monospace' }}>{formatTime(timer)}</span>
+                      Code expires in <span style={{ color: 'var(--color-primary)', fontWeight: 'bold', fontFamily: 'monospace' }}>{formatTime(timer)}</span>
                     </p>
                   ) : (
                     <button
                       type="button"
                       onClick={() => handleSendOtp()}
-                      className="bg-transparent border-none p-0 cursor-pointer hover:underline"
-                      style={{ fontSize: 'var(--text-small)', fontWeight: 'var(--font-medium)', color: 'var(--color-primary)' }}
+                      className="bg-transparent border-none p-0 cursor-pointer hover:underline text-xs font-semibold text-[var(--color-primary)]"
                     >
                       Resend OTP
                     </button>
@@ -283,7 +293,8 @@ const ForgotPassword = () => {
                 <button
                   disabled={isLoading || timer === 0}
                   type="submit"
-                  className="btn w-full flex items-center justify-center gap-2"
+                  className="btn w-full flex items-center justify-center gap-2 text-xs font-bold uppercase tracking-wider"
+                  style={{ height: '36px' }}
                 >
                   {isLoading ? (
                     <span className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin"></span>
@@ -304,33 +315,31 @@ const ForgotPassword = () => {
               transition={{ duration: 0.3 }}
               className="w-full"
             >
-              <div className="text-center mb-8">
+              <div className="text-center mb-4">
                 <h2
-                  className="mb-2 block text-center"
-                  style={{ fontSize: 'var(--text-card-heading)', fontWeight: 'var(--font-semibold)', color: 'var(--color-black)' }}
+                  className="mb-1 block text-center text-sm font-bold tracking-wider uppercase text-[var(--color-primary)]"
                 >
                   Create New Password
                 </h2>
                 <p
-                  className="opacity-70 block text-center"
-                  style={{ fontSize: 'var(--text-small)', fontWeight: 'var(--font-normal)', color: 'var(--color-paragraph)' }}
+                  className="opacity-70 block text-center text-xs"
+                  style={{ color: 'var(--color-paragraph)' }}
                 >
                   Please enter your new password below
                 </p>
               </div>
 
-              <form onSubmit={handleResetPassword} className="space-y-5">
-                <div className="space-y-2">
+              <form onSubmit={handleResetPassword} className="space-y-3">
+                <div className="space-y-0.5">
                   <label
-                    className="ml-1 block"
-                    style={{ fontSize: 'var(--text-small)', fontWeight: 'var(--font-medium)', color: 'var(--color-paragraph)' }}
+                    className="block text-[10px] font-bold text-[var(--color-black)] uppercase tracking-wider text-left"
                   >
                     NEW PASSWORD
                   </label>
                   <div className="relative">
                     <FiLock
-                      className="absolute left-4 top-1/2 -translate-y-1/2"
-                      style={{ color: 'var(--color-paragraph)', opacity: 0.5 }}
+                      className="absolute left-3.5 top-1/2 -translate-y-1/2"
+                      style={{ color: 'var(--color-paragraph)', opacity: 0.5, fontSize: '14px' }}
                     />
                     <input
                       type={showPassword ? "text" : "password"}
@@ -340,16 +349,16 @@ const ForgotPassword = () => {
                       onFocus={() => setShowRequirements(true)}
                       onBlur={() => setShowRequirements(false)}
                       placeholder="Enter new password"
-                      className="input pl-11 pr-12 placeholder:text-[var(--color-paragraph)] placeholder:opacity-40 transition-all"
-                      style={{ fontSize: 'var(--text-paragraph)', color: 'var(--color-paragraph)' }}
+                      className="input pl-9 pr-10 placeholder:text-[var(--color-paragraph)] placeholder:opacity-40 transition-all"
+                      style={inputStyle}
                     />
                     <button
                       type="button"
                       onClick={() => setShowPassword(!showPassword)}
-                      className="absolute right-4 top-1/2 -translate-y-1/2 opacity-50 hover:opacity-85 transition-opacity cursor-pointer bg-transparent border-none p-0 flex items-center justify-center"
+                      className="absolute right-3 top-1/2 -translate-y-1/2 opacity-50 hover:opacity-85 transition-opacity cursor-pointer bg-transparent border-none p-0 flex items-center justify-center"
                       style={{ color: 'var(--color-paragraph)' }}
                     >
-                      {showPassword ? <FiEyeOff size={18} /> : <FiEye size={18} />}
+                      {showPassword ? <FiEyeOff size={16} /> : <FiEye size={16} />}
                     </button>
 
                     {/* Floating absolutely positioned requirements tooltip */}
@@ -370,17 +379,16 @@ const ForgotPassword = () => {
                   </div>
                 </div>
 
-                <div className="space-y-2">
+                <div className="space-y-0.5">
                   <label
-                    className="ml-1 block"
-                    style={{ fontSize: 'var(--text-small)', fontWeight: 'var(--font-medium)', color: 'var(--color-paragraph)' }}
+                    className="block text-[10px] font-bold text-[var(--color-black)] uppercase tracking-wider text-left"
                   >
                     CONFIRM PASSWORD
                   </label>
                   <div className="relative">
                     <FiLock
-                      className="absolute left-4 top-1/2 -translate-y-1/2"
-                      style={{ color: 'var(--color-paragraph)', opacity: 0.5 }}
+                      className="absolute left-3.5 top-1/2 -translate-y-1/2"
+                      style={{ color: 'var(--color-paragraph)', opacity: 0.5, fontSize: '14px' }}
                     />
                     <input
                       type={showConfirmPassword ? "text" : "password"}
@@ -388,41 +396,43 @@ const ForgotPassword = () => {
                       value={confirmPassword}
                       onChange={(e) => setConfirmPassword(e.target.value)}
                       placeholder="Confirm new password"
-                      className="input pl-11 pr-12 placeholder:text-[var(--color-paragraph)] placeholder:opacity-40 transition-all"
-                      style={{ fontSize: 'var(--text-paragraph)', color: 'var(--color-paragraph)' }}
+                      className="input pl-9 pr-10 placeholder:text-[var(--color-paragraph)] placeholder:opacity-40 transition-all"
+                      style={inputStyle}
                     />
                     <button
                       type="button"
                       onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                      className="absolute right-4 top-1/2 -translate-y-1/2 opacity-50 hover:opacity-85 transition-opacity cursor-pointer bg-transparent border-none p-0 flex items-center justify-center"
+                      className="absolute right-3 top-1/2 -translate-y-1/2 opacity-50 hover:opacity-85 transition-opacity cursor-pointer bg-transparent border-none p-0 flex items-center justify-center"
                       style={{ color: 'var(--color-paragraph)' }}
                     >
-                      {showConfirmPassword ? <FiEyeOff size={18} /> : <FiEye size={18} />}
+                      {showConfirmPassword ? <FiEyeOff size={16} /> : <FiEye size={16} />}
                     </button>
                   </div>
                 </div>
 
-                <button
-                  disabled={isLoading}
-                  type="submit"
-                  className="btn w-full flex items-center justify-center gap-2 mt-4"
-                >
-                  {isLoading ? (
-                    <span className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin"></span>
-                  ) : (
-                    'Confirm Password'
-                  )}
-                </button>
+                <div className="pt-2">
+                  <button
+                    disabled={isLoading}
+                    type="submit"
+                    className="btn w-full flex items-center justify-center gap-2 text-xs font-bold uppercase tracking-wider"
+                    style={{ height: '36px' }}
+                  >
+                    {isLoading ? (
+                      <span className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin"></span>
+                    ) : (
+                      'Confirm Password'
+                    )}
+                  </button>
+                </div>
               </form>
             </motion.div>
           )}
         </AnimatePresence>
 
-        <div className="text-center mt-6">
+        <div className="text-center mt-4">
           <Link
             to="/admin/login"
-            className="hover:underline transition-colors"
-            style={{ fontSize: 'var(--text-small)', fontWeight: 'var(--font-medium)', color: 'var(--color-primary)' }}
+            className="hover:underline transition-colors text-xs font-semibold text-[var(--color-primary)]"
           >
             Back to Login
           </Link>

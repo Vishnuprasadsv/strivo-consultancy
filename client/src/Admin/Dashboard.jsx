@@ -855,17 +855,17 @@ const Dashboard = () => {
             {/* Actionables Card (2/3 width) */}
             <div className="card bg-white p-4 shadow-card lg:col-span-8 flex flex-col justify-between">
               <div className="border-b border-[var(--color-border)] pb-2 mb-3">
-                <h3 className="text-primary font-[var(--font-bold)]" style={{ fontSize: 'var(--text-small)', margin: 0 }}>Actionables</h3>
+                <h3 className="text-primary font-[var(--font-bold)]" style={{ fontSize: 'var(--text-small)', margin: 0 }}>ACTIONABLES</h3>
               </div>
               <div className="hidden md:block overflow-x-auto flex-1 w-full">
                 <table className="w-full text-left border-collapse table-fixed min-w-[600px]">
                   <thead>
-                    <tr className="border-b border-[var(--color-border)] text-paragraph opacity-60 font-bold" style={{ fontSize: 'var(--text-caption)' }}>
-                      <th className="py-1.5 px-3 font-bold text-left w-1/5">Module</th>
-                      <th className="py-1.5 px-3 font-bold text-center w-1/5">Total</th>
-                      <th className="py-1.5 px-3 font-bold text-center w-1/5">Pending</th>
-                      <th className="py-1.5 px-3 font-bold text-center w-1/5">Last Updated</th>
-                      <th className="py-1.5 px-3 font-bold text-center w-1/5">View</th>
+                    <tr className="border-b  border-[var(--color-border)] text-[var(--color-heading)] font-normal uppercase tracking-wider" style={{ fontSize: 'var(--text-caption)' }}>
+                      <th className="py-1.5 px-3 font-normal text-left w-1/5">Module</th>
+                      <th className="py-1.5 px-3 font-normal text-center w-1/5">Total</th>
+                      <th className="py-1.5 px-3 font-normal text-center w-1/5">Pending</th>
+                      <th className="py-1.5 px-3 font-normal text-center w-1/5">Last Updated</th>
+                      <th className="py-1.5 px-3 font-normal text-center w-1/5">View</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -1007,7 +1007,7 @@ const Dashboard = () => {
             <div className="card bg-white p-4 shadow-card lg:col-span-4 flex flex-col justify-start gap-4">
               <div>
                 <div className="border-b border-[var(--color-border)] pb-2 mb-3 flex justify-between items-center">
-                  <h3 className="text-primary font-[var(--font-bold)]" style={{ fontSize: 'var(--text-small)', margin: 0 }}>Today's Tasks</h3>
+                  <h3 className="text-primary font-[var(--font-bold)]" style={{ fontSize: 'var(--text-small)', margin: 0 }}>TODAYS TASK</h3>
                   <span className="bg-[var(--color-primary)]/10 text-primary px-2 py-0.5 rounded-full font-bold" style={{ fontSize: 'var(--text-caption)' }}>
                     {tasksList.filter(t => !t.isCompleted).length} Pending
                   </span>
@@ -1155,13 +1155,13 @@ const Dashboard = () => {
                     <div className="hidden md:block overflow-x-auto w-full">
                       <table className="w-full text-left border-collapse table-fixed min-w-[700px]">
                         <thead>
-                          <tr className="border-b border-[var(--color-border)] text-paragraph opacity-60 font-bold" style={{ fontSize: 'var(--text-caption)' }}>
-                            <th className="py-1.5 px-3 font-bold text-left w-1/6">Reviewer</th>
-                            <th className="py-1.5 px-3 font-bold text-center w-1/6">Rating</th>
-                            <th className="py-1.5 px-3 font-bold text-left w-1/6">Review</th>
-                            <th className="py-1.5 px-3 font-bold text-center w-1/6">Date</th>
-                            <th className="py-1.5 px-3 font-bold text-center w-1/6">Status</th>
-                            <th className="py-1.5 px-3 font-bold text-center w-1/6">Actions</th>
+                          <tr className="border-b border-[var(--color-border)] text-[var(--color-heading)] font-normal uppercase tracking-wider" style={{ fontSize: 'var(--text-caption)' }}>
+                            <th className="py-1.5 px-3 font-normal text-left w-1/6">Reviewer</th>
+                            <th className="py-1.5 px-3 font-normal text-center w-1/6">Rating</th>
+                            <th className="py-1.5 px-3 font-normal text-left w-1/6">Review</th>
+                            <th className="py-1.5 px-3 font-normal text-center w-1/6">Date</th>
+                            <th className="py-1.5 px-3 font-normal text-center w-1/6">Status</th>
+                            <th className="py-1.5 px-3 font-normal text-center w-1/6">Actions</th>
                           </tr>
                         </thead>
                         <tbody>
@@ -1387,12 +1387,12 @@ const Dashboard = () => {
                 <div className="hidden md:block overflow-x-auto w-full">
                   <table className="w-full text-left border-collapse table-fixed min-w-[700px]">
                     <thead>
-                      <tr className="border-b border-[var(--color-border)] text-primary font-bold" style={{ fontSize: 'var(--text-caption)' }}>
-                        <th className="py-1.5 px-3 font-bold text-left w-1/5">Client Name</th>
-                        <th className="py-1.5 px-3 font-bold text-left w-1/5">Position / Company</th>
-                        <th className="py-1.5 px-3 font-bold text-left w-1/5">Client Story Text</th>
-                        <th className="py-1.5 px-3 font-bold text-center w-1/5">Created Date</th>
-                        <th className="py-1.5 px-3 font-bold text-center w-1/5">Actions</th>
+                      <tr className="border-b border-[var(--color-border)] text-[var(--color-heading)] font-normal uppercase tracking-wider" style={{ fontSize: 'var(--text-caption)' }}>
+                        <th className="py-1.5 px-3 font-normal text-left w-1/5">Client Name</th>
+                        <th className="py-1.5 px-3 font-normal text-left w-1/5">Position / Company</th>
+                        <th className="py-1.5 px-3 font-normal text-left w-1/5">Client Story Text</th>
+                        <th className="py-1.5 px-3 font-normal text-center w-1/5">Created Date</th>
+                        <th className="py-1.5 px-3 font-normal text-center w-1/5">Actions</th>
                       </tr>
                     </thead>
                     <tbody>

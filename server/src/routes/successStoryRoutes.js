@@ -23,9 +23,11 @@ const storage = new CloudinaryStorage({
 
 const upload = multer({ storage: storage });
 
+import { protect, authorize } from '../middlewares/authMiddleware.js';
+
 const router = express.Router();
 
-router.post('/', (req, res, next) => {
+router.post('/', protect, authorize('Admin', 'Administrator'), (req, res, next) => {
   upload.single('image')(req, res, (err) => {
     if (err) {
       console.error('Multer/Cloudinary error:', err);
@@ -34,9 +36,9 @@ router.post('/', (req, res, next) => {
     next();
   });
 }, createStory);
-router.get('/', getStories);
-router.delete('/:id', deleteStory);
-router.put('/:id', (req, res, next) => {
+router.get('/', getStories); // Public
+router.delete('/:id', protect, authorize('Admin', 'Administrator'), deleteStory);
+router.put('/:id', protect, authorize('Admin', 'Administrator'), (req, res, next) => {
   upload.single('image')(req, res, (err) => {
     if (err) {
       console.error('Multer/Cloudinary error:', err);

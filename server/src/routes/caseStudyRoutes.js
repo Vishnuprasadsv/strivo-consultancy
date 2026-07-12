@@ -1,26 +1,23 @@
 import express from "express";
-
-
-
 import {
-
     createCaseStudy,
     getCaseStudies,
     getCaseStudy,
     updateCaseStudy,
     deleteCaseStudy
-
 } from "../controllers/caseStudyController.js";
+import { protect, authorize } from '../middlewares/authMiddleware.js';
 
 const router = express.Router();
-router.post("/", createCaseStudy);
 
-router.get("/", getCaseStudies);
+router.post("/", protect, authorize('Admin', 'Administrator'), createCaseStudy);
 
-router.get("/:id", getCaseStudy);
+router.get("/", getCaseStudies); // Public
 
-router.put("/:id", updateCaseStudy);
+router.get("/:id", getCaseStudy); // Public
 
-router.delete("/:id", deleteCaseStudy);
+router.put("/:id", protect, authorize('Admin', 'Administrator'), updateCaseStudy);
+
+router.delete("/:id", protect, authorize('Admin', 'Administrator'), deleteCaseStudy);
 
 export default router;
