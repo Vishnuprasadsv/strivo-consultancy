@@ -150,7 +150,7 @@ const Article = () => {
     <div className="min-h-screen">
       {/* HEADER SECTION */}
       <section className="bg-main">
-        <div className="max-w-[110rem] mx-auto px-8 md:px-16 lg:px-[180px] py-10">
+        <div className="max-w-[110rem] mx-auto px-4 md:px-12 lg:px-[180px] py-10">
           <motion.div
             initial="hidden"
             animate="visible"
@@ -236,7 +236,7 @@ const Article = () => {
                   </div>
                 ) : (
                   <>
-                    <div className="bg-main border-l border-l-[var(--color-primary)] border-l-4 rounded-r-xl p-8">
+                    <div className="bg-main border-l border-l-[var(--color-primary)] border-l-4 rounded-r-[var(--radius-sm)] p-8">
                       <h3 className="sub-heading text-[var(--color-primary)] mb-4 flex items-center gap-2">
                         <svg className="w-5 h-5 " fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
                         Executive Summary
@@ -255,7 +255,7 @@ const Article = () => {
                       </p>
                     </div>
 
-                    <blockquote className="bg-main paragraph border-l border-l-[var(--color-primary)] border-l-4 rounded-r-xl p-8 text-[var(--color-primary)]">
+                    <blockquote className="bg-main paragraph border-l border-l-[var(--color-primary)] border-l-4 rounded-r-[var(--radius-sm)] p-8 text-[var(--color-primary)]">
                       "Strategic adaptation is no longer an option—it is the baseline for enterprise survival."
                       <footer className="text-black text-sm font-semibold mt-4 not-italic">— Maria Halstead, Nexus Insights Global</footer>
                     </blockquote>

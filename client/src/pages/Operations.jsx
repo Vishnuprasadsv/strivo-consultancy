@@ -118,7 +118,7 @@ const Operations = () => {
           initial="hidden"
           animate="visible"
           variants={fadeUpVariants}
-          className="max-w-[110rem] w-full mx-auto px-8 md:px-16 lg:px-[180px] py-10 text-white"
+          className="max-w-[110rem] w-full mx-auto px-4 md:px-12 lg:px-[180px] py-10 text-white"
           style={{
             filter: "drop-shadow(0px 8px 16px rgba(0, 0, 0, 0.2))"
           }}
@@ -144,7 +144,7 @@ const Operations = () => {
       {/* SECOND SECTION: Enterprise Architecture Card                               */}
       {/* ========================================================================= */}
       <div className="max-w-[1440px] mx-auto">
-        <div className="bg-sub py-6 md:py-12 px-6 md:px-16 lg:px-[180px]">
+        <div className="bg-sub py-6 md:py-12 px-4 md:px-12 lg:px-[180px]">
           <div className="max-w-[1440px] mx-auto">
             <motion.section
               initial="hidden"
@@ -200,7 +200,7 @@ const Operations = () => {
       </div>
 
       {/* Section 2: Service Overview */}
-      <div className="max-w-[1440px] mx-auto px-6 md:px-16 lg:px-[180px]">
+      <div className="max-w-[1440px] mx-auto px-4 md:px-12 lg:px-[180px]">
         <motion.section
           initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.2 }} variants={fadeUpVariants}
           className="w-full bg-sub py-6 md:py-12"
@@ -244,7 +244,7 @@ const Operations = () => {
       </div>
 
       {/* Section 7: CTA Banner */}
-      <div className="max-w-[1440px] mx-auto px-6 md:px-16 lg:px-[180px]">
+      <div className="max-w-[1440px] mx-auto px-4 md:px-12 lg:px-[180px]">
         <motion.section
           initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.2 }} variants={fadeUpVariants}
           className="w-full py-6 md:py-12"
@@ -265,7 +265,7 @@ const Operations = () => {
       </div>
 
       {/* Section 3: Core Capabilities / Operations Pillars */}
-      <div className="max-w-[1440px] mx-auto px-6 md:px-16 lg:px-[180px]">
+      <div className="max-w-[1440px] mx-auto px-4 md:px-12 lg:px-[180px]">
         <motion.section
           initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.1 }} variants={fadeUpVariants}
           className="w-full bg-sub py-6 md:py-12"
@@ -302,7 +302,7 @@ const Operations = () => {
       </div>
 
       {/* Section 4: Operations Methodology Framework */}
-      <div className="max-w-[1440px] mx-auto px-6 md:px-16 lg:px-[180px]">
+      <div className="max-w-[1440px] mx-auto px-4 md:px-12 lg:px-[180px]">
         <motion.section
           initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.1 }} variants={fadeUpVariants}
           className="w-full bg-sub py-6 md:py-12"
@@ -348,7 +348,7 @@ const Operations = () => {
       </div>
       
       {/* Section 8: Final Conversion Banner */}
-      <div className="max-w-[1440px] mx-auto px-6 md:px-16 lg:px-[180px]">
+      <div className="max-w-[1440px] mx-auto px-4 md:px-12 lg:px-[180px]">
         <motion.section
           initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.2 }} variants={fadeUpVariants}
           className="w-full bg-sub text-center py-6 md:py-12"
@@ -495,7 +495,7 @@ const Operations = () => {
           </Box>
     
       {/* Section 6: Strategic Excellence in Action */}
-      <div className="max-w-[1440px] mx-auto px-6 md:px-16 lg:px-[180px]">
+      <div className="max-w-[1440px] mx-auto px-4 md:px-12 lg:px-[180px]">
         <motion.section
           initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.1 }} variants={fadeUpVariants}
           className="w-full py-6 md:py-12"
