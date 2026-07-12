@@ -30,7 +30,7 @@ const StarRating = ({ value, onChange }) => {
 
   return (
     <Box sx={{ display: "flex", justifyContent: "center" }}>
-      <Stack direction="row" spacing={0.5} alignItems="center">
+      <Stack direction="row" spacing={0.5} sx={{ alignItems: "center" }}>
         {[1, 2, 3, 4, 5].map((star) => {
           const isHighlighted = star <= (hovered || value);
 
@@ -277,7 +277,7 @@ export default function Review() {
         id="hero-section"
         sx={{
           position: { xs: "relative", md: "sticky" },
-          top: "80px",
+          top: { xs: 0, md: "80px" },
           zIndex: 1,
           height: { xs: "auto", md: "600px" },
           minHeight: { xs: "auto", md: "600px" },
@@ -306,7 +306,7 @@ export default function Review() {
 
         {/* Left Column Container: Content Aligned to Navbar */}
         <Box
-          className="max-w-[1440px] mx-auto px-6 md:px-16 lg:px-[180px]"
+          className="max-w-[1440px] mx-auto px-4 md:px-12 lg:px-[180px]"
           sx={{
             position: "relative",
             zIndex: 2,
@@ -415,7 +415,7 @@ export default function Review() {
         }}
       >
         <Box
-          className="max-w-[1440px] mx-auto px-6 md:px-16 lg:px-[180px]"
+          className="max-w-[1440px] mx-auto px-4 md:px-12 lg:px-[180px]"
           sx={{ position: "relative", zIndex: 1 }}
         >
 
@@ -514,22 +514,10 @@ export default function Review() {
                 transition={{ duration: 0.5 }}
               >
                 {/* Grid Container centered */}
-                <Grid
-  container
-  spacing={{ xs: 3, md: 4 }}
-  justifyContent="center"
-  sx={{ mx: "auto" }}
->
+                <Grid container spacing={4} sx={{ justifyContent: "center", mx: "auto" }}>
 
                   {/* Guidelines Box */}
-                  <Grid
-  size={{ xs: 12, md: 5 }}
-  sx={{
-    display: "flex",
-    justifyContent: "center",
-    order: { xs: 2, md: 1 },
-  }}
->
+                  <Grid size={{ xs: 12, md: 5 }} sx={{ display: "flex", justifyContent: "center" }}>
                     <Box
                       sx={{
                         p: { xs: 2.5, md: 3 },
@@ -557,7 +545,7 @@ top: {
                       }}
                     >
                       <Box>
-                        <Stack direction="row" spacing={1.5} alignItems="center" justifyContent="center" sx={{ mb: "24px" }}>
+                        <Stack direction="row" spacing={1.5} sx={{ alignItems: "center", justifyContent: "center", mb: "24px" }}>
                           <Box
                             sx={{
                               width: 34, height: 34,
@@ -648,14 +636,7 @@ top: {
                   </Grid>
 
                   {/* Review Form Box */}
-                 <Grid
-  size={{ xs: 12, md: 7 }}
-  sx={{
-    display: "flex",
-    justifyContent: "center",
-    order: { xs: 1, md: 2 },
-  }}
->
+                  <Grid size={{ xs: 12, md: 7 }} sx={{ display: "flex", justifyContent: "center" }}>
                     <Box
                       component="form"
                       ref={formRef}
@@ -700,7 +681,7 @@ top: {
 
                         {/* Name & Company Input Fields */}
                         <Grid container spacing={2}>
-                          <Grid item xs={12} sm={6}>
+                          <Grid size={{ xs: 12, sm: 6 }}>
                             <TextField
                               fullWidth
                               size="small"
@@ -715,7 +696,7 @@ top: {
                               FormHelperTextProps={{ sx: { color: "var(--color-danger)" } }}
                             />
                           </Grid>
-                          <Grid item xs={12} sm={6}>
+                          <Grid size={{ xs: 12, sm: 6 }}>
                             <TextField
                               fullWidth
                               size="small"

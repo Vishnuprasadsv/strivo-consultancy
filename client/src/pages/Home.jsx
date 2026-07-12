@@ -529,7 +529,7 @@ function Home() {
           position: "relative",
           minHeight: "700px",
           py: { xs: 6, lg: 0 },
-          px: { xs: 2, lg: "160px" },
+          px: { xs: 0, lg: "180px" },
           display: "flex",
           alignItems: "center",
           overflow: "hidden",
@@ -540,6 +540,7 @@ function Home() {
           sx={{
             position: "absolute",
             inset: 0,
+            display: { xs: "none", md: "block" },
             backgroundImage: `url(${newHero})`,
             backgroundSize: "cover",
             backgroundPosition: "center",
@@ -565,7 +566,7 @@ function Home() {
         {/* Main Content */}
 
         <Box
-          className="max-w-[110rem] mx-auto px-8"
+          className="max-w-[110rem] mx-auto px-4 md:px-8 lg:px-0"
           sx={{
             position: "relative",
             zIndex: 2,
@@ -942,7 +943,7 @@ function Home() {
         sx={{
           backgroundColor: "var(--color-sub-bg)",
           py: { xs: 6, md: 8 },
-          px: { xs: 2, lg: "160px" },
+          px: { xs: 0, lg: "180px" },
         }}
       >
         <Container maxWidth="lg">
@@ -1123,7 +1124,7 @@ function Home() {
         sx={{
           backgroundColor: "var(--color-main-bg)",
           py: { xs: 6, md: 8 },
-          px: { xs: 2, lg: "160px" },
+          px: { xs: 0, lg: "180px" },
           position: "relative",
           overflow: "hidden",
         }}
@@ -1376,7 +1377,7 @@ function Home() {
         sx={{
           backgroundColor: "var(--color-sub-bg)",
           py: { xs: 6, md: 8 },
-          px: { xs: 2, lg: "180px" },
+          px: { xs: 0, lg: "180px" },
           overflow: "hidden",
           position: "relative"
         }}

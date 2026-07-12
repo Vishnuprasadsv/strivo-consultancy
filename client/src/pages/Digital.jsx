@@ -119,7 +119,7 @@ const Digital = () => {
           initial="hidden"
           animate="visible"
           variants={fadeUpVariants}
-          className="max-w-[110rem] w-full mx-auto px-8 md:px-16 lg:px-[180px] py-10 text-white"
+          className="max-w-[110rem] w-full mx-auto px-4 md:px-12 lg:px-[180px] py-10 text-white"
           style={{
             filter: "drop-shadow(0px 8px 16px rgba(0, 0, 0, 0.2))"
           }}
@@ -145,7 +145,7 @@ const Digital = () => {
       {/* SECOND SECTION: Enterprise Architecture Card                               */}
       {/* ========================================================================= */}
       <div className="max-w-[1440px] mx-auto">
-        <div className="bg-sub py-6 md:py-12 px-6 md:px-16 lg:px-[180px]">
+        <div className="bg-sub py-6 md:py-12 px-4 md:px-12 lg:px-[180px]">
           <div className="max-w-[1440px] mx-auto">
             <motion.section
               initial="hidden"
@@ -201,7 +201,7 @@ const Digital = () => {
       </div>
 
       {/* Section 2: Service Overview */}
-      <div className="max-w-[1440px] mx-auto px-6 md:px-16 lg:px-[180px]">
+      <div className="max-w-[1440px] mx-auto px-4 md:px-12 lg:px-[180px]">
         <motion.section
           initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.2 }} variants={fadeUpVariants}
           className="w-full bg-sub py-6 md:py-12"
@@ -244,7 +244,7 @@ const Digital = () => {
       </div>
 
       {/* Section 7: CTA Banner */}
-      <div className="max-w-[1440px] mx-auto px-6 md:px-16 lg:px-[180px]">
+      <div className="max-w-[1440px] mx-auto px-4 md:px-12 lg:px-[180px]">
         <motion.section
           initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.2 }} variants={fadeUpVariants}
           className="w-full py-6 md:py-12"
@@ -265,7 +265,7 @@ const Digital = () => {
       </div>
 
       {/* Section 3: Core Capabilities / Digital Pillars */}
-      <div className="max-w-[1440px] mx-auto px-6 md:px-16 lg:px-[180px]">
+      <div className="max-w-[1440px] mx-auto px-4 md:px-12 lg:px-[180px]">
         <motion.section
           initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.1 }} variants={fadeUpVariants}
           className="w-full bg-sub py-6 md:py-12"
@@ -302,7 +302,7 @@ const Digital = () => {
       </div>
 
       {/* Section 4: Digital Methodology Framework */}
-      <div className="max-w-[1440px] mx-auto px-6 md:px-16 lg:px-[180px]">
+      <div className="max-w-[1440px] mx-auto px-4 md:px-12 lg:px-[180px]">
         <motion.section
           initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.1 }} variants={fadeUpVariants}
           className="w-full bg-sub py-6 md:py-12"
@@ -348,7 +348,7 @@ const Digital = () => {
       </div>
 
       {/* Section 8: Final Conversion Banner */}
-      <div className="max-w-[1440px] mx-auto px-6 md:px-16 lg:px-[180px]">
+      <div className="max-w-[1440px] mx-auto px-4 md:px-12 lg:px-[180px]">
         <motion.section
           initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.2 }} variants={fadeUpVariants}
           className="w-full bg-sub text-center py-6 md:py-12"
@@ -495,7 +495,7 @@ const Digital = () => {
       </Box>
 
       {/* Section 6: Case Study Portfolio Wrapper */}
-      <div className="max-w-[1440px] mx-auto px-6 md:px-16 lg:px-[180px]">
+      <div className="max-w-[1440px] mx-auto px-4 md:px-12 lg:px-[180px]">
         <motion.section
           initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.1 }} variants={fadeUpVariants}
           className="w-full py-6 md:py-12"

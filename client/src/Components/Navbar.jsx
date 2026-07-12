@@ -131,7 +131,7 @@ const Navbar = () => {
       >
         <motion.div variants={itemVariants} className="flex items-center gap-2">
           {/* <img src={logo} alt="Strivo Logo" className="h-8 w-auto" /> */}
-          <Logo className="h-6 sm:h-8 md:h-10 lg:h-12 w-auto text-[var(--color-primary)]" />
+          <Logo className="h-8 sm:h-10 md:h-10 lg:h-12 w-auto text-[var(--color-primary)]" />
         </motion.div>
         <motion.button
           variants={itemVariants}
@@ -162,7 +162,7 @@ const Navbar = () => {
                       onClick={() => {
                         setIsMobileMenuOpen(false);
                       }}
-                      className={`block px-4 py-3 rounded-lg transition-colors font-bold text-navlink ${activeTab === link.name ? 'bg-[var(--color-sub-bg)]' : 'hover:bg-gray-900 hover:text-[var(--color-primary)]'
+                      className={`block px-4 py-3 rounded-lg transition-colors font-bold text-primary ${activeTab === link.name ? 'bg-[var(--color-sub-bg)]' : 'hover:bg-[var(--color-sub-bg)]'
                         }`}
                     >
                       {link.name}
@@ -174,7 +174,7 @@ const Navbar = () => {
                         e.preventDefault();
                         setIsMobileMenuOpen(false);
                       }}
-                      className={`block px-4 py-3 rounded-lg transition-colors font-bold text-navlink ${activeTab === link.name ? 'bg-gray-900' : 'hover:bg-gray-900 hover:text-[var(--color-primary)]'
+                      className={`block px-4 py-3 rounded-lg transition-colors font-bold text-primary ${activeTab === link.name ? 'bg-[var(--color-sub-bg)]' : 'hover:bg-[var(--color-sub-bg)]'
                         }`}
                     >
                       {link.name}

@@ -105,7 +105,7 @@ const CaseStudyDetails = () => {
         <div className="bg-main min-h-screen">
 
             {/* HERO SECTION */}
-            <div className="max-w-[1440px] mx-auto px-6 md:px-16 lg:px-[180px] py-10">
+            <div className="max-w-[1440px] mx-auto px-4 md:px-12 lg:px-[180px] py-10">
                 {/* Back Button matching Article Template */}
                 <motion.div
                     initial="hidden"
@@ -195,7 +195,7 @@ const CaseStudyDetails = () => {
 
             {/* OTHER SECTIONS */}
             <div className="bg-sub w-full py-10 md:py-12">
-                <div className="max-w-[1440px] mx-auto px-6 md:px-16 lg:px-[180px] space-y-12 md:space-y-16">
+                <div className="max-w-[1440px] mx-auto px-4 md:px-12 lg:px-[180px] space-y-12 md:space-y-16">
 
                     {/* BUSINESS CHALLENGE */}
                     <motion.section
