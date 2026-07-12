@@ -76,11 +76,14 @@ const DynamicThemeProvider = ({ children }) => {
 // Configure global Axios settings to auto-attach authorization header & allow credentials cookies
 axios.interceptors.request.use(
   (config) => {
-    const token = localStorage.getItem('adminToken');
-    if (token) {
-      config.headers['Authorization'] = `Bearer ${token}`;
+    // Only attach tokens and credentials for our own API, not external ones like Cloudinary
+    if (config.url && !config.url.includes('cloudinary.com')) {
+      const token = localStorage.getItem('adminToken');
+      if (token) {
+        config.headers['Authorization'] = `Bearer ${token}`;
+      }
+      config.withCredentials = true;
     }
-    config.withCredentials = true;
     return config;
   },
   (error) => {
