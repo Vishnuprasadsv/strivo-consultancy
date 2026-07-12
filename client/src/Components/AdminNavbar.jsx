@@ -168,7 +168,8 @@ const AdminNavbar = () => {
       window.addEventListener('notificationUpdate', handleUpdate);
 
       // Connect EventSource for real-time inquiry events
-      const eventSource = new EventSource(`${import.meta.env.VITE_API_BASE_URL}/api/inquiries/events`);
+      const token = localStorage.getItem('adminToken');
+      const eventSource = new EventSource(`${import.meta.env.VITE_API_BASE_URL}/api/inquiries/events?token=${token}`);
       eventSource.onmessage = (event) => {
         try {
           const parsed = JSON.parse(event.data);

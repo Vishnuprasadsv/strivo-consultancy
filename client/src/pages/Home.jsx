@@ -879,7 +879,7 @@ function Home() {
                       width: 64,
                       height: 64,
                       borderRadius: "50%",
-                      background: "rgba(255,255,255,0.08)",
+                      background: "rgba(255, 0, 0, 0.08)",
                       border: "1px solid rgba(255,255,255,0.15)",
                       display: "flex",
                       alignItems: "center",
@@ -895,8 +895,9 @@ function Home() {
                   </Box>
                   <Box sx={{ display: "flex", alignItems: "baseline", mb: 0.5 }}>
                     <Typography
+                      component="div"
                       sx={{
-                        color: "#fff",
+                        color: "#ffffff !important",
                         fontSize: "2.8rem",
                         fontWeight: 700,
                         lineHeight: 1,
@@ -905,8 +906,9 @@ function Home() {
                       <AnimatedCounter target={stat.value} />
                     </Typography>
                     <Typography
+                      component="div"
                       sx={{
-                        color: "#fff",
+                        color: "#ffffff !important",
                         fontSize: "2.8rem",
                         fontWeight: 700,
                         lineHeight: 1,
@@ -916,8 +918,9 @@ function Home() {
                     </Typography>
                   </Box>
                   <Typography
+                    component="div"
                     sx={{
-                      color: "rgba(255,255,255,0.7)",
+                      color: "#ffffff !important",
                       fontSize: "0.8rem",
                       fontWeight: 600,
                       letterSpacing: "1px",

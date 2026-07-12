@@ -75,7 +75,8 @@ const Inquiries = () => {
         fetchInquiries();
 
         // SSE Real-time Updates Connection
-        const eventSource = new EventSource(`${import.meta.env.VITE_API_BASE_URL}/api/inquiries/events`);
+        const token = localStorage.getItem('adminToken');
+        const eventSource = new EventSource(`${import.meta.env.VITE_API_BASE_URL}/api/inquiries/events?token=${token}`);
 
         eventSource.onmessage = (event) => {
             try {
