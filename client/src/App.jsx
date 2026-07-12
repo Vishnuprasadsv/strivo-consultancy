@@ -1,9 +1,10 @@
 import React, { Suspense, lazy, useEffect, useState } from 'react';
-import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, useLocation, Navigate, Outlet } from 'react-router-dom';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import { Toaster } from 'sonner';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import axios from 'axios';
 import Navbar from './Components/Navbar';
 import AdminNavbar from './Components/AdminNavbar';
 import Footer from './Components/Footer';
@@ -70,6 +71,53 @@ const DynamicThemeProvider = ({ children }) => {
       {children}
     </ThemeProvider>
   );
+};
+
+// Configure global Axios settings to auto-attach authorization header & allow credentials cookies
+axios.interceptors.request.use(
+  (config) => {
+    const token = localStorage.getItem('adminToken');
+    if (token) {
+      config.headers['Authorization'] = `Bearer ${token}`;
+    }
+    config.withCredentials = true;
+    return config;
+  },
+  (error) => {
+    return Promise.reject(error);
+  }
+);
+
+// ProtectedRoute component handles role authorization and user session validation
+const ProtectedRoute = ({ allowedRoles }) => {
+  const token = localStorage.getItem('adminToken');
+  const userStr = localStorage.getItem('adminUser');
+
+  if (!token || !userStr) {
+    return <Navigate to="/admin/login" replace />;
+  }
+
+  const user = JSON.parse(userStr);
+  const userRole = user.role ? user.role.toLowerCase() : '';
+
+  // Check if role is allowed
+  const isAllowed = allowedRoles.some(role => {
+    const r = role.toLowerCase();
+    if (r === 'admin' && (userRole === 'admin' || userRole === 'administrator')) return true;
+    if (r === 'administrator' && (userRole === 'admin' || userRole === 'administrator')) return true;
+    return r === userRole;
+  });
+
+  if (!isAllowed) {
+    // If not allowed, redirect to respective role's default dashboard/page
+    if (userRole === 'hr') {
+      return <Navigate to="/admin/career" replace />;
+    } else {
+      return <Navigate to="/admin/dashboard" replace />;
+    }
+  }
+
+  return <Outlet />;
 };
 
 // ScrollToTop component ensures navigating to a new route scrolls to the top smoothly
@@ -159,44 +207,32 @@ const AppLayout = () => {
             />
             <Route path="/review" element={<Review />} />
 
-            {/* Admin Routes */}
+            {/* Admin Public Auth Routes */}
             <Route path="/admin" element={<Login />} />
             <Route path="/admin/login" element={<Login />} />
             <Route path="/admin/register" element={<Register />} />
             <Route path="/admin/forgot-password" element={<ForgotPassword />} />
             <Route path="/admin/reset-password" element={<ResetPassword />} />
-            <Route path="/admin/dashboard" element={<Dashboard />} />
-            <Route path="/admin/inquiries" element={<Inquiries />} />
-            <Route path="/admin/casestudies" element={<CaseStudiesAdmin />} />
-            <Route path='/admin/career' element={<CareerAdmin />} />
-            <Route path='/admin/article' element={<ArticlesAdmin />} />
-            <Route
-              path="/admin/create-case-study"
-              element={<CreateCaseStudy />}
-            />
-            <Route
-              path="/admin/edit-case-study/:id"
-              element={<EditCaseStudy />}
-            />
-            <Route
-              path="/admin/create-article"
-              element={<CreateArticle />}
-            />
-            <Route
-              path="/admin/edit-article/:id"
-              element={<EditArticle />}
-            />
-            <Route
-              path="/admin/create-job"
-              element={<CreateJob />}
-            />
-            <Route
-              path="/admin/edit-job/:id"
-              element={<EditJob />}
-            />
-            <Route path="/admin/article" element={<ArticlesAdmin />} />
-            <Route path="/admin/career" element={<CareerAdmin />} />
-            <Route path="/admin/profile" element={<Profile />} />
+
+            {/* Admin & HR Common Protected Routes */}
+            <Route element={<ProtectedRoute allowedRoles={['Admin', 'Administrator', 'Hr']} />}>
+              <Route path="/admin/profile" element={<Profile />} />
+              <Route path="/admin/career" element={<CareerAdmin />} />
+              <Route path="/admin/create-job" element={<CreateJob />} />
+              <Route path="/admin/edit-job/:id" element={<EditJob />} />
+            </Route>
+
+            {/* Admin-Only Protected Routes */}
+            <Route element={<ProtectedRoute allowedRoles={['Admin', 'Administrator']} />}>
+              <Route path="/admin/dashboard" element={<Dashboard />} />
+              <Route path="/admin/inquiries" element={<Inquiries />} />
+              <Route path="/admin/casestudies" element={<CaseStudiesAdmin />} />
+              <Route path="/admin/create-case-study" element={<CreateCaseStudy />} />
+              <Route path="/admin/edit-case-study/:id" element={<EditCaseStudy />} />
+              <Route path="/admin/article" element={<ArticlesAdmin />} />
+              <Route path="/admin/create-article" element={<CreateArticle />} />
+              <Route path="/admin/edit-article/:id" element={<EditArticle />} />
+            </Route>
           </Routes>
         </Suspense>
       </main>

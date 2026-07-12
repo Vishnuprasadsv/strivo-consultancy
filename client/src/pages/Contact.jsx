@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import { motion } from 'framer-motion';
 import contactImg from '../assets/contact_page.png';
 import axios from "axios";
+import { toast } from 'react-toastify';
 // MUI components
 import Accordion from '@mui/material/Accordion';
 import AccordionSummary from '@mui/material/AccordionSummary';
@@ -92,18 +93,76 @@ const Contact = () => {
     }
   };
 
+  const isValidCompanyName = (name) => {
+    const trimmed = name.trim();
+    if (trimmed.length < 2) return false;
+    // Block purely numeric company names (e.g. 11111111)
+    if (/^\d+$/.test(trimmed)) return false;
+    // Block single character repeated (e.g. aaaaa or bbbbb)
+    if (/^(.)\1+$/i.test(trimmed)) return false;
+    // Block consecutive identical character sequences (3+ times e.g. "aaa")
+    if (/(.)\1{2,}/i.test(trimmed)) return false;
+    // Block simple repeating 2-char pattern e.g. abababab
+    if (/^(.{2})\1+$/i.test(trimmed)) return false;
+    return true;
+  };
+
+  const getPhoneValidationRules = (code) => {
+    switch (code) {
+      case "+91": return { min: 10, max: 10, label: "10 digits" };
+      case "+1": return { min: 10, max: 10, label: "10 digits" };
+      case "+44": return { min: 10, max: 10, label: "10 digits" };
+      case "+61": return { min: 9, max: 9, label: "9 digits" };
+      case "+65": return { min: 8, max: 8, label: "8 digits" };
+      case "+971": return { min: 9, max: 9, label: "9 digits" };
+      case "+86": return { min: 11, max: 11, label: "11 digits" };
+      case "+81": return { min: 10, max: 10, label: "10 digits" };
+      case "+49": return { min: 10, max: 11, label: "10-11 digits" };
+      case "+33": return { min: 9, max: 9, label: "9 digits" };
+      case "+55": return { min: 10, max: 11, label: "10-11 digits" };
+      case "+27": return { min: 9, max: 9, label: "9 digits" };
+      case "+31": return { min: 9, max: 9, label: "9 digits" };
+      case "+39": return { min: 10, max: 10, label: "10 digits" };
+      case "+34": return { min: 9, max: 9, label: "9 digits" };
+      case "+7": return { min: 10, max: 10, label: "10 digits" };
+      case "+82": return { min: 9, max: 10, label: "9-10 digits" };
+      case "+92": return { min: 10, max: 10, label: "10 digits" };
+      case "+880": return { min: 10, max: 10, label: "10 digits" };
+      case "+966": return { min: 9, max: 9, label: "9 digits" };
+      default: return { min: 8, max: 15, label: "8 to 15 digits" };
+    }
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     const newErrors = {};
 
-    if (!formData.fullName.trim()) newErrors.fullName = "Full name is required";
-    if (!formData.company.trim()) newErrors.company = "Company name is required";
+    if (!formData.fullName.trim()) {
+      newErrors.fullName = "Full name is required";
+    }
+
+    if (!formData.company.trim()) {
+      newErrors.company = "Company name is required";
+    } else if (!isValidCompanyName(formData.company)) {
+      newErrors.company = "Please enter a valid company name";
+    }
+
     if (!formData.email.trim()) {
       newErrors.email = "Email address is required";
     } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
-      newErrors.email = "Please enter a valid email address";
+      newErrors.email = "invalid mail id";
     }
-    if (!formData.phone.trim()) newErrors.phone = "Phone number is required";
+
+    if (!formData.phone.trim()) {
+      newErrors.phone = "Phone number is required";
+    } else {
+      const digits = formData.phone.replace(/\D/g, "");
+      const rules = getPhoneValidationRules(formData.countryCode);
+      if (digits.length < rules.min || digits.length > rules.max) {
+        newErrors.phone = `Phone number must be valid (${rules.label})`;
+      }
+    }
+
     if (!formData.service) newErrors.service = "Please select a service interest";
     if (!formData.message.trim()) newErrors.message = "Message cannot be empty";
     if (!agreePolicy) {
@@ -125,7 +184,6 @@ const Contact = () => {
         `${import.meta.env.VITE_API_BASE_URL}/api/inquiries`,
         submissionData
       );
-      alert("Inquiry submitted successfully!");
       setFormData({
         fullName: "",
         company: "",
@@ -138,7 +196,7 @@ const Contact = () => {
       setAgreePolicy(false);
     } catch (error) {
       console.log(error);
-      alert("Failed to submit inquiry.");
+      toast.error("Failed to submit inquiry.");
     }
   };
 

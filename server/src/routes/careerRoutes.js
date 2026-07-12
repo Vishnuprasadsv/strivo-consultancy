@@ -1,4 +1,3 @@
-// by namitha
 import express from 'express';
 import multer from 'multer';
 import {
@@ -13,6 +12,7 @@ import {
   deleteJob,
   getDashboardStats
 } from '../controllers/careerController.js';
+import { protect, authorize } from '../middlewares/authMiddleware.js';
 
 const router = express.Router();
 
@@ -27,18 +27,18 @@ const upload = multer({
 router.post("/apply", upload.single("resume"), applyJob);
 
 
-router.get("/applications", getApplications);
-router.put("/applications/:id/status", updateApplicationStatus);
-router.put("/applications/:id/refer", referApplication);
-router.delete("/applications/:id", deleteApplication);
+router.get("/applications", protect, authorize('Admin', 'Administrator', 'Hr'), getApplications);
+router.put("/applications/:id/status", protect, authorize('Admin', 'Administrator', 'Hr'), updateApplicationStatus);
+router.put("/applications/:id/refer", protect, authorize('Admin', 'Administrator', 'Hr'), referApplication);
+router.delete("/applications/:id", protect, authorize('Admin', 'Administrator', 'Hr'), deleteApplication);
 
 
-router.get("/jobs", getJobs);
-router.post("/jobs", createJob);
-router.put("/jobs/:id", updateJob);
-router.delete("/jobs/:id", deleteJob);
+router.get("/jobs", getJobs); // Public
+router.post("/jobs", protect, authorize('Admin', 'Administrator', 'Hr'), createJob);
+router.put("/jobs/:id", protect, authorize('Admin', 'Administrator', 'Hr'), updateJob);
+router.delete("/jobs/:id", protect, authorize('Admin', 'Administrator', 'Hr'), deleteJob);
 
 
-router.get("/stats", getDashboardStats);
+router.get("/stats", protect, authorize('Admin', 'Administrator'), getDashboardStats);
 
 export default router;

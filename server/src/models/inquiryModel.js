@@ -30,16 +30,34 @@ const inquirySchema = new mongoose.Schema(
       required: true,
     },
 
-   status: {
-  type: String,
-  enum: ["New", "In Progress", "Responded", "Closed"],
-  default: "New",
-},
+    status: {
+      type: String,
+      enum: ["New", "In Progress", "Responded", "Proposals", "Closed", "General Inquiry"],
+      default: "New",
+    },
 
-isRead:{
-   type:Boolean,
-   default:false
-}
+    assignedTo: {
+      type: String,
+      default: "Unassigned",
+    },
+
+    nextFollowUp: {
+      type: Date,
+      default: null,
+    },
+
+    isRead: {
+      type: Boolean,
+      default: false
+    },
+
+    activityLog: [
+      {
+        action: { type: String, required: true },
+        details: { type: String },
+        timestamp: { type: Date, default: Date.now }
+      }
+    ]
   },
   {
     timestamps: true,

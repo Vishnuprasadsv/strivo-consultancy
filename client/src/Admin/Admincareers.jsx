@@ -760,11 +760,11 @@ const CareerAdmin = () => {
                   {/* Table view for desktop / tablet */}
                   <table className="w-full text-left border-collapse table-fixed hidden md:table">
                     <thead>
-                      <tr className="border-b border-[var(--color-border)] text-[var(--color-black)] text-xs font-bold uppercase tracking-wider">
-                        <th className="pb-3 pr-2 font-bold w-[32%]">Candidate & Position</th>
-                        <th className="pb-3 px-2 font-bold w-[14%] text-center">Applied On</th>
-                        <th className="pb-3 px-2 font-bold w-[14%] text-center">Status</th>
-                        <th className="pb-3 px-2 font-bold text-center w-[40%]">Action</th>
+                      <tr className="border-b border-[var(--color-border)] text-[var(--color-heading)] text-xs font-normal uppercase tracking-wider">
+                        <th className="pb-3 pr-2 font-normal w-[32%]">Candidate & Position</th>
+                        <th className="pb-3 px-2 font-normal w-[14%] text-center">Applied On</th>
+                        <th className="pb-3 px-2 font-normal w-[14%] text-center">Status</th>
+                        <th className="pb-3 px-2 font-normal text-center w-[40%]">Action</th>
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-[var(--color-border)] text-sm">
@@ -1062,12 +1062,12 @@ const CareerAdmin = () => {
                   <div className="hidden md:block overflow-x-auto">
                     <table className="w-full text-left border-collapse min-w-[750px]">
                       <thead>
-                        <tr className="border-b border-[var(--color-border)] text-[var(--color-black)] text-xs font-bold uppercase tracking-wider">
-                          <th className="pb-3 px-6 font-bold">Candidate</th>
-                          <th className="pb-3 px-6 font-bold">Mobile</th>
-                          <th className="pb-3 px-6 font-bold">Category</th>
-                          <th className="pb-3 px-6 font-bold">Submitted On</th>
-                          <th className="pb-3 px-6 font-bold text-center">Resume</th>
+                        <tr className="border-b border-[var(--color-border)] text-[var(--color-heading)] text-xs font-normal uppercase tracking-wider">
+                          <th className="pb-3 px-6 font-normal">Candidate</th>
+                          <th className="pb-3 px-6 font-normal">Mobile</th>
+                          <th className="pb-3 px-6 font-normal">Category</th>
+                          <th className="pb-3 px-6 font-normal">Submitted On</th>
+                          <th className="pb-3 px-6 font-normal text-center">Resume</th>
                         </tr>
                       </thead>
                       <tbody className="divide-y divide-[var(--color-border)] text-sm">
@@ -1228,13 +1228,13 @@ const CareerAdmin = () => {
                   <div className="hidden md:block overflow-x-auto">
                     <table className="w-full text-left border-collapse min-w-[750px]">
                       <thead>
-                        <tr className="border-b border-[var(--color-border)] text-[var(--color-black)] text-xs font-bold uppercase tracking-wider">
-                          <th className="pb-4 px-6 font-bold">Job Title</th>
-                          <th className="pb-4 px-6 font-bold">Department</th>
-                          <th className="pb-4 px-6 font-bold">Location</th>
-                          <th className="pb-4 px-6 font-bold text-center">Apps</th>
-                          <th className="pb-4 px-6 font-bold text-center">Status</th>
-                          <th className="pb-4 px-6 font-bold text-center">Actions</th>
+                        <tr className="border-b border-[var(--color-border)] text-[var(--color-heading)] text-xs font-normal uppercase tracking-wider">
+                          <th className="pb-4 px-6 font-normal">Job Title</th>
+                          <th className="pb-4 px-6 font-normal">Department</th>
+                          <th className="pb-4 px-6 font-normal">Location</th>
+                          <th className="pb-4 px-6 font-normal text-center">Apps</th>
+                          <th className="pb-4 px-6 font-normal text-center">Status</th>
+                          <th className="pb-4 px-6 font-normal text-center">Actions</th>
                         </tr>
                       </thead>
                       <tbody className="divide-y divide-[var(--color-border)] text-sm">

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { useNavigate, Link } from 'react-router-dom';
 import { toast } from 'sonner';
@@ -8,22 +8,17 @@ import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import Logo from '../assets/strivo logo.svg?react';
 
 /**
- * AdminRegistration Component
+ * Register Component
  * 
- * Purpose: 
- * Allows the initial administrator to register in the system. 
- * If an admin is already registered in the database, registration is locked 
- * and multiple registrations are blocked.
- * 
- * Style Guidelines:
- * - Strictly follows the client's design variables in index.css (Poppins font, primary #4764FF, bg-sub background, etc.).
- * - Uses Tailwind CSS classes for structure, padding, spacing, and responsiveness.
- * - Displays toast messages without any icons to maintain a highly professional look.
+ * Reused login/register interface for both Admin and HR roles.
+ * Optimized by a UI expert to fit perfectly within the viewport on all screens
+ * with zero scrollbars, using custom compact spacing and typography.
  */
 const Register = () => {
   // Input fields state
   const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
+  const [role, setRole] = useState('Admin');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
 
@@ -33,34 +28,16 @@ const Register = () => {
 
   // Status states
   const [isLoading, setIsLoading] = useState(false);
-  const [isAlreadyRegistered, setIsAlreadyRegistered] = useState(false);
   const [showRequirements, setShowRequirements] = useState(false);
 
   const navigate = useNavigate();
 
-  // Step 1: When page loads, check if an admin is already registered in the database
-  useEffect(() => {
-    const checkAdminStatus = async () => {
-      try {
-        const response = await axios.get(
-          `${import.meta.env.VITE_API_BASE_URL}/api/admin/check-registered`
-        );
-        if (response.data.registered) {
-          setIsAlreadyRegistered(true);
-        }
-      } catch (error) {
-        console.error('Error verifying admin registration status:', error);
-      }
-    };
-    checkAdminStatus();
-  }, []);
-
-  // Step 2: Handle the form submission when registering the admin
+  // Handle registration submission
   const handleRegister = async (e) => {
     e.preventDefault();
 
     // Field verification - ensure all inputs are provided
-    if (!username || !email || !password || !confirmPassword) {
+    if (!username || !email || !password || !confirmPassword || !role) {
       toast.error('Please fill in all the required fields.', { icon: null });
       return;
     }
@@ -75,7 +52,7 @@ const Register = () => {
     if (!(minLength && hasUpper && hasLower && hasNumber && hasSpecial)) {
       setPassword('');
       setConfirmPassword('');
-      toast.error('Password does not meet expectation: must be at least 8 characters, with one uppercase letter, one lowercase letter, one special character, and one number.', { icon: null });
+      toast.error('Password must be at least 8 characters, with one uppercase, one lowercase, one special character, and one number.', { icon: null });
       return;
     }
 
@@ -94,92 +71,62 @@ const Register = () => {
         {
           username,
           email,
+          role,
           password,
         }
       );
 
       // On successful registration:
-      toast.success(response.data.message || 'Admin registered successfully!', { icon: null });
+      toast.success(response.data.message || 'Registration successful! Please login.', { icon: null });
       
-      // Automatically switch to the admin login page
+      // Automatically switch to login page
       navigate('/admin/login');
     } catch (error) {
-      // If server returns error, display the clean error message (e.g. 'Multiple admin registration not allowed')
       const errorMsg = error.response?.data?.message || 'Registration failed. Please try again.';
-      toast.error(errorMsg, { icon: null });
-      
-      // If error is due to registration lock, set status to locked
-      if (error.response?.status === 400 && errorMsg.toLowerCase().includes('not allowed')) {
-        setIsAlreadyRegistered(true);
+      if (errorMsg.includes('not allowed')) {
+        toast.error(`${errorMsg}. Please login.`, { icon: null, duration: 6000 });
+      } else {
+        toast.error(errorMsg, { icon: null });
       }
     } finally {
       setIsLoading(false);
     }
   };
 
-  // If already registered, render the locked warning screen and hide the form
-  if (isAlreadyRegistered) {
-    return (
-      <div className="min-h-screen flex items-center justify-center relative z-10 px-4 bg-sub">
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, ease: 'easeOut' }}
-          className="w-full max-w-md card p-8 text-center"
-        >
-          {/* Logo display */}
-          <div className="flex flex-col items-center gap-4 mb-8">
-            {/* <img src={logo1} alt="Strivo Logo" className="h-10 object-contain" /> */}
-             <Logo className="h-10 text-[var(--color-primary)]" />
-          </div>
+  // UI Expert custom styles for compact input height and labels
+  const inputStyle = {
+    height: '34px',
+    padding: '6px 12px',
+    fontSize: '13px',
+    color: 'var(--color-paragraph)'
+  };
 
-          <h2
-            className="mb-4 font-semibold tracking-wider text-center"
-            style={{ fontSize: '18px', color: 'var(--color-danger)' }}
-          >
-            REGISTRATION LOCKED
-          </h2>
-
-          <p
-            className="opacity-80 block text-center mb-6 leading-relaxed"
-            style={{ fontSize: 'var(--text-small)', color: 'var(--color-paragraph)' }}
-          >
-            Multiple admin registration not allowed. An administrator account already exists.
-          </p>
-
-          <Link
-            to="/admin/login"
-            className="btn w-full flex items-center justify-center"
-          >
-            Go to Login
-          </Link>
-        </motion.div>
-      </div>
-    );
-  }
-
-  // Regular registration form UI
   return (
-    <div className="min-h-screen flex items-center justify-center relative z-10 px-4 bg-sub pt-16">
+    <div className="min-h-screen flex items-center justify-center relative z-10 px-4 bg-sub py-6">
       <motion.div
-        initial={{ opacity: 0, y: 30 }}
+        initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6, ease: 'easeOut' }}
-        className="w-full max-w-md bg-white shadow-card border border-[var(--color-border)] rounded-[var(--radius-sm)] overflow-visible"
+        transition={{ duration: 0.5, ease: 'easeOut' }}
+        className="w-full max-w-sm bg-white shadow-card border border-[var(--color-border)] rounded-[var(--radius-sm)] overflow-visible"
       >
         {/* Header with primary BG color */}
-        <div className="bg-[var(--color-primary)] py-4 px-6 text-center rounded-t-[var(--radius-sm)]">
-          <h2 className="text-base font-bold text-white uppercase tracking-wider m-0">
-            Admin Register
+        <div className="bg-[var(--color-primary)] py-2.5 px-6 text-center rounded-t-[var(--radius-sm)]">
+          <h2 className="text-sm font-bold text-white uppercase tracking-wider m-0">
+            Create Account
           </h2>
         </div>
 
         {/* Body with white BG */}
-        <div className="p-6">
-          <form onSubmit={handleRegister} className="space-y-4">
+        <div className="py-4 px-6">
+          {/* Logo display */}
+          <div className="flex flex-col items-center mb-3">
+            <Logo className="h-6 text-[var(--color-primary)]" />
+          </div>
+
+          <form onSubmit={handleRegister} className="space-y-2.5">
             {/* Username Field */}
-            <div className="space-y-1">
-              <label className="block text-[11px] font-bold text-[var(--color-black)] uppercase tracking-wider text-left">
+            <div className="space-y-0.5">
+              <label className="block text-[10px] font-bold text-[var(--color-black)] uppercase tracking-wider text-left">
                 Username
               </label>
               <input
@@ -187,15 +134,15 @@ const Register = () => {
                 required
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
-                placeholder="Enter admin username"
-                className="input py-2 px-3 placeholder:text-[var(--color-paragraph)] placeholder:opacity-40 transition-all text-sm h-10 w-full bg-[var(--color-sub-bg)] border border-[var(--color-border)] rounded-[var(--radius-sm)]"
-                style={{ color: 'var(--color-paragraph)' }}
+                placeholder="Enter username"
+                className="input placeholder:text-[var(--color-paragraph)] placeholder:opacity-40 transition-all w-full bg-[var(--color-sub-bg)] border border-[var(--color-border)] rounded-[var(--radius-sm)]"
+                style={inputStyle}
               />
             </div>
 
             {/* Email Field */}
-            <div className="space-y-1">
-              <label className="block text-[11px] font-bold text-[var(--color-black)] uppercase tracking-wider text-left">
+            <div className="space-y-0.5">
+              <label className="block text-[10px] font-bold text-[var(--color-black)] uppercase tracking-wider text-left">
                 Email Address
               </label>
               <input
@@ -203,15 +150,31 @@ const Register = () => {
                 required
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                placeholder="admin@strivo.com"
-                className="input py-2 px-3 placeholder:text-[var(--color-paragraph)] placeholder:opacity-40 transition-all text-sm h-10 w-full bg-[var(--color-sub-bg)] border border-[var(--color-border)] rounded-[var(--radius-sm)]"
-                style={{ color: 'var(--color-paragraph)' }}
+                placeholder="user@strivo.com"
+                className="input placeholder:text-[var(--color-paragraph)] placeholder:opacity-40 transition-all w-full bg-[var(--color-sub-bg)] border border-[var(--color-border)] rounded-[var(--radius-sm)]"
+                style={inputStyle}
               />
             </div>
 
+            {/* Role Field */}
+            <div className="space-y-0.5">
+              <label className="block text-[10px] font-bold text-[var(--color-black)] uppercase tracking-wider text-left">
+                Role Selection
+              </label>
+              <select
+                value={role}
+                onChange={(e) => setRole(e.target.value)}
+                className="input transition-all w-full bg-[var(--color-sub-bg)] border border-[var(--color-border)] rounded-[var(--radius-sm)] cursor-pointer"
+                style={{ ...inputStyle, padding: '4px 8px' }}
+              >
+                <option value="Admin">Administrator</option>
+                <option value="Hr">HR Manager</option>
+              </select>
+            </div>
+
             {/* Password Field */}
-            <div className="space-y-1">
-              <label className="block text-[11px] font-bold text-[var(--color-black)] uppercase tracking-wider text-left">
+            <div className="space-y-0.5">
+              <label className="block text-[10px] font-bold text-[var(--color-black)] uppercase tracking-wider text-left">
                 Password
               </label>
               <div className="relative">
@@ -223,8 +186,8 @@ const Register = () => {
                   onFocus={() => setShowRequirements(true)}
                   onBlur={() => setShowRequirements(false)}
                   placeholder="••••••••"
-                  className="input py-2 px-3 pr-10 placeholder:text-[var(--color-paragraph)] placeholder:opacity-40 transition-all text-sm h-10 w-full bg-[var(--color-sub-bg)] border border-[var(--color-border)] rounded-[var(--radius-sm)]"
-                  style={{ color: 'var(--color-paragraph)' }}
+                  className="input pr-10 placeholder:text-[var(--color-paragraph)] placeholder:opacity-40 transition-all w-full bg-[var(--color-sub-bg)] border border-[var(--color-border)] rounded-[var(--radius-sm)]"
+                  style={inputStyle}
                 />
                 <button
                   type="button"
@@ -254,8 +217,8 @@ const Register = () => {
             </div>
 
             {/* Confirm Password Field */}
-            <div className="space-y-1">
-              <label className="block text-[11px] font-bold text-[var(--color-black)] uppercase tracking-wider text-left">
+            <div className="space-y-0.5">
+              <label className="block text-[10px] font-bold text-[var(--color-black)] uppercase tracking-wider text-left">
                 Confirm Password
               </label>
               <div className="relative">
@@ -265,8 +228,8 @@ const Register = () => {
                   value={confirmPassword}
                   onChange={(e) => setConfirmPassword(e.target.value)}
                   placeholder="••••••••"
-                  className="input py-2 px-3 pr-10 placeholder:text-[var(--color-paragraph)] placeholder:opacity-40 transition-all text-sm h-10 w-full bg-[var(--color-sub-bg)] border border-[var(--color-border)] rounded-[var(--radius-sm)]"
-                  style={{ color: 'var(--color-paragraph)' }}
+                  className="input pr-10 placeholder:text-[var(--color-paragraph)] placeholder:opacity-40 transition-all w-full bg-[var(--color-sub-bg)] border border-[var(--color-border)] rounded-[var(--radius-sm)]"
+                  style={inputStyle}
                 />
                 <button
                   type="button"
@@ -286,19 +249,20 @@ const Register = () => {
                 whileTap={{ scale: 0.99 }}
                 disabled={isLoading}
                 type="submit"
-                className="btn w-full flex items-center justify-center gap-2 cursor-pointer h-10 text-xs font-bold uppercase tracking-wider"
+                className="btn w-full flex items-center justify-center gap-2 cursor-pointer text-xs font-bold uppercase tracking-wider"
+                style={{ height: '36px' }}
               >
                 {isLoading ? (
                   <span className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin"></span>
                 ) : (
-                  'Register Admin'
+                  'Register'
                 )}
               </motion.button>
             </div>
           </form>
 
           {/* Footer Redirect to Login */}
-          <div className="text-center mt-4">
+          <div className="text-center mt-3">
             <Link
               to="/admin/login"
               className="hover:underline transition-colors block text-center text-xs font-bold uppercase tracking-wider text-[var(--color-primary)]"

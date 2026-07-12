@@ -6,26 +6,33 @@ import {
     updateInquiryStatus,
     sendReply,
     getNewInquiries,
-    deleteInquiry
+    deleteInquiry,
+    getInquiriesEvents,
+    deleteAllInquiries
 } from "../controllers/inquiryController.js";
+import { protect, authorize } from '../middlewares/authMiddleware.js';
 
 const router = express.Router();
 
-router.post("/", createInquiry);
+router.get("/events", protect, authorize('Admin', 'Administrator'), getInquiriesEvents);
 
-router.get("/", getInquiries);
+router.post("/", createInquiry); // Public route for visitors
+
+router.get("/", protect, authorize('Admin', 'Administrator'), getInquiries);
 
 router.get(
+  "/notifications",
+  protect,
+  authorize('Admin', 'Administrator'),
+  getNewInquiries
+);
 
-"/notifications",
+router.put("/:id", protect, authorize('Admin', 'Administrator'), updateInquiryStatus);
 
-getNewInquiries
-)
+router.post("/reply", protect, authorize('Admin', 'Administrator'), sendReply);
 
-router.put("/:id", updateInquiryStatus);
+router.delete("/", protect, authorize('Admin', 'Administrator'), deleteAllInquiries);
 
-router.post("/reply", sendReply);
-
-router.delete("/:id", deleteInquiry);
+router.delete("/:id", protect, authorize('Admin', 'Administrator'), deleteInquiry);
 
 export default router;
