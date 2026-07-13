@@ -56,6 +56,14 @@ const Dashboard = () => {
   const [loadingStories, setLoadingStories] = useState(true);
   const [editingStory, setEditingStory] = useState(null);
   const [reviews, setReviews] = useState([]);
+  const [storyErrors, setStoryErrors] = useState({});
+  const [deleteConfirm, setDeleteConfirm] = useState({
+    isOpen: false,
+    type: '', // 'review' | 'story'
+    id: null,
+    title: '',
+    message: ''
+  });
   const [isAnalyticsExpanded, setIsAnalyticsExpanded] = useState(false);
   const [reportPeriod, setReportPeriod] = useState('this-week');
   const [showDetailedReportModal, setShowDetailedReportModal] = useState(false);
@@ -168,19 +176,44 @@ const Dashboard = () => {
     setShowStoryModal(false);
     setEditingStory(null);
     setFormData({ name: '', position: '', clientStories: '', image: null });
+    setStoryErrors({});
     const imgInput = document.getElementById('imageUpload');
     if (imgInput) imgInput.value = "";
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!formData.name || !formData.position || !formData.clientStories) {
-      toast.error('Please fill name, position and story fields');
-      return;
+
+    const errors = {};
+    if (!(formData.name || '').trim()) {
+      errors.name = "Name is required";
+    }
+    if (!(formData.position || '').trim()) {
+      errors.position = "Position & Company are required";
+    }
+    if (!(formData.clientStories || '').trim()) {
+      errors.clientStories = "Client Success Story is required";
     }
     if (!editingStory && !formData.image) {
-      toast.error('Please select an image');
+      errors.image = "Client image is required";
+    }
+
+    if (Object.keys(errors).length > 0) {
+      setStoryErrors(errors);
       return;
+    }
+
+    if (editingStory) {
+      const isNameUnchanged = (formData.name || '').trim() === (editingStory.name || '').trim();
+      const isPositionUnchanged = (formData.position || '').trim() === (editingStory.position || '').trim();
+      const isStoriesUnchanged = (formData.clientStories || '').trim() === (editingStory.clientStories || '').trim();
+      const isImageUnchanged = !formData.image;
+
+      if (isNameUnchanged && isPositionUnchanged && isStoriesUnchanged && isImageUnchanged) {
+        toast.info('No changes has been made in the edit');
+        handleCloseStoryModal();
+        return;
+      }
     }
 
     setIsSubmitting(true);
@@ -215,14 +248,48 @@ const Dashboard = () => {
     }
   };
 
-  const handleDeleteStory = async (id) => {
-    try {
-      await axiosInstance.delete(`${import.meta.env.VITE_API_BASE_URL}/api/success-stories/${id}`);
-      toast.success('Story deleted successfully');
-      setStories(stories.filter(story => story._id !== id));
-    } catch (error) {
-      console.error('Error deleting story:', error);
-      toast.error('Failed to delete story');
+  const handleDeleteStory = (id) => {
+    setDeleteConfirm({
+      isOpen: true,
+      type: 'story',
+      id: id,
+      title: 'Delete Success Story',
+      message: 'Are you sure you want to delete this success story? This action cannot be undone.'
+    });
+  };
+
+  const handleCancelDelete = () => {
+    setDeleteConfirm({
+      isOpen: false,
+      type: '',
+      id: null,
+      title: '',
+      message: ''
+    });
+  };
+
+  const handleConfirmDelete = async () => {
+    const { type, id } = deleteConfirm;
+    handleCancelDelete();
+    if (type === 'review') {
+      try {
+        await deleteReviewAPI(id);
+        toast.success('Review deleted successfully');
+        setReviews(prev => prev.filter(review => review._id !== id));
+        setDeletedCount(prev => prev + 1);
+      } catch (error) {
+        console.error('Error deleting review:', error);
+        toast.error('Failed to delete review');
+      }
+    } else if (type === 'story') {
+      try {
+        await axiosInstance.delete(`${import.meta.env.VITE_API_BASE_URL}/api/success-stories/${id}`);
+        toast.success('Story deleted successfully');
+        setStories(prev => prev.filter(story => story._id !== id));
+      } catch (error) {
+        console.error('Error deleting story:', error);
+        toast.error('Failed to delete story');
+      }
     }
   };
 
@@ -559,16 +626,14 @@ const Dashboard = () => {
     );
   };
 
-  const handleDeleteReview = async (id) => {
-    try {
-      await deleteReviewAPI(id);
-      toast.success('Review deleted successfully');
-      setReviews(reviews.filter(review => review._id !== id));
-      setDeletedCount(prev => prev + 1);
-    } catch (error) {
-      console.error('Error deleting review:', error);
-      toast.error('Failed to delete review');
-    }
+  const handleDeleteReview = (id) => {
+    setDeleteConfirm({
+      isOpen: true,
+      type: 'review',
+      id: id,
+      title: 'Delete Review',
+      message: 'Are you sure you want to delete this review? This action cannot be undone.'
+    });
   };
 
   const handleApproveReview = async (id) => {
@@ -826,12 +891,12 @@ const Dashboard = () => {
     const status = rev.status || 'Pending';
     const matchesStatus = reviewsStatusFilter === 'All' || status === reviewsStatusFilter;
     
-    const searchLower = reviewsSearch.toLowerCase();
+    const searchLower = (reviewsSearch || '').toLowerCase();
     const matchesSearch = 
-      rev.fullName.toLowerCase().includes(searchLower) ||
-      rev.company.toLowerCase().includes(searchLower) ||
-      rev.title.toLowerCase().includes(searchLower) ||
-      rev.review.toLowerCase().includes(searchLower);
+      (rev.fullName || '').toLowerCase().includes(searchLower) ||
+      (rev.company || '').toLowerCase().includes(searchLower) ||
+      (rev.title || '').toLowerCase().includes(searchLower) ||
+      (rev.review || '').toLowerCase().includes(searchLower);
       
     return matchesStatus && matchesSearch;
   });
@@ -842,11 +907,11 @@ const Dashboard = () => {
   const paginatedReviews = filteredReviews.slice(reviewsStartIndex, reviewsStartIndex + reviewsPerPage);
 
   const filteredStories = stories.filter(story => {
-    const searchLower = storiesSearch.toLowerCase();
+    const searchLower = (storiesSearch || '').toLowerCase();
     return (
-      story.name.toLowerCase().includes(searchLower) ||
-      story.position.toLowerCase().includes(searchLower) ||
-      story.clientStories.toLowerCase().includes(searchLower)
+      (story.name || '').toLowerCase().includes(searchLower) ||
+      (story.position || '').toLowerCase().includes(searchLower) ||
+      (story.clientStories || '').toLowerCase().includes(searchLower)
     );
   });
 
@@ -1575,25 +1640,35 @@ const Dashboard = () => {
                                   </td>
                                   <td className="py-2.5 px-3 w-1/6 text-center">
                                     <div className="flex justify-center">
-                                      <select
-                                        value=""
-                                        onChange={(e) => {
-                                          const action = e.target.value;
-                                          if (action === 'approve') {
-                                            handleApproveReview(rev._id);
-                                          } else if (action === 'reject') {
-                                            handleRejectReview(rev._id);
-                                          } else if (action === 'delete') {
-                                            handleDeleteReview(rev._id);
-                                          }
-                                        }}
-                                        className="bg-white border border-[var(--color-border)] rounded-[var(--radius-sm)] py-1 px-2 focus:outline-none transition cursor-pointer text-paragraph text-[11px]"
-                                      >
-                                        <option value="" disabled hidden>Actions</option>
-                                        {statusVal !== 'Approved' && <option value="approve">Approve</option>}
-                                        {statusVal !== 'Rejected' && <option value="reject">Reject</option>}
-                                        <option value="delete">Delete</option>
-                                      </select>
+                                      {statusVal === 'Approved' ? (
+                                        <button
+                                          onClick={() => handleDeleteReview(rev._id)}
+                                          className="w-8 h-8 rounded-[var(--radius-sm)] flex items-center justify-center bg-[var(--color-primary)] text-white hover:bg-[var(--color-primary-hover)] transition-all cursor-pointer shadow-[var(--shadow-button)]"
+                                          title="Delete Review"
+                                        >
+                                          <DeleteIcon fontSize="small" style={{ fontSize: 16 }} />
+                                        </button>
+                                      ) : (
+                                        <select
+                                          value=""
+                                          onChange={(e) => {
+                                            const action = e.target.value;
+                                            if (action === 'approve') {
+                                              handleApproveReview(rev._id);
+                                            } else if (action === 'reject') {
+                                              handleRejectReview(rev._id);
+                                            } else if (action === 'delete') {
+                                              handleDeleteReview(rev._id);
+                                            }
+                                          }}
+                                          className="bg-white border border-[var(--color-border)] rounded-[var(--radius-sm)] py-1 px-2 focus:outline-none transition cursor-pointer text-paragraph text-[11px]"
+                                        >
+                                          <option value="" disabled hidden>Actions</option>
+                                          {statusVal !== 'Approved' && <option value="approve">Approve</option>}
+                                          {statusVal !== 'Rejected' && <option value="reject">Reject</option>}
+                                          <option value="delete">Delete</option>
+                                        </select>
+                                      )}
                                     </div>
                                   </td>
                                 </tr>
@@ -1643,26 +1718,38 @@ const Dashboard = () => {
                               </div>
 
                               <div className="flex gap-2 pt-2 border-t border-[var(--color-border)]/60 justify-end items-center">
-                                <span className="text-[11px] text-paragraph opacity-60 font-semibold">Actions:</span>
-                                <select
-                                  value=""
-                                  onChange={(e) => {
-                                    const action = e.target.value;
-                                    if (action === 'approve') {
-                                      handleApproveReview(rev._id);
-                                    } else if (action === 'reject') {
-                                      handleRejectReview(rev._id);
-                                    } else if (action === 'delete') {
-                                      handleDeleteReview(rev._id);
-                                    }
-                                  }}
-                                  className="bg-white border border-[var(--color-border)] rounded-[var(--radius-sm)] py-1 px-2 focus:outline-none transition cursor-pointer text-paragraph text-[11px]"
-                                >
-                                  <option value="" disabled hidden>Actions</option>
-                                  {statusVal !== 'Approved' && <option value="approve">Approve</option>}
-                                  {statusVal !== 'Rejected' && <option value="reject">Reject</option>}
-                                  <option value="delete">Delete</option>
-                                </select>
+                                {statusVal === 'Approved' ? (
+                                  <button
+                                    onClick={() => handleDeleteReview(rev._id)}
+                                    className="w-8 h-8 rounded-[var(--radius-sm)] flex items-center justify-center bg-[var(--color-primary)] text-white hover:bg-[var(--color-primary-hover)] transition-all cursor-pointer shadow-[var(--shadow-button)]"
+                                    title="Delete Review"
+                                  >
+                                    <DeleteIcon fontSize="small" style={{ fontSize: 16 }} />
+                                  </button>
+                                ) : (
+                                  <>
+                                    <span className="text-[11px] text-paragraph opacity-60 font-semibold">Actions:</span>
+                                    <select
+                                      value=""
+                                      onChange={(e) => {
+                                        const action = e.target.value;
+                                        if (action === 'approve') {
+                                          handleApproveReview(rev._id);
+                                        } else if (action === 'reject') {
+                                          handleRejectReview(rev._id);
+                                        } else if (action === 'delete') {
+                                          handleDeleteReview(rev._id);
+                                        }
+                                      }}
+                                      className="bg-white border border-[var(--color-border)] rounded-[var(--radius-sm)] py-1 px-2 focus:outline-none transition cursor-pointer text-paragraph text-[11px]"
+                                    >
+                                      <option value="" disabled hidden>Actions</option>
+                                      {statusVal !== 'Approved' && <option value="approve">Approve</option>}
+                                      {statusVal !== 'Rejected' && <option value="reject">Reject</option>}
+                                      <option value="delete">Delete</option>
+                                    </select>
+                                  </>
+                                )}
                               </div>
                             </div>
                           );
@@ -1802,8 +1889,8 @@ const Dashboard = () => {
                               </button>
                             </td>
                             <td className="py-2.5 px-3 text-center opacity-70">{formatDate(story.createdAt)}</td>
-                            <td className="py-2.5 px-3 text-right">
-                              <div className="flex justify-end">
+                            <td className="py-2.5 px-3 text-center">
+                              <div className="flex justify-center">
                                 <select
                                   value=""
                                   onChange={(e) => {
@@ -2281,12 +2368,20 @@ const Dashboard = () => {
                     <textarea
                       name="clientStories"
                       value={formData.clientStories}
-                      onChange={handleInputChange}
+                      onChange={(e) => {
+                        handleInputChange(e);
+                        if (storyErrors.clientStories) {
+                          setStoryErrors(prev => ({ ...prev, clientStories: "" }));
+                        }
+                      }}
                       rows="3"
-                      className="w-full bg-[var(--color-sub-bg)] border border-[var(--color-border)] rounded-[var(--radius-sm)] p-3 text-paragraph placeholder-gray-400 focus:outline-none focus:border-[var(--color-primary)] transition resize-none"
+                      className={`w-full bg-[var(--color-sub-bg)] border rounded-[var(--radius-sm)] p-3 text-paragraph placeholder-gray-400 focus:outline-none transition resize-none ${storyErrors.clientStories ? 'border-red-500 focus:border-red-500' : 'border-[var(--color-border)] focus:border-[var(--color-primary)]'}`}
                       style={{ fontSize: 'var(--text-caption)' }}
                       placeholder="Write the client's success story here..."
                     ></textarea>
+                    {storyErrors.clientStories && (
+                      <p className="text-red-500 text-[10px] mt-1 font-semibold">{storyErrors.clientStories}</p>
+                    )}
                   </div>
 
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -2296,11 +2391,19 @@ const Dashboard = () => {
                         type="text"
                         name="name"
                         value={formData.name}
-                        onChange={handleInputChange}
-                        className="w-full bg-[var(--color-sub-bg)] border border-[var(--color-border)] rounded-[var(--radius-sm)] py-2.5 px-3 text-paragraph placeholder-gray-400 focus:outline-none focus:border-[var(--color-primary)] transition"
+                        onChange={(e) => {
+                          handleInputChange(e);
+                          if (storyErrors.name) {
+                            setStoryErrors(prev => ({ ...prev, name: "" }));
+                          }
+                        }}
+                        className={`w-full bg-[var(--color-sub-bg)] border rounded-[var(--radius-sm)] py-2.5 px-3 text-paragraph placeholder-gray-400 focus:outline-none transition ${storyErrors.name ? 'border-red-500 focus:border-red-500' : 'border-[var(--color-border)] focus:border-[var(--color-primary)]'}`}
                         style={{ fontSize: 'var(--text-caption)' }}
                         placeholder="Sarah Johnson"
                       />
+                      {storyErrors.name && (
+                        <p className="text-red-500 text-[10px] mt-1 font-semibold">{storyErrors.name}</p>
+                      )}
                     </div>
                     <div>
                       <label className="block mb-1.5 text-paragraph opacity-80 font-medium" style={{ fontSize: 'var(--text-caption)' }}>Position & Company</label>
@@ -2308,11 +2411,19 @@ const Dashboard = () => {
                         type="text"
                         name="position"
                         value={formData.position}
-                        onChange={handleInputChange}
-                        className="w-full bg-[var(--color-sub-bg)] border border-[var(--color-border)] rounded-[var(--radius-sm)] py-2.5 px-3 text-paragraph placeholder-gray-400 focus:outline-none focus:border-[var(--color-primary)] transition"
+                        onChange={(e) => {
+                          handleInputChange(e);
+                          if (storyErrors.position) {
+                            setStoryErrors(prev => ({ ...prev, position: "" }));
+                          }
+                        }}
+                        className={`w-full bg-[var(--color-sub-bg)] border rounded-[var(--radius-sm)] py-2.5 px-3 text-paragraph placeholder-gray-400 focus:outline-none transition ${storyErrors.position ? 'border-red-500 focus:border-red-500' : 'border-[var(--color-border)] focus:border-[var(--color-primary)]'}`}
                         style={{ fontSize: 'var(--text-caption)' }}
                         placeholder="CEO, GlobalTech"
                       />
+                      {storyErrors.position && (
+                        <p className="text-red-500 text-[10px] mt-1 font-semibold">{storyErrors.position}</p>
+                      )}
                     </div>
                   </div>
 
@@ -2322,32 +2433,71 @@ const Dashboard = () => {
                       type="file"
                       id="imageUpload"
                       accept="image/*"
-                      onChange={handleImageChange}
-                      className="w-full bg-[var(--color-sub-bg)] border border-[var(--color-border)] rounded-[var(--radius-sm)] py-2.5 px-3 text-paragraph opacity-80 file:mr-4 file:py-1.5 file:px-3 file:rounded-[var(--radius-sm)] file:border-0 file:font-semibold file:bg-[var(--color-primary)] file:text-white hover:file:bg-blue-600 transition cursor-pointer"
+                      onChange={(e) => {
+                        handleImageChange(e);
+                        if (storyErrors.image) {
+                          setStoryErrors(prev => ({ ...prev, image: "" }));
+                        }
+                      }}
+                      className={`w-full bg-[var(--color-sub-bg)] border rounded-[var(--radius-sm)] py-2 px-3 text-paragraph opacity-80 file:mr-4 file:py-1 file:px-2.5 file:rounded-[var(--radius-sm)] file:border-0 file:font-semibold file:bg-[var(--color-primary)] file:text-white hover:file:bg-[var(--color-primary-hover)] transition cursor-pointer text-xs ${storyErrors.image ? 'border-red-500 focus:border-red-500' : 'border-[var(--color-border)] focus:border-[var(--color-primary)]'}`}
                       style={{ fontSize: 'var(--text-caption)' }}
                     />
+                    {storyErrors.image && (
+                      <p className="text-red-500 text-[10px] mt-1 font-semibold">{storyErrors.image}</p>
+                    )}
                   </div>
                 </div>
 
                 <div className="flex justify-end gap-3 border-t border-[var(--color-border)] px-6 py-4">
                   <button
                     type="button"
-                    onClick={() => setShowStoryModal(false)}
-                    className="px-5 py-2 border border-[var(--color-border)] text-paragraph hover:bg-[var(--color-sub-bg)] transition font-semibold cursor-pointer h-10"
-                    style={{ borderRadius: 'var(--radius-sm)', fontSize: 'var(--text-caption)' }}
+                    onClick={handleCloseStoryModal}
+                    className="px-4 py-1.5 border border-[var(--color-border)] rounded-[var(--radius-sm)] text-paragraph bg-white hover:bg-[var(--color-sub-bg)] transition font-semibold cursor-pointer h-8 text-xs shadow-sm flex items-center justify-center"
                   >
                     Cancel
                   </button>
                   <button
                     type="submit"
                     disabled={isSubmitting}
-                    className="btn cursor-pointer text-white"
-                    style={{ fontSize: 'var(--text-caption)', textTransform: 'none' }}
+                    className="btn px-4 cursor-pointer border-none rounded-[var(--radius-sm)] text-xs font-semibold h-8 text-white flex items-center justify-center"
+                    style={{ minWidth: 'auto', boxShadow: 'none' }}
                   >
-                    {isSubmitting ? 'Uploading...' : 'Submit Story'}
+                    {isSubmitting ? 'Uploading...' : (editingStory ? 'Update Story' : 'Submit Story')}
                   </button>
                 </div>
               </form>
+            </div>
+          </div>,
+          document.body
+        )}
+
+      {/* Custom Delete Confirmation Modal */}
+      {deleteConfirm.isOpen &&
+        createPortal(
+          <div className="fixed inset-0 z-[999999] flex items-center justify-center bg-black/50 backdrop-blur-xs p-4 animate-none">
+            <div className="bg-white p-6 rounded-[var(--radius-sm)] shadow-xl max-w-sm w-full mx-4 border border-[var(--color-border)] text-left font-primary font-normal z-[999999]">
+              <h3 className="text-[var(--color-primary)] font-bold text-lg mb-2">
+                {deleteConfirm.title}
+              </h3>
+              <p className="text-[var(--color-paragraph)] text-sm mb-5 font-semibold">
+                {deleteConfirm.message}
+              </p>
+              <div className="flex justify-end gap-3 font-normal">
+                <button
+                  onClick={handleCancelDelete}
+                  className="border border-[var(--color-primary)] text-[var(--color-primary)] bg-transparent hover:bg-[var(--color-primary)] hover:text-white transition font-semibold cursor-pointer rounded-[var(--radius-sm)] text-xs flex items-center justify-center border-solid h-8.5 px-4"
+                  style={{ fontWeight: 'normal' }}
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={handleConfirmDelete}
+                  className="bg-[var(--color-primary)] hover:bg-[var(--color-primary-hover)] text-white font-semibold cursor-pointer rounded-[var(--radius-sm)] text-xs flex items-center justify-center border-none h-8.5 px-4"
+                  style={{ fontWeight: 'normal' }}
+                >
+                  Confirm
+                </button>
+              </div>
             </div>
           </div>,
           document.body
