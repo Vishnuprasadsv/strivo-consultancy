@@ -901,7 +901,9 @@ export default function Review() {
             py: { xs: 8, md: 10 },
             backgroundColor: "var(--color-sub-bg)",
             borderTop: "1px solid var(--color-border)",
-            textAlign: "center"
+            textAlign: "center",
+            position: "relative",
+            zIndex: 10,
           }}
         >
           <Box className="max-w-[1440px] mx-auto px-6 md:px-16 lg:px-[180px]">
@@ -964,11 +966,8 @@ export default function Review() {
               {approvedReviews.map((rev) => (
                 <div
                   key={rev._id}
-                  className="bg-white border border-[var(--color-border)] rounded-[var(--radius-sm)] p-6 shadow-sm flex flex-col justify-between hover:shadow-md transition-all duration-300 relative overflow-hidden"
+                  className="bg-white border border-[var(--color-border)] border-l-4 border-l-[var(--color-primary)] rounded-[var(--radius-sm)] p-6 shadow-sm flex flex-col justify-between hover:shadow-md hover:-translate-y-1 transition-all duration-300 relative overflow-hidden"
                 >
-                  <div className="absolute -top-3 -right-2 opacity-5 select-none pointer-events-none">
-                    <FormatQuoteIcon sx={{ fontSize: 90, color: "var(--color-primary)" }} />
-                  </div>
                   <div>
                     {/* Stars */}
                     <div className="flex gap-0.5 mb-3">
@@ -983,13 +982,18 @@ export default function Review() {
                       ))}
                     </div>
                     <h4 className="text-sm font-bold text-[var(--color-black)] mb-2 uppercase leading-tight line-clamp-1">{rev.title}</h4>
-                    <p className="text-xs text-[var(--color-paragraph)] leading-relaxed italic mb-5 line-clamp-4">
-                      "{rev.review}"
+                    <p className="text-xs text-[var(--color-paragraph)] leading-relaxed mb-5 line-clamp-4">
+                      {rev.review}
                     </p>
                   </div>
-                  <div className="border-t border-[var(--color-border)] pt-4 mt-auto">
-                    <div className="font-bold text-xs text-[var(--color-primary)] uppercase">{rev.fullName}</div>
-                    <div className="text-[10px] text-gray-400 font-semibold uppercase mt-0.5">{rev.company}</div>
+                  <div className="border-t border-[var(--color-border)] pt-4 mt-auto flex items-center gap-3">
+                    <div className="w-8 h-8 rounded-full bg-[var(--color-primary)] text-white flex items-center justify-center font-bold text-xs shrink-0 select-none">
+                      {(rev.fullName || 'U').charAt(0).toUpperCase()}
+                    </div>
+                    <div>
+                      <div className="font-bold text-xs text-[var(--color-primary)] uppercase leading-tight">{rev.fullName}</div>
+                      <div className="text-[10px] text-gray-400 font-semibold uppercase mt-0.5">{rev.company}</div>
+                    </div>
                   </div>
                 </div>
               ))}

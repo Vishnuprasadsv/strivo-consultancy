@@ -26,6 +26,7 @@ import {
 import { motion } from 'framer-motion';
 import { toast } from "sonner";
 import axios from "axios";
+import { jsPDF } from 'jspdf';
 
 const Inquiries = () => {
     // Main UI View state
@@ -371,12 +372,153 @@ Strivo Consultancy Team`);
         }
     };
 
+    const generateProposalPDF = (action = 'download') => {
+        if (!selected) {
+            toast.error("No inquiry selected");
+            return;
+        }
+
+        const doc = new jsPDF();
+
+        // Color Palette
+        const primaryColor = [1, 41, 89]; // #012959 (Navy Blue)
+
+        // Header Banner
+        doc.setFillColor(primaryColor[0], primaryColor[1], primaryColor[2]);
+        doc.rect(0, 0, 210, 45, 'F');
+
+        // Header Text
+        doc.setTextColor(255, 255, 255);
+        doc.setFont("helvetica", "bold");
+        doc.setFontSize(22);
+        doc.text("STRIVO CONSULTANCY", 15, 20);
+
+        doc.setFont("helvetica", "normal");
+        doc.setFontSize(10);
+        doc.text("Strategic Business Transformations & Consulting Services", 15, 28);
+        doc.text("Web: www.strivo-consultancy.com | Email: contact@strivo.com", 15, 34);
+
+        // Document Title
+        doc.setFontSize(14);
+        doc.setFont("helvetica", "bold");
+        doc.text("BUSINESS PROPOSAL", 130, 25);
+        doc.setFontSize(9);
+        doc.setFont("helvetica", "normal");
+        doc.text(`Proposal Date: ${new Date().toLocaleDateString('en-US', { day: 'numeric', month: 'short', year: 'numeric' })}`, 130, 31);
+
+        // Horizontal Line
+        doc.setDrawColor(226, 232, 240); // Slate-200
+        doc.setLineWidth(0.5);
+        doc.line(15, 55, 195, 55);
+
+        // Section 1: Inquiry & Client Information
+        doc.setTextColor(primaryColor[0], primaryColor[1], primaryColor[2]);
+        doc.setFontSize(11);
+        doc.setFont("helvetica", "bold");
+        doc.text("CLIENT & INQUIRY INFORMATION", 15, 63);
+
+        doc.setDrawColor(200, 200, 200);
+        doc.line(15, 66, 195, 66);
+
+        // Client Info Grid
+        doc.setTextColor(51, 65, 85);
+        doc.setFontSize(9);
+        
+        doc.setFont("helvetica", "bold");
+        doc.text("Client Name:", 15, 73);
+        doc.setFont("helvetica", "normal");
+        doc.text(selected.fullName || "N/A", 42, 73);
+
+        doc.setFont("helvetica", "bold");
+        doc.text("Company:", 15, 80);
+        doc.setFont("helvetica", "normal");
+        doc.text(selected.company || "N/A", 42, 80);
+
+        doc.setFont("helvetica", "bold");
+        doc.text("Email:", 15, 87);
+        doc.setFont("helvetica", "normal");
+        doc.text(selected.email || "N/A", 42, 87);
+
+        doc.setFont("helvetica", "bold");
+        doc.text("Phone:", 15, 94);
+        doc.setFont("helvetica", "normal");
+        doc.text(selected.phone || "N/A", 42, 94);
+
+        // Right side info (Service details)
+        doc.setFont("helvetica", "bold");
+        doc.text("Requested Service:", 110, 73);
+        doc.setFont("helvetica", "normal");
+        doc.text(selected.service || "N/A", 145, 73);
+
+        doc.setFont("helvetica", "bold");
+        doc.text("Received Date:", 110, 80);
+        doc.setFont("helvetica", "normal");
+        doc.text(new Date(selected.createdAt).toLocaleDateString(), 145, 80);
+
+        doc.setFont("helvetica", "bold");
+        doc.text("Estimated Budget:", 110, 87);
+        doc.setFont("helvetica", "normal");
+        doc.text(proposalBudget || "N/A", 145, 87);
+
+        doc.setFont("helvetica", "bold");
+        doc.text("Timeline:", 110, 94);
+        doc.setFont("helvetica", "normal");
+        doc.text(proposalTimeline || "N/A", 145, 94);
+
+        // Section 2: Proposal Details
+        doc.setTextColor(primaryColor[0], primaryColor[1], primaryColor[2]);
+        doc.setFontSize(11);
+        doc.setFont("helvetica", "bold");
+        doc.text("PROPOSAL DETAILS", 15, 107);
+        doc.setDrawColor(200, 200, 200);
+        doc.line(15, 110, 195, 110);
+
+        doc.setTextColor(51, 65, 85);
+        doc.setFontSize(9);
+        doc.setFont("helvetica", "bold");
+        doc.text("Subject:", 15, 117);
+        doc.setFont("helvetica", "normal");
+        doc.text(proposalSubject || "N/A", 32, 117);
+
+        // Proposal Content Box
+        doc.setFont("helvetica", "bold");
+        doc.text("Proposal Content:", 15, 126);
+        
+        doc.setFont("helvetica", "normal");
+        const splitContent = doc.splitTextToSize(proposalContent || "", 180);
+        doc.text(splitContent, 15, 133);
+
+        // Footer banner/signature
+        const pageHeight = doc.internal.pageSize.height;
+        doc.setDrawColor(226, 232, 240);
+        doc.line(15, pageHeight - 35, 195, pageHeight - 35);
+
+        doc.setFont("helvetica", "normal");
+        doc.setFontSize(8);
+        doc.text("Prepared by Strivo Consultancy Consulting Panel.", 15, pageHeight - 28);
+        doc.text("This proposal is valid for 30 days from the issue date.", 15, pageHeight - 23);
+        doc.text("CONFIDENTIAL - FOR CLIENT USE ONLY", 15, pageHeight - 18);
+
+        // Handle Action
+        if (action === 'preview') {
+            window.open(doc.output('bloburl'), '_blank');
+            toast.success("Generating preview of proposal PDF...");
+        } else {
+            doc.save(`Proposal_${(selected.fullName || 'Client').replace(/\s+/g, '_')}.pdf`);
+            toast.success("Proposal PDF downloaded successfully!");
+        }
+    };
+
     const handleSaveDraftProposal = () => {
         toast.success("Proposal saved as draft successfully!");
     };
 
     const handlePreviewProposal = () => {
-        toast.success("Generating preview of proposal PDF...");
+        generateProposalPDF('preview');
+    };
+
+    const handleGenerateProposalPDF = () => {
+        generateProposalPDF('download');
     };
 
     const handleExportPDF = () => {
@@ -795,7 +937,7 @@ Strivo Consultancy Team`);
                             </button>
 
                             <button
-                                onClick={handlePreviewProposal}
+                                onClick={handleGenerateProposalPDF}
                                 className="btn w-full flex items-center justify-center gap-2 text-white transition py-1.5 rounded-[var(--radius-sm)] text-xs font-normal cursor-pointer border-0 h-8"
                                 style={{ fontWeight: 'normal' }}
                             >
