@@ -417,6 +417,7 @@ const EditArticle = () => {
                   name="publicationDate"
                   value={formData.publicationDate}
                   onChange={handleInputChange}
+                  min={new Date().toLocaleDateString('en-CA')}
                   disabled={isAlreadyPublished}
                   className={`w-full bg-[var(--color-sub-bg)] border border-[var(--color-border)] rounded-[var(--radius-sm)] px-4 py-2.5 text-sm text-[var(--color-paragraph)] focus:outline-none focus:border-[var(--color-primary)] hover:bg-white focus:bg-white transition-all duration-200 ${isAlreadyPublished ? 'opacity-65 cursor-not-allowed' : ''}`}
                   style={{ fontFamily: 'var(--font-primary)' }}
