@@ -198,13 +198,71 @@ const Change = () => {
           className="w-full bg-sub py-6 md:py-12"
         >
           <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
-            <div className="order-2 md:order-1 relative w-full aspect-square md:aspect-auto md:h-[500px] rounded-2xl overflow-hidden flex items-center justify-center p-8">
-              <img
-                alt="Change management services overview"
-                className="object-contain w-full h-full opacity-90 drop-shadow-[0_0_30px_rgba(37,99,235,0.2)]"
-                src={changeManagementServices}
-              />
-            </div>
+            {/* RIGHT IMAGE */}
+                                    <motion.div
+                                      initial={{ opacity: 0, x: 80 }}
+                                      whileInView={{ opacity: 1, x: 0 }}
+                                      viewport={{ once: true }}
+                                      transition={{ duration: 1 }}
+                                    >
+                                      <Box
+                                        sx={{
+                                          position: "relative",
+                                          maxWidth: "600px",
+                                          ml: "auto",
+                                          width: "100%",
+                                        }}
+                                      >
+                                        {/* Dotted Pattern Top Right */}
+                                        <Box
+                                          sx={{
+                                            position: "absolute",
+                                            top: "-30px",
+                                            left: "-30px",
+                                            width: "120px",
+                                            height: "120px",
+                                            backgroundImage: "radial-gradient(var(--color-primary) 2px, transparent 2px)",
+                                            backgroundSize: "16px 16px",
+                                            opacity: 0.15,
+                                            zIndex: 0,
+                                          }}
+                                        />
+                        
+                                        {/* Dark Blue Box Bottom Right */}
+                                        <Box
+                                          sx={{
+                                            position: "absolute",
+                                            bottom: "-25px",
+                                            right: "-25px",
+                                            width: "80%",
+                                            height: "80%",
+                                            background: "radial-gradient(circle, var(--color-primary) 40%, transparent 100%)",
+                                            borderRadius: "3px",
+                                            zIndex: 0,
+                                          }}
+                                        />
+                        
+                                        {/* Main Image */}
+                                        <Box
+                                          component="img"
+                                          src={changeManagementServices}
+                                          alt="Business Consulting"
+                                          sx={{
+                                            width: "100%",
+                                            height: { xs: "auto", md: "400px", lg: "500px" },
+                                            borderRadius: "3px",
+                                            position: "relative",
+                                            zIndex: 2,
+                                            objectFit: "cover",
+                                            boxShadow: "0 20px 50px rgba(0,0,0,.15)",
+                                            transition: ".5s ease",
+                                            "&:hover": {
+                                              transform: "scale(1.02)",
+                                            },
+                                          }}
+                                        />
+                                      </Box>
+                                    </motion.div>
             
             <div className="order-1 md:order-2 space-y-8">
               <div className="flex items-center gap-3">
@@ -454,7 +512,7 @@ const Change = () => {
           
                 {/* Counter Numbers */}
                 <Box sx={{ display: "flex", alignItems: "baseline", mb: 0.5 }}>
-                  <Typography
+                  <Box
                     sx={{
                       color: "#fff",
                       fontSize: "2.8rem",
@@ -463,8 +521,8 @@ const Change = () => {
                     }}
                   >
                     <AnimatedCounter target={metric.value} />
-                  </Typography>
-                  <Typography
+                  </Box>
+                  <Box
                     sx={{
                       color: "#fff",
                       fontSize: "2.8rem",
@@ -473,11 +531,11 @@ const Change = () => {
                     }}
                   >
                     {metric.suffix}
-                  </Typography>
+                  </Box>
                 </Box>
           
                 {/* Subtitle / Description */}
-                <Typography
+                <Box
                   sx={{
                     color: "rgba(255,255,255,0.7)",
                     fontSize: "0.8rem",
@@ -487,7 +545,7 @@ const Change = () => {
                   }}
                 >
                   {metric.label}
-                </Typography>
+                </Box>
               </Box>
             ))}
           </Box>
