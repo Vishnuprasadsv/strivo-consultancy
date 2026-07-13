@@ -4,7 +4,7 @@ import { createPortal } from 'react-dom';
 import { toast } from 'sonner';
 
 // Icons
-import { FiPlus, FiBarChart2, FiTrash2, FiEdit2, FiSearch, FiFilter, FiRefreshCw, FiEye, FiDownload } from 'react-icons/fi';
+import { FiPlus, FiBarChart2, FiTrash2, FiEdit2, FiSearch, FiFilter, FiRefreshCw, FiEye, FiDownload, FiSliders } from 'react-icons/fi';
 
 // API Services
 import {
@@ -29,8 +29,10 @@ const ArticlesAdmin = () => {
   // Search & Filter & Pagination states
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('All');
+  const [selectedStatus, setSelectedStatus] = useState('All');
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [isCategoryOpen, setIsCategoryOpen] = useState(false);
+  const [isStatusOpen, setIsStatusOpen] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const articlesPerPage = 5;
   const [subscribersCurrentPage, setSubscribersCurrentPage] = useState(1);
@@ -77,6 +79,12 @@ const ArticlesAdmin = () => {
     } finally {
       setSubscribersLoading(false);
     }
+  };
+
+  const handleOpenAnalyticsModal = () => {
+    loadArticles();
+    loadSubscribers();
+    setShowAnalyticsModal(true);
   };
 
   useEffect(() => {
@@ -137,9 +145,10 @@ const ArticlesAdmin = () => {
   // Search and Filter Articles
   const filteredArticles = articlesList
     .filter(art => {
-      const matchesSearch = searchQuery ? art.title.toLowerCase().includes(searchQuery.toLowerCase()) : true;
+      const matchesSearch = searchQuery ? (art.title || '').toLowerCase().includes(searchQuery.toLowerCase()) : true;
       const matchesCategory = selectedCategory && selectedCategory !== 'All' ? art.category === selectedCategory : true;
-      return matchesSearch && matchesCategory;
+      const matchesStatus = selectedStatus && selectedStatus !== 'All' ? (art.status || 'Published') === selectedStatus : true;
+      return matchesSearch && matchesCategory && matchesStatus;
     });
 
   // Sort: Newly added articles first (newest by createdAt or publicationDate first)
@@ -220,6 +229,63 @@ const ArticlesAdmin = () => {
     }
   ];
 
+  // Category statistics & donut segments calculation
+  const getCategoryColor = (cat) => {
+    switch (cat) {
+      case 'Technology': return '#3B82F6'; // Blue
+      case 'Development': return '#10B981'; // Emerald
+      case 'UI/UX': return '#F59E0B'; // Amber
+      case 'Business': return '#A855F7'; // Purple
+      case 'SaaS': return '#EC4899'; // Pink
+      case 'Finance': return '#06B6D4'; // Cyan
+      case 'Healthcare': return '#14B8A6'; // Teal
+      case 'Retail': return '#F43F5E'; // Rose
+      default: return '#6B7280'; // Gray
+    }
+  };
+
+  const getCategoryStats = () => {
+    const counts = {};
+    articlesList.forEach(art => {
+      const cat = art.category || 'Development';
+      counts[cat] = (counts[cat] || 0) + 1;
+    });
+    return counts;
+  };
+
+  const categoryCounts = getCategoryStats();
+  const totalArticlesForDonut = articlesList.length || 1;
+
+  const radius = 40;
+  const circumference = 2 * Math.PI * radius; // Approx 251.327
+
+  // Sort categories by count desc so largest segments come first
+  const categoryMap = Object.keys(categoryCounts)
+    .map(name => ({
+      name,
+      count: categoryCounts[name],
+      color: getCategoryColor(name)
+    }))
+    .sort((a, b) => b.count - a.count);
+
+  let currentOffset = 0;
+  const donutSegments = [];
+
+  categoryMap.forEach((segment) => {
+    if (segment.count > 0) {
+      const percentage = segment.count / totalArticlesForDonut;
+      const strokeLength = percentage * circumference;
+      const strokeOffset = circumference - strokeLength + currentOffset;
+
+      donutSegments.push({
+        color: segment.color,
+        strokeOffset: strokeOffset
+      });
+
+      currentOffset = currentOffset - strokeLength;
+    }
+  });
+
   return (
     <div className="min-h-screen bg-sub flex flex-col" style={{ fontFamily: 'var(--font-primary)' }}>
       
@@ -241,7 +307,7 @@ const ArticlesAdmin = () => {
             <div className="flex items-center gap-3 w-full sm:w-auto">
               {/* Analytics button */}
               <button
-                onClick={() => setShowAnalyticsModal(true)}
+                onClick={handleOpenAnalyticsModal}
                 className="bg-white border border-[var(--color-primary)] text-[var(--color-primary)] hover:text-white hover:bg-[var(--color-primary)] px-2.5 py-1.5 rounded-[var(--radius-sm)] flex items-center justify-center gap-2 transition cursor-pointer h-8 text-xs font-normal w-full sm:w-auto"
               >
                 <FiBarChart2 size={13} />
@@ -339,10 +405,11 @@ const ArticlesAdmin = () => {
                         className="border border-[var(--color-border)] rounded-[var(--radius-sm)] px-2 py-1 text-xs outline-none bg-white text-[var(--color-black)] transition-all duration-300 font-semibold cursor-pointer"
                       >
                         <option value="All">All Categories</option>
-                        <option value="Finance">Finance</option>
-                        <option value="Healthcare">Healthcare</option>
                         <option value="Technology">Technology</option>
-                        <option value="Retail">Retail</option>
+                        <option value="Development">Development</option>
+                        <option value="UI/UX">UI/UX</option>
+                        <option value="Business">Business</option>
+                        <option value="SaaS">SaaS</option>
                       </select>
                     )}
                     <button
@@ -358,11 +425,46 @@ const ArticlesAdmin = () => {
                     </button>
                   </div>
 
+                  {/* Status Dropdown & Button */}
+                  <div className="flex items-center gap-2">
+                    {isStatusOpen && (
+                      <select
+                        value={selectedStatus}
+                        onChange={(e) => {
+                          setSelectedStatus(e.target.value);
+                          setCurrentPage(1);
+                        }}
+                        className="border border-[var(--color-border)] rounded-[var(--radius-sm)] px-2 py-1 text-xs outline-none bg-white text-[var(--color-black)] transition-all duration-300 font-semibold cursor-pointer"
+                      >
+                        <option value="All">All Statuses</option>
+                        <option value="Published">Published</option>
+                        <option value="Draft">Draft</option>
+                      </select>
+                    )}
+                    <button
+                      onClick={() => setIsStatusOpen(!isStatusOpen)}
+                      className={`w-8 h-8 rounded-full flex items-center justify-center border transition-all cursor-pointer ${
+                        isStatusOpen 
+                          ? 'border-[var(--color-primary)] bg-[var(--color-primary)] text-white' 
+                          : 'border-[var(--color-border)] bg-white text-[var(--color-paragraph)] hover:bg-[var(--color-sub-bg)]'
+                      }`}
+                      title="Filter by Status"
+                    >
+                      <FiSliders size={13} />
+                    </button>
+                  </div>
+
                   {/* Refresh Button */}
                   <button
                     onClick={() => {
+                      setSearchQuery('');
+                      setSelectedCategory('All');
+                      setSelectedStatus('All');
+                      setIsSearchOpen(false);
+                      setIsCategoryOpen(false);
+                      setIsStatusOpen(false);
                       loadArticles();
-                      toast.success("Articles list reloaded");
+                      toast.success("Articles list refreshed");
                     }}
                     className="w-8 h-8 rounded-full flex items-center justify-center border border-[var(--color-border)] bg-white text-[var(--color-paragraph)] hover:bg-[var(--color-sub-bg)] transition-all cursor-pointer"
                     title="Refresh List"
@@ -386,13 +488,13 @@ const ArticlesAdmin = () => {
                   <div className="hidden md:block overflow-x-auto">
                     <table className="w-full text-left border-collapse min-w-[700px]">
                       <thead>
-                        <tr className="border-b border-[var(--color-border)] text-[var(--color-heading)] text-xs font-normal uppercase tracking-wider">
-                          <th className="pb-4 pl-8 pr-6 font-normal">Cover</th>
-                          <th className="pb-4 px-6 font-normal">Title</th>
-                          <th className="pb-4 px-6 font-normal">Category</th>
-                          <th className="pb-4 px-6 font-normal">Publishing Date</th>
-                          <th className="pb-4 px-6 font-normal">Status</th>
-                          <th className="pb-4 pl-6 pr-8 text-right font-normal">Actions</th>
+                        <tr className="border-b border-[var(--color-border)] text-primary text-xs font-normal uppercase tracking-wider">
+                          <th className="pb-4 pl-8 pr-6" style={{ fontWeight: 'normal' }}>Cover</th>
+                          <th className="pb-4 px-6" style={{ fontWeight: 'normal' }}>Title</th>
+                          <th className="pb-4 px-6" style={{ fontWeight: 'normal' }}>Category</th>
+                          <th className="pb-4 px-6" style={{ fontWeight: 'normal' }}>Publishing Date</th>
+                          <th className="pb-4 px-6" style={{ fontWeight: 'normal' }}>Status</th>
+                          <th className="pb-4 pl-6 pr-8 text-right" style={{ fontWeight: 'normal' }}>Actions</th>
                         </tr>
                       </thead>
                       <tbody className="divide-y divide-[var(--color-border)] text-sm">
@@ -421,7 +523,7 @@ const ArticlesAdmin = () => {
                               {art.category}
                             </td>
 
-                            <td className="py-5 px-6 text-left text-xs text-[var(--color-paragraph)]">
+                            <td className="py-5 px-6 text-left text-xs text-[var(--color-paragraph)] font-semibold uppercase tracking-wider">
                               {art.publicationDate 
                                 ? new Date(art.publicationDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })
                                 : new Date(art.createdAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })
@@ -491,7 +593,7 @@ const ArticlesAdmin = () => {
                               })()}
                             </h3>
 
-                            <p className="text-[10px] text-[var(--color-paragraph)] mt-1">
+                            <p className="text-[10px] text-[var(--color-paragraph)] font-semibold uppercase tracking-wider mt-1">
                               Published: {art.publicationDate 
                                 ? new Date(art.publicationDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })
                                 : new Date(art.createdAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })
@@ -592,10 +694,10 @@ const ArticlesAdmin = () => {
                   <div className="hidden md:block overflow-x-auto">
                     <table className="w-full text-left border-collapse min-w-[500px]">
                       <thead>
-                        <tr className="border-b border-[var(--color-border)] text-[var(--color-heading)] text-xs font-normal uppercase tracking-wider">
-                          <th className="pb-2 pl-8 pr-6 w-[50%]">Email Address</th>
-                          <th className="pb-2 px-6 w-[35%]">Subscribed On</th>
-                          <th className="pb-2 pl-6 pr-8 text-right w-[15%]">Actions</th>
+                        <tr className="border-b border-[var(--color-border)] text-primary text-xs font-normal uppercase tracking-wider">
+                          <th className="pb-2 pl-8 pr-6 w-[50%]" style={{ fontWeight: 'normal' }}>Email Address</th>
+                          <th className="pb-2 px-6 w-[35%]" style={{ fontWeight: 'normal' }}>Subscribed On</th>
+                          <th className="pb-2 pl-6 pr-8 text-right w-[15%]" style={{ fontWeight: 'normal' }}>Actions</th>
                         </tr>
                       </thead>
                       <tbody className="divide-y divide-[var(--color-border)] text-sm">
@@ -735,11 +837,11 @@ const ArticlesAdmin = () => {
       {showAnalyticsModal &&
         createPortal(
           <div className="fixed inset-0 z-[99999] flex items-center justify-center bg-black/70 backdrop-blur-sm p-4">
-            <div className="w-full max-w-4xl border border-[var(--color-border)] bg-[var(--color-main-bg)] shadow-xl overflow-hidden" style={{ borderRadius: 'var(--radius-sm)', fontFamily: 'var(--font-primary)' }}>
+            <div className="w-full max-w-4xl max-h-[90vh] flex flex-col border border-[var(--color-border)] bg-white shadow-xl overflow-hidden" style={{ borderRadius: 'var(--radius-sm)', fontFamily: 'var(--font-primary)' }}>
               {/* Header */}
               <div className="flex items-center justify-between border-b border-[var(--color-border)] px-6 py-4 bg-white">
-                <div>
-                  <h2 className="text-lg font-bold text-primary" style={{ margin: 0 }}>
+                <div className="min-w-0 pr-4 flex-1 text-left">
+                  <h2 className="text-lg font-bold text-primary truncate block" style={{ margin: 0 }}>
                     ARTICLES ANALYTICS
                   </h2>
                   <p className="text-xs text-[var(--color-paragraph)] opacity-60 mt-1">
@@ -748,25 +850,88 @@ const ArticlesAdmin = () => {
                 </div>
                 <button
                   onClick={() => setShowAnalyticsModal(false)}
-                  className="w-8 h-8 rounded-full bg-[var(--color-sub-bg)] hover:bg-red-500/20 hover:text-red-600 transition flex items-center justify-center text-[var(--color-paragraph)] opacity-60 hover:opacity-100 cursor-pointer text-xs"
+                  className="w-8 h-8 rounded-full bg-[var(--color-sub-bg)] hover:bg-red-500/20 hover:text-red-600 transition flex items-center justify-center text-[var(--color-paragraph)] opacity-60 hover:opacity-100 cursor-pointer text-xs shrink-0"
                 >
                   ✕
                 </button>
               </div>
 
               {/* Body */}
-              <div className="p-6 bg-[var(--color-sub-bg)]/20">
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-                  {stats.map((item) => (
-                    <div
-                      key={item.title}
-                      className="card bg-white p-5 flex flex-col justify-between items-center text-center shadow-sm border border-[var(--color-border)] rounded-[var(--radius-sm)]"
-                    >
-                      <h3 className="card-title-custom text-xs" style={{ margin: 0 }}>{item.title}</h3>
-                      <p className="stats-number text-2xl font-bold text-black" style={{ margin: '8px 0 8px 0', lineHeight: 1.1 }}>{item.value}</p>
-                      <p className="text-black opacity-60 text-[10px] font-semibold" style={{ margin: 0 }}>{item.subtitle}</p>
-                    </div>
-                  ))}
+              <div className="p-6 bg-[var(--color-sub-bg)]/35 overflow-y-auto flex-1">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  {/* Left Column: Donut Chart / Category Breakdown */}
+                  <div className="card p-5 bg-white shadow-sm border border-[var(--color-border)] rounded-[var(--radius-sm)] flex flex-col items-center justify-center text-center">
+                    <h3 className="text-xs font-bold text-[var(--color-black)] uppercase tracking-wider mb-4" style={{ margin: 0 }}>
+                      Category Breakdown
+                    </h3>
+
+                    {articlesList.length > 0 ? (
+                      <>
+                        <div className="relative w-36 h-36 mb-4">
+                          <svg className="w-full h-full transform -rotate-90" viewBox="0 0 100 100">
+                            <circle cx="50" cy="50" r="40" fill="transparent" stroke="var(--color-border)" strokeWidth="10" />
+                            {donutSegments.map((segment, idx) => (
+                              <circle
+                                key={idx}
+                                cx="50"
+                                cy="50"
+                                r={radius}
+                                fill="transparent"
+                                stroke={segment.color}
+                                strokeWidth="10"
+                                strokeDasharray={circumference}
+                                strokeDashoffset={segment.strokeOffset}
+                                strokeLinecap="round"
+                                style={{ transition: 'stroke-dashoffset 0.8s ease' }}
+                              />
+                            ))}
+                          </svg>
+                          <div className="absolute inset-0 flex flex-col items-center justify-center">
+                            <span className="text-2xl font-extrabold text-[var(--color-black)]">{articlesList.length}</span>
+                            <span className="text-[9px] text-[var(--color-paragraph)] opacity-50 uppercase tracking-widest">Articles</span>
+                          </div>
+                        </div>
+
+                        <div className="grid grid-cols-2 gap-x-6 gap-y-2 text-xs w-full max-w-[280px] border-t border-[var(--color-border)] pt-4 mt-2">
+                          {categoryMap.map((segment) => (
+                            <div key={segment.name} className="flex justify-between items-center">
+                              <div className="flex items-center gap-1.5 min-w-0">
+                                <span className="w-2.5 h-2.5 rounded-full shrink-0" style={{ backgroundColor: segment.color }}></span>
+                                <span className="text-[var(--color-paragraph)] opacity-85 truncate text-left" title={segment.name}>{segment.name}</span>
+                              </div>
+                              <span className="font-semibold text-[var(--color-black)] ml-1">{segment.count}</span>
+                            </div>
+                          ))}
+                        </div>
+                      </>
+                    ) : (
+                      <div className="text-xs text-[var(--color-paragraph)] opacity-50 py-12">
+                        No articles to analyze.
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Right Column: Key Metrics */}
+                  <div className="flex flex-col gap-4 justify-between h-full">
+                    {stats.map((item) => (
+                      <div
+                        key={item.title}
+                        className="card bg-white p-4 px-5 flex justify-between items-center shadow-sm border border-[var(--color-border)] rounded-[var(--radius-sm)] flex-1 min-h-[72px]"
+                      >
+                        <div className="text-left">
+                          <h3 className="card-title-custom text-xs text-[var(--color-paragraph)] font-semibold uppercase tracking-wider" style={{ margin: 0 }}>
+                            {item.title}
+                          </h3>
+                          <p className="text-[10px] text-[var(--color-paragraph)] opacity-60 font-semibold mt-0.5" style={{ margin: 0 }}>
+                            {item.subtitle}
+                          </p>
+                        </div>
+                        <p className="stats-number text-2xl font-black text-[var(--color-primary)]" style={{ margin: 0, lineHeight: 1 }}>
+                          {item.value}
+                        </p>
+                      </div>
+                    ))}
+                  </div>
                 </div>
               </div>
 
@@ -774,7 +939,7 @@ const ArticlesAdmin = () => {
               <div className="flex justify-end border-t border-[var(--color-border)] px-6 py-4 bg-white">
                 <button
                   onClick={() => setShowAnalyticsModal(false)}
-                  className="px-5 py-2 border border-[var(--color-border)] text-sm text-[var(--color-paragraph)] hover:bg-[var(--color-sub-bg)] transition font-semibold cursor-pointer rounded-[var(--radius-sm)] h-10"
+                  className="bg-white border border-[var(--color-primary)] text-[var(--color-primary)] hover:text-white hover:bg-[var(--color-primary)] px-5 py-2 rounded-[var(--radius-sm)] transition font-semibold cursor-pointer h-10 text-sm flex items-center justify-center"
                 >
                   Close
                 </button>

@@ -29,7 +29,10 @@ export const checkKeywordMatch = async (file) => {
       "sql", "aws", "docker", "kubernetes", "api", "ui", "ux", "figma", 
       "design", "strategy", "management", "business", "consulting", 
       "planning", "analyst", "finance", "marketing", "leadership", 
-      "project", "hr", "recruitment", "hiring"
+      "project", "hr", "recruitment", "hiring", "skills", "experience", 
+      "education", "cv", "resume", "summary", "profile", "work", "details", 
+      "contact", "email", "phone", "information", "developer", "development", 
+      "engineer", "designer", "consultant", "manager", "admin", "administrator"
     ];
     
     // Check if at least 1 keyword is present in the resume

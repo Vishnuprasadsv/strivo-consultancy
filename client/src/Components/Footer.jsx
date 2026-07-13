@@ -1,11 +1,10 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion } from 'framer-motion';
 import Logo from '../assets/strivo logo.svg?react';
 
 
 const Footer = () => {
-  const [showScrollTop, setShowScrollTop] = useState(false);
   const footerRef = useRef(null);
   const [logoColor, setLogoColor] = useState("var(--color-white)");
 
@@ -24,18 +23,6 @@ const Footer = () => {
     }
   }, []);
 
-  useEffect(() => {
-    const handleScroll = () => {
-      if (window.scrollY > 300) {
-        setShowScrollTop(true);
-      } else {
-        setShowScrollTop(false);
-      }
-    };
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
-
   return (
     <>
     <motion.footer 
@@ -43,30 +30,34 @@ const Footer = () => {
       initial={{ opacity: 0, y: 50 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, amount: 0.2 }}
-      transition={{ duration: 0.6, ease: "easeOut" }}
-      className="bg-[var(--color-primary)] w-full border-t border-gray-500/30 pt-16 pb-12"
+      transition={{ duration: 0.8, ease: "easeOut" }}
+      className="bg-[var(--color-primary)] py-16 px-8 md:px-16 lg:px-24 border-t border-[var(--color-border)]/20"
     >
-      <div className="max-w-[110rem] mx-auto w-full px-4 md:px-12 lg:px-[180px] flex flex-col md:flex-row justify-between gap-12">
-        {/* Column 2: Company */}
+      <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-4 gap-12 text-left">
         <div className="flex flex-col gap-4">
-          <h3 className="text-white font-[var(--font-bold)] text-base mb-1">Company</h3>
-          <Link to="/about" className="text-[var(--color-main-paragraph)] hover:text-[#C9C9C9] transition-colors text-sm">About Us</Link>
-          <Link to="/casestudies" className="text-[var(--color-main-paragraph)] hover:text-[#C9C9C9] transition-colors text-sm">Case Studies</Link>
-          <Link to="/careerstrivo" className="text-[var(--color-main-paragraph)] hover:text-[#C9C9C9] transition-colors text-sm">Careers</Link>
-          <Link to="/insights" className="text-[var(--color-main-paragraph)] hover:text-[#C9C9C9] transition-colors text-sm">Insights</Link>
+          <div className="flex items-center gap-2 select-none">
+            <Logo className="w-10 h-10" style={{ fill: logoColor }} />
+            <span className="font-primary font-bold text-xl uppercase tracking-wider" style={{ color: logoColor }}>Strivo</span>
+          </div>
+          <p className="text-[var(--color-main-paragraph)] text-sm leading-relaxed max-w-xs font-normal">
+            Empowering organizations with cutting-edge consultancy, strategic planning, and operational excellence.
+          </p>
         </div>
-
-        {/* Column 3: Services */}
-        <div className="flex flex-col gap-4 md:items-center">
-          <h3 className="text-white font-[var(--font-bold)] text-base mb-1">Services</h3>
-          <Link to="/strategic" className="text-[var(--color-main-paragraph)] hover:text-[#C9C9C9] transition-colors text-sm">Strategic Planning</Link>
-          <Link to="/operations" className="text-[var(--color-main-paragraph)] hover:text-[#C9C9C9] transition-colors text-sm">Operations Optimizations</Link>
-          <Link to="/digital" className="text-[var(--color-main-paragraph)] hover:text-[#C9C9C9] transition-colors text-sm">Digital Transformation</Link>
-          <Link to="/change" className="text-[var(--color-main-paragraph)] hover:text-[#C9C9C9] transition-colors text-sm">Change Management</Link>
+        <div className="flex flex-col gap-4">
+          <h3 className="text-white font-[var(--font-bold)] text-base mb-1">Corporate</h3>
+          <Link to="/about" className="text-[var(--color-main-paragraph)] hover:text-[var(--color-primary-hover)] transition-colors text-sm">About Us</Link>
+          <Link to="/mission" className="text-[var(--color-main-paragraph)] hover:text-[var(--color-primary-hover)] transition-colors text-sm">Our Mission</Link>
+          <Link to="/vision" className="text-[var(--color-main-paragraph)] hover:text-[var(--color-primary-hover)] transition-colors text-sm">Our Vision</Link>
+          <Link to="/values" className="text-[var(--color-main-paragraph)] hover:text-[var(--color-primary-hover)] transition-colors text-sm">Core Values</Link>
         </div>
-
-        {/* Column 4: Get in Touch */}
-        <div className="flex flex-col gap-4 md:items-end md:text-right">
+        <div className="flex flex-col gap-4">
+          <h3 className="text-white font-[var(--font-bold)] text-base mb-1">Solutions</h3>
+          <Link to="/strategic-planning" className="text-[var(--color-main-paragraph)] hover:text-[var(--color-primary-hover)] transition-colors text-sm">Strategic Planning</Link>
+          <Link to="/change-management" className="text-[var(--color-main-paragraph)] hover:text-[var(--color-primary-hover)] transition-colors text-sm">Change Management</Link>
+          <Link to="/digital-transformation" className="text-[var(--color-main-paragraph)] hover:text-[var(--color-primary-hover)] transition-colors text-sm">Digital Transformation</Link>
+          <Link to="/operational-excellence" className="text-[var(--color-main-paragraph)] hover:text-[var(--color-primary-hover)] transition-colors text-sm">Operational Excellence</Link>
+        </div>
+        <div className="flex flex-col gap-4">
           <h3 className="text-white font-[var(--font-bold)] text-base mb-1">Get in Touch</h3>
           <Link to="/contact" className="text-[var(--color-main-paragraph)] hover:text-[#C9C9C9] transition-colors text-sm">Contact Us</Link>
           <Link to="/review" className="text-[var(--color-main-paragraph)] hover:text-[#C9C9C9] transition-colors text-sm">Add Review</Link>
@@ -88,28 +79,6 @@ const Footer = () => {
         </div>
       </div>
     </motion.footer>
-    <AnimatePresence>
-      {showScrollTop && (
-        <motion.div
-          initial={{ opacity: 0, scale: 0.8 }}
-          animate={{ opacity: 1, scale: 1 }}
-          exit={{ opacity: 0, scale: 0.8 }}
-          transition={{ duration: 0.2 }}
-          className="fixed bottom-6 right-6 md:bottom-24 md:right-8 z-[1000]"
-        >
-          <div
-            onClick={() => {
-              window.scrollTo({ top: 0, behavior: "smooth" });
-            }}
-            className="w-10 h-10 md:w-[50px] md:h-[50px] rounded-full bg-[var(--color-primary)] shadow-[0_8px_25px_var(--color-primary)] flex items-center justify-center cursor-pointer transition-all duration-300 ease-in-out hover:bg-[var(--color-primary-hover)] hover:-translate-y-1 hover:shadow-[0_12px_30px_rgba(71,100,255,0.6)]"
-          >
-            <svg className="w-5 h-5 md:w-6 md:h-6" viewBox="0 0 24 24" fill="none" stroke="#ffffff" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M18 15l-6-6-6 6" />
-            </svg>
-          </div>
-        </motion.div>
-      )}
-    </AnimatePresence>
     </>
   );
 };

@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import {
@@ -12,7 +12,7 @@ import {
   FormControlLabel,
 } from "@mui/material";
 
-import { submitReviewAPI } from "../services/allApi";
+import { submitReviewAPI, getReviewsAPI } from "../services/allApi";
 import { toast } from "sonner";
 import homeHero from "../assets/homehero.jpg";
 
@@ -194,6 +194,23 @@ export default function Review() {
   const [submitted, setSubmitted] = useState(false);
   const [loading, setLoading] = useState(false);
   const [acceptedPolicy, setAcceptedPolicy] = useState(false);
+  const [approvedReviews, setApprovedReviews] = useState([]);
+
+  const fetchApprovedReviews = async () => {
+    try {
+      const response = await getReviewsAPI();
+      if (response.status === 200 && response.data?.success) {
+        const approved = response.data.data.filter(r => r.status === "Approved");
+        setApprovedReviews(approved);
+      }
+    } catch (err) {
+      console.error("Failed to fetch approved reviews:", err);
+    }
+  };
+
+  useEffect(() => {
+    fetchApprovedReviews();
+  }, []);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -514,10 +531,22 @@ export default function Review() {
                 transition={{ duration: 0.5 }}
               >
                 {/* Grid Container centered */}
-                <Grid container spacing={4} sx={{ justifyContent: "center", mx: "auto" }}>
+                <Grid
+                  container
+                  spacing={{ xs: 3, md: 4 }}
+                  justifyContent="center"
+                  sx={{ mx: "auto" }}
+                >
 
                   {/* Guidelines Box */}
-                  <Grid size={{ xs: 12, md: 5 }} sx={{ display: "flex", justifyContent: "center" }}>
+                  <Grid
+                    size={{ xs: 12, md: 5 }}
+                    sx={{
+                      display: "flex",
+                      justifyContent: "center",
+                      order: { xs: 2, md: 1 },
+                    }}
+                  >
                     <Box
                       sx={{
                         p: { xs: 2.5, md: 3 },
@@ -525,19 +554,19 @@ export default function Review() {
                         background: "var(--color-sub-bg)",
                         border: "1px solid var(--color-border)",
                         position: {
-  xs: "static",
-  md: "sticky",
-},
-top: {
-  md: 100,
-},
+                          xs: "static",
+                          md: "sticky",
+                        },
+                        top: {
+                          md: 100,
+                        },
                         minHeight: { md: "420px", xs: "auto" },
                         height: "100%",
                         width: "100%",
                         maxWidth: {
-  xs: "100%",
-  md: "460px",
-},
+                          xs: "100%",
+                          md: "460px",
+                        },
                         display: "flex",
                         flexDirection: "column",
                         justifyContent: "space-between",
@@ -636,7 +665,14 @@ top: {
                   </Grid>
 
                   {/* Review Form Box */}
-                  <Grid size={{ xs: 12, md: 7 }} sx={{ display: "flex", justifyContent: "center" }}>
+                  <Grid
+                    size={{ xs: 12, md: 7 }}
+                    sx={{
+                      display: "flex",
+                      justifyContent: "center",
+                      order: { xs: 1, md: 2 },
+                    }}
+                  >
                     <Box
                       component="form"
                       ref={formRef}
@@ -651,9 +687,9 @@ top: {
                         height: "100%",
                         width: "100%",
                         maxWidth: {
-  xs: "100%",
-  md: "600px",
-},
+                          xs: "100%",
+                          md: "600px",
+                        },
                         display: "flex",
                         flexDirection: "column",
                         justifyContent: "space-between",
@@ -856,6 +892,111 @@ top: {
 
         </Box>
       </Box>
+
+      {/* Testimonials Section */}
+      {approvedReviews.length > 0 && (
+        <Box
+          component="section"
+          sx={{
+            py: { xs: 8, md: 10 },
+            backgroundColor: "var(--color-sub-bg)",
+            borderTop: "1px solid var(--color-border)",
+            textAlign: "center"
+          }}
+        >
+          <Box className="max-w-[1440px] mx-auto px-6 md:px-16 lg:px-[180px]">
+            {/* Heading */}
+            <Box sx={{ mb: 6, display: "flex", flexDirection: "column", alignItems: "center" }}>
+              <Box
+                sx={{
+                  display: "inline-flex",
+                  alignItems: "center",
+                  gap: 1,
+                  px: 2.5,
+                  py: 0.5,
+                  borderRadius: "30px",
+                  background: "rgba(71,100,255,0.12)",
+                  border: "1px solid rgba(71,100,255,0.25)",
+                  mb: 1.5,
+                }}
+              >
+                <Typography
+                  sx={{
+                    color: "var(--color-primary)",
+                    fontWeight: 700,
+                    fontSize: "0.75rem",
+                    letterSpacing: "2px",
+                    textTransform: "uppercase",
+                  }}
+                >
+                  Our Clients are our Family
+                </Typography>
+              </Box>
+
+              <Box
+                component="h2"
+                className="sub-heading"
+                sx={{
+                  mb: 1.5,
+                  fontSize: { xs: "1.8rem", md: "2.4rem" },
+                  fontWeight: 700,
+                  color: "var(--color-black)",
+                  textAlign: "center"
+                }}
+              >
+                What Our Family Says
+              </Box>
+              <Typography
+                sx={{
+                  color: "var(--color-paragraph)",
+                  maxWidth: 600,
+                  fontSize: "0.85rem",
+                  lineHeight: 1.6,
+                  textAlign: "center"
+                }}
+              >
+                Hear directly from the enterprises and business leaders who partner with Strivo to drive strategic transformations.
+              </Typography>
+            </Box>
+
+            {/* Responsive Grid Container */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 text-left pb-8 pt-2">
+              {approvedReviews.map((rev) => (
+                <div
+                  key={rev._id}
+                  className="bg-white border border-[var(--color-border)] rounded-[var(--radius-sm)] p-6 shadow-sm flex flex-col justify-between hover:shadow-md transition-all duration-300 relative overflow-hidden"
+                >
+                  <div className="absolute -top-3 -right-2 opacity-5 select-none pointer-events-none">
+                    <FormatQuoteIcon sx={{ fontSize: 90, color: "var(--color-primary)" }} />
+                  </div>
+                  <div>
+                    {/* Stars */}
+                    <div className="flex gap-0.5 mb-3">
+                      {Array.from({ length: 5 }).map((_, idx) => (
+                        <StarIcon
+                          key={idx}
+                          sx={{
+                            fontSize: 16,
+                            color: idx < rev.rating ? "#F59E0B" : "#CBD5E1"
+                          }}
+                        />
+                      ))}
+                    </div>
+                    <h4 className="text-sm font-bold text-[var(--color-black)] mb-2 uppercase leading-tight line-clamp-1">{rev.title}</h4>
+                    <p className="text-xs text-[var(--color-paragraph)] leading-relaxed italic mb-5 line-clamp-4">
+                      "{rev.review}"
+                    </p>
+                  </div>
+                  <div className="border-t border-[var(--color-border)] pt-4 mt-auto">
+                    <div className="font-bold text-xs text-[var(--color-primary)] uppercase">{rev.fullName}</div>
+                    <div className="text-[10px] text-gray-400 font-semibold uppercase mt-0.5">{rev.company}</div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </Box>
+        </Box>
+      )}
     </>
   );
 }

@@ -4,6 +4,8 @@ import { ThemeProvider, createTheme } from '@mui/material/styles';
 import { Toaster } from 'sonner';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { motion, AnimatePresence } from 'framer-motion';
+import { FiArrowUp } from 'react-icons/fi';
 import axios from 'axios';
 import Navbar from './Components/Navbar';
 import AdminNavbar from './Components/AdminNavbar';
@@ -51,6 +53,9 @@ const EditArticle = lazy(() => import('./Admin/EditArticle'));
 const CreateJob = lazy(() => import('./Admin/CreateJob'));
 const EditJob = lazy(() => import('./Admin/EditJob'));
 const Profile = lazy(() => import('./Admin/Profile'));
+const InterviewsAdmin = lazy(() => import('./Admin/InterviewsAdmin'));
+const AppointmentsAdmin = lazy(() => import('./Admin/AppointmentsAdmin'));
+const TalentPoolAdmin = lazy(() => import('./Admin/TalentPoolAdmin'));
 const clientTheme = createTheme({
   typography: {
     fontFamily: 'var(--font-primary)',
@@ -221,6 +226,9 @@ const AppLayout = () => {
             <Route element={<ProtectedRoute allowedRoles={['Admin', 'Administrator', 'Hr']} />}>
               <Route path="/admin/profile" element={<Profile />} />
               <Route path="/admin/career" element={<CareerAdmin />} />
+              <Route path="/admin/interviews" element={<InterviewsAdmin />} />
+              <Route path="/admin/appointments" element={<AppointmentsAdmin />} />
+              <Route path="/admin/talent-pool" element={<TalentPoolAdmin />} />
               <Route path="/admin/create-job" element={<CreateJob />} />
               <Route path="/admin/edit-job/:id" element={<EditJob />} />
             </Route>
@@ -242,7 +250,22 @@ const AppLayout = () => {
 
       <ConditionalFooter />
 
-
+      <AnimatePresence>
+        {showScrollButton && (
+          <motion.button
+            initial={{ opacity: 0, scale: 0.8, y: 15 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            exit={{ opacity: 0, scale: 0.8, y: 15 }}
+            whileHover={{ scale: 1.1, translateY: -2 }}
+            whileTap={{ scale: 0.9 }}
+            onClick={scrollToTop}
+            className="fixed bottom-6 right-6 z-50 bg-[var(--color-primary)] hover:bg-[var(--color-primary-hover)] text-white w-10 h-10 rounded-full flex items-center justify-center shadow-lg cursor-pointer transition-colors duration-200"
+            aria-label="Scroll to top"
+          >
+            <FiArrowUp size={20} className="stroke-[2.5]" />
+          </motion.button>
+        )}
+      </AnimatePresence>
     </div>
   );
 };

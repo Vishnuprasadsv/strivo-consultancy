@@ -15,11 +15,12 @@ import {
   getAdminApplicationsAPI,
   getReviewsAPI,
   deleteReviewAPI,
-  updateReviewStatusAPI
+  updateReviewStatusAPI,
+  updateApplicationStatusAPI
 } from '../services/allApi';
 
 import {
-  LineChart, Line, XAxis, YAxis, Tooltip as RechartsTooltip, ResponsiveContainer
+  PieChart, Pie, Cell, Tooltip as RechartsTooltip, ResponsiveContainer, Legend
 } from 'recharts';
 
 const axiosInstance = axios;
@@ -49,6 +50,7 @@ const Dashboard = () => {
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showStoryModal, setShowStoryModal] = useState(false);
+  const [showAppointmentApprovalModal, setShowAppointmentApprovalModal] = useState(false);
 
   const [stories, setStories] = useState([]);
   const [loadingStories, setLoadingStories] = useState(true);
@@ -57,6 +59,10 @@ const Dashboard = () => {
   const [isAnalyticsExpanded, setIsAnalyticsExpanded] = useState(false);
   const [reportPeriod, setReportPeriod] = useState('this-week');
   const [showDetailedReportModal, setShowDetailedReportModal] = useState(false);
+  const [showPdfExportModal, setShowPdfExportModal] = useState(false);
+  const [exportFromDate, setExportFromDate] = useState('');
+  const [exportToDate, setExportToDate] = useState('');
+  const [isPendingExpanded, setIsPendingExpanded] = useState(false);
   const lastGeneratedTime = 'Jul 12, 2025 • 10:30 AM';
 
   // Reviews filters, search, and pagination
@@ -74,6 +80,7 @@ const Dashboard = () => {
   const [activeReviewDetails, setActiveReviewDetails] = useState(null);
   const [activeStoryDetails, setActiveStoryDetails] = useState(null);
   const [deletedCount, setDeletedCount] = useState(0);
+  const [appointments, setAppointments] = useState([]);
 
   // Store lists for real-time dashboard data
   const [inquiries, setInquiries] = useState([]);
@@ -103,22 +110,7 @@ const Dashboard = () => {
     
     if (!latestDate) return 'N/A';
     
-    const today = new Date();
-    const yesterday = new Date();
-    yesterday.setDate(yesterday.getDate() - 1);
-    
-    const isSameDay = (d1, d2) => 
-      d1.getFullYear() === d2.getFullYear() &&
-      d1.getMonth() === d2.getMonth() &&
-      d1.getDate() === d2.getDate();
-      
-    if (isSameDay(latestDate, today)) {
-      return 'Today';
-    } else if (isSameDay(latestDate, yesterday)) {
-      return 'Yesterday';
-    } else {
-      return latestDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
-    }
+    return latestDate.toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' });
   };
 
   const getMotivationalMessage = (pendingCount) => {
@@ -234,8 +226,25 @@ const Dashboard = () => {
     }
   };
 
-  const getThisWeekRangeText = () => 'Jul 6 - Jul 12, 2025';
-  const getLastWeekRangeText = () => 'Jun 29 - Jul 5, 2025';
+  const getThisWeekRangeText = () => {
+    const now = new Date();
+    const day = now.getDay();
+    const start = new Date(now.getFullYear(), now.getMonth(), now.getDate() - day);
+    const end = new Date(now.getFullYear(), now.getMonth(), now.getDate() + (6 - day));
+    const startStr = start.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+    const endStr = end.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+    return `${startStr} - ${endStr}`;
+  };
+
+  const getLastWeekRangeText = () => {
+    const now = new Date();
+    const day = now.getDay();
+    const start = new Date(now.getFullYear(), now.getMonth(), now.getDate() - day - 7);
+    const end = new Date(now.getFullYear(), now.getMonth(), now.getDate() - day - 1);
+    const startStr = start.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+    const endStr = end.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+    return `${startStr} - ${endStr}`;
+  };
 
   const handleViewDetailedReport = () => {
     setShowDetailedReportModal(true);
@@ -265,24 +274,65 @@ const Dashboard = () => {
       document.body.removeChild(link);
       toast.success(`Report exported successfully as ${format.toUpperCase()}!`);
     } else if (format === 'pdf') {
-      const totalReviews = reviews.length;
-      const rejectedReviews = reviews.filter(r => r.status === 'Rejected').length;
+      if (!exportFromDate || !exportToDate) {
+        toast.error("Please select both From and To dates!");
+        return;
+      }
+      const start = new Date(exportFromDate);
+      start.setHours(0, 0, 0, 0);
+      
+      const end = new Date(exportToDate);
+      end.setHours(23, 59, 59, 999);
+
+      if (start > end) {
+        toast.error("From Date cannot be later than To Date!");
+        return;
+      }
+
+      // Filter all data arrays by date range
+      const filteredInquiries = inquiries.filter(inq => {
+        const d = new Date(inq.createdAt);
+        return d >= start && d <= end;
+      });
+
+      const filteredArticles = articles.filter(art => {
+        const d = new Date(art.createdAt);
+        return d >= start && d <= end;
+      });
+
+      const filteredApplications = applications.filter(app => {
+        const d = new Date(app.createdAt);
+        return d >= start && d <= end;
+      });
+
+      const filteredReviews = reviews.filter(rev => {
+        const d = new Date(rev.createdAt);
+        return d >= start && d <= end;
+      });
+
+      const filteredCaseStudies = caseStudies.filter(cs => {
+        const d = new Date(cs.createdAt);
+        return d >= start && d <= end;
+      });
+
+      const totalReviews = filteredReviews.length;
+      const rejectedReviews = filteredReviews.filter(r => r.status === 'Rejected').length;
       const rejectionRate = totalReviews ? Math.round((rejectedReviews / totalReviews) * 100) : 0;
 
-      const inquiriesListHTML = inquiries.length === 0
+      const inquiriesListHTML = filteredInquiries.length === 0
         ? '<tr><td colspan="4" style="text-align: center; color: #999; padding: 15px;">No inquiries received</td></tr>'
-        : inquiries.map(inq => `
+        : filteredInquiries.map(inq => `
             <tr>
-              <td><strong>${inq.name}</strong><br><small style="color: #666;">${inq.email}</small></td>
-              <td>${inq.subject}</td>
+              <td><strong>${inq.fullName || ''}</strong><br><small style="color: #666;">${inq.email}</small></td>
+              <td>${inq.service || ''}</td>
               <td>${inq.message}</td>
               <td>${new Date(inq.createdAt).toLocaleDateString()}</td>
             </tr>
           `).join('');
 
-      const articlesListHTML = articles.length === 0
+      const articlesListHTML = filteredArticles.length === 0
         ? '<tr><td colspan="3" style="text-align: center; color: #999; padding: 15px;">No articles published</td></tr>'
-        : articles.map(art => `
+        : filteredArticles.map(art => `
             <tr>
               <td><strong>${art.title}</strong></td>
               <td>${art.description || 'N/A'}</td>
@@ -290,7 +340,7 @@ const Dashboard = () => {
             </tr>
           `).join('');
 
-      const approvedApps = applications.filter(app => app.status === 'approved' || app.status === 'Selected' || app.status === 'Approved' || app.status === 'referred');
+      const approvedApps = filteredApplications.filter(app => app.status === 'approved' || app.status === 'Selected' || app.status === 'Approved' || app.status === 'referred');
       const applicationsListHTML = approvedApps.length === 0
         ? '<tr><td colspan="4" style="text-align: center; color: #999; padding: 15px;">No approved applications sent to HR</td></tr>'
         : approvedApps.map(app => `
@@ -302,7 +352,7 @@ const Dashboard = () => {
             </tr>
           `).join('');
 
-      const approvedReviewsList = reviews.filter(rev => rev.status === 'Approved');
+      const approvedReviewsList = filteredReviews.filter(rev => rev.status === 'Approved');
       const reviewsListHTML = approvedReviewsList.length === 0
         ? '<tr><td colspan="4" style="text-align: center; color: #999; padding: 15px;">No approved reviews</td></tr>'
         : approvedReviewsList.map(rev => `
@@ -314,7 +364,7 @@ const Dashboard = () => {
             </tr>
           `).join('');
 
-      const publishedCaseStudies = caseStudies.filter(cs => cs.status === 'Published');
+      const publishedCaseStudies = filteredCaseStudies.filter(cs => cs.status === 'Published');
       const caseStudiesListHTML = publishedCaseStudies.length === 0
         ? '<tr><td colspan="3" style="text-align: center; color: #999; padding: 15px;">No approved case studies</td></tr>'
         : publishedCaseStudies.map(cs => `
@@ -363,7 +413,7 @@ const Dashboard = () => {
             
             <div class="meta-grid">
               <div>
-                <p><strong>Report Period:</strong> This Week (${getThisWeekRangeText()})</p>
+                <p><strong>Report Period:</strong> ${exportFromDate} to ${exportToDate}</p>
                 <p><strong>Generated On:</strong> ${new Date().toLocaleDateString()} at ${new Date().toLocaleTimeString()}</p>
               </div>
               <div>
@@ -375,7 +425,7 @@ const Dashboard = () => {
             <div class="kpi-container">
               <div class="kpi-card">
                 <div class="kpi-title">Total Inquiries</div>
-                <div class="kpi-value">${inquiries.length}</div>
+                <div class="kpi-value">${filteredInquiries.length}</div>
               </div>
               <div class="kpi-card">
                 <div class="kpi-title">Reviews Rejection Rate</div>
@@ -479,6 +529,7 @@ const Dashboard = () => {
       `);
       printWindow.document.close();
       toast.success('Detailed PDF report print dossier generated!');
+      setShowPdfExportModal(false);
     }
   };
 
@@ -650,6 +701,101 @@ const Dashboard = () => {
     }
   };
 
+  const fetchAppointments = () => {
+    const stored = localStorage.getItem('appointments');
+    if (stored) {
+      setAppointments(JSON.parse(stored));
+    }
+  };
+
+  const handleApproveAppointment = async (id) => {
+    const storedApps = localStorage.getItem('appointments');
+    if (!storedApps) return;
+    try {
+      const apps = JSON.parse(storedApps);
+      const appRecord = apps.find(a => a.id === id);
+      if (!appRecord) return;
+
+      const updatedApps = apps.map(a => a.id === id ? { ...a, status: 'Approved' } : a);
+      localStorage.setItem('appointments', JSON.stringify(updatedApps));
+      window.dispatchEvent(new Event('appointmentsUpdated'));
+
+      const storedTalent = localStorage.getItem('talent');
+      const initialTalent = [
+        { id: 1, name: "Nandana P Nair", email: "nandana.p@email.com", skills: "React, Node.js, MongoDB", role: "Software Developer at TCS", date: "10 Jun 2026", source: "LinkedIn" },
+        { id: 2, name: "Gokul Krishna", email: "gokul.k@email.com", skills: "UI/UX, Figma, Adobe XD", role: "UI/UX Designer at Infopark", date: "08 Jun 2026", source: "Referral" },
+        { id: 3, name: "Harikrishnan M", email: "harikrishnan.m@email.com", skills: "AWS, Docker, Kubernetes", role: "DevOps Engineer at UST Global", date: "07 Jun 2026", source: "Naukri" },
+        { id: 4, name: "Lakshmi Priya", email: "lakshmi.p@email.com", skills: "Python, Django, SQL", role: "Backend Developer at Zoho", date: "05 Jun 2026", source: "LinkedIn" },
+        { id: 5, name: "Albin Antony", email: "albin.a@email.com", skills: "React Native, Firebase", role: "Mobile Developer at Accenture", date: "03 Jun 2026", source: "Company Website" }
+      ];
+      const talents = storedTalent ? JSON.parse(storedTalent) : initialTalent;
+      
+      if (!talents.some(t => t.email === appRecord.email)) {
+        const newTalent = {
+          id: Date.now(),
+          name: appRecord.name,
+          email: appRecord.email,
+          skills: "React, CSS, HTML5",
+          role: appRecord.position,
+          date: new Date().toLocaleDateString('en-US', { day: 'numeric', month: 'short', year: 'numeric' }),
+          source: "Appointment"
+        };
+        const updatedTalent = [newTalent, ...talents];
+        localStorage.setItem('talent', JSON.stringify(updatedTalent));
+        window.dispatchEvent(new Event('talentUpdated'));
+      }
+
+      // Synchronize interview status to 'Appointed'
+      const storedInterviews = localStorage.getItem('interviews');
+      if (storedInterviews) {
+        const interviews = JSON.parse(storedInterviews);
+        const updatedInterviews = interviews.map(i => i.email.toLowerCase() === appRecord.email.toLowerCase() ? { ...i, status: 'Appointed' } : i);
+        localStorage.setItem('interviews', JSON.stringify(updatedInterviews));
+        window.dispatchEvent(new Event('interviewsUpdated'));
+      }
+
+      // Update backend status to appointed
+      const candidateApp = applications.find(a => a.email.toLowerCase() === appRecord.email.toLowerCase());
+      if (candidateApp) {
+        await updateApplicationStatusAPI(candidateApp._id, 'appointed');
+      }
+
+      toast.success("Appointment request approved & candidate added to Talent Pool!");
+      fetchAppointments();
+      fetchMetrics();
+    } catch (error) {
+      console.error(error);
+      toast.error("Failed to approve appointment.");
+    }
+  };
+
+  const handleRejectAppointment = async (id) => {
+    const storedApps = localStorage.getItem('appointments');
+    if (!storedApps) return;
+    try {
+      const apps = JSON.parse(storedApps);
+      const appRecord = apps.find(a => a.id === id);
+      if (!appRecord) return;
+
+      const updatedApps = apps.map(a => a.id === id ? { ...a, status: 'Rejected' } : a);
+      localStorage.setItem('appointments', JSON.stringify(updatedApps));
+      window.dispatchEvent(new Event('appointmentsUpdated'));
+
+      // Update backend status to rejected
+      const candidateApp = applications.find(a => a.email === appRecord.email);
+      if (candidateApp) {
+        await updateApplicationStatusAPI(candidateApp._id, 'rejected');
+      }
+
+      toast.success("Appointment request rejected.");
+      fetchAppointments();
+      fetchMetrics();
+    } catch (error) {
+      console.error(error);
+      toast.error("Failed to reject appointment.");
+    }
+  };
+
   useEffect(() => {
     const token = localStorage.getItem('adminToken');
     const user = localStorage.getItem('adminUser');
@@ -660,13 +806,17 @@ const Dashboard = () => {
       setAdminUser(JSON.parse(user));
       fetchStories();
       fetchMetrics();
+      fetchAppointments();
 
       const handleUpdate = () => fetchMetrics();
+      const handleAppsUpdate = () => fetchAppointments();
       window.addEventListener('notificationUpdate', handleUpdate);
+      window.addEventListener('appointmentsUpdated', handleAppsUpdate);
       const interval = setInterval(fetchMetrics, 15000);
 
       return () => {
         window.removeEventListener('notificationUpdate', handleUpdate);
+        window.removeEventListener('appointmentsUpdated', handleAppsUpdate);
         clearInterval(interval);
       };
     }
@@ -706,11 +856,35 @@ const Dashboard = () => {
   const paginatedStories = filteredStories.slice(storiesStartIndex, storiesStartIndex + storiesPerPage);
 
   const handleOpenActionable = (moduleName, count, divertPath) => {
-    setActiveActionable({
-      moduleName,
-      count,
-      divertPath
-    });
+    if (count === 0) {
+      if (moduleName === 'Reviews') {
+        setActiveMgmtTab('reviews');
+        setTimeout(() => {
+          document.getElementById('content-management')?.scrollIntoView({ behavior: 'smooth' });
+        }, 100);
+      } else if (moduleName === 'Success Stories') {
+        setActiveMgmtTab('stories');
+        setTimeout(() => {
+          document.getElementById('content-management')?.scrollIntoView({ behavior: 'smooth' });
+        }, 100);
+      } else {
+        navigate(divertPath);
+      }
+    } else {
+      if (moduleName === 'Reviews' || moduleName === 'Success Stories') {
+        setActiveActionable({
+          moduleName,
+          count,
+          divertPath: '#content-management'
+        });
+      } else {
+        setActiveActionable({
+          moduleName,
+          count,
+          divertPath
+        });
+      }
+    }
   };
 
   const handleTaskClick = (task) => {
@@ -733,48 +907,169 @@ const Dashboard = () => {
 
   if (!adminUser) return null;
 
-  // Real-time task verification variables
-  const pendingInquiriesCount = inquiries.filter(inq => inq.status === 'New').length;
-  const pendingAppsCount = applications.filter(app => app.status === 'pending').length;
-  const draftArticlesCount = articles.filter(art => art.status === 'Draft').length;
-  const pendingCaseStudiesCount = caseStudies.filter(cs => cs.status === 'Draft').length;
-  const pendingReviewsCount = reviews.filter(r => (r.status || 'Pending') === 'Pending').length;
+  // Real-time task verification variables with Date Range filtering (9 AM today to 5 PM tomorrow)
+  const getTodayRange = () => {
+    const now = new Date();
+    const start = new Date(now);
+    start.setHours(9, 0, 0, 0);
+    
+    const end = new Date(now);
+    end.setDate(end.getDate() + 1);
+    end.setHours(17, 0, 0, 0);
+    
+    if (now < start) {
+      start.setDate(start.getDate() - 1);
+      end.setDate(end.getDate() - 1);
+    }
+    return { start, end };
+  };
+
+  const isTodayTask = (dateStr) => {
+    if (!dateStr) return false;
+    const d = new Date(dateStr);
+    const { start, end } = getTodayRange();
+    return d >= start && d <= end;
+  };
+
+  const todayInquiriesCount = inquiries.filter(inq => inq.status === 'New' && isTodayTask(inq.createdAt)).length;
+  const pendingInquiriesCount = inquiries.filter(inq => inq.status === 'New' && !isTodayTask(inq.createdAt)).length;
+
+  const todayAppsCount = applications.filter(app => app.status === 'pending' && isTodayTask(app.createdAt)).length;
+  const pendingAppsCount = applications.filter(app => app.status === 'pending' && !isTodayTask(app.createdAt)).length;
+
+  const todayCaseStudiesCount = caseStudies.filter(cs => cs.status === 'Draft' && isTodayTask(cs.createdAt)).length;
+  const pendingCaseStudiesCount = caseStudies.filter(cs => cs.status === 'Draft' && !isTodayTask(cs.createdAt)).length;
+
+  const todayReviewsCount = reviews.filter(r => (r.status || 'Pending') === 'Pending' && isTodayTask(r.createdAt)).length;
+  const pendingReviewsCount = reviews.filter(r => (r.status || 'Pending') === 'Pending' && !isTodayTask(r.createdAt)).length;
+
   const draftStoriesCount = 0; // Success stories are always published and do not have draft/pending moderation states
+  const draftArticlesCount = articles.filter(art => art.status === 'Draft').length;
 
   const tasksList = [
     {
       id: 'inquiries',
-      text: `Review ${pendingInquiriesCount} New Inquiries`,
-      isCompleted: pendingInquiriesCount === 0,
-      pendingCount: pendingInquiriesCount,
-      successMsg: 'Great job! 👍 All inquiries reviewed!',
-      failMsg: `You are doing great! ${pendingInquiriesCount} more inquiries to complete, all the best!`
+      text: `Review ${todayInquiriesCount} New Inquiries`,
+      isCompleted: todayInquiriesCount === 0,
+      pendingCount: todayInquiriesCount,
+      successMsg: "Great job! 👍 All today's inquiries reviewed!",
+      failMsg: `You are doing great! ${todayInquiriesCount} more today's inquiries to complete, all the best!`
     },
     {
       id: 'applications',
-      text: `Review ${pendingAppsCount} Applications`,
-      isCompleted: pendingAppsCount === 0,
-      pendingCount: pendingAppsCount,
-      successMsg: 'Superb! 🌟 All career applications reviewed!',
-      failMsg: `You are doing great! ${pendingAppsCount} more applications to complete, all the best!`
+      text: `Review ${todayAppsCount} Applications`,
+      isCompleted: todayAppsCount === 0,
+      pendingCount: todayAppsCount,
+      successMsg: "Superb! 🌟 All today's career applications reviewed!",
+      failMsg: `You are doing great! ${todayAppsCount} more today's applications to complete, all the best!`
     },
     {
       id: 'caseStudies',
-      text: `Approve ${pendingCaseStudiesCount} Case Study`,
-      isCompleted: pendingCaseStudiesCount === 0,
-      pendingCount: pendingCaseStudiesCount,
-      successMsg: 'Awesome! 🌟 All case studies approved!',
-      failMsg: `You are doing great! ${pendingCaseStudiesCount} more case study to complete, all the best!`
+      text: `Approve ${todayCaseStudiesCount} Case Study`,
+      isCompleted: todayCaseStudiesCount === 0,
+      pendingCount: todayCaseStudiesCount,
+      successMsg: "Awesome! 🌟 All today's case studies approved!",
+      failMsg: `You are doing great! ${todayCaseStudiesCount} more today's case study to complete, all the best!`
     },
     {
       id: 'reviews',
-      text: `Approve ${pendingReviewsCount} Reviews`,
-      isCompleted: pendingReviewsCount === 0,
-      pendingCount: pendingReviewsCount,
-      successMsg: 'Fantastic! Double thumbs up 👍👍 All reviews approved!',
-      failMsg: `You are doing great! ${pendingReviewsCount} more reviews to complete, all the best!`
+      text: `Approve ${todayReviewsCount} Reviews`,
+      isCompleted: todayReviewsCount === 0,
+      pendingCount: todayReviewsCount,
+      successMsg: "Fantastic! Double thumbs up 👍👍 All today's reviews approved!",
+      failMsg: `You are doing great! ${todayReviewsCount} more today's reviews to complete, all the best!`
     }
   ];
+
+  const pendingTasksList = [
+    {
+      id: 'inquiries',
+      text: `Review ${pendingInquiriesCount} Older Inquiries`,
+      isCompleted: pendingInquiriesCount === 0,
+      pendingCount: pendingInquiriesCount,
+      successMsg: "Great job! 👍 All older pending inquiries reviewed!",
+      failMsg: `You are doing great! ${pendingInquiriesCount} older pending inquiries to complete, all the best!`
+    },
+    {
+      id: 'applications',
+      text: `Review ${pendingAppsCount} Older Applications`,
+      isCompleted: pendingAppsCount === 0,
+      pendingCount: pendingAppsCount,
+      successMsg: "Superb! 🌟 All older career applications reviewed!",
+      failMsg: `You are doing great! ${pendingAppsCount} older pending applications to complete, all the best!`
+    },
+    {
+      id: 'caseStudies',
+      text: `Approve ${pendingCaseStudiesCount} Older Case Study`,
+      isCompleted: pendingCaseStudiesCount === 0,
+      pendingCount: pendingCaseStudiesCount,
+      successMsg: "Awesome! 🌟 All older case studies approved!",
+      failMsg: `You are doing great! ${pendingCaseStudiesCount} older pending case study to complete, all the best!`
+    },
+    {
+      id: 'reviews',
+      text: `Approve ${pendingReviewsCount} Older Reviews`,
+      isCompleted: pendingReviewsCount === 0,
+      pendingCount: pendingReviewsCount,
+      successMsg: "Fantastic! Double thumbs up 👍👍 All older reviews approved!",
+      failMsg: `You are doing great! ${pendingReviewsCount} older pending reviews to complete, all the best!`
+    }
+  ];
+
+  const getFilteredDataByPeriod = (items, dateKey = 'createdAt') => {
+    if (!items || items.length === 0) return [];
+    if (reportPeriod === 'all-time') return items;
+
+    const now = new Date();
+    let start = new Date();
+    let end = new Date();
+
+    if (reportPeriod === 'this-week') {
+      const day = now.getDay();
+      start = new Date(now.getFullYear(), now.getMonth(), now.getDate() - day, 0, 0, 0);
+      end = new Date(now.getFullYear(), now.getMonth(), now.getDate() + (6 - day), 23, 59, 59);
+    } else if (reportPeriod === 'last-week') {
+      const day = now.getDay();
+      start = new Date(now.getFullYear(), now.getMonth(), now.getDate() - day - 7, 0, 0, 0);
+      end = new Date(now.getFullYear(), now.getMonth(), now.getDate() - day - 1, 23, 59, 59);
+    } else if (reportPeriod === 'this-month') {
+      start = new Date(now.getFullYear(), now.getMonth(), 1, 0, 0, 0);
+      end = new Date(now.getFullYear(), now.getMonth() + 1, 0, 23, 59, 59);
+    } else {
+      return items;
+    }
+
+    return items.filter(item => {
+      const d = new Date(item[dateKey]);
+      return d >= start && d <= end;
+    });
+  };
+
+  const periodInquiries = getFilteredDataByPeriod(inquiries);
+  const periodCaseStudies = getFilteredDataByPeriod(caseStudies);
+  const periodArticles = getFilteredDataByPeriod(articles);
+  const periodApplications = getFilteredDataByPeriod(applications);
+  const periodReviews = getFilteredDataByPeriod(reviews);
+  const periodStories = getFilteredDataByPeriod(stories);
+
+  const overviewPieData = [
+    { name: 'Inquiries', value: periodInquiries.length, color: '#2563EB' },
+    { name: 'Case Studies', value: periodCaseStudies.length, color: '#10B981' },
+    { name: 'Articles', value: periodArticles.length, color: '#8B5CF6' },
+    { name: 'Applications', value: periodApplications.length, color: '#F59E0B' },
+    { name: 'Reviews', value: periodReviews.length, color: '#EC4899' }
+  ].filter(item => item.value > 0);
+
+  // If no data, show mockup items
+  if (overviewPieData.length === 0) {
+    overviewPieData.push(
+      { name: 'Inquiries', value: 8, color: '#2563EB' },
+      { name: 'Case Studies', value: 3, color: '#10B981' },
+      { name: 'Articles', value: 2, color: '#8B5CF6' },
+      { name: 'Applications', value: 1, color: '#F59E0B' },
+      { name: 'Reviews', value: 4, color: '#EC4899' }
+    );
+  }
 
   return (
     <>
@@ -784,13 +1079,21 @@ const Dashboard = () => {
       <div className="bg-main pt-24 pb-6 border-b border-[var(--color-border)] px-8 md:px-16 lg:px-24">
         <div className="max-w-[98%] mx-auto">
           {/* Header Row - Styled exactly to match standard admin page titles */}
-          <div className="flex flex-col items-center mt-4 gap-1 w-full text-center">
-            <h1 className="text-2xl font-[var(--font-bold)] text-primary leading-none uppercase" style={{ margin: 0 }}>
-              ADMIN DASHBOARD
-            </h1>
-            <p className="text-xs text-[var(--color-black)] font-medium opacity-85 mt-2" style={{ margin: '6px 0 0 0', lineHeight: 1.3 }}>
-              Manage your platform data here
-            </p>
+          <div className="flex flex-col md:flex-row justify-between items-center mt-4 gap-4 w-full">
+            <div className="flex flex-col items-center md:items-start text-center md:text-left gap-1">
+              <h1 className="text-2xl font-[var(--font-bold)] text-primary leading-none uppercase" style={{ margin: 0 }}>
+                ADMIN DASHBOARD
+              </h1>
+              <p className="text-xs text-[var(--color-black)] font-medium opacity-85 mt-2" style={{ margin: '6px 0 0 0', lineHeight: 1.3 }}>
+                Manage your platform data here
+              </p>
+            </div>
+            <button
+              onClick={() => setShowDetailedReportModal(true)}
+              className="bg-primary hover:bg-primary-hover text-white text-xs font-bold py-2.5 px-5 rounded-[var(--radius-sm)] flex items-center gap-2 transition cursor-pointer border-none"
+            >
+              <span>📊</span> PLATFORM ANALYTICS
+            </button>
           </div>
         </div>
       </div>
@@ -860,102 +1163,102 @@ const Dashboard = () => {
               <div className="hidden md:block overflow-x-auto flex-1 w-full">
                 <table className="w-full text-left border-collapse table-fixed min-w-[600px]">
                   <thead>
-                    <tr className="border-b  border-[var(--color-border)] text-[var(--color-heading)] font-normal uppercase tracking-wider" style={{ fontSize: 'var(--text-caption)' }}>
-                      <th className="py-1.5 px-3 font-normal text-left w-1/5">Module</th>
-                      <th className="py-1.5 px-3 font-normal text-center w-1/5">Total</th>
-                      <th className="py-1.5 px-3 font-normal text-center w-1/5">Pending</th>
-                      <th className="py-1.5 px-3 font-normal text-center w-1/5">Last Updated</th>
-                      <th className="py-1.5 px-3 font-normal text-center w-1/5">View</th>
+                    <tr className="border-b border-[var(--color-border)] text-primary uppercase tracking-wider" style={{ fontSize: 'var(--text-caption)' }}>
+                      <th className="py-1.5 px-3 text-left w-1/5" style={{ fontWeight: 'normal' }}>MODULE</th>
+                      <th className="py-1.5 px-3 text-center w-1/5" style={{ fontWeight: 'normal' }}>TOTAL</th>
+                      <th className="py-1.5 px-3 text-center w-1/5" style={{ fontWeight: 'normal' }}>PENDING</th>
+                      <th className="py-1.5 px-3 text-center w-1/5" style={{ fontWeight: 'normal' }}>LAST UPDATED</th>
+                      <th className="py-1.5 px-3 text-center w-1/5" style={{ fontWeight: 'normal' }}>VIEW</th>
                     </tr>
                   </thead>
                   <tbody>
                     {/* Inquiries Row */}
                     <tr className="border-b border-[var(--color-border)] last:border-0 hover:bg-[var(--color-sub-bg)] text-primary transition-all" style={{ fontSize: 'var(--text-caption)' }}>
-                      <td className="py-2.5 px-3 font-bold text-left w-1/5">Inquiries</td>
+                      <td className="py-2.5 px-3 font-bold text-left w-1/5">INQUIRIES</td>
                       <td className="py-2.5 px-3 font-medium text-center w-1/5">{inquiries.length}</td>
                       <td className="py-2.5 px-3 font-medium text-center w-1/5">{pendingInquiriesCount}</td>
-                      <td className="py-2.5 px-3 font-medium text-center w-1/5 text-paragraph">{getLastUpdatedText(inquiries)}</td>
+                      <td className="py-2.5 px-3 font-medium text-center w-1/5 text-paragraph">{getLastUpdatedText(inquiries).toUpperCase()}</td>
                       <td className="py-2.5 px-3 text-center w-1/5">
                         <button
                           onClick={() => handleOpenActionable('Inquiries', pendingInquiriesCount, '/admin/inquiries')}
                           className="bg-primary hover:bg-primary-hover text-white btn-text-custom rounded-[var(--radius-sm)] cursor-pointer"
                         >
-                          Review
+                          REVIEW
                         </button>
                       </td>
                     </tr>
                     {/* Applications Row */}
                     <tr className="border-b border-[var(--color-border)] last:border-0 hover:bg-[var(--color-sub-bg)] text-primary transition-all" style={{ fontSize: 'var(--text-caption)' }}>
-                      <td className="py-2.5 px-3 font-bold text-left w-1/5">Applications</td>
-                      <td className="py-2.5 px-3 font-medium text-center w-1/5">{applications.length}</td>
-                      <td className="py-2.5 px-3 font-medium text-center w-1/5">{pendingAppsCount}</td>
-                      <td className="py-2.5 px-3 font-medium text-center w-1/5 text-paragraph">{getLastUpdatedText(applications)}</td>
+                      <td className="py-2.5 px-3 font-bold text-left w-1/5">APPLICATIONS</td>
+                      <td className="py-2.5 px-3 font-medium text-center w-1/5">{appointments.filter(a => a.status === 'Pending Approval').length}</td>
+                      <td className="py-2.5 px-3 font-medium text-center w-1/5">{appointments.filter(a => a.status === 'Pending Approval').length}</td>
+                      <td className="py-2.5 px-3 font-medium text-center w-1/5 text-paragraph">NOT APPLICABLE</td>
                       <td className="py-2.5 px-3 text-center w-1/5">
                         <button
-                          onClick={() => handleOpenActionable('Career', pendingAppsCount, '/admin/career')}
+                          onClick={() => setShowAppointmentApprovalModal(true)}
                           className="bg-primary hover:bg-primary-hover text-white btn-text-custom rounded-[var(--radius-sm)] cursor-pointer"
                         >
-                          Review
+                          REVIEW
                         </button>
                       </td>
                     </tr>
                     {/* Articles Row */}
                     <tr className="border-b border-[var(--color-border)] last:border-0 hover:bg-[var(--color-sub-bg)] text-primary transition-all" style={{ fontSize: 'var(--text-caption)' }}>
-                      <td className="py-2.5 px-3 font-bold text-left w-1/5">Articles</td>
+                      <td className="py-2.5 px-3 font-bold text-left w-1/5">ARTICLES</td>
                       <td className="py-2.5 px-3 font-medium text-center w-1/5">{articles.length}</td>
                       <td className="py-2.5 px-3 font-medium text-center w-1/5">{draftArticlesCount}</td>
-                      <td className="py-2.5 px-3 font-medium text-center w-1/5 text-paragraph">{getLastUpdatedText(articles)}</td>
+                      <td className="py-2.5 px-3 font-medium text-center w-1/5 text-paragraph">{getLastUpdatedText(articles).toUpperCase()}</td>
                       <td className="py-2.5 px-3 text-center w-1/5">
                         <button
                           onClick={() => handleOpenActionable('Articles', draftArticlesCount, '/admin/article')}
                           className="bg-primary hover:bg-primary-hover text-white btn-text-custom rounded-[var(--radius-sm)] cursor-pointer"
                         >
-                          Publish
+                          PUBLISH
                         </button>
                       </td>
                     </tr>
                     {/* Case Studies Row */}
                     <tr className="border-b border-[var(--color-border)] last:border-0 hover:bg-[var(--color-sub-bg)] text-primary transition-all" style={{ fontSize: 'var(--text-caption)' }}>
-                      <td className="py-2.5 px-3 font-bold text-left w-1/5">Case Studies</td>
+                      <td className="py-2.5 px-3 font-bold text-left w-1/5">CASE STUDIES</td>
                       <td className="py-2.5 px-3 font-medium text-center w-1/5">{caseStudies.length}</td>
                       <td className="py-2.5 px-3 font-medium text-center w-1/5">{pendingCaseStudiesCount}</td>
-                      <td className="py-2.5 px-3 font-medium text-center w-1/5 text-paragraph">{getLastUpdatedText(caseStudies)}</td>
+                      <td className="py-2.5 px-3 font-medium text-center w-1/5 text-paragraph">{getLastUpdatedText(caseStudies).toUpperCase()}</td>
                       <td className="py-2.5 px-3 text-center w-1/5">
                         <button
                           onClick={() => handleOpenActionable('Case Studies', pendingCaseStudiesCount, '/admin/casestudies')}
                           className="bg-primary hover:bg-primary-hover text-white btn-text-custom rounded-[var(--radius-sm)] cursor-pointer"
                         >
-                          Approve
+                          APPROVE
                         </button>
                       </td>
                     </tr>
                     {/* Reviews Row */}
                     <tr className="border-b border-[var(--color-border)] last:border-0 hover:bg-[var(--color-sub-bg)] text-primary transition-all" style={{ fontSize: 'var(--text-caption)' }}>
-                      <td className="py-2.5 px-3 font-bold text-left w-1/5">Reviews</td>
+                      <td className="py-2.5 px-3 font-bold text-left w-1/5">REVIEWS</td>
                       <td className="py-2.5 px-3 font-medium text-center w-1/5">{reviews.length}</td>
                       <td className="py-2.5 px-3 font-medium text-center w-1/5">{pendingReviewsCount}</td>
-                      <td className="py-2.5 px-3 font-medium text-center w-1/5 text-paragraph">{getLastUpdatedText(reviews)}</td>
+                      <td className="py-2.5 px-3 font-medium text-center w-1/5 text-paragraph">{getLastUpdatedText(reviews).toUpperCase()}</td>
                       <td className="py-2.5 px-3 text-center w-1/5">
                         <button
                           onClick={() => handleOpenActionable('Reviews', pendingReviewsCount, '#')}
                           className="bg-primary hover:bg-primary-hover text-white btn-text-custom rounded-[var(--radius-sm)] cursor-pointer"
                         >
-                          Moderate
+                          MODERATE
                         </button>
                       </td>
                     </tr>
                     {/* Success Stories Row */}
                     <tr className="hover:bg-[var(--color-sub-bg)] text-primary transition-all" style={{ fontSize: 'var(--text-caption)' }}>
-                      <td className="py-2.5 px-3 font-bold text-left w-1/5">Success Stories</td>
+                      <td className="py-2.5 px-3 font-bold text-left w-1/5">SUCCESS STORIES</td>
                       <td className="py-2.5 px-3 font-medium text-center w-1/5">{stories.length}</td>
                       <td className="py-2.5 px-3 font-medium text-center w-1/5">{draftStoriesCount}</td>
-                      <td className="py-2.5 px-3 font-medium text-center w-1/5 text-paragraph">{getLastUpdatedText(stories)}</td>
+                      <td className="py-2.5 px-3 font-medium text-center w-1/5 text-paragraph">{getLastUpdatedText(stories).toUpperCase()}</td>
                       <td className="py-2.5 px-3 text-center w-1/5">
                         <button
                           onClick={() => handleOpenActionable('Success Stories', draftStoriesCount, '#')}
                           className="bg-primary hover:bg-primary-hover text-white btn-text-custom rounded-[var(--radius-sm)] cursor-pointer"
                         >
-                          Publish
+                          PUBLISH
                         </button>
                       </td>
                     </tr>
@@ -966,18 +1269,24 @@ const Dashboard = () => {
               {/* Mobile Card View for Actionables */}
               <div className="block md:hidden space-y-3 flex-1 w-full">
                 {[
-                  { name: 'Inquiries', total: inquiries.length, pending: pendingInquiriesCount, lastUpdated: getLastUpdatedText(inquiries), actionText: 'Review', path: '/admin/inquiries', moduleKey: 'Inquiries' },
-                  { name: 'Applications', total: applications.length, pending: pendingAppsCount, lastUpdated: getLastUpdatedText(applications), actionText: 'Review', path: '/admin/career', moduleKey: 'Career' },
-                  { name: 'Articles', total: articles.length, pending: draftArticlesCount, lastUpdated: getLastUpdatedText(articles), actionText: 'Publish', path: '/admin/article', moduleKey: 'Articles' },
-                  { name: 'Case Studies', total: caseStudies.length, pending: pendingCaseStudiesCount, lastUpdated: getLastUpdatedText(caseStudies), actionText: 'Approve', path: '/admin/casestudies', moduleKey: 'Case Studies' },
-                  { name: 'Reviews', total: reviews.length, pending: pendingReviewsCount, lastUpdated: getLastUpdatedText(reviews), actionText: 'Moderate', path: '#', moduleKey: 'Reviews' },
-                  { name: 'Success Stories', total: stories.length, pending: draftStoriesCount, lastUpdated: getLastUpdatedText(stories), actionText: 'Publish', path: '#', moduleKey: 'Success Stories' }
+                  { name: 'INQUIRIES', total: inquiries.length, pending: pendingInquiriesCount, lastUpdated: getLastUpdatedText(inquiries).toUpperCase(), actionText: 'REVIEW', path: '/admin/inquiries', moduleKey: 'Inquiries' },
+                  { name: 'APPLICATIONS', total: appointments.filter(a => a.status === 'Pending Approval').length, pending: appointments.filter(a => a.status === 'Pending Approval').length, lastUpdated: 'NOT APPLICABLE', actionText: 'REVIEW', path: '/admin/career', moduleKey: 'Career' },
+                  { name: 'ARTICLES', total: articles.length, pending: draftArticlesCount, lastUpdated: getLastUpdatedText(articles).toUpperCase(), actionText: 'PUBLISH', path: '/admin/article', moduleKey: 'Articles' },
+                  { name: 'CASE STUDIES', total: caseStudies.length, pending: pendingCaseStudiesCount, lastUpdated: getLastUpdatedText(caseStudies).toUpperCase(), actionText: 'APPROVE', path: '/admin/casestudies', moduleKey: 'Case Studies' },
+                  { name: 'REVIEWS', total: reviews.length, pending: pendingReviewsCount, lastUpdated: getLastUpdatedText(reviews).toUpperCase(), actionText: 'MODERATE', path: '#', moduleKey: 'Reviews' },
+                  { name: 'SUCCESS STORIES', total: stories.length, pending: draftStoriesCount, lastUpdated: getLastUpdatedText(stories).toUpperCase(), actionText: 'PUBLISH', path: '#', moduleKey: 'Success Stories' }
                 ].map((row) => (
                   <div key={row.name} className="p-3 border border-[var(--color-border)] rounded-[var(--radius-sm)] bg-[var(--color-sub-bg)]/20 flex flex-col gap-2">
                     <div className="flex justify-between items-center">
                       <span className="font-bold text-primary text-sm">{row.name}</span>
                       <button
-                        onClick={() => handleOpenActionable(row.moduleKey, row.pending, row.path)}
+                        onClick={() => {
+                          if (row.name === 'APPLICATIONS') {
+                            setShowAppointmentApprovalModal(true);
+                          } else {
+                            handleOpenActionable(row.moduleKey, row.pending, row.path);
+                          }
+                        }}
                         className="bg-primary hover:bg-primary-hover text-white text-[11px] font-semibold py-1 px-3.5 rounded-[var(--radius-sm)] cursor-pointer"
                         style={{ height: '28px', minWidth: '75px' }}
                       >
@@ -986,15 +1295,15 @@ const Dashboard = () => {
                     </div>
                     <div className="grid grid-cols-3 gap-1 text-[11px] text-paragraph opacity-85">
                       <div>
-                        <span className="font-semibold block opacity-60">Total</span>
+                        <span className="font-semibold block opacity-60">TOTAL</span>
                         <span className="font-bold text-primary">{row.total}</span>
                       </div>
                       <div>
-                        <span className="font-semibold block opacity-60">Pending</span>
+                        <span className="font-semibold block opacity-60">PENDING</span>
                         <span className="font-bold text-primary">{row.pending}</span>
                       </div>
                       <div>
-                        <span className="font-semibold block opacity-60">Last Updated</span>
+                        <span className="font-semibold block opacity-60">LAST UPDATED</span>
                         <span className="text-primary">{row.lastUpdated}</span>
                       </div>
                     </div>
@@ -1003,63 +1312,120 @@ const Dashboard = () => {
               </div>
             </div>
 
-            {/* Today's Tasks Card (1/3 width) */}
+            {/* Today's & Pending Tasks Card (1/3 width) */}
             <div className="card bg-white p-4 shadow-card lg:col-span-4 flex flex-col justify-start gap-4">
               <div>
-                <div className="border-b border-[var(--color-border)] pb-2 mb-3 flex justify-between items-center">
-                  <h3 className="text-primary font-[var(--font-bold)]" style={{ fontSize: 'var(--text-small)', margin: 0 }}>TODAYS TASK</h3>
-                  <span className="bg-[var(--color-primary)]/10 text-primary px-2 py-0.5 rounded-full font-bold" style={{ fontSize: 'var(--text-caption)' }}>
-                    {tasksList.filter(t => !t.isCompleted).length} Pending
-                  </span>
+                {/* Main Card Header */}
+                <div className="border-b border-[var(--color-border)] pb-2 mb-4">
+                  <h3 className="text-primary font-[var(--font-bold)]" style={{ fontSize: 'var(--text-small)', margin: 0 }}>TASK ALLOCATIONS</h3>
                 </div>
-                <div className="flex flex-col gap-2 mt-1">
-                  {tasksList.map((task) => (
-                    <div
-                      key={task.id}
-                      onClick={() => handleTaskClick(task)}
-                      className="flex items-center justify-between p-1.5 px-2.5 hover:bg-[var(--color-sub-bg)] rounded-[var(--radius-sm)] cursor-pointer transition-all border border-[var(--color-border)]/40 hover:border-blue-500/20"
-                    >
-                      <span className="font-semibold text-paragraph" style={{ fontSize: 'var(--text-caption)' }}>
-                        {task.text}
-                      </span>
-                      <button
-                        className="focus:outline-none cursor-pointer border-none bg-transparent flex items-center justify-center shrink-0"
+
+                {/* Sub-section 1: Today's Tasks */}
+                <div className="mb-4">
+                  <div className="flex justify-between items-center mb-2 select-none">
+                    <span className="text-[10px] text-gray-400 font-bold uppercase tracking-wider">TODAY'S TASKS</span>
+                    <span className="bg-blue-50 text-blue-700 px-2 py-0.5 rounded-full font-bold text-[9px] uppercase tracking-wider">
+                      {tasksList.filter(t => !t.isCompleted).length} PENDING
+                    </span>
+                  </div>
+                  <div className="flex flex-col gap-1.5 mt-1">
+                    {tasksList.map((task) => (
+                      <div
+                        key={`today-${task.id}`}
+                        onClick={() => handleTaskClick(task)}
+                        className="flex items-center justify-between p-1.5 px-2.5 hover:bg-[var(--color-sub-bg)] rounded-[var(--radius-sm)] cursor-pointer transition-all border border-[var(--color-border)]/40 hover:border-blue-500/20"
                       >
-                        {task.isCompleted ? (
-                          <span className="text-green-600 font-bold" style={{ fontSize: 'var(--text-caption)' }}>☑</span>
-                        ) : (
-                          <span className="text-paragraph opacity-40 font-bold" style={{ fontSize: 'var(--text-caption)' }}>☐</span>
-                        )}
-                      </button>
+                        <span className="font-semibold text-paragraph" style={{ fontSize: 'var(--text-caption)' }}>
+                          {task.text}
+                        </span>
+                        <button
+                          className="focus:outline-none cursor-pointer border-none bg-transparent flex items-center justify-center shrink-0"
+                        >
+                          {task.isCompleted ? (
+                            <span className="text-green-600 font-bold" style={{ fontSize: 'var(--text-caption)' }}>☑</span>
+                          ) : (
+                            <span className="text-paragraph opacity-40 font-bold" style={{ fontSize: 'var(--text-caption)' }}>☐</span>
+                          )}
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Sub-section 2: Pending Tasks Accordion */}
+                <div>
+                  <div 
+                    onClick={() => setIsPendingExpanded(!isPendingExpanded)}
+                    className="flex justify-between items-center mb-2 select-none cursor-pointer p-1 rounded hover:bg-[var(--color-sub-bg)]/40 transition-all"
+                  >
+                    <span className="text-[10px] text-gray-400 font-bold uppercase tracking-wider flex items-center gap-1.5">
+                      PENDING SECTION
+                      <span className="transition-transform duration-200 inline-block text-[8px]" style={{ transform: isPendingExpanded ? 'rotate(90deg)' : 'rotate(0deg)' }}>
+                        ▶
+                      </span>
+                    </span>
+                    <span className="bg-amber-50 text-amber-700 px-2 py-0.5 rounded-full font-bold text-[9px] uppercase tracking-wider">
+                      {pendingTasksList.filter(t => !t.isCompleted).length} PENDING
+                    </span>
+                  </div>
+                  
+                  {isPendingExpanded && (
+                    <div className="flex flex-col gap-1.5 mt-1 border-l-2 border-amber-200/50 pl-2 ml-1">
+                      {pendingTasksList.map((task) => (
+                        <div
+                          key={`pending-${task.id}`}
+                          onClick={() => handleTaskClick(task)}
+                          className="flex items-center justify-between p-1.5 px-2.5 hover:bg-[var(--color-sub-bg)] rounded-[var(--radius-sm)] cursor-pointer transition-all border border-[var(--color-border)]/40 hover:border-blue-500/20"
+                        >
+                          <span className="font-semibold text-paragraph" style={{ fontSize: 'var(--text-caption)' }}>
+                            {task.text}
+                          </span>
+                          <button
+                            className="focus:outline-none cursor-pointer border-none bg-transparent flex items-center justify-center shrink-0"
+                          >
+                            {task.isCompleted ? (
+                              <span className="text-green-600 font-bold" style={{ fontSize: 'var(--text-caption)' }}>☑</span>
+                            ) : (
+                              <span className="text-paragraph opacity-40 font-bold" style={{ fontSize: 'var(--text-caption)' }}>☐</span>
+                            )}
+                          </button>
+                        </div>
+                      ))}
                     </div>
-                  ))}
+                  )}
                 </div>
               </div>
 
-              {/* Today's Progress Section */}
+              {/* Progress Section */}
               {(() => {
-                const totalTasks = tasksList.length;
-                const completedCount = tasksList.filter(t => t.isCompleted).length;
+                const totalTodayTasks = tasksList.length;
+                const completedTodayCount = tasksList.filter(t => t.isCompleted).length;
+                
+                const totalPendingTasks = pendingTasksList.length;
+                const completedPendingCount = pendingTasksList.filter(t => t.isCompleted).length;
+
+                const totalTasks = totalTodayTasks + totalPendingTasks;
+                const completedCount = completedTodayCount + completedPendingCount;
                 const percentage = Math.round((completedCount / totalTasks) * 100);
                 
                 return (
-                  <div className="mt-4 p-3 border border-[var(--color-border)] bg-[var(--color-sub-bg)]/30 rounded-[var(--radius-sm)] transition-all duration-300">
-                    <h4 className="font-bold text-primary mb-2" style={{ fontSize: 'var(--text-caption)', margin: 0 }}>Today's Progress</h4>
+                  <div className="mt-2 p-3 border border-[var(--color-border)] bg-[var(--color-sub-bg)]/30 rounded-[var(--radius-sm)] transition-all duration-300">
+                    <h4 className="font-bold text-primary mb-2 uppercase tracking-wider" style={{ fontSize: '10px', margin: 0 }}>OVERALL PROGRESS</h4>
                     
                     <div className="flex justify-between items-center mb-1 text-paragraph opacity-80" style={{ fontSize: 'var(--text-caption)' }}>
-                      <span className="font-semibold">Completed Tasks</span>
+                      <span className="font-semibold uppercase text-[9px] tracking-wider">COMPLETED TASKS</span>
                       <span className="font-bold text-primary">{completedCount} / {totalTasks}</span>
                     </div>
                     
                     {/* Progress Bar Track */}
-                    <div className="w-full bg-gray-100 h-2.5 rounded-full overflow-hidden mb-1.5 border border-gray-200/50">
+                    <div className="w-full bg-gray-100 h-2 rounded-full overflow-hidden mb-1.5 border border-gray-200/50">
                       <div 
                         className="bg-primary h-full rounded-full transition-all duration-500" 
                         style={{ width: `${percentage}%` }}
                       ></div>
                     </div>
                     
-                    <div className="font-bold text-primary" style={{ fontSize: 'var(--text-caption)' }}>
+                    <div className="font-bold text-primary text-[10px] uppercase tracking-wider">
                       {percentage}% Completed
                     </div>
                   </div>
@@ -1068,7 +1434,7 @@ const Dashboard = () => {
             </div>
           </div>
 
-          <div className="mt-6 mb-4 pb-1 flex flex-col items-start gap-2.5">
+          <div className="mt-6 mb-4 pb-1 flex flex-col items-start gap-2.5" id="content-management">
             <div>
               <h2 style={{ fontSize: '20px', fontWeight: 'var(--font-bold)', color: 'var(--color-primary)', margin: 0 }}>
                 Content Management
@@ -1155,13 +1521,13 @@ const Dashboard = () => {
                     <div className="hidden md:block overflow-x-auto w-full">
                       <table className="w-full text-left border-collapse table-fixed min-w-[700px]">
                         <thead>
-                          <tr className="border-b border-[var(--color-border)] text-[var(--color-heading)] font-normal uppercase tracking-wider" style={{ fontSize: 'var(--text-caption)' }}>
-                            <th className="py-1.5 px-3 font-normal text-left w-1/6">Reviewer</th>
-                            <th className="py-1.5 px-3 font-normal text-center w-1/6">Rating</th>
-                            <th className="py-1.5 px-3 font-normal text-left w-1/6">Review</th>
-                            <th className="py-1.5 px-3 font-normal text-center w-1/6">Date</th>
-                            <th className="py-1.5 px-3 font-normal text-center w-1/6">Status</th>
-                            <th className="py-1.5 px-3 font-normal text-center w-1/6">Actions</th>
+                          <tr className="border-b border-[var(--color-border)] text-primary uppercase tracking-wider" style={{ fontSize: 'var(--text-caption)' }}>
+                            <th className="py-1.5 px-3 text-left w-1/6" style={{ fontWeight: 'normal' }}>Reviewer</th>
+                            <th className="py-1.5 px-3 text-center w-1/6" style={{ fontWeight: 'normal' }}>Rating</th>
+                            <th className="py-1.5 px-3 text-left w-1/6" style={{ fontWeight: 'normal' }}>Review</th>
+                            <th className="py-1.5 px-3 text-center w-1/6" style={{ fontWeight: 'normal' }}>Date</th>
+                            <th className="py-1.5 px-3 text-center w-1/6" style={{ fontWeight: 'normal' }}>Status</th>
+                            <th className="py-1.5 px-3 text-center w-1/6" style={{ fontWeight: 'normal' }}>Actions</th>
                           </tr>
                         </thead>
                         <tbody>
@@ -1387,12 +1753,12 @@ const Dashboard = () => {
                 <div className="hidden md:block overflow-x-auto w-full">
                   <table className="w-full text-left border-collapse table-fixed min-w-[700px]">
                     <thead>
-                      <tr className="border-b border-[var(--color-border)] text-[var(--color-heading)] font-normal uppercase tracking-wider" style={{ fontSize: 'var(--text-caption)' }}>
-                        <th className="py-1.5 px-3 font-normal text-left w-1/5">Client Name</th>
-                        <th className="py-1.5 px-3 font-normal text-left w-1/5">Position / Company</th>
-                        <th className="py-1.5 px-3 font-normal text-left w-1/5">Client Story Text</th>
-                        <th className="py-1.5 px-3 font-normal text-center w-1/5">Created Date</th>
-                        <th className="py-1.5 px-3 font-normal text-center w-1/5">Actions</th>
+                      <tr className="border-b border-[var(--color-border)] text-primary uppercase tracking-wider" style={{ fontSize: 'var(--text-caption)' }}>
+                        <th className="py-1.5 px-3 text-left w-1/5" style={{ fontWeight: 'normal' }}>Client Name</th>
+                        <th className="py-1.5 px-3 text-left w-1/5" style={{ fontWeight: 'normal' }}>Position / Company</th>
+                        <th className="py-1.5 px-3 text-left w-1/5" style={{ fontWeight: 'normal' }}>Client Story Text</th>
+                        <th className="py-1.5 px-3 text-center w-1/5" style={{ fontWeight: 'normal' }}>Created Date</th>
+                        <th className="py-1.5 px-3 text-center w-1/5" style={{ fontWeight: 'normal' }}>Actions</th>
                       </tr>
                     </thead>
                     <tbody>
@@ -1605,32 +1971,41 @@ const Dashboard = () => {
                   transition={{ duration: 0.3 }}
                   className="overflow-hidden mt-4 space-y-6"
                 >
-                  {/* Analytics Overview (Line Chart) */}
+                  {/* Analytics Overview (Pie Chart) */}
                   <div className="border border-[var(--color-border)] rounded-[var(--radius-sm)] p-4 bg-[var(--color-sub-bg)]/25">
                     <div className="flex justify-between items-center mb-3">
                       <div>
                         <h3 className="text-primary font-[var(--font-bold)] text-xs" style={{ margin: 0 }}>Analytics Overview</h3>
                       </div>
                     </div>
-                    <div className="h-44 w-full min-w-0 overflow-hidden">
+                    <div className="h-44 w-full min-w-0 overflow-hidden flex items-center justify-center">
                       <ResponsiveContainer width="100%" height="100%">
-                        <LineChart data={chartData.combined}>
-                          <XAxis dataKey="date" stroke="var(--color-border)" tick={{ fill: 'var(--color-paragraph)', opacity: 0.6, fontSize: 12 }} tickLine={false} axisLine={false} />
-                          <YAxis stroke="var(--color-border)" tick={{ fill: 'var(--color-paragraph)', opacity: 0.6, fontSize: 12 }} tickLine={false} axisLine={false} />
+                        <PieChart>
                           <RechartsTooltip contentStyle={{ backgroundColor: 'var(--color-main-bg)', borderColor: 'var(--color-border)', borderRadius: 'var(--radius-sm)', color: 'var(--color-paragraph)', fontSize: 12 }} />
-                          <Line type="monotone" dataKey="Inquiries" stroke="#2563EB" strokeWidth={2} dot={{ r: 2 }} activeDot={{ r: 4 }} />
-                          <Line type="monotone" dataKey="Case Studies" stroke="#10B981" strokeWidth={2} dot={{ r: 2 }} activeDot={{ r: 4 }} />
-                          <Line type="monotone" dataKey="Articles" stroke="#8B5CF6" strokeWidth={2} dot={{ r: 2 }} activeDot={{ r: 4 }} />
-                          <Line type="monotone" dataKey="Applications" stroke="#F59E0B" strokeWidth={2} dot={{ r: 2 }} activeDot={{ r: 4 }} />
-                        </LineChart>
+                          <Pie
+                            data={overviewPieData}
+                            dataKey="value"
+                            nameKey="name"
+                            cx="50%"
+                            cy="50%"
+                            innerRadius={30}
+                            outerRadius={50}
+                            paddingAngle={3}
+                          >
+                            {overviewPieData.map((entry, index) => (
+                              <Cell key={`cell-${index}`} fill={entry.color} />
+                            ))}
+                          </Pie>
+                        </PieChart>
                       </ResponsiveContainer>
                     </div>
                     {/* Legend Row */}
-                    <div className="flex flex-wrap justify-center items-center gap-4 mt-2 font-semibold text-paragraph opacity-80" style={{ fontSize: 'var(--text-caption)' }}>
-                      <div className="flex items-center gap-1.5"><span className="w-2.5 h-1 bg-[#2563EB] inline-block rounded-full"></span> Inquiries</div>
-                      <div className="flex items-center gap-1.5"><span className="w-2.5 h-1 bg-[#10B981] inline-block rounded-full"></span> Case Studies</div>
-                      <div className="flex items-center gap-1.5"><span className="w-2.5 h-1 bg-[#8B5CF6] inline-block rounded-full"></span> Articles</div>
-                      <div className="flex items-center gap-1.5"><span className="w-2.5 h-1 bg-[#F59E0B] inline-block rounded-full"></span> Applications</div>
+                    <div className="flex flex-wrap justify-center items-center gap-4 mt-2 font-semibold text-paragraph opacity-85" style={{ fontSize: 'var(--text-caption)' }}>
+                      <div className="flex items-center gap-1.5"><span className="w-2.5 h-2.5 rounded-full inline-block" style={{ backgroundColor: '#2563EB' }}></span> Inquiries ({periodInquiries.length})</div>
+                      <div className="flex items-center gap-1.5"><span className="w-2.5 h-2.5 rounded-full inline-block" style={{ backgroundColor: '#10B981' }}></span> Case Studies ({periodCaseStudies.length})</div>
+                      <div className="flex items-center gap-1.5"><span className="w-2.5 h-2.5 rounded-full inline-block" style={{ backgroundColor: '#8B5CF6' }}></span> Articles ({periodArticles.length})</div>
+                      <div className="flex items-center gap-1.5"><span className="w-2.5 h-2.5 rounded-full inline-block" style={{ backgroundColor: '#F59E0B' }}></span> Applications ({periodApplications.length})</div>
+                      <div className="flex items-center gap-1.5"><span className="w-2.5 h-2.5 rounded-full inline-block" style={{ backgroundColor: '#EC4899' }}></span> Reviews ({periodReviews.length})</div>
                     </div>
                   </div>
 
@@ -1652,7 +2027,11 @@ const Dashboard = () => {
                       <div className="flex flex-wrap items-center gap-2 mt-2 sm:mt-0">
                         <button
                           type="button"
-                          onClick={() => handleExportReport('pdf')}
+                          onClick={() => {
+                            setExportFromDate('');
+                            setExportToDate('');
+                            setShowPdfExportModal(true);
+                          }}
                           className="flex items-center gap-1 bg-white border border-[var(--color-border)] rounded-[var(--radius-sm)] py-1.5 px-3 hover:bg-[var(--color-sub-bg)] transition font-semibold text-[11px] cursor-pointer h-7 shadow-sm text-paragraph"
                         >
                           Export PDF
@@ -1698,21 +2077,174 @@ const Dashboard = () => {
 
                     {/* Metrics grid row */}
                     <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 lg:grid-cols-9 gap-2 mb-4">
-                      {renderAnalyticsMetricCard('Total Inquiries', inquiries.length, '27%', true)}
-                      {renderAnalyticsMetricCard('Reviews Received', reviews.length, '14%', true)}
-                      {renderAnalyticsMetricCard('Reviews Approved', reviews.filter(r => r.status === 'Approved').length, '25%', true)}
-                      {renderAnalyticsMetricCard('Reviews Rejected', reviews.filter(r => r.status === 'Rejected').length, '33%', false)}
-                      {renderAnalyticsMetricCard('Success Stories Published', stories.length, '50%', true)}
-                      {renderAnalyticsMetricCard('Case Studies Published', caseStudies.length, '100%', true)}
-                      {renderAnalyticsMetricCard('Case Studies Approved', caseStudies.filter(c => c.status === 'Published').length, '33%', true)}
-                      {renderAnalyticsMetricCard('Applications', applications.length, '33%', false)}
-                      {renderAnalyticsMetricCard('Applications Referred', applications.filter(a => a.referred).length, '0%', null)}
+                      {renderAnalyticsMetricCard('Total Inquiries', periodInquiries.length, '27%', true)}
+                      {renderAnalyticsMetricCard('Reviews Received', periodReviews.length, '14%', true)}
+                      {renderAnalyticsMetricCard('Reviews Approved', periodReviews.filter(r => r.status === 'Approved').length, '25%', true)}
+                      {renderAnalyticsMetricCard('Reviews Rejected', periodReviews.filter(r => r.status === 'Rejected').length, '33%', false)}
+                      {renderAnalyticsMetricCard('Success Stories Published', periodStories.length, '50%', true)}
+                      {renderAnalyticsMetricCard('Case Studies Published', periodCaseStudies.length, '100%', true)}
+                      {renderAnalyticsMetricCard('Case Studies Approved', periodCaseStudies.filter(c => c.status === 'Published').length, '33%', true)}
+                      {renderAnalyticsMetricCard('Applications', periodApplications.length, '33%', false)}
+                      {renderAnalyticsMetricCard('Applications Referred', periodApplications.filter(a => a.referred || a.status === 'referred').length, '0%', null)}
+                    </div>
+
+                    {/* Section-wise detailed status breakdowns */}
+                    <div className="mt-6 border-t border-[var(--color-border)]/60 pt-4 select-none">
+                      <h4 className="text-primary font-bold text-xs uppercase mb-4 text-left">Detailed Status Breakdowns</h4>
+                      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 text-left">
+                        
+                        {/* 1. Inquiries Status */}
+                        <div className="bg-white border border-[var(--color-border)] p-4 rounded-[var(--radius-sm)] shadow-sm flex flex-col justify-between">
+                          <div>
+                            <span className="text-[10px] text-gray-400 font-bold uppercase tracking-wider block mb-2.5">Inquiries Pipeline</span>
+                            <div className="space-y-2 text-xs">
+                              <div className="flex justify-between items-center border-b pb-1">
+                                <span className="text-paragraph opacity-75 font-semibold">New Submissions</span>
+                                <span className="font-bold text-green-600">{periodInquiries.filter(i => i.status === 'New').length}</span>
+                              </div>
+                              <div className="flex justify-between items-center border-b pb-1">
+                                <span className="text-paragraph opacity-75 font-semibold">Responded</span>
+                                <span className="font-bold text-blue-600">{periodInquiries.filter(i => i.status === 'In Progress' || i.status === 'Responded').length}</span>
+                              </div>
+                              <div className="flex justify-between items-center border-b pb-1">
+                                <span className="text-paragraph opacity-75 font-semibold">Proposals Converted</span>
+                                <span className="font-bold text-amber-500">{periodInquiries.filter(i => i.status === 'Proposals').length}</span>
+                              </div>
+                              <div className="flex justify-between items-center">
+                                <span className="text-paragraph opacity-75 font-semibold">Closed/Resolved</span>
+                                <span className="font-bold text-gray-500">{periodInquiries.filter(i => i.status === 'Closed').length}</span>
+                              </div>
+                            </div>
+                          </div>
+                          <div className="text-[11px] text-gray-400 mt-3 pt-2 border-t font-semibold">Total: {periodInquiries.length} Inquiries</div>
+                        </div>
+
+                        {/* 2. Reviews Status */}
+                        <div className="bg-white border border-[var(--color-border)] p-4 rounded-[var(--radius-sm)] shadow-sm flex flex-col justify-between">
+                          <div>
+                            <span className="text-[10px] text-gray-400 font-bold uppercase tracking-wider block mb-2.5">Reviews Moderation</span>
+                            <div className="space-y-2 text-xs">
+                              <div className="flex justify-between items-center border-b pb-1">
+                                <span className="text-paragraph opacity-75 font-semibold">Pending Approval</span>
+                                <span className="font-bold text-blue-600">{periodReviews.filter(r => (r.status || 'Pending') === 'Pending').length}</span>
+                              </div>
+                              <div className="flex justify-between items-center border-b pb-1">
+                                <span className="text-paragraph opacity-75 font-semibold">Approved Reviews</span>
+                                <span className="font-bold text-green-600">{periodReviews.filter(r => r.status === 'Approved').length}</span>
+                              </div>
+                              <div className="flex justify-between items-center">
+                                <span className="text-paragraph opacity-75 font-semibold">Rejected Reviews</span>
+                                <span className="font-bold text-red-500">{periodReviews.filter(r => r.status === 'Rejected').length}</span>
+                              </div>
+                            </div>
+                          </div>
+                          <div className="text-[11px] text-gray-400 mt-3 pt-2 border-t font-semibold">Total: {periodReviews.length} Reviews</div>
+                        </div>
+
+                        {/* 3. Case Studies Status */}
+                        <div className="bg-white border border-[var(--color-border)] p-4 rounded-[var(--radius-sm)] shadow-sm flex flex-col justify-between">
+                          <div>
+                            <span className="text-[10px] text-gray-400 font-bold uppercase tracking-wider block mb-2.5">Case Studies Pipeline</span>
+                            <div className="space-y-2 text-xs">
+                              <div className="flex justify-between items-center border-b pb-1">
+                                <span className="text-paragraph opacity-75 font-semibold">Draft/Pending Approval</span>
+                                <span className="font-bold text-amber-500">{periodCaseStudies.filter(c => c.status === 'Draft').length}</span>
+                              </div>
+                              <div className="flex justify-between items-center">
+                                <span className="text-paragraph opacity-75 font-semibold">Approved & Published</span>
+                                <span className="font-bold text-green-600">{periodCaseStudies.filter(c => c.status === 'Published').length}</span>
+                              </div>
+                            </div>
+                          </div>
+                          <div className="text-[11px] text-gray-400 mt-3 pt-2 border-t font-semibold">Total: {periodCaseStudies.length} Case Studies</div>
+                        </div>
+
+                        {/* 4. Applications Status */}
+                        <div className="bg-white border border-[var(--color-border)] p-4 rounded-[var(--radius-sm)] shadow-sm flex flex-col justify-between">
+                          <div>
+                            <span className="text-[10px] text-gray-400 font-bold uppercase tracking-wider block mb-2.5">Applications Funnel</span>
+                            <div className="space-y-2 text-xs">
+                              <div className="flex justify-between items-center border-b pb-1">
+                                <span className="text-paragraph opacity-75 font-semibold">Pending Review</span>
+                                <span className="font-bold text-amber-500">{periodApplications.filter(a => a.status === 'pending').length}</span>
+                              </div>
+                              <div className="flex justify-between items-center border-b pb-1">
+                                <span className="text-paragraph opacity-75 font-semibold">Referred</span>
+                                <span className="font-bold text-blue-600">{periodApplications.filter(a => a.referred || a.status === 'referred').length}</span>
+                              </div>
+                              <div className="flex justify-between items-center">
+                                <span className="text-paragraph opacity-75 font-semibold">Rejected</span>
+                                <span className="font-bold text-red-500">{periodApplications.filter(a => a.status === 'rejected').length}</span>
+                              </div>
+                            </div>
+                          </div>
+                          <div className="text-[11px] text-gray-400 mt-3 pt-2 border-t font-semibold">Total: {periodApplications.length} Applications</div>
+                        </div>
+
+                      </div>
                     </div>
                   </div>
                 </motion.div>
               )}
             </AnimatePresence>
           </div>
+
+          {/* Appointments Pending Approval Section */}
+          {appointments.filter(a => a.status === 'Pending Approval').length > 0 && (
+            <div className="card bg-white p-4 shadow-card mt-6">
+              <div className="border-b border-[var(--color-border)] pb-2 mb-3">
+                <h3 className="text-primary font-[var(--font-bold)] text-xs" style={{ margin: 0 }}>
+                  APPOINTMENTS PENDING APPROVAL
+                </h3>
+              </div>
+              <div className="overflow-x-auto">
+                <table className="w-full text-left border-collapse table-fixed min-w-[700px]">
+                  <thead>
+                    <tr className="border-b border-[var(--color-border)] text-primary uppercase tracking-wider" style={{ fontSize: 'var(--text-caption)' }}>
+                      <th className="py-2 px-3 text-left w-[25%]" style={{ fontWeight: 'normal' }}>Candidate</th>
+                      <th className="py-2 px-3 text-left w-[20%]" style={{ fontWeight: 'normal' }}>Job Position</th>
+                      <th className="py-2 px-3 text-left w-[20%]" style={{ fontWeight: 'normal' }}>Interviewer</th>
+                      <th className="py-2 px-3 text-center w-[20%]" style={{ fontWeight: 'normal' }}>Date & Time</th>
+                      <th className="py-2 px-3 text-center w-[15%]" style={{ fontWeight: 'normal' }}>Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {appointments.filter(a => a.status === 'Pending Approval').map((app) => (
+                      <tr key={app.id} className="border-b border-[var(--color-border)] last:border-0 hover:bg-[var(--color-sub-bg)] text-primary transition-all" style={{ fontSize: 'var(--text-caption)' }}>
+                        <td className="py-3 px-3 text-left">
+                          <div>
+                            <p className="font-bold text-primary" style={{ margin: 0 }}>{app.name}</p>
+                            <p className="text-paragraph opacity-60 text-[10px]" style={{ margin: 0 }}>{app.email}</p>
+                          </div>
+                        </td>
+                        <td className="py-3 px-3 text-left font-semibold">{app.position}</td>
+                        <td className="py-3 px-3 text-left">{app.interviewer}</td>
+                        <td className="py-3 px-3 text-center">{app.date}</td>
+                        <td className="py-3 px-3 text-center">
+                          <div className="flex justify-center gap-1.5">
+                            <button
+                              type="button"
+                              onClick={() => handleApproveAppointment(app.id)}
+                              className="px-2.5 py-1 text-[10px] font-bold bg-green-50 border border-green-200 hover:bg-green-100 text-green-700 rounded-[var(--radius-sm)] transition cursor-pointer"
+                            >
+                              Approve
+                            </button>
+                            <button
+                              type="button"
+                              onClick={() => handleRejectAppointment(app.id)}
+                              className="px-2.5 py-1 text-[10px] font-bold bg-red-50 border border-red-200 hover:bg-red-100 text-red-700 rounded-[var(--radius-sm)] transition cursor-pointer"
+                            >
+                              Reject
+                            </button>
+                          </div>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          )}
 
           </motion.div>
         </div>
@@ -1863,9 +2395,9 @@ const Dashboard = () => {
                 if (name === 'Inquiries') {
                   return inquiries.filter(inq => inq.status === 'New').map((inq) => (
                     <div key={inq._id} className="p-2 border border-[var(--color-border)] rounded-[var(--radius-sm)] bg-[var(--color-sub-bg)]/20" style={{ fontSize: 'var(--text-caption)' }}>
-                      <p className="font-bold text-primary">{inq.name} ({inq.email})</p>
-                      <p className="opacity-80 mt-1"><span className="font-semibold">Subject:</span> {inq.subject}</p>
-                      <p className="opacity-70 mt-0.5 line-clamp-2">{inq.message}</p>
+                      <p className="font-bold text-primary">{inq.fullName ? inq.fullName.toUpperCase() : ''} (<span style={{ textTransform: 'lowercase' }}>{inq.email || ''}</span>)</p>
+                      <p className="opacity-80 mt-1"><span className="font-semibold">SERVICE:</span> {inq.service || ''}</p>
+                      <p className="opacity-70 mt-0.5 line-clamp-2">{inq.message || ''}</p>
                     </div>
                   ));
                 }
@@ -1920,8 +2452,21 @@ const Dashboard = () => {
             {activeActionable.divertPath && activeActionable.divertPath !== '#' && (
               <Button
                 onClick={() => {
-                  navigate(activeActionable.divertPath);
+                  const path = activeActionable.divertPath;
                   setActiveActionable(null);
+                  if (path.startsWith('#')) {
+                    const id = path.substring(1);
+                    if (activeActionable.moduleName === 'Reviews') {
+                      setActiveMgmtTab('reviews');
+                    } else if (activeActionable.moduleName === 'Success Stories') {
+                      setActiveMgmtTab('stories');
+                    }
+                    setTimeout(() => {
+                      document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
+                    }, 100);
+                  } else {
+                    navigate(path);
+                  }
                 }}
                 variant="contained"
                 style={{
@@ -1939,6 +2484,122 @@ const Dashboard = () => {
             )}
             <Button
               onClick={() => setActiveActionable(null)}
+              variant="outlined"
+              style={{
+                borderColor: 'var(--color-border)',
+                color: 'var(--color-paragraph)',
+                borderRadius: 'var(--radius-sm)',
+                textTransform: 'none',
+                fontWeight: 'var(--font-semibold)',
+                fontSize: 'var(--text-caption)',
+                height: '32px'
+              }}
+            >
+              Close
+            </Button>
+          </DialogActions>
+        </Dialog>
+      )}
+
+      {/* Appointment Approvals Modal */}
+      {showAppointmentApprovalModal && (
+        <Dialog
+          open={showAppointmentApprovalModal}
+          onClose={() => setShowAppointmentApprovalModal(false)}
+          maxWidth="md"
+          fullWidth
+          sx={{
+            "& .MuiDialog-container": {
+              backgroundColor: "rgba(10,15,30,0.7)",
+              backdropFilter: "blur(8px)"
+            },
+            "& .MuiDialog-paper": {
+              borderRadius: "3px",
+              background: "var(--color-main-bg)",
+              border: "1px solid var(--color-border)",
+              boxShadow: "0 25px 50px -12px rgba(0, 0, 0, 0.5)",
+              p: 3
+            }
+          }}
+        >
+          <div className="flex justify-between items-center border-b border-[var(--color-border)] pb-3 mb-4">
+            <div>
+              <h2 className="text-lg font-bold text-primary" style={{ margin: 0 }}>
+                APPOINTMENTS PENDING APPROVAL
+              </h2>
+              <p className="text-xs text-[var(--color-paragraph)] opacity-60 mt-1" style={{ margin: 0 }}>
+                Review and approve appointments sent by HR
+              </p>
+            </div>
+            <button
+              onClick={() => setShowAppointmentApprovalModal(false)}
+              className="w-8 h-8 rounded-full bg-[var(--color-sub-bg)] hover:bg-red-500/20 hover:text-red-600 transition flex items-center justify-center text-paragraph opacity-60 hover:opacity-100 cursor-pointer text-xs border border-transparent"
+            >
+              ✕
+            </button>
+          </div>
+
+          <div className="space-y-4 max-h-[450px] overflow-y-auto pr-1">
+            {appointments.filter(a => a.status === 'Pending Approval').length === 0 ? (
+              <p className="text-center py-8 text-xs text-[var(--color-paragraph)] opacity-60">
+                No appointments pending approval.
+              </p>
+            ) : (
+              appointments.filter(a => a.status === 'Pending Approval').map((app) => {
+                const candidateApp = applications.find(a => a.email === app.email);
+                const resumeUrl = candidateApp ? candidateApp.resumeUrl : null;
+
+                return (
+                  <div key={app.id} className="border border-[var(--color-border)] rounded-[var(--radius-sm)] p-4 bg-[var(--color-sub-bg)]/20 hover:bg-[var(--color-sub-bg)]/40 transition-colors flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
+                    <div className="text-left">
+                      <p className="font-bold text-primary" style={{ margin: 0 }}>{app.name}</p>
+                      <p className="text-paragraph opacity-60 text-[10px]" style={{ margin: 0 }}>{app.email}</p>
+                      <div className="mt-2 text-xs text-[var(--color-paragraph)] opacity-90 space-y-0.5">
+                        <p><span className="font-semibold text-primary">Position:</span> {app.position}</p>
+                        <p><span className="font-semibold text-primary">Interviewer:</span> {app.interviewer}</p>
+                        <p><span className="font-semibold text-primary">Date & Time:</span> {app.date}</p>
+                        <p><span className="font-semibold text-primary">Mode:</span> {app.mode}</p>
+                      </div>
+                      <div className="mt-3">
+                        {resumeUrl ? (
+                          <a
+                            href={resumeUrl}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="inline-flex items-center gap-1 px-2.5 py-1 bg-[var(--color-primary)]/10 hover:bg-[var(--color-primary)]/20 border border-[var(--color-primary)]/20 text-[var(--color-primary)] rounded-[var(--radius-sm)] transition-all font-bold text-[10px] no-underline cursor-pointer"
+                          >
+                            View Resume
+                          </a>
+                        ) : (
+                          <span className="text-[10px] text-slate-400">No Resume Uploaded</span>
+                        )}
+                      </div>
+                    </div>
+                    <div className="flex gap-2 sm:self-center">
+                      <button
+                        type="button"
+                        onClick={() => handleApproveAppointment(app.id)}
+                        className="px-3.5 py-1.5 text-xs font-bold bg-green-50 border border-green-200 hover:bg-green-100 text-green-700 rounded-[var(--radius-sm)] transition cursor-pointer"
+                      >
+                        Approve
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => handleRejectAppointment(app.id)}
+                        className="px-3.5 py-1.5 text-xs font-bold bg-red-50 border border-red-200 hover:bg-red-100 text-red-700 rounded-[var(--radius-sm)] transition cursor-pointer"
+                      >
+                        Reject
+                      </button>
+                    </div>
+                  </div>
+                );
+              })
+            )}
+          </div>
+
+          <DialogActions style={{ borderTop: '1px solid var(--color-border)', paddingTop: '10px' }} className="flex justify-end pt-3">
+            <Button
+              onClick={() => setShowAppointmentApprovalModal(false)}
               variant="outlined"
               style={{
                 borderColor: 'var(--color-border)',
@@ -2140,48 +2801,168 @@ const Dashboard = () => {
             </div>
           </DialogTitle>
           <DialogContent style={{ paddingTop: '16px' }}>
-            <div className="overflow-x-auto">
-              <table className="w-full text-left border-collapse text-xs">
-                <thead>
-                  <tr className="border-b border-[var(--color-border)] text-paragraph opacity-60 font-bold">
-                    <th className="py-2">Metric Name</th>
-                    <th className="py-2 text-right">Count</th>
-                    <th className="py-2 text-right">Details / Status</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr className="border-b border-[var(--color-border)] last:border-0 hover:bg-[var(--color-sub-bg)] text-primary">
-                    <td className="py-2.5 font-bold">Total Inquiries</td>
-                    <td className="py-2.5 text-right font-semibold">{inquiries.length}</td>
-                    <td className="py-2.5 text-right opacity-80">New Inquiries: {inquiries.filter(i => i.status === 'New').length}</td>
-                  </tr>
-                  <tr className="border-b border-[var(--color-border)] last:border-0 hover:bg-[var(--color-sub-bg)] text-primary">
-                    <td className="py-2.5 font-bold">Reviews Received</td>
-                    <td className="py-2.5 text-right font-semibold">{reviews.length}</td>
-                    <td className="py-2.5 text-right opacity-80">Approved: {reviews.filter(r => r.status === 'Approved').length} | Rejected: {reviews.filter(r => r.status === 'Rejected').length}</td>
-                  </tr>
-                  <tr className="border-b border-[var(--color-border)] last:border-0 hover:bg-[var(--color-sub-bg)] text-primary">
-                    <td className="py-2.5 font-bold">Success Stories Published</td>
-                    <td className="py-2.5 text-right font-semibold">{stories.length}</td>
-                    <td className="py-2.5 text-right opacity-80">Active testimonials on live site</td>
-                  </tr>
-                  <tr className="border-b border-[var(--color-border)] last:border-0 hover:bg-[var(--color-sub-bg)] text-primary">
-                    <td className="py-2.5 font-bold">Case Studies Published</td>
-                    <td className="py-2.5 text-right font-semibold">{caseStudies.length}</td>
-                    <td className="py-2.5 text-right opacity-80">Published: {caseStudies.filter(c => c.status === 'Published').length} | Draft: {caseStudies.filter(c => c.status === 'Draft').length}</td>
-                  </tr>
-                  <tr className="border-b border-[var(--color-border)] last:border-0 hover:bg-[var(--color-sub-bg)] text-primary">
-                    <td className="py-2.5 font-bold">Careers & Applications</td>
-                    <td className="py-2.5 text-right font-semibold">{applications.length}</td>
-                    <td className="py-2.5 text-right opacity-80">Pending: {applications.filter(a => a.status === 'pending').length}</td>
-                  </tr>
-                </tbody>
-              </table>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-center">
+              {/* Left Side: Pie Chart */}
+              <div className="border border-[var(--color-border)] rounded-[var(--radius-sm)] p-4 bg-[var(--color-sub-bg)]/20 flex flex-col items-center select-none">
+                <h4 className="text-primary font-[var(--font-bold)] text-[10px] mb-2 text-center w-full uppercase tracking-wider">Metrics Visual Breakdown</h4>
+                <div className="h-40 w-full min-w-0 flex items-center justify-center">
+                  <ResponsiveContainer width="100%" height="100%">
+                    <PieChart>
+                      <RechartsTooltip contentStyle={{ backgroundColor: 'var(--color-main-bg)', borderColor: 'var(--color-border)', borderRadius: 'var(--radius-sm)', color: 'var(--color-paragraph)', fontSize: 11 }} />
+                      <Pie
+                        data={overviewPieData}
+                        dataKey="value"
+                        nameKey="name"
+                        cx="50%"
+                        cy="50%"
+                        innerRadius={25}
+                        outerRadius={45}
+                        paddingAngle={3}
+                      >
+                        {overviewPieData.map((entry, index) => (
+                          <Cell key={`cell-${index}`} fill={entry.color} />
+                        ))}
+                      </Pie>
+                    </PieChart>
+                  </ResponsiveContainer>
+                </div>
+                {/* Visual Legend */}
+                <div className="flex flex-wrap justify-center gap-2 mt-2 text-[9px] font-bold text-paragraph">
+                  <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-full inline-block bg-[#2563EB]"></span> INQ</span>
+                  <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-full inline-block bg-[#10B981]"></span> CS</span>
+                  <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-full inline-block bg-[#8B5CF6]"></span> ART</span>
+                  <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-full inline-block bg-[#F59E0B]"></span> APP</span>
+                  <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-full inline-block bg-[#EC4899]"></span> REV</span>
+                </div>
+              </div>
+
+              {/* Right Side: Data Table */}
+              <div className="overflow-x-auto">
+                <table className="w-full text-left border-collapse text-xs">
+                  <thead>
+                    <tr className="border-b border-[var(--color-border)] text-paragraph opacity-60">
+                      <th className="py-2" style={{ fontWeight: 'normal' }}>Metric Name</th>
+                      <th className="py-2 text-right" style={{ fontWeight: 'normal' }}>Count</th>
+                      <th className="py-2 text-right" style={{ fontWeight: 'normal' }}>Details / Status</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr className="border-b border-[var(--color-border)] last:border-0 hover:bg-[var(--color-sub-bg)] text-primary">
+                      <td className="py-2.5 font-bold">Total Inquiries</td>
+                      <td className="py-2.5 text-right font-semibold">{inquiries.length}</td>
+                      <td className="py-2.5 text-right opacity-80">New Inquiries: {inquiries.filter(i => i.status === 'New').length}</td>
+                    </tr>
+                    <tr className="border-b border-[var(--color-border)] last:border-0 hover:bg-[var(--color-sub-bg)] text-primary">
+                      <td className="py-2.5 font-bold">Reviews Received</td>
+                      <td className="py-2.5 text-right font-semibold">{reviews.length}</td>
+                      <td className="py-2.5 text-right opacity-80">Approved: {reviews.filter(r => (r.status || 'Pending') === 'Approved').length}</td>
+                    </tr>
+                    <tr className="border-b border-[var(--color-border)] last:border-0 hover:bg-[var(--color-sub-bg)] text-primary">
+                      <td className="py-2.5 font-bold">Success Stories</td>
+                      <td className="py-2.5 text-right font-semibold">{stories.length}</td>
+                      <td className="py-2.5 text-right opacity-80">Active testimonials: {stories.length}</td>
+                    </tr>
+                    <tr className="border-b border-[var(--color-border)] last:border-0 hover:bg-[var(--color-sub-bg)] text-primary">
+                      <td className="py-2.5 font-bold">Case Studies</td>
+                      <td className="py-2.5 text-right font-semibold">{caseStudies.length}</td>
+                      <td className="py-2.5 text-right opacity-80">Draft: {caseStudies.filter(c => c.status === 'Draft').length}</td>
+                    </tr>
+                    <tr className="border-b border-[var(--color-border)] last:border-0 hover:bg-[var(--color-sub-bg)] text-primary">
+                      <td className="py-2.5 font-bold">Applications</td>
+                      <td className="py-2.5 text-right font-semibold">{applications.length}</td>
+                      <td className="py-2.5 text-right opacity-80">Pending: {applications.filter(a => a.status === 'pending').length}</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
             </div>
           </DialogContent>
           <DialogActions style={{ borderTop: '1px solid var(--color-border)', paddingTop: '10px' }}>
             <Button
               onClick={() => setShowDetailedReportModal(false)}
+              variant="contained"
+              sx={{
+                background: 'var(--color-primary) !important',
+                color: '#fff !important',
+                '&:hover': {
+                  background: 'var(--color-primary-hover) !important'
+                },
+                borderRadius: 'var(--radius-sm)',
+                textTransform: 'none',
+                fontWeight: 'var(--font-semibold)',
+                fontSize: 'var(--text-caption)',
+                height: '32px',
+                border: 'none',
+                boxShadow: 'none'
+              }}
+            >
+              Close
+            </Button>
+          </DialogActions>
+        </Dialog>
+      )}
+      {/* Date Range Export Modal for PDF */}
+      {showPdfExportModal && (
+        <Dialog
+          open={Boolean(showPdfExportModal)}
+          onClose={() => setShowPdfExportModal(false)}
+          maxWidth="xs"
+          fullWidth
+          sx={{
+            "& .MuiDialog-container": {
+              "& .MuiPaper-root": {
+                borderRadius: "var(--radius-sm)",
+                padding: "8px",
+                boxShadow: "var(--shadow-card)",
+                border: "1px solid var(--color-border)"
+              }
+            }
+          }}
+        >
+          <DialogTitle style={{ borderBottom: '1px solid var(--color-border)', paddingBottom: '12px' }}>
+            <div className="flex justify-between items-center">
+              <h2 style={{ fontSize: 'var(--text-small)', fontWeight: 'var(--font-bold)', color: 'var(--color-black)', margin: 0 }}>
+                Export Business Analytics to PDF
+              </h2>
+              <button
+                type="button"
+                onClick={() => setShowPdfExportModal(false)}
+                className="w-6 h-6 rounded-full bg-[var(--color-sub-bg)] hover:bg-red-500/20 hover:text-red-600 transition flex items-center justify-center text-paragraph opacity-60 hover:opacity-100 cursor-pointer"
+                style={{ fontSize: 'var(--text-caption)' }}
+              >
+                ✕
+              </button>
+            </div>
+          </DialogTitle>
+          <DialogContent style={{ paddingTop: '16px' }}>
+            <div className="flex flex-col gap-4">
+              <div className="flex flex-col gap-1.5 text-left">
+                <label className="text-[10px] text-paragraph opacity-85 font-semibold uppercase tracking-wider block text-left">From Date</label>
+                <input
+                  type="date"
+                  value={exportFromDate}
+                  onChange={(e) => setExportFromDate(e.target.value)}
+                  className="w-full border border-[var(--color-border)] rounded-[var(--radius-sm)] px-3 py-2 text-xs text-paragraph focus:outline-none focus:border-[var(--color-primary)] bg-white font-normal"
+                />
+              </div>
+              <div className="flex flex-col gap-1.5 text-left">
+                <label className="text-[10px] text-paragraph opacity-85 font-semibold uppercase tracking-wider block text-left">To Date</label>
+                <input
+                  type="date"
+                  value={exportToDate}
+                  onChange={(e) => setExportToDate(e.target.value)}
+                  className="w-full border border-[var(--color-border)] rounded-[var(--radius-sm)] px-3 py-2 text-xs text-paragraph focus:outline-none focus:border-[var(--color-primary)] bg-white font-normal"
+                />
+              </div>
+            </div>
+          </DialogContent>
+          <DialogActions style={{ borderTop: '1px solid var(--color-border)', paddingTop: '10px' }} className="flex justify-end gap-2.5">
+            <Button
+              onClick={() => {
+                setShowPdfExportModal(false);
+                setExportFromDate('');
+                setExportToDate('');
+              }}
               variant="outlined"
               style={{
                 borderColor: 'var(--color-border)',
@@ -2193,7 +2974,22 @@ const Dashboard = () => {
                 height: '32px'
               }}
             >
-              Close
+              Cancel
+            </Button>
+            <Button
+              onClick={() => handleExportReport('pdf')}
+              variant="contained"
+              style={{
+                backgroundColor: 'var(--color-primary)',
+                color: 'white',
+                borderRadius: 'var(--radius-sm)',
+                textTransform: 'none',
+                fontWeight: 'var(--font-semibold)',
+                fontSize: 'var(--text-caption)',
+                height: '32px'
+              }}
+            >
+              Export
             </Button>
           </DialogActions>
         </Dialog>

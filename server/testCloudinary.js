@@ -15,8 +15,8 @@ const streamUpload = (buffer, applicantName) => {
     const cleanName = applicantName ? applicantName.replace(/[^a-zA-Z0-9]/g, '_').toLowerCase() : 'applicant';
     const fileName = `${cleanName}_resume_${Date.now()}`;
     const stream = cloudinary.uploader.upload_stream(
-      { 
-        resource_type: "auto", 
+      {
+        resource_type: "auto",
         folder: "strivo_resumes",
         public_id: fileName
       },

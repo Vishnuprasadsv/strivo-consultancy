@@ -27,7 +27,7 @@ export const loginAdmin = async (req, res) => {
 
     if (admin && (await admin.matchPassword(password))) {
       const token = generateToken(admin._id);
-      
+
       // Set secure cookie
       res.cookie('token', token, {
         httpOnly: false,
@@ -69,16 +69,16 @@ export const registerAdmin = async (req, res) => {
     const hasSpecial = /[!@#$%^&*(),.?":{}|<>]/.test(password);
 
     if (!(minLength && hasUpper && hasLower && hasNumber && hasSpecial)) {
-      return res.status(400).json({ 
-        message: 'Password must be at least 8 characters, and contain at least one uppercase letter, one lowercase letter, one number, and one special character.' 
+      return res.status(400).json({
+        message: 'Password must be at least 8 characters, and contain at least one uppercase letter, one lowercase letter, one number, and one special character.'
       });
     }
 
     // Check if user with that role is already registered
     const count = await Admin.countDocuments({ role: targetRole });
     if (count > 0) {
-      return res.status(400).json({ 
-        message: `Multiple ${targetRole === 'Hr' ? 'HR' : 'Admin'} registration not allowed` 
+      return res.status(400).json({
+        message: `Multiple ${targetRole === 'Hr' ? 'HR' : 'Admin'} registration not allowed`
       });
     }
 
@@ -112,7 +112,7 @@ export const registerAdmin = async (req, res) => {
         role: admin.role,
         profileImage: admin.profileImage,
         token: token,
-        message: `${targetRole} created successfully`
+        message: `${targetRole === 'Hr' ? 'HR' : 'Admin'} registered successfully, please login`
       });
     } else {
       res.status(400).json({ message: 'Invalid registration data' });
@@ -137,7 +137,7 @@ export const checkAdminRegistered = async (req, res) => {
   try {
     const adminCount = await Admin.countDocuments({ role: 'Admin' });
     const hrCount = await Admin.countDocuments({ role: 'Hr' });
-    res.json({ 
+    res.json({
       registered: adminCount > 0 && hrCount > 0,
       adminRegistered: adminCount > 0,
       hrRegistered: hrCount > 0
@@ -162,7 +162,7 @@ export const forgotPassword = async (req, res) => {
 
     // Generate 6 digit OTP
     const otp = Math.floor(100000 + Math.random() * 900000).toString();
-    
+
     // Hash OTP before saving
     const salt = await bcrypt.genSalt(10);
     admin.resetPasswordOtp = await bcrypt.hash(otp, salt);
@@ -178,7 +178,7 @@ export const forgotPassword = async (req, res) => {
       console.log('--- DEVELOPMENT OTP CODE ---');
       console.log(`Email credentials not set. OTP for ${admin.email} is: ${otp}`);
       console.log('----------------------------');
-      return res.json({ 
+      return res.json({
         message: 'OTP sent successfully (Development Mode: OTP logged to console)',
         otp: process.env.NODE_ENV !== 'production' ? otp : undefined
       });
@@ -232,7 +232,7 @@ export const forgotPassword = async (req, res) => {
       console.log('------------------------------------------');
 
       if (process.env.NODE_ENV !== 'production') {
-        return res.json({ 
+        return res.json({
           message: 'OTP sent successfully (Development Fallback: OTP logged to console)',
           otp: otp
         });
@@ -293,8 +293,8 @@ export const resetPassword = async (req, res) => {
   const hasSpecial = /[!@#$%^&*(),.?":{}|<>]/.test(newPassword);
 
   if (!(minLength && hasUpper && hasLower && hasNumber && hasSpecial)) {
-    return res.status(400).json({ 
-      message: 'Password must be at least 8 characters, and contain at least one uppercase letter, one lowercase letter, one number, and one special character.' 
+    return res.status(400).json({
+      message: 'Password must be at least 8 characters, and contain at least one uppercase letter, one lowercase letter, one number, and one special character.'
     });
   }
 
@@ -332,8 +332,8 @@ export const changePassword = async (req, res) => {
   const hasSpecial = /[!@#$%^&*(),.?":{}|<>]/.test(newPassword);
 
   if (!(minLength && hasUpper && hasLower && hasNumber && hasSpecial)) {
-    return res.status(400).json({ 
-      message: 'Password must be at least 8 characters, and contain at least one uppercase letter, one lowercase letter, one number, and one special character.' 
+    return res.status(400).json({
+      message: 'Password must be at least 8 characters, and contain at least one uppercase letter, one lowercase letter, one number, and one special character.'
     });
   }
 
@@ -357,14 +357,14 @@ export const changePassword = async (req, res) => {
 // @access  Public (should ideally be private)
 export const uploadProfileImage = async (req, res) => {
   const { username } = req.body;
-  
+
   if (!req.file) {
     return res.status(400).json({ message: 'No image uploaded' });
   }
 
   try {
     const admin = await Admin.findOne({ username });
-    
+
     if (!admin) {
       return res.status(404).json({ message: 'Admin not found' });
     }
@@ -372,7 +372,7 @@ export const uploadProfileImage = async (req, res) => {
     admin.profileImage = req.file.path;
     await admin.save();
 
-    res.json({ 
+    res.json({
       message: 'Profile image updated successfully',
       profileImage: admin.profileImage
     });

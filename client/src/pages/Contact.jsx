@@ -79,7 +79,9 @@ const Contact = () => {
     const { name, value } = e.target;
     let finalValue = value;
     if (name === "phone") {
-      finalValue = value.replace(/[^0-9+\-\s()]/g, "");
+      const digitsOnly = value.replace(/\D/g, "");
+      if (digitsOnly.length > 10) return;
+      finalValue = digitsOnly;
     }
     setFormData((prev) => ({
       ...prev,
@@ -150,16 +152,15 @@ const Contact = () => {
     if (!formData.email.trim()) {
       newErrors.email = "Email address is required";
     } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
-      newErrors.email = "invalid mail id";
+      newErrors.email = "Please enter a valid email ID";
     }
 
     if (!formData.phone.trim()) {
       newErrors.phone = "Phone number is required";
     } else {
       const digits = formData.phone.replace(/\D/g, "");
-      const rules = getPhoneValidationRules(formData.countryCode);
-      if (digits.length < rules.min || digits.length > rules.max) {
-        newErrors.phone = `Phone number must be valid (${rules.label})`;
+      if (digits.length !== 10) {
+        newErrors.phone = "Phone number must be exactly 10 digits";
       }
     }
 
@@ -184,6 +185,7 @@ const Contact = () => {
         `${import.meta.env.VITE_API_BASE_URL}/api/inquiries`,
         submissionData
       );
+      toast.success("Query submitted successfully. We will get back to you.");
       setFormData({
         fullName: "",
         company: "",
@@ -354,7 +356,7 @@ const Contact = () => {
             <div className="bg-[var(--color-sub-bg)] p-6 sm:p-8 rounded-[var(--radius-sm)] w-full border border-gray-200 h-full flex flex-col justify-between">
               <div>
                 <h2 className="text-2xl font-bold text-black mb-6">Send us a message</h2>
-                <form className="flex flex-col gap-5" onSubmit={handleSubmit}>
+                <form className="flex flex-col gap-5" onSubmit={handleSubmit} noValidate>
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
                     <div className="flex flex-col gap-2">
                       <label className="paragraph text-sm text-black font-medium">Full Name</label>
@@ -386,7 +388,7 @@ const Contact = () => {
                     <div className="flex flex-col gap-2">
                       <label className="paragraph text-sm text-black font-medium">Email Address</label>
                       <input
-                        type="email"
+                        type="text"
                         name="email"
                         value={formData.email}
                         onChange={handleChange}

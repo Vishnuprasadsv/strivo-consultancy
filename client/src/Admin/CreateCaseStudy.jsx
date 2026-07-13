@@ -211,9 +211,10 @@ const CreateCaseStudy = () => {
         await uploadImage(croppedBlob);
 
       let finalStatus = status;
+      let isFuture = false;
       if (isFutureDate(formData.publicationDate)) {
         finalStatus = "Draft";
-        toast("future dated saveing as draft", { icon: false });
+        isFuture = true;
       }
 
       await axios.post(
@@ -241,7 +242,11 @@ const CreateCaseStudy = () => {
 
       );
 
-      toast.success("Case Study Created Successfully");
+      if (isFuture) {
+        toast.success("Case Study Created Successfully (Saved as draft due to future date)");
+      } else {
+        toast.success("Case Study Created Successfully");
+      }
 
       navigate("/admin/casestudies");
 

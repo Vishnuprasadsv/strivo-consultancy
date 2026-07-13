@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import { useNavigate } from 'react-router-dom';
-import { FiBarChart2, FiSearch, FiRefreshCw } from 'react-icons/fi';
+import { FiBarChart2, FiSearch, FiRefreshCw, FiMoreVertical } from 'react-icons/fi';
 import { motion, AnimatePresence } from 'framer-motion';
 import { toast } from 'sonner';
 
@@ -93,10 +93,34 @@ const CareerAdmin = () => {
   const [clearedNotificationsTime, setClearedNotificationsTime] = useState(null);
   const [talentSearch, setTalentSearch] = useState('');
 
-  // Modal and tab states
   const [showAnalyticsModal, setShowAnalyticsModal] = useState(false);
   const [showNotifDropdown, setShowNotifDropdown] = useState(false);
   const [activeSubTab, setActiveSubTab] = useState('applications');
+  const [openActionMenuId, setOpenActionMenuId] = useState(null);
+  const [openScheduleModal, setOpenScheduleModal] = useState(false);
+  const [schedulingApp, setSchedulingApp] = useState(null);
+  const [scheduleForm, setScheduleForm] = useState({ date: "", time: "", type: "Technical Round", mode: "Online" });
+  const [scheduleErrors, setScheduleErrors] = useState({});
+
+  const getTodayDateString = () => {
+    const d = new Date();
+    const year = d.getFullYear();
+    const month = String(d.getMonth() + 1).padStart(2, '0');
+    const day = String(d.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
+  };
+
+  const fieldStyle = {
+    "& .MuiOutlinedInput-root": {
+      color: "var(--color-paragraph)",
+      borderRadius: "var(--radius-sm)",
+      "& fieldset": { borderColor: "var(--color-border)" },
+      "&:hover fieldset": { borderColor: "var(--color-primary)" },
+      "&.Mui-focused fieldset": { borderColor: "var(--color-primary)" }
+    },
+    "& .MuiInputLabel-root": { color: "var(--color-paragraph)", opacity: 0.7 },
+    "& .MuiInputLabel-root.Mui-focused": { color: "var(--color-primary)", opacity: 1 },
+  };
   // ella datem fetch chaiyya back end eenu
   const fetchData = async (silent = false) => {
     try {
@@ -119,8 +143,8 @@ const CareerAdmin = () => {
       window.dispatchEvent(new Event('notificationUpdate'));
 
     } catch (error) {
-      console.error("Error loading dashboard data:", error);
-      if (!silent) toast.error("Failed to load real-time backend data.");
+      console.error("Error fetching data:", error);
+      toast.error("Failed to load dashboard data.");
     } finally {
       if (!silent) setLoading(false);
     }
@@ -128,11 +152,54 @@ const CareerAdmin = () => {
 
   useEffect(() => {
     fetchData();
+    const handleUpdate = () => fetchData(true);
+    window.addEventListener('notificationUpdate', handleUpdate);
+    window.addEventListener('appointmentsUpdated', handleUpdate);
+    window.addEventListener('talentUpdated', handleUpdate);
+    return () => {
+      window.removeEventListener('notificationUpdate', handleUpdate);
+      window.removeEventListener('appointmentsUpdated', handleUpdate);
+      window.removeEventListener('talentUpdated', handleUpdate);
+    };
   }, []);
 
 
+  const syncApplicationStatusToInterview = (email, newAppStatus) => {
+    const stored = localStorage.getItem('interviews');
+    if (!stored) return;
+    try {
+      let interviews = JSON.parse(stored);
+      let updated = false;
+      interviews = interviews.map(item => {
+        if (item.email === email) {
+          let newInterviewStatus = item.status;
+          if (newAppStatus === 'reviewed') {
+            newInterviewStatus = 'In Progress';
+          } else if (newAppStatus === 'rejected') {
+            newInterviewStatus = 'Cancelled';
+          } else if (newAppStatus === 'accepted') {
+            newInterviewStatus = 'Completed';
+          }
+          if (item.status !== newInterviewStatus) {
+            updated = true;
+            return { ...item, status: newInterviewStatus };
+          }
+        }
+        return item;
+      });
+      if (updated) {
+        localStorage.setItem('interviews', JSON.stringify(interviews));
+        window.dispatchEvent(new Event('interviewsUpdated'));
+      }
+    } catch (error) {
+      console.error("Error syncing status to interview:", error);
+    }
+  };
+
   const handleUpdateStatus = async (appId, newStatus) => {
     const previousApps = [...applications];
+    const targetApp = applications.find(a => a._id === appId);
+    const email = targetApp ? targetApp.email : null;
 
 
 
@@ -145,7 +212,12 @@ const CareerAdmin = () => {
     try {
       const response = await updateApplicationStatusAPI(appId, newStatus);
       if (response.status === 200 && response.data?.success) {
-        toast.success(`Application updated to: ${getStatusDetails(newStatus).label}`);
+        if (newStatus !== 'referred') {
+          toast.success(`Application updated to: ${getStatusDetails(newStatus).label}`);
+        }
+        if (email) {
+          syncApplicationStatusToInterview(email, newStatus);
+        }
 
 
 
@@ -171,33 +243,63 @@ const CareerAdmin = () => {
 
 
 
-  const handleReferToHR = async (appId) => {
-    const previousApps = [...applications];
+  const handleOpenScheduleModal = (app) => {
+    setSchedulingApp(app);
+    setScheduleForm({ date: "", time: "", type: "Technical Round", mode: "Online" });
+    setScheduleErrors({});
+    setOpenScheduleModal(true);
+  };
 
-    setApplications(prev =>
-      prev.map(app => (app._id === appId ? { ...app, status: 'referred' } : app))
-    );
-    window.dispatchEvent(new Event('notificationUpdate'));
-
-    try {
-      const response = await referApplicationAPI(appId);
-      if (response.status === 200 && response.data?.success) {
-        toast.success("Candidate referred to HR. Notification email triggered.");
-
-
-
-        fetchData(true);
-      } else {
-        setApplications(previousApps);
-        window.dispatchEvent(new Event('notificationUpdate'));
-        toast.error("Failed to refer candidate to HR.");
-      }
-    } catch (error) {
-      console.error("Failed to refer candidate:", error);
-      setApplications(previousApps);
-      window.dispatchEvent(new Event('notificationUpdate'));
-      toast.error("Failed to refer candidate to HR.");
+  const handleScheduleSubmit = async (e) => {
+    e.preventDefault();
+    const err = {};
+    if (!scheduleForm.date) err.date = "Date is required";
+    if (!scheduleForm.time) err.time = "Time is required";
+    if (scheduleForm.date && scheduleForm.date < getTodayDateString()) {
+      err.date = "Date cannot be in the past";
     }
+    if (Object.keys(err).length > 0) {
+      setScheduleErrors(err);
+      return;
+    }
+
+    const formattedDate = new Date(`${scheduleForm.date}T${scheduleForm.time}`).toLocaleDateString('en-US', {
+      day: 'numeric',
+      month: 'short',
+      year: 'numeric'
+    }) + " " + new Date(`${scheduleForm.date}T${scheduleForm.time}`).toLocaleTimeString('en-US', {
+      hour: '2-digit',
+      minute: '2-digit'
+    });
+
+    const newInterview = {
+      id: Date.now(),
+      name: schedulingApp.fullName,
+      email: schedulingApp.email,
+      position: schedulingApp.appliedPosition,
+      type: scheduleForm.type,
+      mode: scheduleForm.mode,
+      date: formattedDate,
+      status: 'Scheduled'
+    };
+
+    const stored = localStorage.getItem('interviews');
+    const initialInterviews = [
+      { id: 1, name: "Arjun Menon", email: "arjun.menon@email.com", position: "Frontend Developer", type: "Technical Round", mode: "Online", date: "12 Jun 2026 10:00 AM", status: "Scheduled" },
+      { id: 2, name: "Sneha Nair", email: "sneha.nair@email.com", position: "UI/UX Designer", type: "HR Round", mode: "Online", date: "12 Jun 2026 02:30 PM", status: "In Progress" },
+      { id: 3, name: "Vishnu Prasad", email: "vishnu.prasad@email.com", position: "Backend Developer", type: "Technical Round", mode: "Offline", date: "13 Jun 2026 11:00 AM", status: "Scheduled" },
+      { id: 4, name: "Aparna S", email: "aparna.s@email.com", position: "Product Manager", type: "Managerial Round", mode: "Offline", date: "14 Jun 2026 03:00 PM", status: "Completed" },
+      { id: 5, name: "Rahul Ramesh", email: "rahul.ramesh@email.com", position: "DevOps Engineer", type: "HR Round", mode: "Online", date: "14 Jun 2026 04:30 PM", status: "Cancelled" }
+    ];
+
+    const currentInterviews = stored ? JSON.parse(stored) : initialInterviews;
+    const updatedInterviews = [newInterview, ...currentInterviews];
+    localStorage.setItem('interviews', JSON.stringify(updatedInterviews));
+    window.dispatchEvent(new Event('interviewsUpdated'));
+
+    setOpenScheduleModal(false);
+    await handleUpdateStatus(schedulingApp._id, 'referred');
+    toast.success("Interview scheduled successfully and updated in Interviews tab!");
   };
 
   const handleDeleteApplication = async (appId) => {
@@ -367,13 +469,14 @@ const CareerAdmin = () => {
   const getStatusDetails = (status) => {
     switch (status) {
       case 'referred':
-        return { label: 'Referred to HR', className: 'bg-purple-500/20 text-purple-400 border border-purple-500/30' };
+        return { label: 'Interview Scheduled', className: 'bg-purple-500/20 text-purple-400 border border-purple-500/30' };
       case 'accepted':
-        return { label: 'Approved', className: 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30' };
+      case 'appointed':
+        return { label: 'Appointed', className: 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30' };
       case 'rejected':
         return { label: 'Rejected', className: 'bg-red-500/20 text-red-400 border border-red-500/30' };
       case 'reviewed':
-        return { label: 'Under Review', className: 'bg-yellow-500/20 text-yellow-400 border border-yellow-500/30' };
+        return { label: 'Under Review', className: 'bg-slate-100 text-slate-700 border border-slate-300/80' };
       case 'pending':
       default:
         return { label: 'New', className: 'bg-blue-500/20 text-blue-400 border border-blue-500/30' };
@@ -550,25 +653,32 @@ const CareerAdmin = () => {
   return (
     <div className="min-h-screen bg-sub flex flex-col" style={{ fontFamily: 'var(--font-primary)' }}>
       
-      {/* Top Header Section with flat white background spanning full-width */}
-      <div className="bg-white pt-24 pb-0 border-b border-[var(--color-border)] px-4 sm:px-8 md:px-16 lg:px-24">
-        <div className="max-w-6xl mx-auto">
-          {/* Header Row */}
-          <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 pb-6 mt-4">
-            <div className="text-left">
+      {/* Top Header Section with bg-main spanning full-width */}
+      <div className="bg-main pt-24 pb-6 border-b border-[var(--color-border)] px-8 md:px-16 lg:px-24">
+        <div className="max-w-[98%] mx-auto">
+          {/* Header Row - Styled exactly to match standard admin page titles */}
+          <div className="flex flex-col md:flex-row justify-between items-center mt-4 gap-4 w-full">
+            <div className="flex flex-col items-center md:items-start text-center md:text-left gap-1">
               <h1 className="text-2xl font-[var(--font-bold)] text-primary leading-none uppercase" style={{ margin: 0 }}>
                 CAREER & JOBS ADMIN
               </h1>
               <p className="text-xs text-[var(--color-black)] font-medium opacity-85 mt-2" style={{ margin: '6px 0 0 0', lineHeight: 1.3 }}>
-                Manage job listings, candidate profiles, and talent network.
+                Manage job listings, candidate profiles, and talent network
               </p>
             </div>
             
-            <div className="flex items-center gap-3 w-full sm:w-auto">
+            <div className="flex flex-wrap items-center justify-center md:justify-end gap-3 w-full md:w-auto">
               {/* Notifications Bell Button */}
               <div className="relative">
                 <button
-                  onClick={() => setShowNotifDropdown(!showNotifDropdown)}
+                  onClick={() => {
+                    const nextShow = !showNotifDropdown;
+                    setShowNotifDropdown(nextShow);
+                    if (nextShow) {
+                      setClearedNotificationsTime(new Date());
+                      setNotifPage(1);
+                    }
+                  }}
                   className="bg-white border border-[var(--color-primary)] text-[var(--color-primary)] hover:bg-[var(--color-primary)] hover:text-white p-1.5 rounded-[var(--radius-sm)] flex items-center justify-center transition cursor-pointer h-8 w-8 relative shrink-0 shadow-sm"
                   title="Notifications"
                 >
@@ -593,17 +703,6 @@ const CareerAdmin = () => {
                       >
                         <div className="flex justify-between items-center px-4 py-3 border-b border-[var(--color-border)] bg-[var(--color-sub-bg)]/20">
                           <span className="text-xs font-bold text-[var(--color-black)]">Recent Alerts</span>
-                          <button
-                            onClick={() => {
-                              setClearedNotificationsTime(new Date());
-                              setNotifPage(1);
-                              toast.success("All notifications marked as read");
-                              setShowNotifDropdown(false);
-                            }}
-                            className="text-[10px] text-[var(--color-primary)] hover:underline font-bold bg-transparent border-none cursor-pointer"
-                          >
-                            Mark all as read
-                          </button>
                         </div>
                         <div className="flex flex-col max-h-80 overflow-y-auto divide-y divide-[var(--color-border)]">
                           {recentNotifications.length === 0 ? (
@@ -760,11 +859,12 @@ const CareerAdmin = () => {
                   {/* Table view for desktop / tablet */}
                   <table className="w-full text-left border-collapse table-fixed hidden md:table">
                     <thead>
-                      <tr className="border-b border-[var(--color-border)] text-[var(--color-heading)] text-xs font-normal uppercase tracking-wider">
-                        <th className="pb-3 pr-2 font-normal w-[32%]">Candidate & Position</th>
-                        <th className="pb-3 px-2 font-normal w-[14%] text-center">Applied On</th>
-                        <th className="pb-3 px-2 font-normal w-[14%] text-center">Status</th>
-                        <th className="pb-3 px-2 font-normal text-center w-[40%]">Action</th>
+                      <tr className="border-b border-[var(--color-border)] text-primary text-xs font-normal uppercase tracking-wider">
+                        <th className="pb-3 px-6 font-normal w-[25%]" style={{ fontWeight: 'normal' }}>Candidate</th>
+                        <th className="pb-3 px-6 font-normal w-[20%]" style={{ fontWeight: 'normal' }}>Position</th>
+                        <th className="pb-3 px-6 font-normal w-[15%] text-center" style={{ fontWeight: 'normal' }}>Applied On</th>
+                        <th className="pb-3 px-6 font-normal w-[20%] text-center" style={{ fontWeight: 'normal' }}>Status</th>
+                        <th className="pb-3 px-6 font-normal text-center w-[20%]" style={{ fontWeight: 'normal' }}>Action</th>
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-[var(--color-border)] text-sm">
@@ -775,14 +875,11 @@ const CareerAdmin = () => {
                         return (
                           <tr key={app._id} className="hover:bg-[var(--color-sub-bg)]/40 transition-colors">
 
-                            <td className="py-3 pr-2 w-[32%]">
+                            <td className="py-3 px-6 w-[25%] text-left">
                               <div className="flex items-center gap-2">
                                 <div className="min-w-0">
                                   <p style={{ fontSize: 'var(--text-small)', fontWeight: 'var(--font-semibold)', color: 'var(--color-black)', margin: 0 }} className="truncate">
                                     {app.fullName}
-                                  </p>
-                                  <p style={{ fontSize: 'var(--text-caption)', fontWeight: 'var(--font-medium)', color: 'var(--color-primary)', margin: '1px 0 0 0' }} className="truncate">
-                                    {app.appliedPosition}
                                   </p>
                                   <p style={{ fontSize: 'var(--text-caption)', color: 'var(--color-paragraph)', opacity: 0.7, margin: '1px 0 0 0' }} className="truncate">
                                     {app.email}
@@ -801,16 +898,18 @@ const CareerAdmin = () => {
                               </div>
                             </td>
 
-                            <td className="py-3 px-2 text-[var(--color-black)] w-[14%] text-center text-xs">{appliedDate}</td>
+                            <td className="py-3 px-6 text-[var(--color-black)] w-[20%] text-left text-xs font-semibold">{app.appliedPosition}</td>
 
-                            <td className="py-3 px-2 w-[14%] text-center">
-                              <span className={`px-2 py-0.5 rounded-full text-[10px] font-semibold ${statusObj.className}`}>
+                            <td className="py-3 px-6 text-[var(--color-black)] w-[15%] text-center text-xs">{appliedDate}</td>
+
+                            <td className="py-3 px-6 w-[20%] text-center">
+                              <span className={`px-2.5 py-1 rounded-full text-[10px] font-semibold whitespace-nowrap ${statusObj.className}`}>
                                 {statusObj.label}
                               </span>
                             </td>
 
-                            <td className="py-3 px-2 text-center w-[40%] whitespace-nowrap">
-                              <div className="flex items-center justify-center gap-1.5">
+                            <td className="py-3 px-6 text-center w-[20%] whitespace-nowrap">
+                              <div className="flex items-center justify-center gap-2">
                                 <button
                                   onClick={() => handleViewApplication(app)}
                                   className="w-7 h-7 flex items-center justify-center transition-colors cursor-pointer border border-[var(--color-border)] bg-[var(--color-main-bg)] text-[var(--color-paragraph)] opacity-70 hover:opacity-100"
@@ -819,46 +918,27 @@ const CareerAdmin = () => {
                                 >
                                   <VisibilityIcon fontSize="small" style={{ fontSize: 16 }} />
                                 </button>
-                                <button
-                                  onClick={() => handleUpdateStatus(app._id, 'reviewed')}
-                                  className="w-7 h-7 flex items-center justify-center transition-colors cursor-pointer border border-yellow-500/20 bg-yellow-500/5 text-yellow-600 hover:bg-yellow-500/10"
-                                  style={{ borderRadius: 'var(--radius-sm)' }}
-                                  title="Move to Under Review"
+
+                                <select
+                                  value=""
+                                  disabled={app.status === 'appointed'}
+                                  onChange={(e) => {
+                                    const val = e.target.value;
+                                    if (val === 'reviewed') {
+                                      handleUpdateStatus(app._id, 'reviewed');
+                                    } else if (val === 'schedule') {
+                                      handleOpenScheduleModal(app);
+                                    } else if (val === 'rejected') {
+                                      handleUpdateStatus(app._id, 'rejected');
+                                    }
+                                  }}
+                                  className="bg-white text-black rounded-[var(--radius-sm)] px-2 py-1 border border-gray-300 focus:outline-none focus:ring-1 focus:ring-[var(--color-primary)] text-xs h-7 cursor-pointer font-medium disabled:opacity-50 disabled:cursor-not-allowed"
                                 >
-                                  <SendIcon fontSize="small" style={{ transform: 'rotate(-45deg)', fontSize: 16 }} />
-                                </button>
-                                <button
-                                  onClick={() => handleReferToHR(app._id)}
-                                  className="w-7 h-7 flex items-center justify-center transition-colors cursor-pointer border border-purple-500/20 bg-purple-500/5 text-purple-600 hover:bg-purple-500/10"
-                                  style={{ borderRadius: 'var(--radius-sm)' }}
-                                  title="Refer to HR (Triggers Mail)"
-                                >
-                                  <SendIcon fontSize="small" style={{ fontSize: 16 }} />
-                                </button>
-                                <button
-                                  onClick={() => handleUpdateStatus(app._id, 'accepted')}
-                                  className="w-7 h-7 flex items-center justify-center transition-colors cursor-pointer border border-emerald-500/20 bg-emerald-500/5 text-emerald-600 hover:bg-emerald-500/10"
-                                  style={{ borderRadius: 'var(--radius-sm)' }}
-                                  title="Approve Profile"
-                                >
-                                  <CheckIcon fontSize="small" style={{ fontSize: 16 }} />
-                                </button>
-                                <button
-                                  onClick={() => handleUpdateStatus(app._id, 'rejected')}
-                                  className="w-7 h-7 flex items-center justify-center transition-colors cursor-pointer border border-red-500/20 bg-red-500/5 text-red-600 hover:bg-red-500/10"
-                                  style={{ borderRadius: 'var(--radius-sm)' }}
-                                  title="Reject Application"
-                                >
-                                  <CloseIcon fontSize="small" style={{ fontSize: 16 }} />
-                                </button>
-                                <button
-                                  onClick={() => handleDeleteApplication(app._id)}
-                                  className="w-7 h-7 flex items-center justify-center transition-colors cursor-pointer border border-[var(--color-primary)] bg-[var(--color-primary)] hover:bg-[var(--color-primary-hover)] text-white"
-                                  style={{ borderRadius: 'var(--radius-sm)' }}
-                                  title="Delete Application"
-                                >
-                                  <DeleteIcon fontSize="small" style={{ fontSize: 16 }} />
-                                </button>
+                                  <option value="" disabled hidden>Action</option>
+                                  <option value="reviewed" disabled={app.status === 'reviewed'}>Move to Under Review</option>
+                                  <option value="schedule" disabled={app.status === 'referred'}>Schedule Interview</option>
+                                  <option value="rejected">Not Fit</option>
+                                </select>
                               </div>
                             </td>
                           </tr>
@@ -917,46 +997,27 @@ const CareerAdmin = () => {
                             >
                               <VisibilityIcon fontSize="small" />
                             </button>
-                            <button
-                              onClick={() => handleUpdateStatus(app._id, 'reviewed')}
-                              className="w-10 h-10 flex items-center justify-center transition-colors cursor-pointer border border-yellow-500/20 bg-yellow-500/5 text-yellow-600 hover:bg-yellow-500/10"
-                              style={{ borderRadius: 'var(--radius-sm)' }}
-                              title="Move to Under Review"
+
+                             <select
+                              value=""
+                              disabled={app.status === 'appointed'}
+                              onChange={(e) => {
+                                const val = e.target.value;
+                                if (val === 'reviewed') {
+                                  handleUpdateStatus(app._id, 'reviewed');
+                                } else if (val === 'schedule') {
+                                  handleOpenScheduleModal(app);
+                                } else if (val === 'rejected') {
+                                  handleUpdateStatus(app._id, 'rejected');
+                                }
+                              }}
+                              className="bg-white text-black rounded-[var(--radius-sm)] px-3 py-1.5 border border-gray-300 focus:outline-none focus:ring-1 focus:ring-[var(--color-primary)] text-xs h-10 cursor-pointer font-semibold disabled:opacity-50 disabled:cursor-not-allowed"
                             >
-                              <SendIcon fontSize="small" style={{ transform: 'rotate(-45deg)' }} />
-                            </button>
-                            <button
-                              onClick={() => handleReferToHR(app._id)}
-                              className="w-10 h-10 flex items-center justify-center transition-colors cursor-pointer border border-purple-500/20 bg-purple-500/5 text-purple-600 hover:bg-purple-500/10"
-                              style={{ borderRadius: 'var(--radius-sm)' }}
-                              title="Refer to HR"
-                            >
-                              <SendIcon fontSize="small" />
-                            </button>
-                            <button
-                              onClick={() => handleUpdateStatus(app._id, 'accepted')}
-                              className="w-10 h-10 flex items-center justify-center transition-colors cursor-pointer border border-emerald-500/20 bg-emerald-500/5 text-emerald-600 hover:bg-emerald-500/10"
-                              style={{ borderRadius: 'var(--radius-sm)' }}
-                              title="Approve Profile"
-                            >
-                              <CheckIcon fontSize="small" />
-                            </button>
-                            <button
-                              onClick={() => handleUpdateStatus(app._id, 'rejected')}
-                              className="w-10 h-10 flex items-center justify-center transition-colors cursor-pointer border border-red-500/20 bg-red-500/5 text-red-600 hover:bg-red-500/10"
-                              style={{ borderRadius: 'var(--radius-sm)' }}
-                              title="Reject Application"
-                            >
-                              <CloseIcon fontSize="small" />
-                            </button>
-                            <button
-                              onClick={() => handleDeleteApplication(app._id)}
-                              className="w-10 h-10 flex items-center justify-center transition-colors cursor-pointer border border-red-500/20 bg-red-500/5 text-red-600 hover:bg-red-500/10"
-                              style={{ borderRadius: 'var(--radius-sm)' }}
-                              title="Delete Application"
-                            >
-                              <DeleteIcon fontSize="small" />
-                            </button>
+                              <option value="" disabled hidden>Action</option>
+                              <option value="reviewed" disabled={app.status === 'reviewed'}>Move to Under Review</option>
+                              <option value="schedule" disabled={app.status === 'referred'}>Schedule Interview</option>
+                              <option value="rejected">Not Fit</option>
+                            </select>
                           </div>
                         </div>
                       );
@@ -1062,12 +1123,12 @@ const CareerAdmin = () => {
                   <div className="hidden md:block overflow-x-auto">
                     <table className="w-full text-left border-collapse min-w-[750px]">
                       <thead>
-                        <tr className="border-b border-[var(--color-border)] text-[var(--color-heading)] text-xs font-normal uppercase tracking-wider">
-                          <th className="pb-3 px-6 font-normal">Candidate</th>
-                          <th className="pb-3 px-6 font-normal">Mobile</th>
-                          <th className="pb-3 px-6 font-normal">Category</th>
-                          <th className="pb-3 px-6 font-normal">Submitted On</th>
-                          <th className="pb-3 px-6 font-normal text-center">Resume</th>
+                        <tr className="border-b border-[var(--color-border)] text-primary text-xs font-normal uppercase tracking-wider">
+                          <th className="pb-3 px-6 font-normal" style={{ fontWeight: 'normal' }}>Candidate</th>
+                          <th className="pb-3 px-6 font-normal" style={{ fontWeight: 'normal' }}>Mobile</th>
+                          <th className="pb-3 px-6 font-normal" style={{ fontWeight: 'normal' }}>Category</th>
+                          <th className="pb-3 px-6 font-normal" style={{ fontWeight: 'normal' }}>Submitted On</th>
+                          <th className="pb-3 px-6 font-normal text-center" style={{ fontWeight: 'normal' }}>Resume</th>
                         </tr>
                       </thead>
                       <tbody className="divide-y divide-[var(--color-border)] text-sm">
@@ -1228,13 +1289,13 @@ const CareerAdmin = () => {
                   <div className="hidden md:block overflow-x-auto">
                     <table className="w-full text-left border-collapse min-w-[750px]">
                       <thead>
-                        <tr className="border-b border-[var(--color-border)] text-[var(--color-heading)] text-xs font-normal uppercase tracking-wider">
-                          <th className="pb-4 px-6 font-normal">Job Title</th>
-                          <th className="pb-4 px-6 font-normal">Department</th>
-                          <th className="pb-4 px-6 font-normal">Location</th>
-                          <th className="pb-4 px-6 font-normal text-center">Apps</th>
-                          <th className="pb-4 px-6 font-normal text-center">Status</th>
-                          <th className="pb-4 px-6 font-normal text-center">Actions</th>
+                        <tr className="border-b border-[var(--color-border)] text-primary text-xs font-normal uppercase tracking-wider">
+                          <th className="pb-4 px-6 font-normal" style={{ fontWeight: 'normal' }}>Job Title</th>
+                          <th className="pb-4 px-6 font-normal" style={{ fontWeight: 'normal' }}>Department</th>
+                          <th className="pb-4 px-6 font-normal" style={{ fontWeight: 'normal' }}>Location</th>
+                          <th className="pb-4 px-6 font-normal text-center" style={{ fontWeight: 'normal' }}>Apps</th>
+                          <th className="pb-4 px-6 font-normal text-center" style={{ fontWeight: 'normal' }}>Status</th>
+                          <th className="pb-4 px-6 font-normal text-center" style={{ fontWeight: 'normal' }}>Actions</th>
                         </tr>
                       </thead>
                       <tbody className="divide-y divide-[var(--color-border)] text-sm">
@@ -1652,7 +1713,7 @@ const CareerAdmin = () => {
               </Button>
 
               <Button
-                onClick={() => { handleReferToHR(selectedApp._id); setOpenAppModal(false); }}
+                onClick={() => { handleOpenScheduleModal(selectedApp); setOpenAppModal(false); }}
                 variant="outlined"
                 sx={{
                   color: "var(--color-primary)",
@@ -1665,7 +1726,7 @@ const CareerAdmin = () => {
                   "&:hover": { borderColor: "var(--color-primary)", background: "var(--color-sub-bg)" }
                 }}
               >
-                Refer to HR
+                Schedule Interview
               </Button>
 
               <Button
@@ -1881,6 +1942,107 @@ const CareerAdmin = () => {
           </div>,
           document.body
         )}
+
+      {/* Schedule Interview Dialog */}
+      <Dialog
+        open={openScheduleModal}
+        onClose={() => setOpenScheduleModal(false)}
+        maxWidth="xs"
+        fullWidth
+        sx={{
+          "& .MuiDialog-container": { backgroundColor: "rgba(10,15,30,0.7)", backdropFilter: "blur(8px)" },
+          "& .MuiDialog-paper": {
+            background: "var(--color-main-bg) !important",
+            color: "var(--color-paragraph) !important",
+            border: "1px solid var(--color-border)",
+            borderRadius: "var(--radius-sm)",
+            maxWidth: "440px"
+          }
+        }}
+      >
+        <DialogTitle component="div" sx={{ textAlign: "center", pt: 3.5, pb: 1, px: 3 }}>
+          <h2 className="text-xl font-bold text-[var(--color-black)] mb-1">Schedule Interview</h2>
+          <p className="text-xs text-[var(--color-paragraph)] opacity-80 leading-normal">
+            Schedule an interview for <span className="font-semibold text-black">{schedulingApp?.fullName}</span>
+          </p>
+        </DialogTitle>
+        <DialogContent sx={{ px: 3, pb: 1.5, pt: 0.5 }}>
+          <form onSubmit={handleScheduleSubmit} noValidate>
+            <div className="flex flex-col gap-4 mt-2">
+              <div>
+                <TextField
+                  select fullWidth size="small" label="Interview Type" name="type"
+                  value={scheduleForm.type}
+                  onChange={(e) => setScheduleForm(prev => ({ ...prev, type: e.target.value }))}
+                  sx={fieldStyle}
+                >
+                  <MenuItem value="Technical Round">Technical Round</MenuItem>
+                  <MenuItem value="HR Round">HR Round</MenuItem>
+                  <MenuItem value="Managerial Round">Managerial Round</MenuItem>
+                </TextField>
+              </div>
+              <div>
+                <TextField
+                  select fullWidth size="small" label="Interview Mode" name="mode"
+                  value={scheduleForm.mode}
+                  onChange={(e) => setScheduleForm(prev => ({ ...prev, mode: e.target.value }))}
+                  sx={fieldStyle}
+                >
+                  <MenuItem value="Online">Online</MenuItem>
+                  <MenuItem value="Offline">Offline</MenuItem>
+                </TextField>
+              </div>
+              <div className="grid grid-cols-2 gap-3 mt-1">
+                <div className="flex flex-col gap-1 text-left">
+                  <label className="text-[10px] text-[var(--color-paragraph)] font-semibold uppercase opacity-75">Date</label>
+                  <input
+                    type="date"
+                    name="date"
+                    min={getTodayDateString()}
+                    value={scheduleForm.date}
+                    onChange={(e) => {
+                      setScheduleForm(prev => ({ ...prev, date: e.target.value }));
+                      if (scheduleErrors.date) setScheduleErrors(prev => ({ ...prev, date: "" }));
+                    }}
+                    className="w-full bg-white text-black rounded-[var(--radius-sm)] px-3 py-1.5 border border-gray-300 focus:outline-none focus:ring-1 focus:ring-[var(--color-primary)] text-xs h-9"
+                  />
+                  {scheduleErrors.date && <p className="text-red-500 text-[10px] mt-0.5">{scheduleErrors.date}</p>}
+                </div>
+                <div className="flex flex-col gap-1 text-left">
+                  <label className="text-[10px] text-[var(--color-paragraph)] font-semibold uppercase opacity-75">Time</label>
+                  <input
+                    type="time"
+                    name="time"
+                    value={scheduleForm.time}
+                    onChange={(e) => {
+                      setScheduleForm(prev => ({ ...prev, time: e.target.value }));
+                      if (scheduleErrors.time) setScheduleErrors(prev => ({ ...prev, time: "" }));
+                    }}
+                    className="w-full bg-white text-black rounded-[var(--radius-sm)] px-3 py-1.5 border border-gray-300 focus:outline-none focus:ring-1 focus:ring-[var(--color-primary)] text-xs h-9"
+                  />
+                  {scheduleErrors.time && <p className="text-red-500 text-[10px] mt-0.5">{scheduleErrors.time}</p>}
+                </div>
+              </div>
+            </div>
+          </form>
+        </DialogContent>
+        <DialogActions sx={{ px: 3, pb: 3.5, pt: 1, justifyContent: "flex-end", gap: 1.5 }}>
+          <button
+            type="button"
+            onClick={() => setOpenScheduleModal(false)}
+            className="bg-white border border-[var(--color-border)] hover:bg-slate-50 text-[var(--color-paragraph)] px-4 py-1.5 rounded-[var(--radius-sm)] cursor-pointer text-xs font-semibold transition-colors h-9"
+          >
+            Cancel
+          </button>
+          <button
+            type="button"
+            onClick={handleScheduleSubmit}
+            className="btn px-4 py-1.5 cursor-pointer border-none rounded-[var(--radius-sm)] text-xs font-semibold h-9"
+          >
+            Submit Schedule
+          </button>
+        </DialogActions>
+      </Dialog>
     </div>
   );
 };
