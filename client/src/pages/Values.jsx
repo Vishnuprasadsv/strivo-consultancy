@@ -345,7 +345,7 @@ const Values = () => {
                     variants={cardVariants}
                     whileHover={{ y: -8 }}
                     key={pillar.id}
-                    className="group relative overflow-hidden flex flex-col h-full cursor-pointer bg-main p-5 rounded-lg border border-black/5 shadow-sm transition-all duration-300 ease-out hover:shadow-md"
+                    className="group relative overflow-hidden flex flex-col h-full cursor-pointer bg-main p-5 card border border-black/5 shadow-sm transition-all duration-300 ease-out hover:shadow-md"
                   >
                     <div className="overflow-hidden rounded h-auto sm:h-[220px] mb-5 w-full bg-neutral-100 flex items-center justify-center">
                       <img

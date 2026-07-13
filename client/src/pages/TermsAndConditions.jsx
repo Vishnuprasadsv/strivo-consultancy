@@ -18,9 +18,9 @@ const TermsAndConditions = () => {
         <div className="min-h-screen text-[var(--color-pure-black)]">
 
             {/* Hero */}
-            <section className="pt-32 pb-16 px-6 bg-main">
+            <section className="pt-15 pb-16 px-6 bg-main">
                 <motion.div initial="hidden" animate="visible" variants={fadeUp} className="max-w-6xl mx-auto text-center">
-                    <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-blue-600/10 border border-blue-500/20 text-blue-400 mb-6">
+                    <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-blue-600/10 border border-var(--color-primary) text-var(--color-primary) mb-6">
                         <GavelIcon fontSize="small" />
                         Terms & Conditions
                     </div>
@@ -39,9 +39,9 @@ const TermsAndConditions = () => {
             <section className="pb-24 px-6 bg-sub p-8">
                 <div className="max-w-5xl mx-auto space-y-6">
 
-                    <motion.div variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true }} className="card border border-gray-200 rounded-2xl p-8">
+                    <motion.div variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true }} className="card border border-gray-200 bg-main p-8">
                         <div className="flex items-center gap-3 mb-5">
-                            <InfoIcon className="text-blue-500" />
+                            <InfoIcon className="text-[var(--color-primary)]" />
                             <h2 className="sub-heading">1. Introduction</h2>
                         </div>
                         <p className="paragraph leading-8">
@@ -49,9 +49,9 @@ const TermsAndConditions = () => {
                         </p>
                     </motion.div>
 
-                    <motion.div variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true }} className="card border border-gray-200 rounded-2xl p-8">
+                    <motion.div variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true }} className="card border border-gray-200 bg-main p-8">
                         <div className="flex items-center gap-3 mb-5">
-                            <AccountBalanceIcon className="text-blue-500" />
+                            <AccountBalanceIcon className="text-[var(--color-primary)]" />
                             <h2 className="sub-heading">2. Intellectual Property</h2>
                         </div>
                         <p className="paragraph leading-8">
@@ -64,9 +64,9 @@ const TermsAndConditions = () => {
                         </ul>
                     </motion.div>
 
-                    <motion.div variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true }} className="card border border-gray-200 rounded-2xl p-8">
+                    <motion.div variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true }} className="card border border-gray-200 bg-main p-8">
                         <div className="flex items-center gap-3 mb-5">
-                            <PolicyIcon className="text-blue-500" />
+                            <PolicyIcon className="text-[var(--color-primary)]" />
                             <h2 className="sub-heading">3. Limitation of Liability</h2>
                         </div>
                         <p className="paragraph leading-8">
@@ -74,10 +74,10 @@ const TermsAndConditions = () => {
                         </p>
                     </motion.div>
 
-                    <motion.div variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true }} className="card border border-gray-200 rounded-2xl p-8">
+                    <motion.div variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true }} className="card border border-gray-200 bg-main p-8">
                         <h2 className="sub-heading mb-4">Questions?</h2>
                         <p className="paragraph leading-7">If you have any questions regarding these Terms, our team will be happy to assist you.</p>
-                        <a href="mailto:strivoc@gmail.com" className="inline-block mt-5 text-blue-600 font-semibold hover:text-blue-700 transition">strivoc@gmail.com</a>
+                        <a href="mailto:strivoc@gmail.com" className="inline-block mt-5 text-[var(--color-primary)] font-semibold hover:text-[var(--color-primary-hover)] transition">strivoc@gmail.com</a>
                     </motion.div>
 
                 </div>
