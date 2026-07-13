@@ -363,17 +363,20 @@ const Digital = () => {
         </motion.section>
       </div>
 
-      {/* Section 4: Digital Methodology Framework */}
-      <div className="max-w-[1440px] mx-auto px-4 md:px-12 lg:px-[180px]">
-        <motion.section
-          initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.1 }} variants={fadeUpVariants}
-          className="w-full bg-sub py-6 md:py-12"
-        >
-          <div className="text-center">
-            <span className="pre-heading inline-block px-3 py-1 rounded-full bg-white border border-[#374151] uppercase tracking-[3px] mb-4">4-Step Digital Process</span>
+     {/* Strategic Framework Section */}
+<div className="w-full bg-main py-6 md:py-12">
+  <div className="max-w-[1440px] mx-auto px-4 md:px-12 lg:px-[180px]">
+    <motion.section
+      initial="hidden"
+      whileInView="visible"
+      viewport={{ once: true, amount: 0.1 }}
+      variants={fadeUpVariants}
+    >
+      <div className="text-center">
+        <span className="pre-heading inline-block px-3 py-1 rounded-full bg-white border border-[#374151] uppercase tracking-[3px] mb-4">4-Step Digital Process</span>
             <h2 className="sub-heading mb-16">Digital Methodology</h2>
             <div className="relative flex flex-col lg:flex-row gap-6 isolate">
-              <div className="hidden lg:block absolute top-[48px] left-[10%] right-[10%] h-[2px] bg-[var(--color-primary)] z-0" />
+          <div className="hidden lg:block absolute top-[48px] left-[10%] right-[10%] h-[2px] bg-[var(--color-primary)] z-0" />
 
               {[
                 { num: 1, title: 'Digital Audit', items: ['Current-state assessment', 'Capability mapping', 'Opportunity prioritization'] },
@@ -381,10 +384,10 @@ const Digital = () => {
                 { num: 3, title: 'Implementation', items: ['Platform rollout', 'Change enablement', 'Team training'] },
                 { num: 4, title: 'Optimization', items: ['Performance measurement', 'Innovation tracking', 'Continuous improvement'] }
               ].map((step) => (
-                <div
-                  key={step.num}
-                  className="card flex-1 min-h-[340px] h-full flex flex-col justify-between relative z-20 bg-main p-6 border border-gray-100 transition-all duration-200 text-left hover:-translate-y-1 hover:shadow-lg"
-                >
+                 <div
+              key={step.num}
+              className="card flex-1 min-h-[340px] h-full flex flex-col justify-between relative z-20 bg-sub p-6 border border-gray-100 transition-all duration-200 text-left hover:-translate-y-1 hover:shadow-lg"
+            >
                   <div>
                     <div className="w-12 h-12 rounded-full bg-[var(--color-primary)] text-white flex items-center justify-center text-xl font-semibold mb-6 shadow-sm">
                       {step.num}
@@ -402,12 +405,13 @@ const Digital = () => {
                       </li>
                     ))}
                   </ul>
-                </div>
-              ))}
-            </div>
-          </div>
-        </motion.section>
+                 </div>
+          ))}
+        </div>
       </div>
+    </motion.section>
+  </div>
+</div>
 
       {/* Section 8: Final Conversion Banner */}
       <div className="max-w-[1440px] mx-auto px-4 md:px-12 lg:px-[180px]">
