@@ -13,12 +13,21 @@ const Login = () => {
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [errors, setErrors] = useState({});
   const navigate = useNavigate();
 
   const handleLogin = async (e) => {
     e.preventDefault();
-    if (!username || !password) {
-      toast.error('Please enter both username and password.');
+    const newErrors = {};
+    if (!username.trim()) {
+      newErrors.username = 'Username is required.';
+    }
+    if (!password) {
+      newErrors.password = 'Password is required.';
+    }
+
+    setErrors(newErrors);
+    if (Object.keys(newErrors).length > 0) {
       return;
     }
 
@@ -103,6 +112,11 @@ const Login = () => {
                 className="input placeholder:text-[var(--color-paragraph)] placeholder:opacity-40 transition-all"
                 style={inputStyle}
               />
+              {errors.username && (
+                <p className="text-red-500 text-[10px] mt-0.5 text-left font-semibold">
+                  {errors.username}
+                </p>
+              )}
             </div>
           </div>
 
@@ -130,6 +144,11 @@ const Login = () => {
                 {showPassword ? <VisibilityOff fontSize="small" /> : <Visibility fontSize="small" />}
               </button>
             </div>
+            {errors.password && (
+              <p className="text-red-500 text-[10px] mt-0.5 text-left font-semibold">
+                {errors.password}
+              </p>
+            )}
             <div className="flex justify-end pt-0.5">
               <Link
                 to="/admin/forgot-password"

@@ -49,14 +49,16 @@
 }
 
 .btn-text-custom {
-  font-size: 12px !important;
-  font-weight: 400 !important;
+  font-family: var(--font-primary) !important;
+  font-size: 11px !important;
+  font-weight: 500 !important;
   color: #ffffff !important;
   display: inline-flex !important;
   align-items: center !important;
   justify-content: center !important;
   height: 28px !important;
   width: 75px !important;
+  letter-spacing: 0.5px !important;
 }
 
 .status-badge-custom {

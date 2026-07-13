@@ -21,6 +21,7 @@ const Register = () => {
   const [role, setRole] = useState('Admin');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
+  const [errors, setErrors] = useState({});
 
   // Password visibility states
   const [showPassword, setShowPassword] = useState(false);
@@ -36,29 +37,36 @@ const Register = () => {
   const handleRegister = async (e) => {
     e.preventDefault();
 
-    // Field verification - ensure all inputs are provided
-    if (!username || !email || !password || !confirmPassword || !role) {
-      toast.error('Please fill in all the required fields.', { icon: null });
-      return;
+    const newErrors = {};
+    if (!username.trim()) {
+      newErrors.username = 'Username is required.';
+    }
+    if (!email.trim()) {
+      newErrors.email = 'Email address is required.';
+    }
+    if (!password) {
+      newErrors.password = 'Password is required.';
+    }
+    if (!confirmPassword) {
+      newErrors.confirmPassword = 'Confirm password is required.';
     }
 
-    // Password validation criteria check
-    const minLength = password.length >= 8;
-    const hasUpper = /[A-Z]/.test(password);
-    const hasLower = /[a-z]/.test(password);
-    const hasNumber = /[0-9]/.test(password);
-    const hasSpecial = /[!@#$%^&*(),.?":{}|<>]/.test(password);
+    if (password && confirmPassword) {
+      const minLength = password.length >= 8;
+      const hasUpper = /[A-Z]/.test(password);
+      const hasLower = /[a-z]/.test(password);
+      const hasNumber = /[0-9]/.test(password);
+      const hasSpecial = /[!@#$%^&*(),.?":{}|<>]/.test(password);
 
-    if (!(minLength && hasUpper && hasLower && hasNumber && hasSpecial)) {
-      setPassword('');
-      setConfirmPassword('');
-      toast.error('Password must be at least 8 characters, with one uppercase, one lowercase, one special character, and one number.', { icon: null });
-      return;
+      if (!(minLength && hasUpper && hasLower && hasNumber && hasSpecial)) {
+        newErrors.password = 'Password must be at least 8 characters, with one uppercase, one lowercase, one special character, and one number.';
+      } else if (password !== confirmPassword) {
+        newErrors.confirmPassword = 'Passwords do not match. Please verify.';
+      }
     }
 
-    // Check if password and confirm password match
-    if (password !== confirmPassword) {
-      toast.error('Passwords do not match. Please verify.', { icon: null });
+    setErrors(newErrors);
+    if (Object.keys(newErrors).length > 0) {
       return;
     }
 
@@ -78,7 +86,7 @@ const Register = () => {
 
       // On successful registration:
       toast.success(response.data.message || 'Registration successful! Please login.', { icon: null });
-      
+
       // Automatically switch to login page
       navigate('/admin/login');
     } catch (error) {
@@ -112,7 +120,7 @@ const Register = () => {
         {/* Header with primary BG color */}
         <div className="bg-[var(--color-primary)] py-2.5 px-6 text-center rounded-t-[var(--radius-sm)]">
           <h2 className="text-sm font-bold text-white uppercase tracking-wider m-0">
-            Create Account
+            REGISTER
           </h2>
         </div>
 
@@ -131,13 +139,17 @@ const Register = () => {
               </label>
               <input
                 type="text"
-                required
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
                 placeholder="Enter username"
                 className="input placeholder:text-[var(--color-paragraph)] placeholder:opacity-40 transition-all w-full bg-[var(--color-sub-bg)] border border-[var(--color-border)] rounded-[var(--radius-sm)]"
                 style={inputStyle}
               />
+              {errors.username && (
+                <p className="text-red-500 text-[10px] mt-0.5 text-left font-semibold">
+                  {errors.username}
+                </p>
+              )}
             </div>
 
             {/* Email Field */}
@@ -147,13 +159,17 @@ const Register = () => {
               </label>
               <input
                 type="email"
-                required
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="user@strivo.com"
                 className="input placeholder:text-[var(--color-paragraph)] placeholder:opacity-40 transition-all w-full bg-[var(--color-sub-bg)] border border-[var(--color-border)] rounded-[var(--radius-sm)]"
                 style={inputStyle}
               />
+              {errors.email && (
+                <p className="text-red-500 text-[10px] mt-0.5 text-left font-semibold">
+                  {errors.email}
+                </p>
+              )}
             </div>
 
             {/* Role Field */}
@@ -180,7 +196,6 @@ const Register = () => {
               <div className="relative">
                 <input
                   type={showPassword ? 'text' : 'password'}
-                  required
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   onFocus={() => setShowRequirements(true)}
@@ -214,6 +229,11 @@ const Register = () => {
                   </div>
                 )}
               </div>
+              {errors.password && (
+                <p className="text-red-500 text-[10px] mt-0.5 text-left font-semibold">
+                  {errors.password}
+                </p>
+              )}
             </div>
 
             {/* Confirm Password Field */}
@@ -224,7 +244,6 @@ const Register = () => {
               <div className="relative">
                 <input
                   type={showConfirmPassword ? 'text' : 'password'}
-                  required
                   value={confirmPassword}
                   onChange={(e) => setConfirmPassword(e.target.value)}
                   placeholder="••••••••"
@@ -240,6 +259,11 @@ const Register = () => {
                   {showConfirmPassword ? <VisibilityOff fontSize="small" /> : <Visibility fontSize="small" />}
                 </button>
               </div>
+              {errors.confirmPassword && (
+                <p className="text-red-500 text-[10px] mt-0.5 text-left font-semibold">
+                  {errors.confirmPassword}
+                </p>
+              )}
             </div>
 
             {/* Register Button */}

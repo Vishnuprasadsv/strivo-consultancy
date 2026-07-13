@@ -178,43 +178,52 @@ export const updateInquiryStatus = async (req, res) => {
 };
 export const sendReply = async (req, res) => {
     try {
-        const { email, subject, message } = req.body;
+        const { email, subject, message, inquiryId } = req.body;
 
-        const transporter = nodemailer.createTransport({
-            host: "smtp.gmail.com",
-  port: 587,
-  secure: false,
-      tls: { rejectUnauthorized: false },
-      family: 4,
-            auth: {
-                user: process.env.EMAIL,
-                pass: process.env.EMAIL_PASSWORD,
-            },
-        });
+        if (process.env.EMAIL && process.env.EMAIL_PASSWORD) {
+            const transporter = nodemailer.createTransport({
+                host: "smtp.gmail.com",
+                port: 587,
+                secure: false,
+                tls: { rejectUnauthorized: false },
+                family: 4,
+                auth: {
+                    user: process.env.EMAIL,
+                    pass: process.env.EMAIL_PASSWORD,
+                },
+            });
 
-        await transporter.sendMail({
-            from: `"Strivo Consultancy" <${process.env.EMAIL}>`,
-            to: email,
-            subject,
-            html: `
-                <div style="font-family:Arial;padding:20px">
-                    <h2 style="color:#2563eb">
-                        Strivo Consultancy
-                    </h2>
+            await transporter.sendMail({
+                from: `"Strivo Consultancy" <${process.env.EMAIL}>`,
+                to: email,
+                subject,
+                html: `
+                    <div style="font-family:Arial;padding:20px">
+                        <h2 style="color:#2563eb">
+                            Strivo Consultancy
+                        </h2>
 
-                    <hr/>
+                        <hr/>
 
-                    <p>${message.replace(/\n/g, "<br/>")}</p>
+                        <p>${message.replace(/\n/g, "<br/>")}</p>
 
-                    <br/>
+                        <br/>
 
-                    <p>
-                        Regards,<br/>
-                        <strong>Strivo Consultancy Team</strong>
-                    </p>
-                </div>
-            `,
-        });
+                        <p>
+                            Regards,<br/>
+                            <strong>Strivo Consultancy Team</strong>
+                        </p>
+                    </div>
+                `,
+            });
+            console.log(`Email successfully sent to ${email} via SMTP.`);
+        } else {
+            console.log("---------------- DEV ENVIRONMENT MOCK EMAIL SENDER ----------------");
+            console.log(`To: ${email}`);
+            console.log(`Subject: ${subject}`);
+            console.log(`Message: ${message}`);
+            console.log("-------------------------------------------------------------------");
+        }
 
         if (inquiryId) {
             const existing = await Inquiry.findById(inquiryId);

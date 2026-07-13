@@ -10,6 +10,7 @@ const CreateArticle = () => {
   const [loading, setLoading] = useState(false);
   const [coverImageFile, setCoverImageFile] = useState(null);
 
+  const [errors, setErrors] = useState({});
   const [formData, setFormData] = useState({
     title: '',
     category: 'Development',
@@ -27,10 +28,22 @@ const CreateArticle = () => {
 
   const handleInputChange = (e) => {
     const { name, value, type, checked } = e.target;
-    setFormData(prev => ({
-      ...prev,
-      [name]: type === 'checkbox' ? checked : value
-    }));
+    setFormData(prev => {
+      const updated = {
+        ...prev,
+        [name]: type === 'checkbox' ? checked : value
+      };
+      if (name === 'publicationDate') {
+        const selectedDate = new Date(value);
+        selectedDate.setHours(0, 0, 0, 0);
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+        if (selectedDate > today) {
+          updated.status = 'Draft';
+        }
+      }
+      return updated;
+    });
   };
 
   const handleFileChange = (e) => {
@@ -56,16 +69,37 @@ const CreateArticle = () => {
 
   const handleSave = async (statusVal) => {
     // Basic validation
+    const newErrors = {};
     if (!formData.title.trim()) {
-      toast.error("Article Title is required.");
-      return;
+      newErrors.title = "Article Title is required.";
     }
     if (!coverImageFile) {
-      toast.error("Please upload a cover image file.");
-      return;
+      newErrors.coverImage = "Please upload a cover image file.";
     }
     if (!formData.description.trim()) {
-      toast.error("Short Preview / Description is required.");
+      newErrors.description = "Short Preview / Description is required.";
+    }
+    if (!formData.executiveSummary.trim()) {
+      newErrors.executiveSummary = "Summary Highlights are required.";
+    }
+    if (!formData.sec1Title.trim()) {
+      newErrors.sec1Title = "Section 1 Heading is required.";
+    }
+    if (!formData.sec1Content.trim()) {
+      newErrors.sec1Content = "Section 1 Body Content is required.";
+    }
+    if (!formData.quote.trim()) {
+      newErrors.quote = "Quote Text is required.";
+    }
+    if (!formData.sec2Title.trim()) {
+      newErrors.sec2Title = "Section 2 Heading is required.";
+    }
+    if (!formData.sec2Content.trim()) {
+      newErrors.sec2Content = "Section 2 Body Content is required.";
+    }
+
+    setErrors(newErrors);
+    if (Object.keys(newErrors).length > 0) {
       return;
     }
 
@@ -82,27 +116,36 @@ const CreateArticle = () => {
 
       // 2. Assemble structured content back into single markdown content string
       let assembledContent = "";
-      
+
       if (formData.executiveSummary.trim()) {
         assembledContent += `### Executive Summary\n${formData.executiveSummary.split('\n').filter(line => line.trim()).map(line => `- ${line.trim()}`).join('\n')}\n\n`;
       }
-      
+
       if (formData.sec1Title.trim() || formData.sec1Content.trim()) {
         if (formData.sec1Title.trim()) {
           assembledContent += `## ${formData.sec1Title.trim()}\n`;
         }
         assembledContent += `${formData.sec1Content.trim()}\n\n`;
       }
-      
+
       if (formData.quote.trim()) {
         assembledContent += `> ${formData.quote.trim()}\n\n`;
       }
-      
+
       if (formData.sec2Title.trim() || formData.sec2Content.trim()) {
         if (formData.sec2Title.trim()) {
           assembledContent += `## ${formData.sec2Title.trim()}\n`;
         }
         assembledContent += `${formData.sec2Content.trim()}\n\n`;
+      }
+
+      const selectedDate = new Date(formData.publicationDate);
+      selectedDate.setHours(0, 0, 0, 0);
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+      let finalStatus = statusVal;
+      if (selectedDate > today) {
+        finalStatus = 'Draft';
       }
 
       const payload = {
@@ -113,12 +156,12 @@ const CreateArticle = () => {
         publicationDate: formData.publicationDate,
         showSubscription: formData.showSubscription,
         content: assembledContent,
-        status: statusVal
+        status: finalStatus
       };
 
       const response = await createArticleAPI(payload);
       if (response.status === 201 && response.data?.success) {
-        toast.success(`Article ${statusVal === 'Draft' ? 'saved as Draft' : 'published'} successfully!`);
+        toast.success(`Article ${finalStatus === 'Draft' ? 'saved as Draft' : 'published'} successfully!`);
         navigate('/admin/article');
       } else {
         toast.error(response.data?.message || "Failed to create article.");
@@ -134,7 +177,7 @@ const CreateArticle = () => {
   return (
     <div className="min-h-screen pt-24 pb-12 px-8 md:px-16 lg:px-24 bg-sub" style={{ fontFamily: 'var(--font-primary)' }}>
       <div className="max-w-4xl mx-auto">
-        
+
         {/* Back navigation */}
         <button
           onClick={() => navigate('/admin/article')}
@@ -156,13 +199,13 @@ const CreateArticle = () => {
 
         {/* Form Sections */}
         <div className="space-y-8">
-          
+
           {/* Card 1: Basic Info */}
           <div className="bg-white p-8 border border-[var(--color-border)] rounded-[var(--radius-sm)] shadow-sm text-left">
             <h2 className="text-sm font-bold text-[var(--color-primary)] uppercase tracking-wider mb-6 border-b border-[var(--color-border)] pb-2" style={{ fontFamily: 'var(--font-primary)' }}>
               Basic Information
             </h2>
-            
+
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
               <div>
                 <label className="text-[var(--color-black)] font-semibold mb-2 block text-xs uppercase tracking-wider" style={{ fontFamily: 'var(--font-primary)' }}>
@@ -177,6 +220,11 @@ const CreateArticle = () => {
                   className="w-full bg-[var(--color-sub-bg)] border border-[var(--color-border)] rounded-[var(--radius-sm)] px-4 py-2.5 text-sm text-[var(--color-paragraph)] focus:outline-none focus:border-[var(--color-primary)] hover:bg-white focus:bg-white transition-all duration-200"
                   style={{ fontFamily: 'var(--font-primary)' }}
                 />
+                {errors.title && (
+                  <p className="text-red-500 text-xs mt-1">
+                    {errors.title}
+                  </p>
+                )}
               </div>
 
               <div>
@@ -220,6 +268,11 @@ const CreateArticle = () => {
                     className="hidden"
                   />
                 </label>
+                {errors.coverImage && (
+                  <p className="text-red-500 text-xs mt-1">
+                    {errors.coverImage}
+                  </p>
+                )}
               </div>
 
               <div>
@@ -261,6 +314,11 @@ const CreateArticle = () => {
                 className="w-full bg-[var(--color-sub-bg)] border border-[var(--color-border)] rounded-[var(--radius-sm)] px-4 py-2.5 text-sm text-[var(--color-paragraph)] focus:outline-none focus:border-[var(--color-primary)] hover:bg-white focus:bg-white transition-all duration-200"
                 style={{ fontFamily: 'var(--font-primary)' }}
               />
+              {errors.description && (
+                <p className="text-red-500 text-xs mt-1">
+                  {errors.description}
+                </p>
+              )}
             </div>
           </div>
 
@@ -270,7 +328,7 @@ const CreateArticle = () => {
               Executive Summary
             </h2>
             <label className="text-[var(--color-black)] font-semibold mb-2 block text-xs uppercase tracking-wider" style={{ fontFamily: 'var(--font-primary)' }}>
-              Summary Highlights (One point per line)
+              Summary Highlights (One point per line) *
             </label>
             <textarea
               name="executiveSummary"
@@ -281,6 +339,11 @@ const CreateArticle = () => {
               className="w-full bg-[var(--color-sub-bg)] border border-[var(--color-border)] rounded-[var(--radius-sm)] px-4 py-2.5 text-sm text-[var(--color-paragraph)] focus:outline-none focus:border-[var(--color-primary)] hover:bg-white focus:bg-white transition-all duration-200"
               style={{ fontFamily: 'var(--font-primary)' }}
             />
+            {errors.executiveSummary && (
+              <p className="text-red-500 text-xs mt-1">
+                {errors.executiveSummary}
+              </p>
+            )}
           </div>
 
           {/* Card 3: Section 1 */}
@@ -290,7 +353,7 @@ const CreateArticle = () => {
             </h2>
             <div className="mb-6">
               <label className="text-[var(--color-black)] font-semibold mb-2 block text-xs uppercase tracking-wider" style={{ fontFamily: 'var(--font-primary)' }}>
-                Section 1 Heading
+                Section 1 Heading *
               </label>
               <input
                 type="text"
@@ -301,10 +364,15 @@ const CreateArticle = () => {
                 className="w-full bg-[var(--color-sub-bg)] border border-[var(--color-border)] rounded-[var(--radius-sm)] px-4 py-2.5 text-sm text-[var(--color-paragraph)] focus:outline-none focus:border-[var(--color-primary)] hover:bg-white focus:bg-white transition-all duration-200"
                 style={{ fontFamily: 'var(--font-primary)' }}
               />
+              {errors.sec1Title && (
+                <p className="text-red-500 text-xs mt-1">
+                  {errors.sec1Title}
+                </p>
+              )}
             </div>
             <div>
               <label className="text-[var(--color-black)] font-semibold mb-2 block text-xs uppercase tracking-wider" style={{ fontFamily: 'var(--font-primary)' }}>
-                Section 1 Body Content
+                Section 1 Body Content *
               </label>
               <textarea
                 name="sec1Content"
@@ -315,6 +383,11 @@ const CreateArticle = () => {
                 className="w-full bg-[var(--color-sub-bg)] border border-[var(--color-border)] rounded-[var(--radius-sm)] px-4 py-2.5 text-sm text-[var(--color-paragraph)] focus:outline-none focus:border-[var(--color-primary)] hover:bg-white focus:bg-white transition-all duration-200"
                 style={{ fontFamily: 'var(--font-primary)' }}
               />
+              {errors.sec1Content && (
+                <p className="text-red-500 text-xs mt-1">
+                  {errors.sec1Content}
+                </p>
+              )}
             </div>
           </div>
 
@@ -324,7 +397,7 @@ const CreateArticle = () => {
               Featured Blockquote
             </h2>
             <label className="text-[var(--color-black)] font-semibold mb-2 block text-xs uppercase tracking-wider" style={{ fontFamily: 'var(--font-primary)' }}>
-              Quote Text
+              Quote Text *
             </label>
             <textarea
               name="quote"
@@ -335,6 +408,11 @@ const CreateArticle = () => {
               className="w-full bg-[var(--color-sub-bg)] border border-[var(--color-border)] rounded-[var(--radius-sm)] px-4 py-2.5 text-sm text-[var(--color-paragraph)] focus:outline-none focus:border-[var(--color-primary)] hover:bg-white focus:bg-white transition-all duration-200"
               style={{ fontFamily: 'var(--font-primary)' }}
             />
+            {errors.quote && (
+              <p className="text-red-500 text-xs mt-1">
+                {errors.quote}
+              </p>
+            )}
           </div>
 
           {/* Card 5: Section 2 */}
@@ -344,7 +422,7 @@ const CreateArticle = () => {
             </h2>
             <div className="mb-6">
               <label className="text-[var(--color-black)] font-semibold mb-2 block text-xs uppercase tracking-wider" style={{ fontFamily: 'var(--font-primary)' }}>
-                Section 2 Heading
+                Section 2 Heading *
               </label>
               <input
                 type="text"
@@ -355,10 +433,15 @@ const CreateArticle = () => {
                 className="w-full bg-[var(--color-sub-bg)] border border-[var(--color-border)] rounded-[var(--radius-sm)] px-4 py-2.5 text-sm text-[var(--color-paragraph)] focus:outline-none focus:border-[var(--color-primary)] hover:bg-white focus:bg-white transition-all duration-200"
                 style={{ fontFamily: 'var(--font-primary)' }}
               />
+              {errors.sec2Title && (
+                <p className="text-red-500 text-xs mt-1">
+                  {errors.sec2Title}
+                </p>
+              )}
             </div>
             <div>
               <label className="text-[var(--color-black)] font-semibold mb-2 block text-xs uppercase tracking-wider" style={{ fontFamily: 'var(--font-primary)' }}>
-                Section 2 Body Content
+                Section 2 Body Content *
               </label>
               <textarea
                 name="sec2Content"
@@ -369,6 +452,11 @@ const CreateArticle = () => {
                 className="w-full bg-[var(--color-sub-bg)] border border-[var(--color-border)] rounded-[var(--radius-sm)] px-4 py-2.5 text-sm text-[var(--color-paragraph)] focus:outline-none focus:border-[var(--color-primary)] hover:bg-white focus:bg-white transition-all duration-200"
                 style={{ fontFamily: 'var(--font-primary)' }}
               />
+              {errors.sec2Content && (
+                <p className="text-red-500 text-xs mt-1">
+                  {errors.sec2Content}
+                </p>
+              )}
             </div>
           </div>
 

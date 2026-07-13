@@ -19,6 +19,7 @@ const Profile = () => {
   });
   const [isChangingPassword, setIsChangingPassword] = useState(false);
   const [isCurrentPasswordVerified, setIsCurrentPasswordVerified] = useState(false);
+  const [isVerifyingPassword, setIsVerifyingPassword] = useState(false);
   const [showRequirements, setShowRequirements] = useState(false);
 
   useEffect(() => {
@@ -32,30 +33,33 @@ const Profile = () => {
     }
   }, [navigate]);
 
-  useEffect(() => {
-    if (!passwordData.currentPassword || !adminUser?.username) {
-      setIsCurrentPasswordVerified(false);
+  const handleVerifyCurrentPassword = async (e) => {
+    if (e) e.preventDefault();
+    if (!passwordData.currentPassword) {
+      toast.error('Please enter your current password');
       return;
     }
-
-    const timer = setTimeout(async () => {
-      try {
-        const response = await axios.post(`${import.meta.env.VITE_API_BASE_URL}/api/admin/verify-password`, {
-          username: adminUser.username,
-          password: passwordData.currentPassword
-        });
-        if (response.data?.success) {
-          setIsCurrentPasswordVerified(true);
-        } else {
-          setIsCurrentPasswordVerified(false);
-        }
-      } catch (error) {
+    
+    setIsVerifyingPassword(true);
+    try {
+      const response = await axios.post(`${import.meta.env.VITE_API_BASE_URL}/api/admin/verify-password`, {
+        username: adminUser.username,
+        password: passwordData.currentPassword
+      });
+      if (response.data?.success) {
+        setIsCurrentPasswordVerified(true);
+        toast.success('Current password verified successfully!');
+      } else {
         setIsCurrentPasswordVerified(false);
+        toast.error('Invalid credential');
       }
-    }, 500);
-
-    return () => clearTimeout(timer);
-  }, [passwordData.currentPassword, adminUser]);
+    } catch (error) {
+      setIsCurrentPasswordVerified(false);
+      toast.error('Invalid credential');
+    } finally {
+      setIsVerifyingPassword(false);
+    }
+  };
 
   const handleImageClick = () => {
     fileInputRef.current.click();
@@ -167,7 +171,7 @@ const Profile = () => {
   if (!adminUser) return null;
 
   return (
-    <div className="min-h-screen pt-16 flex items-center justify-center p-4 sm:p-6 md:p-8 relative z-10 bg-sub">
+    <div className="min-h-screen pt-24 pb-12 flex items-start sm:items-center justify-center p-4 sm:p-6 md:p-8 relative z-10 bg-sub">
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
@@ -238,12 +242,24 @@ const Profile = () => {
                   name="currentPassword"
                   value={passwordData.currentPassword}
                   onChange={handlePasswordChange}
+                  disabled={isCurrentPasswordVerified}
                   className="input py-2 px-3 placeholder:text-[var(--color-paragraph)] placeholder:opacity-40 transition-all text-sm h-10 w-full bg-[var(--color-sub-bg)] border border-[var(--color-border)] rounded-[var(--radius-sm)]"
                   placeholder="Enter current password"
                 />
               </div>
 
-              {isCurrentPasswordVerified ? (
+              {!isCurrentPasswordVerified ? (
+                <div className="flex justify-center mt-1">
+                  <button
+                    type="button"
+                    onClick={handleVerifyCurrentPassword}
+                    disabled={isVerifyingPassword}
+                    className="btn px-6 text-xs font-bold h-10 w-full justify-center uppercase tracking-wider cursor-pointer border-none"
+                  >
+                    {isVerifyingPassword ? 'Verifying...' : 'Verify Password'}
+                  </button>
+                </div>
+              ) : (
                 <>
                   <div className="relative">
                     <label className="mb-1 block text-left text-xs font-bold text-[var(--color-black)] uppercase tracking-wider">
@@ -291,12 +307,6 @@ const Profile = () => {
                     />
                   </div>
                 </>
-              ) : (
-                <div className="bg-[var(--color-sub-bg)] border border-[var(--color-border)] rounded-[var(--radius-sm)] p-3 text-center">
-                  <p className="text-xs text-[var(--color-paragraph)] leading-normal font-semibold" style={{ margin: 0 }}>
-                    Please verify your current password to unlock the new password fields.
-                  </p>
-                </div>
               )}
             </div>
 

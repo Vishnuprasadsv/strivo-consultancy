@@ -12,6 +12,9 @@ const EditArticle = () => {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [coverImageFile, setCoverImageFile] = useState(null);
+  const [isAlreadyPublished, setIsAlreadyPublished] = useState(false);
+  const [initialData, setInitialData] = useState(null);
+  const [errors, setErrors] = useState({});
 
   const [formData, setFormData] = useState({
     title: '',
@@ -55,7 +58,7 @@ const EditArticle = () => {
         const firstNewline = trimmed.indexOf('\n');
         const title = trimmed.substring(3, firstNewline !== -1 ? firstNewline : trimmed.length).trim();
         const content = firstNewline !== -1 ? trimmed.substring(firstNewline + 1).trim() : '';
-        
+
         if (currentSection === 0) {
           fields.sec1Title = title;
           fields.sec1Content = content;
@@ -89,12 +92,12 @@ const EditArticle = () => {
           const found = response.data.data.find(a => a._id === id);
           if (found) {
             const parsed = parseContentToFields(found.content);
-            setFormData({
+            const initialForm = {
               title: found.title || '',
               category: found.category || 'Development',
               imageUrl: found.imageUrl || '',
-              publicationDate: found.publicationDate 
-                ? new Date(found.publicationDate).toISOString().split('T')[0] 
+              publicationDate: found.publicationDate
+                ? new Date(found.publicationDate).toISOString().split('T')[0]
                 : new Date().toISOString().split('T')[0],
               description: found.description || '',
               executiveSummary: parsed.executiveSummary,
@@ -105,7 +108,10 @@ const EditArticle = () => {
               sec2Content: parsed.sec2Content,
               showSubscription: found.showSubscription !== false,
               status: found.status || 'Published'
-            });
+            };
+            setFormData(initialForm);
+            setInitialData(initialForm);
+            setIsAlreadyPublished(found.status === 'Published');
           } else {
             toast.error("Article not found in backend database.");
             navigate('/admin/article');
@@ -125,10 +131,22 @@ const EditArticle = () => {
 
   const handleInputChange = (e) => {
     const { name, value, type, checked } = e.target;
-    setFormData(prev => ({
-      ...prev,
-      [name]: type === 'checkbox' ? checked : value
-    }));
+    setFormData(prev => {
+      const updated = {
+        ...prev,
+        [name]: type === 'checkbox' ? checked : value
+      };
+      if (name === 'publicationDate') {
+        const selectedDate = new Date(value);
+        selectedDate.setHours(0, 0, 0, 0);
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+        if (selectedDate > today) {
+          updated.status = 'Draft';
+        }
+      }
+      return updated;
+    });
   };
 
   const handleFileChange = (e) => {
@@ -153,12 +171,58 @@ const EditArticle = () => {
   };
 
   const handleSave = async (statusVal) => {
+    const newErrors = {};
     if (!formData.title.trim()) {
-      toast.error("Article Title is required.");
-      return;
+      newErrors.title = "Article Title is required.";
     }
     if (!formData.description.trim()) {
-      toast.error("Short Preview / Description is required.");
+      newErrors.description = "Short Preview / Description is required.";
+    }
+    if (!formData.executiveSummary.trim()) {
+      newErrors.executiveSummary = "Summary Highlights are required.";
+    }
+    if (!formData.sec1Title.trim()) {
+      newErrors.sec1Title = "Section 1 Heading is required.";
+    }
+    if (!formData.sec1Content.trim()) {
+      newErrors.sec1Content = "Section 1 Body Content is required.";
+    }
+    if (!formData.quote.trim()) {
+      newErrors.quote = "Quote Text is required.";
+    }
+    if (!formData.sec2Title.trim()) {
+      newErrors.sec2Title = "Section 2 Heading is required.";
+    }
+    if (!formData.sec2Content.trim()) {
+      newErrors.sec2Content = "Section 2 Body Content is required.";
+    }
+
+    setErrors(newErrors);
+    if (Object.keys(newErrors).length > 0) {
+      return;
+    }
+
+    // Check if cover image file is changed
+    const hasCoverImageChange = !!coverImageFile;
+
+    // Compare fields
+    let hasFieldChanges = false;
+    if (initialData) {
+      const keys = [
+        'title', 'category', 'description', 'publicationDate', 'executiveSummary',
+        'sec1Title', 'sec1Content', 'quote', 'sec2Title', 'sec2Content', 'showSubscription', 'status'
+      ];
+      for (const key of keys) {
+        if (formData[key] !== initialData[key]) {
+          hasFieldChanges = true;
+          break;
+        }
+      }
+    }
+
+    if (!hasFieldChanges && !hasCoverImageChange) {
+      toast.info("No changes were made.");
+      navigate("/admin/article");
       return;
     }
 
@@ -180,27 +244,36 @@ const EditArticle = () => {
 
       // 2. Assemble structured content back into single markdown content string
       let assembledContent = "";
-      
+
       if (formData.executiveSummary.trim()) {
         assembledContent += `### Executive Summary\n${formData.executiveSummary.split('\n').filter(line => line.trim()).map(line => `- ${line.trim()}`).join('\n')}\n\n`;
       }
-      
+
       if (formData.sec1Title.trim() || formData.sec1Content.trim()) {
         if (formData.sec1Title.trim()) {
           assembledContent += `## ${formData.sec1Title.trim()}\n`;
         }
         assembledContent += `${formData.sec1Content.trim()}\n\n`;
       }
-      
+
       if (formData.quote.trim()) {
         assembledContent += `> ${formData.quote.trim()}\n\n`;
       }
-      
+
       if (formData.sec2Title.trim() || formData.sec2Content.trim()) {
         if (formData.sec2Title.trim()) {
           assembledContent += `## ${formData.sec2Title.trim()}\n`;
         }
         assembledContent += `${formData.sec2Content.trim()}\n\n`;
+      }
+
+      const selectedDate = new Date(formData.publicationDate);
+      selectedDate.setHours(0, 0, 0, 0);
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+      let finalStatus = statusVal;
+      if (selectedDate > today) {
+        finalStatus = 'Draft';
       }
 
       const payload = {
@@ -211,12 +284,18 @@ const EditArticle = () => {
         publicationDate: formData.publicationDate,
         showSubscription: formData.showSubscription,
         content: assembledContent,
-        status: statusVal
+        status: finalStatus
       };
 
       const response = await updateArticleAPI(id, payload);
       if (response.status === 200 && response.data?.success) {
-        toast.success(`Article updated successfully!`);
+        let successMsg = "Article updated successfully!";
+        if (finalStatus === 'Draft' && selectedDate > today) {
+          successMsg = "Article updated successfully (Saved as draft due to future date)!";
+        } else if (finalStatus === 'Draft') {
+          successMsg = "Article saved as Draft successfully!";
+        }
+        toast.success(successMsg);
         navigate('/admin/article');
       } else {
         toast.error(response.data?.message || "Failed to update article.");
@@ -236,7 +315,7 @@ const EditArticle = () => {
   return (
     <div className="min-h-screen pt-24 pb-12 px-8 md:px-16 lg:px-24 bg-sub" style={{ fontFamily: 'var(--font-primary)' }}>
       <div className="max-w-4xl mx-auto">
-        
+
         {/* Back navigation */}
         <button
           onClick={() => navigate('/admin/article')}
@@ -258,13 +337,13 @@ const EditArticle = () => {
 
         {/* Form Sections */}
         <div className="space-y-8">
-          
+
           {/* Card 1: Basic Info */}
           <div className="bg-white p-8 border border-[var(--color-border)] rounded-[var(--radius-sm)] shadow-sm text-left">
             <h2 className="text-sm font-bold text-[var(--color-primary)] uppercase tracking-wider mb-6 border-b border-[var(--color-border)] pb-2" style={{ fontFamily: 'var(--font-primary)' }}>
               Basic Information
             </h2>
-            
+
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
               <div>
                 <label className="text-[var(--color-black)] font-semibold mb-2 block text-xs uppercase tracking-wider" style={{ fontFamily: 'var(--font-primary)' }}>
@@ -279,6 +358,11 @@ const EditArticle = () => {
                   className="w-full bg-[var(--color-sub-bg)] border border-[var(--color-border)] rounded-[var(--radius-sm)] px-4 py-2.5 text-sm text-[var(--color-paragraph)] focus:outline-none focus:border-[var(--color-primary)] hover:bg-white focus:bg-white transition-all duration-200"
                   style={{ fontFamily: 'var(--font-primary)' }}
                 />
+                {errors.title && (
+                  <p className="text-red-500 text-xs mt-1">
+                    {errors.title}
+                  </p>
+                )}
               </div>
 
               <div>
@@ -333,7 +417,8 @@ const EditArticle = () => {
                   name="publicationDate"
                   value={formData.publicationDate}
                   onChange={handleInputChange}
-                  className="w-full bg-[var(--color-sub-bg)] border border-[var(--color-border)] rounded-[var(--radius-sm)] px-4 py-2.5 text-sm text-[var(--color-paragraph)] focus:outline-none focus:border-[var(--color-primary)] hover:bg-white focus:bg-white transition-all duration-200"
+                  disabled={isAlreadyPublished}
+                  className={`w-full bg-[var(--color-sub-bg)] border border-[var(--color-border)] rounded-[var(--radius-sm)] px-4 py-2.5 text-sm text-[var(--color-paragraph)] focus:outline-none focus:border-[var(--color-primary)] hover:bg-white focus:bg-white transition-all duration-200 ${isAlreadyPublished ? 'opacity-65 cursor-not-allowed' : ''}`}
                   style={{ fontFamily: 'var(--font-primary)' }}
                 />
               </div>
@@ -363,6 +448,11 @@ const EditArticle = () => {
                 className="w-full bg-[var(--color-sub-bg)] border border-[var(--color-border)] rounded-[var(--radius-sm)] px-4 py-2.5 text-sm text-[var(--color-paragraph)] focus:outline-none focus:border-[var(--color-primary)] hover:bg-white focus:bg-white transition-all duration-200"
                 style={{ fontFamily: 'var(--font-primary)' }}
               />
+              {errors.description && (
+                <p className="text-red-500 text-xs mt-1">
+                  {errors.description}
+                </p>
+              )}
             </div>
           </div>
 
@@ -372,7 +462,7 @@ const EditArticle = () => {
               Executive Summary
             </h2>
             <label className="text-[var(--color-black)] font-semibold mb-2 block text-xs uppercase tracking-wider" style={{ fontFamily: 'var(--font-primary)' }}>
-              Summary Highlights (One point per line)
+              Summary Highlights (One point per line) *
             </label>
             <textarea
               name="executiveSummary"
@@ -383,6 +473,11 @@ const EditArticle = () => {
               className="w-full bg-[var(--color-sub-bg)] border border-[var(--color-border)] rounded-[var(--radius-sm)] px-4 py-2.5 text-sm text-[var(--color-paragraph)] focus:outline-none focus:border-[var(--color-primary)] hover:bg-white focus:bg-white transition-all duration-200"
               style={{ fontFamily: 'var(--font-primary)' }}
             />
+            {errors.executiveSummary && (
+              <p className="text-red-500 text-xs mt-1">
+                {errors.executiveSummary}
+              </p>
+            )}
           </div>
 
           {/* Card 3: Section 1 */}
@@ -392,7 +487,7 @@ const EditArticle = () => {
             </h2>
             <div className="mb-6">
               <label className="text-[var(--color-black)] font-semibold mb-2 block text-xs uppercase tracking-wider" style={{ fontFamily: 'var(--font-primary)' }}>
-                Section 1 Heading
+                Section 1 Heading *
               </label>
               <input
                 type="text"
@@ -403,10 +498,15 @@ const EditArticle = () => {
                 className="w-full bg-[var(--color-sub-bg)] border border-[var(--color-border)] rounded-[var(--radius-sm)] px-4 py-2.5 text-sm text-[var(--color-paragraph)] focus:outline-none focus:border-[var(--color-primary)] hover:bg-white focus:bg-white transition-all duration-200"
                 style={{ fontFamily: 'var(--font-primary)' }}
               />
+              {errors.sec1Title && (
+                <p className="text-red-500 text-xs mt-1">
+                  {errors.sec1Title}
+                </p>
+              )}
             </div>
             <div>
               <label className="text-[var(--color-black)] font-semibold mb-2 block text-xs uppercase tracking-wider" style={{ fontFamily: 'var(--font-primary)' }}>
-                Section 1 Body Content
+                Section 1 Body Content *
               </label>
               <textarea
                 name="sec1Content"
@@ -417,6 +517,11 @@ const EditArticle = () => {
                 className="w-full bg-[var(--color-sub-bg)] border border-[var(--color-border)] rounded-[var(--radius-sm)] px-4 py-2.5 text-sm text-[var(--color-paragraph)] focus:outline-none focus:border-[var(--color-primary)] hover:bg-white focus:bg-white transition-all duration-200"
                 style={{ fontFamily: 'var(--font-primary)' }}
               />
+              {errors.sec1Content && (
+                <p className="text-red-500 text-xs mt-1">
+                  {errors.sec1Content}
+                </p>
+              )}
             </div>
           </div>
 
@@ -426,7 +531,7 @@ const EditArticle = () => {
               Featured Blockquote
             </h2>
             <label className="text-[var(--color-black)] font-semibold mb-2 block text-xs uppercase tracking-wider" style={{ fontFamily: 'var(--font-primary)' }}>
-              Quote Text
+              Quote Text *
             </label>
             <textarea
               name="quote"
@@ -437,6 +542,11 @@ const EditArticle = () => {
               className="w-full bg-[var(--color-sub-bg)] border border-[var(--color-border)] rounded-[var(--radius-sm)] px-4 py-2.5 text-sm text-[var(--color-paragraph)] focus:outline-none focus:border-[var(--color-primary)] hover:bg-white focus:bg-white transition-all duration-200"
               style={{ fontFamily: 'var(--font-primary)' }}
             />
+            {errors.quote && (
+              <p className="text-red-500 text-xs mt-1">
+                {errors.quote}
+              </p>
+            )}
           </div>
 
           {/* Card 5: Section 2 */}
@@ -446,7 +556,7 @@ const EditArticle = () => {
             </h2>
             <div className="mb-6">
               <label className="text-[var(--color-black)] font-semibold mb-2 block text-xs uppercase tracking-wider" style={{ fontFamily: 'var(--font-primary)' }}>
-                Section 2 Heading
+                Section 2 Heading *
               </label>
               <input
                 type="text"
@@ -457,10 +567,15 @@ const EditArticle = () => {
                 className="w-full bg-[var(--color-sub-bg)] border border-[var(--color-border)] rounded-[var(--radius-sm)] px-4 py-2.5 text-sm text-[var(--color-paragraph)] focus:outline-none focus:border-[var(--color-primary)] hover:bg-white focus:bg-white transition-all duration-200"
                 style={{ fontFamily: 'var(--font-primary)' }}
               />
+              {errors.sec2Title && (
+                <p className="text-red-500 text-xs mt-1">
+                  {errors.sec2Title}
+                </p>
+              )}
             </div>
             <div>
               <label className="text-[var(--color-black)] font-semibold mb-2 block text-xs uppercase tracking-wider" style={{ fontFamily: 'var(--font-primary)' }}>
-                Section 2 Body Content
+                Section 2 Body Content *
               </label>
               <textarea
                 name="sec2Content"
@@ -471,6 +586,11 @@ const EditArticle = () => {
                 className="w-full bg-[var(--color-sub-bg)] border border-[var(--color-border)] rounded-[var(--radius-sm)] px-4 py-2.5 text-sm text-[var(--color-paragraph)] focus:outline-none focus:border-[var(--color-primary)] hover:bg-white focus:bg-white transition-all duration-200"
                 style={{ fontFamily: 'var(--font-primary)' }}
               />
+              {errors.sec2Content && (
+                <p className="text-red-500 text-xs mt-1">
+                  {errors.sec2Content}
+                </p>
+              )}
             </div>
           </div>
 

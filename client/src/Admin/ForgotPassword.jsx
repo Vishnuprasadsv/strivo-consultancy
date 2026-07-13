@@ -19,6 +19,7 @@ const ForgotPassword = () => {
 
   const [isLoading, setIsLoading] = useState(false);
   const [timer, setTimer] = useState(300); // 5 minutes in seconds
+  const [errors, setErrors] = useState({});
 
   const inputRefs = useRef([]);
   const navigate = useNavigate();
@@ -44,8 +45,13 @@ const ForgotPassword = () => {
 
   const handleSendOtp = async (e) => {
     if (e) e.preventDefault();
-    if (!email) {
-      toast.error('Please enter your email ID.');
+    const newErrors = {};
+    if (!email.trim()) {
+      newErrors.email = 'Please enter your email ID.';
+    }
+
+    setErrors(newErrors);
+    if (Object.keys(newErrors).length > 0) {
       return;
     }
 
@@ -113,22 +119,31 @@ const ForgotPassword = () => {
   const handleResetPassword = async (e) => {
     e.preventDefault();
 
-    // Password validation criteria check
-    const minLength = newPassword.length >= 8;
-    const hasUpper = /[A-Z]/.test(newPassword);
-    const hasLower = /[a-z]/.test(newPassword);
-    const hasNumber = /[0-9]/.test(newPassword);
-    const hasSpecial = /[!@#$%^&*(),.?":{}|<>]/.test(newPassword);
-
-    if (!(minLength && hasUpper && hasLower && hasNumber && hasSpecial)) {
-      setNewPassword('');
-      setConfirmPassword('');
-      toast.error('Password does not meet expectation: must be at least 8 characters, with one uppercase letter, one lowercase letter, one special character, and one number.');
-      return;
+    const newErrors = {};
+    if (!newPassword) {
+      newErrors.newPassword = 'New password is required.';
+    }
+    if (!confirmPassword) {
+      newErrors.confirmPassword = 'Confirm password is required.';
     }
 
-    if (newPassword !== confirmPassword) {
-      toast.error('Passwords do not match.');
+    if (newPassword && confirmPassword) {
+      // Password validation criteria check
+      const minLength = newPassword.length >= 8;
+      const hasUpper = /[A-Z]/.test(newPassword);
+      const hasLower = /[a-z]/.test(newPassword);
+      const hasNumber = /[0-9]/.test(newPassword);
+      const hasSpecial = /[!@#$%^&*(),.?":{}|<>]/.test(newPassword);
+
+      if (!(minLength && hasUpper && hasLower && hasNumber && hasSpecial)) {
+        newErrors.newPassword = 'Password does not meet expectation: must be at least 8 characters, with one uppercase, one lowercase, one special character, and one number.';
+      } else if (newPassword !== confirmPassword) {
+        newErrors.confirmPassword = 'Passwords do not match.';
+      }
+    }
+
+    setErrors(newErrors);
+    if (Object.keys(newErrors).length > 0) {
       return;
     }
 
@@ -202,7 +217,6 @@ const ForgotPassword = () => {
                   <div className="relative">
                     <input
                       type="email"
-                      required
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
                       placeholder="Enter your email address"
@@ -210,6 +224,11 @@ const ForgotPassword = () => {
                       style={inputStyle}
                     />
                   </div>
+                  {errors.email && (
+                    <p className="text-red-500 text-[10px] mt-0.5 text-left font-semibold">
+                      {errors.email}
+                    </p>
+                  )}
                 </div>
 
                 <div className="pt-2">
@@ -343,7 +362,6 @@ const ForgotPassword = () => {
                     />
                     <input
                       type={showPassword ? "text" : "password"}
-                      required
                       value={newPassword}
                       onChange={(e) => setNewPassword(e.target.value)}
                       onFocus={() => setShowRequirements(true)}
@@ -360,7 +378,7 @@ const ForgotPassword = () => {
                     >
                       {showPassword ? <FiEyeOff size={16} /> : <FiEye size={16} />}
                     </button>
-
+ 
                     {/* Floating absolutely positioned requirements tooltip */}
                     {showRequirements && (
                       <div className="absolute z-30 left-0 right-0 md:left-full md:-top-6 md:ml-4 mt-2 md:mt-0 w-full md:w-64 bg-white border border-[var(--color-border)] rounded-[var(--radius-sm)] p-4 shadow-xl text-left text-black">
@@ -377,6 +395,11 @@ const ForgotPassword = () => {
                       </div>
                     )}
                   </div>
+                  {errors.newPassword && (
+                    <p className="text-red-500 text-[10px] mt-0.5 text-left font-semibold">
+                      {errors.newPassword}
+                    </p>
+                  )}
                 </div>
 
                 <div className="space-y-0.5">
@@ -392,7 +415,6 @@ const ForgotPassword = () => {
                     />
                     <input
                       type={showConfirmPassword ? "text" : "password"}
-                      required
                       value={confirmPassword}
                       onChange={(e) => setConfirmPassword(e.target.value)}
                       placeholder="Confirm new password"
@@ -408,6 +430,11 @@ const ForgotPassword = () => {
                       {showConfirmPassword ? <FiEyeOff size={16} /> : <FiEye size={16} />}
                     </button>
                   </div>
+                  {errors.confirmPassword && (
+                    <p className="text-red-500 text-[10px] mt-0.5 text-left font-semibold">
+                      {errors.confirmPassword}
+                    </p>
+                  )}
                 </div>
 
                 <div className="pt-2">

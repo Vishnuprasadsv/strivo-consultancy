@@ -29,6 +29,8 @@ const EditCaseStudy = () => {
     const [scale, setScale] = useState(1.2);
     const [loading, setLoading] = useState(true);
     const [errors, setErrors] = useState({});
+    const [isAlreadyPublished, setIsAlreadyPublished] = useState(false);
+    const [initialData, setInitialData] = useState(null);
 
     const [formData, setFormData] = useState({
 
@@ -88,7 +90,23 @@ const EditCaseStudy = () => {
             } else {
                 study.publicationDate = "";
             }
-            setFormData(study);
+            const form = {
+                title: study.title || "",
+                author: study.author || "",
+                authorRole: study.authorRole || "",
+                category: study.category || "",
+                publicationDate: study.publicationDate || "",
+                summary: study.summary || "",
+                challenges: study.challenges || "",
+                results: study.results || "",
+                authorWebsite: study.authorWebsite || "",
+                coverImage: study.coverImage || "",
+                authorImage: study.authorImage || "",
+                status: study.status || "Draft"
+            };
+            setFormData(form);
+            setInitialData(form);
+            setIsAlreadyPublished(study.status === "Published");
 
         }
 
@@ -225,6 +243,29 @@ const EditCaseStudy = () => {
     };
 
     const handleUpdate = async () => {
+        // Check if any changes were made
+        const hasCoverImageChange = (formData.coverImage instanceof File);
+        const hasAuthorImageChange = (formData.authorImage instanceof File);
+        
+        let hasFieldChanges = false;
+        if (initialData) {
+            const keys = [
+                'title', 'category', 'summary', 'challenges', 'results', 'publicationDate', 'author', 
+                'authorRole', 'authorWebsite', 'status'
+            ];
+            for (const key of keys) {
+                if (formData[key] !== initialData[key]) {
+                    hasFieldChanges = true;
+                    break;
+                }
+            }
+        }
+        
+        if (!hasFieldChanges && !hasCoverImageChange && !hasAuthorImageChange) {
+            toast.info("No changes were made.");
+            navigate("/admin/casestudies");
+            return;
+        }
 
         try {
 
@@ -255,9 +296,10 @@ const EditCaseStudy = () => {
             }
 
             let status = formData.status;
+            let isFuture = false;
             if (isFutureDate(formData.publicationDate)) {
                 status = "Draft";
-                toast("future dated saveing as draft", { icon: false });
+                isFuture = true;
             }
 
             const res = await axios.put(
@@ -278,7 +320,11 @@ const EditCaseStudy = () => {
 
             );
 
-            toast.success("Case Study Updated Successfully");
+            if (isFuture) {
+                toast.success("Case Study Updated Successfully (Saved as draft due to future date)");
+            } else {
+                toast.success("Case Study Updated Successfully");
+            }
 
             navigate("/admin/casestudies");
 
@@ -399,7 +445,8 @@ const EditCaseStudy = () => {
                                 name="publicationDate"
                                 value={formData.publicationDate}
                                 onChange={handleChange}
-                                className="w-full bg-[var(--color-sub-bg)] hover:bg-white focus:bg-white border border-[var(--color-border)] rounded-[var(--radius-sm)] py-2.5 px-3 outline-none text-sm text-[var(--color-paragraph)] focus:border-[var(--color-primary)] transition-colors duration-200"
+                                disabled={isAlreadyPublished}
+                                className={`w-full bg-[var(--color-sub-bg)] hover:bg-white focus:bg-white border border-[var(--color-border)] rounded-[var(--radius-sm)] py-2.5 px-3 outline-none text-sm text-[var(--color-paragraph)] focus:border-[var(--color-primary)] transition-colors duration-200 ${isAlreadyPublished ? "opacity-65 cursor-not-allowed" : ""}`}
                             />
                             {errors.publicationDate && (
                                 <p className="text-red-500 text-xs mt-1">
@@ -487,7 +534,7 @@ const EditCaseStudy = () => {
                             )}
                         </div>
 
-                         {/* Author Image */}
+                        {/* Author Image */}
                         <div>
                             <label className="block mb-2 text-[var(--color-black)] font-semibold text-sm">
                                 Author Image *
@@ -548,7 +595,7 @@ const EditCaseStudy = () => {
                     </div>
                 </div>
 
-                 {/* ================= Case Study Content ================= */}
+                {/* ================= Case Study Content ================= */}
                 <div className="card bg-white p-4 shadow-card relative overflow-hidden mb-4">
                     <h2 style={{ fontSize: 'var(--text-paragraph)', fontWeight: 'var(--font-bold)', color: 'var(--color-primary)', margin: '0 0 12px 0' }}>
                         Case Study Content
@@ -616,7 +663,7 @@ const EditCaseStudy = () => {
                         </div>
                     </div>
                 </div>
-                 {/* ================= Author Information ================= */}
+                {/* ================= Author Information ================= */}
                 <div className="card bg-white p-4 shadow-card relative overflow-hidden mb-4">
                     <h2 style={{ fontSize: 'var(--text-paragraph)', fontWeight: 'var(--font-bold)', color: 'var(--color-primary)', margin: '0 0 12px 0' }}>
                         Author Information
@@ -639,7 +686,7 @@ const EditCaseStudy = () => {
                         </div>
                     </div>
                 </div>
-                 {/* ================= Action Buttons ================= */}
+                {/* ================= Action Buttons ================= */}
                 <div className="flex justify-end gap-3 mt-6">
                     <button
                         type="button"
@@ -658,7 +705,7 @@ const EditCaseStudy = () => {
                         Update Case Study
                     </button>
                 </div>
-             </motion.div>
+            </motion.div>
         </div>
 
     );

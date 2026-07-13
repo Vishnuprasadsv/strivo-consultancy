@@ -40,10 +40,12 @@ const Inquiries = () => {
     const [leftStatusFilter, setLeftStatusFilter] = useState("All");
     const [leftPage, setLeftPage] = useState(1);
     const leftItemsPerPage = 4;
+    const [isSearchOpen, setIsSearchOpen] = useState(false);
+    const [isStatusOpen, setIsStatusOpen] = useState(false);
 
     // Actions form state
     const [selectedAction, setSelectedAction] = useState("Reply by Email");
-    const [assignedPerson, setAssignedPerson] = useState("John Doe");
+    const [assignedPerson, setAssignedPerson] = useState("Vishnu");
     const [followUpDate, setFollowUpDate] = useState("");
 
     // Bottom overview table state
@@ -70,6 +72,14 @@ const Inquiries = () => {
     const [proposalTimeline, setProposalTimeline] = useState("30 Days");
     const [proposalNotes, setProposalNotes] = useState([]);
     const [proposalAttachments, setProposalAttachments] = useState([]);
+    const [showExportModal, setShowExportModal] = useState(false);
+    const [exportFromDate, setExportFromDate] = useState("");
+    const [exportToDate, setExportToDate] = useState("");
+    const [showAnalyticsModal, setShowAnalyticsModal] = useState(false);
+    const localDeleteAllRef = React.useRef(false);
+    const [showConfirmModal, setShowConfirmModal] = useState(false);
+    const [confirmModalAction, setConfirmModalAction] = useState(null); // "delete" | "delete_all"
+    const [deleteTargetId, setDeleteTargetId] = useState(null);
 
     useEffect(() => {
         fetchInquiries();
@@ -100,7 +110,11 @@ const Inquiries = () => {
                     setInquiries([]);
                     setSelected(null);
                     setHistoryInquiry(null);
-                    toast.info("All inquiries deleted by another admin.");
+                    if (localDeleteAllRef.current) {
+                        localDeleteAllRef.current = false;
+                    } else {
+                        toast.info("All inquiries deleted by another admin.");
+                    }
                 }
             } catch (err) {
                 console.error("Error parsing SSE event:", err);
@@ -228,7 +242,7 @@ Strivo Consultancy Team`);
         if (selectedAction === "Reply by Email") {
             emailSubject = `Re: Strivo Consultancy Inquiry - ${selected.service}`;
             emailMessage = "";
-            actionPayload = { status: "General Inquiry" };
+            actionPayload = { status: "Responded" };
         } else if (selectedAction === "Assign to Team") {
             emailSubject = `Inquiry Update - Strivo Consultancy`;
             emailMessage = `Hi ${selected.fullName},\n\nYour inquiry regarding ${selected.service} has been assigned to our team member ${assignedPerson}. They will reach out to you shortly.\n\nRegards,\nStrivo Consultancy Team`;
@@ -255,15 +269,26 @@ Strivo Consultancy Team`);
         setShowReplyModal(true);
     };
 
-    const handleDelete = async (id, e) => {
+    const handleDelete = (id, e) => {
         if (e) e.stopPropagation();
-        if (window.confirm("Are you sure you want to delete this inquiry?")) {
+        setDeleteTargetId(id);
+        setConfirmModalAction("delete");
+        setShowConfirmModal(true);
+    };
+
+    const handleDeleteAll = () => {
+        setConfirmModalAction("delete_all");
+        setShowConfirmModal(true);
+    };
+
+    const executeConfirmAction = async () => {
+        if (confirmModalAction === "delete" && deleteTargetId) {
             try {
-                await axios.delete(`${import.meta.env.VITE_API_BASE_URL}/api/inquiries/${id}`);
+                await axios.delete(`${import.meta.env.VITE_API_BASE_URL}/api/inquiries/${deleteTargetId}`);
                 toast.success("Inquiry deleted successfully!");
-                const updated = inquiries.filter(inq => inq._id !== id);
+                const updated = inquiries.filter(inq => inq._id !== deleteTargetId);
                 setInquiries(updated);
-                if (selected?._id === id) {
+                if (selected?._id === deleteTargetId) {
                     if (updated.length > 0) {
                         setSelected(updated[0]);
                     } else {
@@ -274,22 +299,23 @@ Strivo Consultancy Team`);
                 console.log(err);
                 toast.error("Failed to delete inquiry.");
             }
-        }
-    };
-
-    const handleDeleteAll = async () => {
-        if (window.confirm("WARNING: Are you sure you want to delete ALL inquiries? This action cannot be undone.")) {
+        } else if (confirmModalAction === "delete_all") {
             try {
+                localDeleteAllRef.current = true;
                 await axios.delete(`${import.meta.env.VITE_API_BASE_URL}/api/inquiries`);
-                toast.success("All inquiries deleted successfully!");
+                toast.info("All inquiries deleted successfully!");
                 setInquiries([]);
                 setSelected(null);
                 setHistoryInquiry(null);
             } catch (err) {
                 console.log(err);
                 toast.error("Failed to delete all inquiries.");
+                localDeleteAllRef.current = false;
             }
         }
+        setShowConfirmModal(false);
+        setConfirmModalAction(null);
+        setDeleteTargetId(null);
     };
 
     const handleReplyChange = (e) => {
@@ -310,7 +336,7 @@ Strivo Consultancy Team`);
                 inquiryId: selected._id
             });
 
-            const payload = pendingActionPayload || { status: "General Inquiry" };
+            const payload = pendingActionPayload || { status: "Responded" };
             await axios.put(`${import.meta.env.VITE_API_BASE_URL}/api/inquiries/${selected._id}`, payload);
 
             toast.success("Email sent and action applied successfully!");
@@ -321,6 +347,13 @@ Strivo Consultancy Team`);
         } catch (error) {
             console.log(error);
             toast.error("Failed to send email reply.");
+        }
+    };
+
+    const handleCopyMessage = () => {
+        if (selected && selected.message) {
+            navigator.clipboard.writeText(selected.message);
+            toast.success("Message copied to clipboard!");
         }
     };
 
@@ -344,6 +377,136 @@ Strivo Consultancy Team`);
 
     const handlePreviewProposal = () => {
         toast.success("Generating preview of proposal PDF...");
+    };
+
+    const handleExportPDF = () => {
+        if (!exportFromDate || !exportToDate) {
+            toast.error("Please select both From and To dates!");
+            return;
+        }
+
+        const start = new Date(exportFromDate);
+        start.setHours(0, 0, 0, 0);
+        
+        const end = new Date(exportToDate);
+        end.setHours(23, 59, 59, 999);
+
+        if (start > end) {
+            toast.error("From Date cannot be later than To Date!");
+            return;
+        }
+
+        // Filter inquiries within range
+        const filtered = inquiries.filter(inq => {
+            const date = new Date(inq.createdAt);
+            return date >= start && date <= end;
+        });
+
+        if (filtered.length === 0) {
+            toast.error("No inquiries found in this date range!");
+            return;
+        }
+
+        // Generate print window HTML
+        const printWindow = window.open("", "_blank");
+        
+        const rowsHTML = filtered.map(inq => {
+            const dateStr = new Date(inq.createdAt).toLocaleDateString(undefined, { dateStyle: 'medium' });
+            return `
+                <tr style="border-bottom: 1px solid #cbd5e1;">
+                    <td style="padding: 12px 10px; font-weight: 600; color: #0f172a; font-size: 11px;">${inq.fullName ? inq.fullName.toUpperCase() : ''}</td>
+                    <td style="padding: 12px 10px; color: #334155; font-size: 11px;">${inq.phone || "-"}</td>
+                    <td style="padding: 12px 10px; color: #334155; font-size: 11px; text-transform: lowercase;">${inq.email || ''}</td>
+                    <td style="padding: 12px 10px; color: #334155; font-size: 11px;">
+                        <div style="font-weight: 600; color: #0f172a;">${inq.service || ''}</div>
+                        <div style="font-size: 10px; color: #64748b; margin-top: 3px; line-height: 1.4;">${inq.message || ''}</div>
+                    </td>
+                    <td style="padding: 12px 10px; text-transform: uppercase; font-size: 10px; font-weight: 700;">
+                        <span style="color: ${inq.status === 'Closed' ? '#64748b' : inq.status === 'Proposals' ? '#f59e0b' : inq.status === 'New' ? '#10b981' : '#2563eb'};">
+                            ${(inq.status === 'In Progress' ? 'Responded' : inq.status).toUpperCase()}
+                        </span>
+                    </td>
+                    <td style="padding: 12px 10px; color: #334155; font-size: 11px;">${dateStr ? dateStr.toUpperCase() : ''}</td>
+                </tr>
+            `;
+        }).join("");
+
+        const docHTML = `
+            <html>
+                <head>
+                    <title>Strivo Consultancy - Inquiries Statement</title>
+                    <style>
+                        @media print {
+                            body { margin: 20px; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
+                            .no-print { display: none; }
+                        }
+                        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; margin: 40px auto; max-width: 900px; color: #0f172a; padding: 0 15px; }
+                        .header { display: flex; justify-content: space-between; border-bottom: 2px solid #0f172a; padding-bottom: 15px; margin-bottom: 20px; }
+                        .logo-text { font-size: 24px; font-weight: 800; color: #0f172a; text-transform: uppercase; letter-spacing: -0.5px; }
+                        .statement-title { font-size: 14px; font-weight: 700; color: #64748b; text-transform: uppercase; text-align: right; line-height: 1.4; }
+                        .metadata { display: flex; justify-content: space-between; font-size: 12px; margin-bottom: 25px; color: #475569; border-bottom: 1px solid #cbd5e1; padding-bottom: 15px; }
+                        table { width: 100%; border-collapse: collapse; text-align: left; margin-bottom: 30px; }
+                        th { background-color: #f8fafc; border-bottom: 2px solid #94a3b8; padding: 12px 10px; font-weight: 700; text-transform: uppercase; color: #475569; font-size: 10px; }
+                        .footer { border-top: 1px solid #cbd5e1; padding-top: 15px; display: flex; justify-content: space-between; font-size: 10px; color: #64748b; margin-top: 50px; }
+                    </style>
+                </head>
+                <body>
+                    <div class="header">
+                        <div>
+                            <div class="logo-text">Strivo Consultancy</div>
+                            <div style="font-size: 10px; color: #64748b; margin-top: 2px;">TechPark Tower, Kakkanad, Kochi, Kerala</div>
+                        </div>
+                        <div class="statement-title">
+                            Inquiries Statement<br/>
+                            <span style="font-size: 11px; font-weight: normal; color: #475569;">Range: ${exportFromDate} to ${exportToDate}</span>
+                        </div>
+                    </div>
+                    
+                    <div class="metadata">
+                        <div>
+                            <strong>Generated On:</strong> ${new Date().toLocaleString()}<br/>
+                            <strong>Period:</strong> ${exportFromDate} - ${exportToDate}
+                        </div>
+                        <div style="text-align: right;">
+                            <strong>Total Entries:</strong> ${filtered.length}<br/>
+                            <strong>Role:</strong> Administrator
+                        </div>
+                    </div>
+
+                    <table>
+                        <thead>
+                            <tr>
+                                <th style="width: 18%;">Client Name</th>
+                                <th style="width: 13%;">Phone</th>
+                                <th style="width: 20%;">Email</th>
+                                <th style="width: 27%;">Inquiry Details</th>
+                                <th style="width: 10%;">Status</th>
+                                <th style="width: 12%;">Date</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${rowsHTML}
+                        </tbody>
+                    </table>
+
+                    <div class="footer">
+                        <div>© ${new Date().getFullYear()} Strivo Consultancy. Confidential document for internal use only.</div>
+                        <div style="text-align: right;">Page 1 of 1</div>
+                    </div>
+
+                    <script>
+                        window.onload = function() {
+                            window.print();
+                            setTimeout(function() { window.close(); }, 500);
+                        }
+                    </script>
+                </body>
+            </html>
+        `;
+
+        printWindow.document.write(docHTML);
+        printWindow.document.close();
+        setShowExportModal(false);
     };
 
     // Clean status dot colors
@@ -388,6 +551,48 @@ Strivo Consultancy Team`);
         (tablePage - 1) * tableItemsPerPage,
         tablePage * tableItemsPerPage
     );
+
+    // Inquiries status totals analytics
+    const totalInquiries = inquiries.length;
+    
+    const statusCounts = inquiries.reduce((acc, curr) => {
+        const mapped = curr.status === "In Progress" ? "Responded" : curr.status;
+        acc[mapped] = (acc[mapped] || 0) + 1;
+        return acc;
+    }, { New: 0, Responded: 0, Proposals: 0, Closed: 0 });
+
+    const radius = 40;
+    const circumference = 2 * Math.PI * radius; // ~251.327
+    const totalInquiriesForDonut = totalInquiries || 1;
+    const statusColors = {
+        New: "var(--color-success)",
+        Responded: "var(--color-primary)",
+        Proposals: "var(--color-warning)",
+        Closed: "#94a3b8" // Slate gray
+    };
+
+    const statusMap = Object.keys(statusCounts).map(name => ({
+        name,
+        count: statusCounts[name],
+        color: statusColors[name]
+    })).sort((a, b) => b.count - a.count);
+
+    let currentOffset = 0;
+    const donutSegments = [];
+    statusMap.forEach(segment => {
+        if (segment.count > 0) {
+            const percentage = segment.count / totalInquiriesForDonut;
+            const strokeLength = percentage * circumference;
+            const strokeOffset = circumference - strokeLength + currentOffset;
+
+            donutSegments.push({
+                color: segment.color,
+                strokeOffset: strokeOffset
+            });
+
+            currentOffset = currentOffset - strokeLength;
+        }
+    });
 
     if (loading) {
         return <LoadingIndicator />;
@@ -790,7 +995,15 @@ Strivo Consultancy Team`);
                                 Delete All
                             </button>
                             <button
-                                onClick={() => toast.success("Inquiry list exported successfully")}
+                                onClick={() => setShowAnalyticsModal(true)}
+                                className="bg-white border border-[var(--color-primary)] text-[var(--color-primary)] hover:text-white hover:bg-[var(--color-primary)] px-2.5 py-1.5 rounded-[var(--radius-sm)] flex items-center justify-center gap-2 transition cursor-pointer h-8 text-xs font-normal w-full sm:w-auto border-solid"
+                                style={{ fontWeight: 'normal' }}
+                            >
+                                <FiBarChart2 size={13} />
+                                Analytics
+                            </button>
+                            <button
+                                onClick={() => setShowExportModal(true)}
                                 className="btn px-2.5 py-1.5 flex items-center justify-center gap-2 cursor-pointer border-none h-8 text-xs font-normal w-full sm:w-auto text-white"
                                 style={{ fontWeight: 'normal' }}
                             >
@@ -806,57 +1019,78 @@ Strivo Consultancy Team`);
             <div className="flex-grow py-8 px-4 sm:px-8 md:px-16 lg:px-24">
                 <div className="max-w-[98%] mx-auto">
                     
-                    {/* Filter and Search Bar Card matching CaseStudyFilters.jsx */}
-                    <div className="card bg-white p-4 mb-6 shadow-md border border-[var(--color-border)]" style={{ borderRadius: 'var(--radius-sm)' }}>
-                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                            
-                            {/* Status Filter select with Custom Dropdown Arrow */}
-                            <div className="relative">
-                                <select
-                                    value={leftStatusFilter}
-                                    onChange={(e) => {
-                                        setLeftStatusFilter(e.target.value);
-                                        setLeftPage(1);
-                                    }}
-                                    className="appearance-none w-full bg-white border border-[var(--color-border)] rounded-[var(--radius-sm)] pl-4 pr-10 py-2.5 text-sm text-[var(--color-paragraph)] outline-none focus:border-[var(--color-primary)] cursor-pointer transition font-normal"
-                                >
-                                    <option value="All">All Status</option>
-                                    <option value="New">New</option>
-                                    <option value="Responded">Responded</option>
-                                    <option value="General Inquiry">General Inquiry</option>
-                                    <option value="Proposals">Proposals</option>
-                                    <option value="Closed">Closed</option>
-                                </select>
-                                <div className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-[var(--color-paragraph)] opacity-60">
-                                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M19 9l-7 7-7-7" />
-                                    </svg>
-                                </div>
-                            </div>
-
-                            {/* Search Box input with Search icon */}
-                            <div className="relative">
-                                <FiSearch className="absolute left-4 top-1/2 -translate-y-1/2 text-[var(--color-paragraph)] opacity-60 text-base" />
-                                <input
-                                    type="text"
-                                    placeholder="Search by name, email or company..."
-                                    value={leftSearch}
-                                    onChange={(e) => {
-                                        setLeftSearch(e.target.value);
-                                        setLeftPage(1);
-                                    }}
-                                    className="w-full bg-[var(--color-sub-bg)] border border-[var(--color-border)] rounded-[var(--radius-sm)] py-2.5 pl-11 pr-4 text-sm text-[var(--color-paragraph)] placeholder-gray-400 outline-none focus:border-[var(--color-primary)] transition font-normal"
-                                />
-                            </div>
-                        </div>
-                    </div>
-
                     {/* 2-Column Master-Detail Layout */}
                     <div className="grid grid-cols-1 lg:grid-cols-[400px_1fr] gap-5 mb-8 items-start">
                         
                         {/* Column 1: Inquiry List */}
-                        <div className="bg-white p-3 border border-[var(--color-border)] rounded-[var(--radius-sm)] h-auto lg:h-[400px] min-h-[300px] flex flex-col justify-between shadow-sm">
-                            <div className="flex-1 overflow-y-auto scrollbar-hide space-y-2 pr-1">
+                        <div className="bg-white p-4 border border-[var(--color-border)] rounded-[var(--radius-sm)] h-auto lg:h-[430px] min-h-[350px] flex flex-col justify-between shadow-sm">
+                            {/* Toolbar header exactly like ArticlesAdmin.jsx */}
+                            <div className="flex justify-between items-center mb-3 pb-2 border-b border-[var(--color-border)]/65">
+                                <h3 className="font-bold text-primary text-xs uppercase tracking-wider" style={{ margin: 0 }}>
+                                    Inquiries
+                                </h3>
+                                <div className="flex items-center gap-1.5">
+                                    {/* Search Query Input & Toggle Button */}
+                                    <div className="flex items-center gap-1.5">
+                                        {isSearchOpen && (
+                                            <input
+                                                type="text"
+                                                value={leftSearch}
+                                                onChange={(e) => {
+                                                    setLeftSearch(e.target.value);
+                                                    setLeftPage(1);
+                                                }}
+                                                placeholder="Search Inquiries..."
+                                                className="border border-[var(--color-border)] rounded-[var(--radius-sm)] px-2 py-0.5 text-xs outline-none bg-[var(--color-sub-bg)] focus:bg-white text-[var(--color-black)] w-28 sm:w-36 transition-all duration-300 font-medium"
+                                            />
+                                        )}
+                                        <button
+                                            onClick={() => setIsSearchOpen(!isSearchOpen)}
+                                            className={`w-7 h-7 rounded-full flex items-center justify-center border transition-all cursor-pointer ${
+                                                isSearchOpen 
+                                                    ? 'border-[var(--color-primary)] bg-[var(--color-primary)] text-white' 
+                                                    : 'border-[var(--color-border)] bg-white text-[var(--color-paragraph)] hover:bg-[var(--color-sub-bg)]'
+                                            }`}
+                                            title="Search Inquiries"
+                                        >
+                                            <FiSearch size={12} />
+                                        </button>
+                                    </div>
+
+                                    {/* Status Dropdown & Toggle Button */}
+                                    <div className="flex items-center gap-1.5">
+                                        {isStatusOpen && (
+                                            <select
+                                                value={leftStatusFilter}
+                                                onChange={(e) => {
+                                                    setLeftStatusFilter(e.target.value);
+                                                    setLeftPage(1);
+                                                }}
+                                                className="border border-[var(--color-border)] rounded-[var(--radius-sm)] px-1.5 py-0.5 text-xs outline-none bg-white text-[var(--color-black)] transition-all duration-300 font-semibold cursor-pointer"
+                                            >
+                                                <option value="All">All Status</option>
+                                                <option value="New">New</option>
+                                                <option value="Responded">Responded</option>
+                                                <option value="Proposals">Proposals</option>
+                                                <option value="Closed">Closed</option>
+                                            </select>
+                                        )}
+                                        <button
+                                            onClick={() => setIsStatusOpen(!isStatusOpen)}
+                                            className={`w-7 h-7 rounded-full flex items-center justify-center border transition-all cursor-pointer ${
+                                                isStatusOpen 
+                                                    ? 'border-[var(--color-primary)] bg-[var(--color-primary)] text-white' 
+                                                    : 'border-[var(--color-border)] bg-white text-[var(--color-paragraph)] hover:bg-[var(--color-sub-bg)]'
+                                            }`}
+                                            title="Filter Status"
+                                        >
+                                            <FiChevronDown size={12} className={`transition-transform duration-200 ${isStatusOpen ? 'rotate-180' : ''}`} />
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div className="flex-1 overflow-y-auto scrollbar-hide space-y-2 pr-1 mb-2">
                                 {paginatedLeftInquiries.length === 0 ? (
                                     <p className="py-12 text-center text-gray-400 text-sm font-semibold">
                                         No inquiries found matching filters.
@@ -884,10 +1118,10 @@ Strivo Consultancy Team`);
                                                         </div>
                                                         <div className="min-w-0 text-left">
                                                             <h3 className="font-bold text-[var(--color-black)] text-sm truncate leading-tight">
-                                                                {item.fullName}
+                                                                {item.fullName ? item.fullName.toUpperCase() : ''}
                                                             </h3>
                                                             <p className="text-xs text-gray-455 font-semibold truncate mt-0.5">
-                                                                {item.company || "Individual Client"}
+                                                                {item.company ? item.company.toUpperCase() : "INDIVIDUAL CLIENT"}
                                                             </p>
                                                         </div>
                                                     </div>
@@ -897,13 +1131,13 @@ Strivo Consultancy Team`);
                                                         <div className="flex items-center gap-1.5 select-none">
                                                             <span className={`w-1.5 h-1.5 rounded-full ${getStatusDotColor(item.status)}`} />
                                                             <span className="text-[11px] font-semibold text-[var(--color-black)] uppercase tracking-wider">
-                                                                {cardStatus}
+                                                                {cardStatus ? cardStatus.toUpperCase() : ''}
                                                             </span>
                                                         </div>
                                                         
                                                         <div className="flex items-center gap-2">
                                                             <span className="text-xs text-gray-400 font-semibold group-hover:hidden">
-                                                                {new Date(item.createdAt).toLocaleDateString(undefined, { day: 'numeric', month: 'short', year: 'numeric' })}
+                                                                {new Date(item.createdAt).toLocaleDateString(undefined, { day: 'numeric', month: 'short', year: 'numeric' }).toUpperCase()}
                                                             </span>
                                                             {/* Reconfigured card trash icon styled to match primary blue brand theme */}
                                                             <button
@@ -947,77 +1181,76 @@ Strivo Consultancy Team`);
                         </div>
 
                         {/* Column 2: Inquiry Details + Conversation (Stacked Panel) */}
-                        <div className="bg-white p-4 border border-[var(--color-border)] rounded-[var(--radius-sm)] h-auto lg:h-[400px] flex flex-col justify-between shadow-sm text-left">
+                        <div className="bg-white p-4 border border-[var(--color-border)] rounded-[var(--radius-sm)] h-auto lg:h-[430px] flex flex-col justify-between shadow-sm text-left">
                             {selected ? (
-                                <div className="flex flex-col h-full justify-between overflow-y-auto scrollbar-hide space-y-3 pr-1">
+                                <div className="flex flex-col h-full justify-between overflow-y-auto scrollbar-hide pr-1">
                                     
-                                    {/* SECTION 1: Client Info (Flex layout to show details clear and full) */}
-                                    <div>
-                                        <div className="flex justify-between items-center border-b border-[var(--color-border)] pb-2 mb-2">
-                                            <div>
-                                                <h2 className="text-base font-bold text-[var(--color-primary)] uppercase">{selected.fullName}</h2>
-                                                <div className="flex items-center gap-2 mt-1 text-xs text-gray-450 font-bold">
-                                                    <span>Status:</span>
-                                                    {/* Switched to clean plain text format with status dot indicator */}
-                                                    <div className="flex items-center gap-1.5 select-none">
-                                                        <span className={`w-1.5 h-1.5 rounded-full ${getStatusDotColor(selected.status)}`} />
-                                                        <span className="text-xs font-semibold text-[var(--color-black)] uppercase tracking-wider">
-                                                            {selected.status === 'In Progress' ? 'Responded' : selected.status}
-                                                        </span>
-                                                    </div>
-                                                </div>
+                                    {/* SECTION 1: Client Info Header */}
+                                    <div className="flex flex-col gap-1 pb-3 border-b border-[var(--color-border)] select-none">
+                                        <div className="flex justify-between items-center">
+                                            <h2 className="text-base font-bold text-black uppercase tracking-wide">{selected.fullName ? selected.fullName.toUpperCase() : ''}</h2>
+                                            <div className="flex items-center gap-1.5">
+                                                <span className={`w-1.5 h-1.5 rounded-full ${getStatusDotColor(selected.status)}`} />
+                                                <span className="text-xs font-bold text-[var(--color-black)] uppercase tracking-wider">
+                                                    {(selected.status === 'In Progress' ? 'Responded' : selected.status).toUpperCase()}
+                                                </span>
                                             </div>
                                         </div>
-
-                                        {/* Maintained wide margins & proper spacing in details view page metadata row */}
-                                        <div className="flex flex-wrap gap-x-8 gap-y-3.5 text-xs text-[var(--color-black)] mb-1">
-                                            <div className="flex items-center gap-3">
-                                                <FiMail className="text-[var(--color-primary)] shrink-0" size={14} />
-                                                <span className="font-normal">{selected.email}</span>
-                                            </div>
-                                            <div className="flex items-center gap-3">
-                                                <FiBriefcase className="text-[var(--color-primary)] shrink-0" size={14} />
-                                                <span className="font-normal">{selected.service}</span>
-                                            </div>
-                                            <div className="flex items-center gap-2.5">
-                                                <FiPhone className="text-[var(--color-primary)] shrink-0" size={14} />
-                                                <span className="font-normal">{selected.phone || "-"}</span>
-                                            </div>
-                                            <div className="flex items-center gap-2.5">
-                                                <FiCalendar className="text-[var(--color-primary)] shrink-0" size={14} />
-                                                <span className="font-normal">{new Date(selected.createdAt).toLocaleString()}</span>
-                                            </div>
-                                            {/* Assigned To and Last Activity pills styled as clean, borderless padded pills */}
-                                            <div className="flex items-center gap-2 text-xs text-gray-550 font-normal bg-gray-50 px-2.5 py-1 rounded-[var(--radius-sm)] border border-gray-200">
-                                                <span>Assigned: <span className="text-[var(--color-primary)] font-semibold">{selected.assignedTo || "Unassigned"}</span></span>
-                                            </div>
-                                            <div className="flex items-center gap-2 text-xs text-gray-550 font-normal bg-gray-50 px-2.5 py-1 rounded-[var(--radius-sm)] border border-gray-200">
-                                                <span>Last Activity: {new Date(selected.updatedAt).toLocaleDateString()}</span>
-                                            </div>
+                                        <div className="flex justify-between text-xs text-[var(--color-paragraph)] font-normal mt-0.5">
+                                            <span className="font-semibold select-text" style={{ textTransform: 'lowercase' }}>{selected.email || ''}</span>
+                                            <span className="font-semibold">{selected.phone || "-"}</span>
+                                        </div>
+                                        <div className="flex justify-between text-xs text-[var(--color-paragraph)] font-normal">
+                                            <span className="font-semibold">{selected.service || ''}</span>
+                                            <span className="font-semibold">{new Date(selected.createdAt).toLocaleString(undefined, { dateStyle: 'medium', timeStyle: 'short' }).toUpperCase()}</span>
                                         </div>
                                     </div>
 
-                                    {/* SECTION 2: Message Content (max-h-24 and scrollbar-hide) */}
-                                    <div className="my-1 max-h-[100px] overflow-y-auto scrollbar-hide">
-                                        <h3 className="text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-0.5 font-normal select-none" style={{ fontWeight: 'normal' }}>Message Query</h3>
-                                        <p className="text-xs text-[var(--color-paragraph)] leading-relaxed whitespace-pre-wrap font-normal">
-                                            "{selected.message}"
-                                        </p>
+                                    {/* SECTION 2: Assigned & Last Activity Columns */}
+                                    <div className="grid grid-cols-2 border-b border-[var(--color-border)] py-3 text-xs font-normal">
+                                        <div className="border-r border-[var(--color-border)] pr-4 text-left">
+                                            <div className="text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-1">ASSIGNED TO</div>
+                                            <div className="text-[var(--color-black)] font-semibold">{selected.assignedTo ? selected.assignedTo.toUpperCase() : "UNASSIGNED"}</div>
+                                        </div>
+                                        <div className="pl-4 text-left">
+                                            <div className="text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-1">LAST ACTIVITY</div>
+                                            <div className="text-[var(--color-black)] font-semibold">{new Date(selected.updatedAt).toLocaleDateString(undefined, { dateStyle: 'medium' }).toUpperCase()}</div>
+                                        </div>
                                     </div>
 
-                                    {/* SECTION 3: Actions & Submit */}
-                                    <div className="pt-3 border-t border-[var(--color-border)] flex flex-col sm:flex-row items-stretch sm:items-end justify-between gap-3 bg-white z-10">
-                                        <div className="flex flex-col sm:flex-row items-stretch sm:items-end gap-2.5 flex-grow">
-                                            
-                                            <div className="flex flex-col gap-1 w-full sm:w-[185px] sm:min-w-[185px]">
-                                                <label className="text-[10px] font-bold text-gray-400 uppercase tracking-wider">
-                                                    Actions
-                                                </label>
-                                                <div className="relative">
+                                    {/* SECTION 3: Message Content Box */}
+                                    <div className="flex flex-col flex-grow py-3 min-h-[110px] overflow-hidden justify-between">
+                                        <div className="flex justify-between items-center mb-1.5 select-none">
+                                            <h3 className="text-[10px] font-bold text-gray-400 uppercase tracking-wider">MESSAGE</h3>
+                                            <button 
+                                                onClick={handleCopyMessage}
+                                                className="text-[10px] font-bold text-[var(--color-primary)] hover:underline cursor-pointer bg-transparent border-none outline-none"
+                                            >
+                                                COPY
+                                            </button>
+                                        </div>
+                                        <div className="flex-grow overflow-y-auto scrollbar-hide bg-gray-50 p-3 rounded-[var(--radius-sm)] border border-gray-100 text-left">
+                                            <p className="text-xs text-[var(--color-paragraph)] leading-relaxed whitespace-pre-wrap font-normal">
+                                                {selected.message || ''}
+                                            </p>
+                                        </div>
+                                    </div>
+
+                                    {/* SECTION 4: Action & Submit Footer */}
+                                    <div className="pt-3 border-t border-[var(--color-border)] flex flex-col gap-2 bg-white">
+                                        <div className="flex justify-between items-center select-none">
+                                            <label className="text-[10px] font-bold text-gray-400 uppercase tracking-wider">
+                                                Action
+                                            </label>
+                                        </div>
+                                        
+                                        <div className="flex flex-wrap items-center justify-between gap-3">
+                                            <div className="flex flex-wrap items-center gap-2 flex-grow">
+                                                <div className="relative w-full sm:w-[155px]">
                                                     <select
                                                         value={selectedAction}
                                                         onChange={(e) => setSelectedAction(e.target.value)}
-                                                        className="appearance-none w-full bg-white border border-[var(--color-border)] rounded-[var(--radius-sm)] pl-3 pr-8 py-2 text-xs text-[var(--color-paragraph)] outline-none focus:border-[var(--color-primary)] cursor-pointer transition font-normal font-medium"
+                                                        className="appearance-none w-full bg-white border border-[var(--color-border)] rounded-[var(--radius-sm)] pl-3 pr-8 py-2 text-xs text-[var(--color-paragraph)] outline-none focus:border-[var(--color-primary)] cursor-pointer transition font-normal font-semibold"
                                                     >
                                                         <option value="Reply by Email">Reply by Email</option>
                                                         <option value="Convert to Proposal">Convert to Proposal</option>
@@ -1031,22 +1264,17 @@ Strivo Consultancy Team`);
                                                         </svg>
                                                     </div>
                                                 </div>
-                                            </div>
 
-                                            {selectedAction === "Assign to Team" && (
-                                                <div className="flex flex-col gap-1 w-full sm:w-[185px] sm:min-w-[185px] animate-fadeIn">
-                                                    <label className="text-[10px] font-bold text-gray-400 uppercase tracking-wider">
-                                                        Select Team Member
-                                                    </label>
-                                                    <div className="relative">
+                                                {selectedAction === "Assign to Team" && (
+                                                    <div className="relative w-full sm:w-[145px] animate-fadeIn">
                                                         <select
                                                             value={assignedPerson}
                                                             onChange={(e) => setAssignedPerson(e.target.value)}
                                                             className="appearance-none w-full bg-white border border-[var(--color-border)] rounded-[var(--radius-sm)] pl-3 pr-8 py-2 text-xs text-[var(--color-paragraph)] outline-none focus:border-[var(--color-primary)] cursor-pointer transition font-normal"
                                                         >
-                                                            <option value="John Doe">John Doe</option>
-                                                            <option value="Jane Smith">Jane Smith</option>
-                                                            <option value="Mike Johnson">Mike Johnson</option>
+                                                            <option value="Vishnu">Vishnu</option>
+                                                            <option value="Namitha">Namitha</option>
+                                                            <option value="Najma">Najma</option>
                                                         </select>
                                                         <div className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-[var(--color-paragraph)] opacity-60">
                                                             <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -1054,31 +1282,25 @@ Strivo Consultancy Team`);
                                                             </svg>
                                                         </div>
                                                     </div>
-                                                </div>
-                                            )}
+                                                )}
 
-                                            {selectedAction === "Schedule Follow-up" && (
-                                                <div className="flex flex-col gap-1 w-full sm:w-[185px] sm:min-w-[185px] animate-fadeIn">
-                                                    <label className="text-[10px] font-bold text-gray-400 uppercase tracking-wider">
-                                                        Select Follow-up Date
-                                                    </label>
-                                                    <input
-                                                        type="date"
-                                                        value={followUpDate}
-                                                        onChange={(e) => setFollowUpDate(e.target.value)}
-                                                        className="w-full border border-[var(--color-border)] rounded-[var(--radius-sm)] px-3 py-1.5 text-xs text-[var(--color-paragraph)] focus:outline-none focus:border-[var(--color-primary)] bg-white font-normal"
-                                                    />
-                                                </div>
-                                            )}
-                                        </div>
+                                                {selectedAction === "Schedule Follow-up" && (
+                                                    <div className="w-full sm:w-[145px] animate-fadeIn">
+                                                        <input
+                                                            type="date"
+                                                            value={followUpDate}
+                                                            onChange={(e) => setFollowUpDate(e.target.value)}
+                                                            className="w-full border border-[var(--color-border)] rounded-[var(--radius-sm)] px-3 py-1.5 text-xs text-[var(--color-paragraph)] focus:outline-none focus:border-[var(--color-primary)] bg-white font-normal h-[34px]"
+                                                        />
+                                                    </div>
+                                                )}
+                                            </div>
 
-                                        <div className="sm:self-end">
                                             <button
                                                 onClick={handleActionSubmit}
-                                                className="btn cursor-pointer text-xs font-normal flex items-center justify-center gap-1.5 w-28 border-none h-7.5 text-white px-2 py-1"
+                                                className="bg-[var(--color-primary)] hover:bg-[var(--color-primary-hover)] text-white font-semibold cursor-pointer rounded-[var(--radius-sm)] text-xs flex items-center justify-center border-none h-[34px] px-5 transition shrink-0"
                                                 style={{ fontWeight: 'normal' }}
                                             >
-                                                <FiSend size={12} />
                                                 Submit
                                             </button>
                                         </div>
@@ -1151,10 +1373,10 @@ Strivo Consultancy Team`);
                                                 </div>
                                                 <div className="min-w-0 flex-1">
                                                     <h3 className="font-bold text-[var(--color-black)] text-sm truncate leading-snug">
-                                                        {item.fullName}
+                                                        {item.fullName ? item.fullName.toUpperCase() : ''}
                                                     </h3>
                                                     <p className="text-[10px] text-gray-400 font-semibold truncate mt-0.5">
-                                                        {item.company || "Individual Client"}
+                                                        {item.company ? item.company.toUpperCase() : "INDIVIDUAL CLIENT"}
                                                     </p>
                                                 </div>
                                             </div>
@@ -1162,19 +1384,19 @@ Strivo Consultancy Team`);
                                             {/* Card Mid: Metadata Grid */}
                                             <div className="space-y-2 text-left text-xs font-semibold text-[var(--color-black)] flex-grow">
                                                 <div className="flex items-center justify-between gap-2">
-                                                    <span className="text-[10px] text-gray-400 uppercase tracking-wider">Service</span>
-                                                    <span className="font-normal truncate max-w-[70%] text-[var(--color-black)]">{item.service}</span>
+                                                    <span className="text-[10px] text-gray-400 uppercase tracking-wider">SERVICE</span>
+                                                    <span className="font-normal truncate max-w-[70%] text-[var(--color-black)]">{item.service || ''}</span>
                                                 </div>
                                                 <div className="flex items-center justify-between gap-2">
-                                                    <span className="text-[10px] text-gray-400 uppercase tracking-wider">Follow-up</span>
-                                                    <span className="font-normal text-[var(--color-black)]">{nextFollowUpStr}</span>
+                                                    <span className="text-[10px] text-gray-400 uppercase tracking-wider">FOLLOW-UP</span>
+                                                    <span className="font-normal text-[var(--color-black)]">{nextFollowUpStr ? nextFollowUpStr.toUpperCase() : ''}</span>
                                                 </div>
                                                 <div className="flex items-center justify-between gap-2">
-                                                    <span className="text-[10px] text-gray-400 uppercase tracking-wider">Status</span>
+                                                    <span className="text-[10px] text-gray-400 uppercase tracking-wider">STATUS</span>
                                                     <div className="flex items-center gap-1.5 select-none">
                                                         <span className={`w-1.5 h-1.5 rounded-full ${getStatusDotColor(item.status)}`} />
                                                         <span className="text-[11px] font-semibold text-[var(--color-black)] uppercase tracking-wider">
-                                                            {tblStatus}
+                                                            {tblStatus ? tblStatus.toUpperCase() : ''}
                                                         </span>
                                                     </div>
                                                 </div>
@@ -1228,7 +1450,7 @@ Strivo Consultancy Team`);
 
             {/* Email Reply Modal */}
             {showReplyModal && (
-                <div className="fixed inset-0 z-[99999] flex items-center justify-center bg-black/50 backdrop-blur-xs p-4">
+                <div className="fixed inset-0 z-[999999] flex items-center justify-center bg-black/50 backdrop-blur-xs p-4">
                     {/* Backdrop click closer */}
                     <div className="absolute inset-0" onClick={() => {
                         setShowReplyModal(false);
@@ -1280,6 +1502,222 @@ Strivo Consultancy Team`);
                                 style={{ fontWeight: 'normal' }}
                             >
                                 Send
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
+            {/* Custom Confirmation Modal */}
+            {showConfirmModal && (
+                <div className="fixed inset-0 z-[999999] flex items-center justify-center bg-black/50 backdrop-blur-xs p-4">
+                    <div className="bg-white p-6 rounded-[var(--radius-sm)] shadow-xl max-w-sm w-full mx-4 border border-[var(--color-border)] text-left font-primary font-normal z-[999999]">
+                        <h3 className="text-[var(--color-primary)] font-bold text-lg mb-2">
+                            {confirmModalAction === "delete_all" ? "Delete All Inquiries" : "Delete Inquiry"}
+                        </h3>
+                        <p className="text-[var(--color-paragraph)] text-sm mb-5 font-semibold">
+                            {confirmModalAction === "delete_all"
+                                ? "WARNING: Are you sure you want to delete ALL inquiries? This action cannot be undone."
+                                : "Are you sure you want to delete this inquiry? This action cannot be undone."}
+                        </p>
+                        <div className="flex justify-end gap-3 font-normal">
+                            <button
+                                onClick={() => {
+                                    setShowConfirmModal(false);
+                                    setConfirmModalAction(null);
+                                    setDeleteTargetId(null);
+                                }}
+                                className="border border-[var(--color-primary)] text-[var(--color-primary)] bg-transparent hover:bg-[var(--color-primary)] hover:text-white transition font-semibold cursor-pointer rounded-[var(--radius-sm)] text-xs flex items-center justify-center border-solid h-8.5 px-4"
+                                style={{ fontWeight: 'normal' }}
+                            >
+                                Cancel
+                            </button>
+                            <button
+                                onClick={executeConfirmAction}
+                                className="bg-[var(--color-primary)] hover:bg-[var(--color-primary-hover)] text-white font-semibold cursor-pointer rounded-[var(--radius-sm)] text-xs flex items-center justify-center border-none h-8.5 px-4"
+                                style={{ fontWeight: 'normal' }}
+                            >
+                                Confirm
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
+            
+            {/* Date Range Export Modal */}
+            {showExportModal && (
+                <div className="fixed inset-0 z-[999999] flex items-center justify-center bg-black/50 backdrop-blur-xs p-4">
+                    <div className="bg-white p-6 rounded-[var(--radius-sm)] shadow-xl max-w-sm w-full mx-4 border border-[var(--color-border)] text-left font-primary font-normal z-[999999]">
+                        <h3 className="text-[var(--color-primary)] font-bold text-lg mb-4">
+                            Export Inquiries to PDF
+                        </h3>
+                        <div className="flex flex-col gap-4 mb-6">
+                            <div className="flex flex-col gap-1.5">
+                                <label className="text-xs text-[var(--color-black)] font-semibold uppercase tracking-wider">From Date</label>
+                                <input
+                                    type="date"
+                                    value={exportFromDate}
+                                    onChange={(e) => setExportFromDate(e.target.value)}
+                                    className="w-full border border-[var(--color-border)] rounded-[var(--radius-sm)] px-3 py-2 text-xs text-[var(--color-paragraph)] focus:outline-none focus:border-[var(--color-primary)] bg-white font-normal"
+                                />
+                            </div>
+                            <div className="flex flex-col gap-1.5">
+                                <label className="text-xs text-[var(--color-black)] font-semibold uppercase tracking-wider">To Date</label>
+                                <input
+                                    type="date"
+                                    value={exportToDate}
+                                    onChange={(e) => setExportToDate(e.target.value)}
+                                    className="w-full border border-[var(--color-border)] rounded-[var(--radius-sm)] px-3 py-2 text-xs text-[var(--color-paragraph)] focus:outline-none focus:border-[var(--color-primary)] bg-white font-normal"
+                                />
+                            </div>
+                        </div>
+                        <div className="flex justify-end gap-3">
+                            <button
+                                onClick={() => {
+                                    setShowExportModal(false);
+                                    setExportFromDate("");
+                                    setExportToDate("");
+                                }}
+                                className="border border-[var(--color-primary)] text-[var(--color-primary)] bg-transparent hover:bg-[var(--color-primary)] hover:text-white transition font-semibold cursor-pointer rounded-[var(--radius-sm)] text-xs flex items-center justify-center border-solid h-8.5 px-4"
+                                style={{ fontWeight: 'normal' }}
+                            >
+                                Cancel
+                            </button>
+                            <button
+                                onClick={handleExportPDF}
+                                className="bg-[var(--color-primary)] hover:bg-[var(--color-primary-hover)] text-white font-semibold cursor-pointer rounded-[var(--radius-sm)] text-xs flex items-center justify-center border-none h-8.5 px-4"
+                                style={{ fontWeight: 'normal' }}
+                            >
+                                Export
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
+
+            {/* Analytics Modal */}
+            {showAnalyticsModal && (
+                <div className="fixed inset-0 z-[999999] flex items-center justify-center bg-black/50 backdrop-blur-xs p-4">
+                    <div className="bg-white rounded-[var(--radius-sm)] shadow-xl max-w-4xl w-full mx-4 border border-[var(--color-border)] flex flex-col max-h-[85vh] overflow-hidden">
+                        {/* Header */}
+                        <div className="p-6 border-b border-[var(--color-border)] flex justify-between items-center bg-white select-none">
+                            <div className="text-left">
+                                <h2 className="text-xl font-bold text-[var(--color-primary)] uppercase tracking-tight" style={{ margin: 0 }}>
+                                    Inquiries Analytics
+                                </h2>
+                                <p className="text-xs text-gray-555 font-medium mt-1" style={{ margin: '4px 0 0 0' }}>
+                                    Overview of client inquiry statuses and pipeline
+                                </p>
+                            </div>
+                            <button
+                                onClick={() => setShowAnalyticsModal(false)}
+                                className="w-8 h-8 rounded-full bg-[var(--color-sub-bg)] hover:bg-red-500/20 hover:text-red-600 transition flex items-center justify-center text-[var(--color-paragraph)] opacity-60 hover:opacity-100 cursor-pointer text-xs shrink-0 border-none outline-none"
+                            >
+                                ✕
+                            </button>
+                        </div>
+
+                        {/* Body */}
+                        <div className="p-6 bg-[var(--color-sub-bg)]/35 overflow-y-auto flex-1 text-left">
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                {/* Left Column: Donut Chart / Status Breakdown */}
+                                <div className="card p-5 bg-white shadow-sm border border-[var(--color-border)] rounded-[var(--radius-sm)] flex flex-col items-center justify-center text-center">
+                                    <h3 className="text-xs font-bold text-[var(--color-black)] uppercase tracking-wider mb-4" style={{ margin: 0 }}>
+                                        Status Breakdown
+                                    </h3>
+
+                                    {totalInquiries > 0 ? (
+                                        <>
+                                            <div className="relative w-36 h-36 mb-4">
+                                                <svg className="w-full h-full transform -rotate-90" viewBox="0 0 100 100">
+                                                    <circle cx="50" cy="50" r="40" fill="transparent" stroke="var(--color-border)" strokeWidth="10" />
+                                                    {donutSegments.map((segment, idx) => (
+                                                        <circle
+                                                            key={idx}
+                                                            cx="50"
+                                                            cy="50"
+                                                            r={radius}
+                                                            fill="transparent"
+                                                            stroke={segment.color}
+                                                            strokeWidth="10"
+                                                            strokeDasharray={circumference}
+                                                            strokeDashoffset={segment.strokeOffset}
+                                                            strokeLinecap="round"
+                                                            style={{ transition: 'stroke-dashoffset 0.8s ease' }}
+                                                        />
+                                                    ))}
+                                                </svg>
+                                                <div className="absolute inset-0 flex flex-col items-center justify-center">
+                                                    <span className="text-2xl font-extrabold text-[var(--color-black)]">{totalInquiries}</span>
+                                                    <span className="text-[9px] text-[var(--color-paragraph)] opacity-50 uppercase tracking-widest">Inquiries</span>
+                                                </div>
+                                            </div>
+
+                                            <div className="grid grid-cols-2 gap-x-6 gap-y-2 text-xs w-full max-w-[280px] border-t border-[var(--color-border)] pt-4 mt-2">
+                                                {statusMap.map((segment) => (
+                                                    <div key={segment.name} className="flex items-center justify-between">
+                                                        <div className="flex items-center gap-2">
+                                                            <span className="w-2.5 h-2.5 rounded-full shrink-0" style={{ backgroundColor: segment.color }} />
+                                                            <span className="text-[var(--color-paragraph)] font-semibold uppercase text-[10px] tracking-wide">{segment.name}</span>
+                                                        </div>
+                                                        <span className="font-bold text-[var(--color-black)]">{segment.count}</span>
+                                                    </div>
+                                                ))}
+                                            </div>
+                                        </>
+                                    ) : (
+                                        <div className="py-12 text-gray-400 text-sm font-semibold select-none">
+                                            No statistics available.
+                                        </div>
+                                    )}
+                                </div>
+
+                                {/* Right Column: Status Detail Summaries */}
+                                <div className="flex flex-col gap-4">
+                                    <div className="card p-5 bg-white shadow-sm border border-[var(--color-border)] rounded-[var(--radius-sm)] flex-1 flex flex-col justify-between">
+                                        <h4 className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-3 select-none" style={{ margin: 0 }}>Active Pipeline</h4>
+                                        <div className="space-y-4">
+                                            <div className="flex justify-between items-center border-b pb-2">
+                                                <div>
+                                                    <span className="text-xs font-bold text-[var(--color-black)]">NEW SUBMISSIONS</span>
+                                                    <span className="text-[10px] text-gray-400 block font-normal">Awaiting first response</span>
+                                                </div>
+                                                <span className="text-2xl font-extrabold text-[var(--color-success)]">{statusCounts.New}</span>
+                                            </div>
+                                            <div className="flex justify-between items-center border-b pb-2">
+                                                <div>
+                                                    <span className="text-xs font-bold text-[var(--color-black)]">RESPONDED INQUIRIES</span>
+                                                    <span className="text-[10px] text-gray-400 block font-normal">In progress conversations</span>
+                                                </div>
+                                                <span className="text-2xl font-extrabold text-[var(--color-primary)]">{statusCounts.Responded}</span>
+                                            </div>
+                                            <div className="flex justify-between items-center border-b pb-2">
+                                                <div>
+                                                    <span className="text-xs font-bold text-[var(--color-black)]">PROPOSALS CONVERTED</span>
+                                                    <span className="text-[10px] text-gray-400 block font-normal">Sent details statements</span>
+                                                </div>
+                                                <span className="text-2xl font-extrabold text-[var(--color-warning)]">{statusCounts.Proposals}</span>
+                                            </div>
+                                            <div className="flex justify-between items-center">
+                                                <div>
+                                                    <span className="text-xs font-bold text-[var(--color-black)]">CLOSED ISSUES</span>
+                                                    <span className="text-[10px] text-gray-400 block font-normal">Successfully resolved</span>
+                                                </div>
+                                                <span className="text-2xl font-extrabold text-gray-500">{statusCounts.Closed}</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* Footer Close Button */}
+                        <div className="p-4 border-t border-[var(--color-border)] flex justify-end bg-white select-none">
+                            <button
+                                onClick={() => setShowAnalyticsModal(false)}
+                                className="border border-[var(--color-primary)] text-[var(--color-primary)] bg-transparent hover:bg-[var(--color-primary)] hover:text-white transition font-semibold cursor-pointer rounded-[var(--radius-sm)] text-xs flex items-center justify-center border-solid h-9 px-6"
+                                style={{ fontWeight: 'normal' }}
+                            >
+                                Close
                             </button>
                         </div>
                     </div>

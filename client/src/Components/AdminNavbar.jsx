@@ -16,6 +16,9 @@ const navLinks = [
   { name: 'Case Studies', path: '/admin/casestudies' },
   { name: 'Articles', path: '/admin/article' },
   { name: 'Careers', path: '/admin/career' },
+  { name: 'Interviews', path: '/admin/interviews' },
+  { name: 'Appointments', path: '/admin/appointments' },
+  { name: 'Talent Pool', path: '/admin/talent-pool' },
 ];
 
 const AdminNavbar = () => {
@@ -25,9 +28,9 @@ const AdminNavbar = () => {
   const userRole = adminUser?.role ? adminUser.role.toLowerCase() : '';
   const filteredNavLinks = navLinks.filter((link) => {
     if (userRole === 'hr') {
-      return link.name === 'Careers';
+      return ['Careers', 'Interviews', 'Appointments', 'Talent Pool'].includes(link.name);
     } else {
-      return link.name !== 'Careers';
+      return ['Dashboard', 'Inquiries', 'Case Studies', 'Articles'].includes(link.name);
     }
   });
   const [notificationCount, setNotificationCount] = useState(0);
@@ -123,11 +126,29 @@ const AdminNavbar = () => {
         }));
       }
 
+      // Appointments Pending Approval
+      let appointmentNotifications = [];
+      try {
+        const storedApps = localStorage.getItem('appointments');
+        if (storedApps) {
+          const pendingAppointments = JSON.parse(storedApps).filter(a => a.status === 'Pending Approval');
+          appointmentNotifications = pendingAppointments.map(app => ({
+            id: `appt-${app.id}`,
+            type: "appointment",
+            text: `Appointment request from HR: ${app.name}`,
+            time: new Date()
+          }));
+        }
+      } catch (err) {
+        console.error(err);
+      }
+
       // Combine notifications
       const allNotifications = [
         ...applicationNotifications,
         ...inquiryNotifications,
-        ...reviewNotifications
+        ...reviewNotifications,
+        ...appointmentNotifications
       ]
         .sort((a, b) => b.time - a.time)
         .slice(0, 5);
@@ -166,6 +187,7 @@ const AdminNavbar = () => {
       // Listen to event emitted by CareerAdmin when an action is taken or data loaded
       const handleUpdate = () => fetchNotifications();
       window.addEventListener('notificationUpdate', handleUpdate);
+      window.addEventListener('appointmentsUpdated', handleUpdate);
 
       // Connect EventSource for real-time inquiry events
       const token = localStorage.getItem('adminToken');
@@ -186,6 +208,7 @@ const AdminNavbar = () => {
 
       return () => {
         window.removeEventListener('notificationUpdate', handleUpdate);
+        window.removeEventListener('appointmentsUpdated', handleUpdate);
         eventSource.close();
         clearInterval(interval);
       };
@@ -217,17 +240,17 @@ const AdminNavbar = () => {
               <Link
                 key={link.name}
                 to={link.path}
-                className={`relative h-full flex items-center px-1 text-sm font-semibold transition-all duration-200 cursor-pointer ${
+                className={`relative h-full flex items-center px-1 text-xs font-[var(--font-bold)] uppercase tracking-wider transition-all duration-200 cursor-pointer ${
                   isActive 
-                    ? 'text-[var(--color-primary)]' 
-                    : 'text-[var(--color-black)] hover:text-[var(--color-primary)]'
+                    ? 'text-[var(--color-primary-hover)]' 
+                    : 'text-[var(--color-primary)] hover:text-[var(--color-primary-hover)]'
                 }`}
               >
                 {link.name}
                 {isActive && (
                   <motion.div
                     layoutId="adminNavUnderline"
-                    className="absolute bottom-0 left-0 right-0 h-[3px] bg-[var(--color-primary)] rounded-t-full"
+                    className="absolute bottom-0 left-0 right-0 h-[3px] bg-[var(--color-primary-hover)] rounded-t-full"
                     transition={{ type: "spring", stiffness: 380, damping: 30 }}
                   />
                 )}
@@ -302,7 +325,7 @@ const AdminNavbar = () => {
               className="flex items-center gap-3 cursor-pointer border-none bg-transparent py-1.5 focus:outline-none"
             >
               <div className="text-right">
-                {adminUser?.username && <p className="text-xs font-bold text-[var(--color-black)] leading-tight">{adminUser.username}</p>}
+                {adminUser?.username && <p className="text-xs font-[var(--font-bold)] text-[var(--color-primary)] hover:text-[var(--color-primary-hover)] uppercase tracking-wider leading-tight transition-all">{adminUser.username}</p>}
               </div>
               {adminUser?.profileImage ? (
                 <img src={adminUser.profileImage} alt="Profile" className="w-8 h-8 rounded-full object-cover border border-[var(--color-border)]" />
@@ -311,7 +334,7 @@ const AdminNavbar = () => {
                   <FiUser size={16} />
                 </div>
               )}
-              <FiChevronDown size={14} className={`text-[var(--color-paragraph)] opacity-60 transition-transform duration-200 ${showProfileDropdown ? 'rotate-180' : ''}`} />
+              <FiChevronDown size={14} className={`text-[var(--color-primary)] hover:text-[var(--color-primary-hover)] transition-all duration-200 ${showProfileDropdown ? 'rotate-180' : ''}`} />
             </button>
 
             {showProfileDropdown && (
@@ -391,8 +414,8 @@ const AdminNavbar = () => {
                       key={link.name}
                       to={link.path}
                       onClick={() => setIsMobileMenuOpen(false)}
-                      className={`text-sm font-semibold transition-colors py-1.5 ${
-                        isActive ? 'text-[var(--color-primary)] font-bold' : 'text-[var(--color-black)] hover:text-[var(--color-primary)]'
+                      className={`text-xs font-[var(--font-bold)] uppercase tracking-wider transition-colors py-1.5 ${
+                        isActive ? 'text-[var(--color-primary-hover)]' : 'text-[var(--color-primary)] hover:text-[var(--color-primary-hover)]'
                       }`}
                     >
                       {link.name}
@@ -416,7 +439,7 @@ const AdminNavbar = () => {
                     </div>
                   )}
                   <div>
-                    {adminUser?.username && <p className="text-xs font-bold text-[var(--color-black)] leading-tight">{adminUser.username}</p>}
+                    {adminUser?.username && <p className="text-xs font-[var(--font-bold)] text-[var(--color-primary)] hover:text-[var(--color-primary-hover)] uppercase tracking-wider leading-tight transition-all">{adminUser.username}</p>}
                   </div>
                 </Link>
                 

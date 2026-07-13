@@ -1,7 +1,8 @@
 import React from "react";
+import { createPortal } from "react-dom";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
-import { FiTrash2, FiEdit2, FiCalendar } from "react-icons/fi";
+import { FiTrash2, FiEdit2, FiCalendar, FiEye } from "react-icons/fi";
 import { toast } from "sonner";
 
 const statusColor = {
@@ -22,6 +23,7 @@ const CaseStudyTable = ({ caseStudies, onStatusChange, onDelete, currentPage, to
   const navigate = useNavigate();
   const [showConfirm, setShowConfirm] = React.useState(false);
   const [targetId, setTargetId] = React.useState(null);
+  const [selectedCaseStudyForView, setSelectedCaseStudyForView] = React.useState(null);
 
   const deleteCaseStudy = (id) => {
     setTargetId(id);
@@ -60,7 +62,7 @@ const CaseStudyTable = ({ caseStudies, onStatusChange, onDelete, currentPage, to
           px-8
           lg:px-10
           py-4
-          text-[var(--color-heading)]
+          text-primary
           text-xs
           font-normal
           uppercase
@@ -104,14 +106,21 @@ const CaseStudyTable = ({ caseStudies, onStatusChange, onDelete, currentPage, to
                 />
                 <div className="min-w-0">
                   <h3 
-                    onClick={() => navigate(`/admin/edit-case-study/${study._id}`)}
+                    onClick={() => setSelectedCaseStudyForView(study)}
                     className="font-bold text-[var(--color-black)] text-sm hover:text-[var(--color-primary)] transition-colors cursor-pointer truncate block max-w-full"
                   >
                     {study.title}
                   </h3>
                 </div>
               </div>
-              <div className="flex gap-1.5">
+              <div className="flex gap-1.5 shrink-0">
+                <button
+                  title="View Case Study"
+                  onClick={() => setSelectedCaseStudyForView(study)}
+                  className="w-7 h-7 flex items-center justify-center transition-colors cursor-pointer border border-[var(--color-border)] bg-[var(--color-main-bg)] text-[var(--color-paragraph)] hover:bg-[var(--color-sub-bg)] rounded-[var(--radius-sm)]"
+                >
+                  <FiEye size={13} />
+                </button>
                 <button
                   title="Edit Case Study"
                   onClick={() => navigate(`/admin/edit-case-study/${study._id}`)}
@@ -139,7 +148,7 @@ const CaseStudyTable = ({ caseStudies, onStatusChange, onDelete, currentPage, to
               />
               <div className="min-w-0 w-full">
                 <h3 
-                  onClick={() => navigate(`/admin/edit-case-study/${study._id}`)}
+                  onClick={() => setSelectedCaseStudyForView(study)}
                   className="font-bold text-[var(--color-black)] text-sm truncate block max-w-full hover:text-[var(--color-primary)] transition-colors cursor-pointer"
                 >
                   {study.title}
@@ -156,7 +165,7 @@ const CaseStudyTable = ({ caseStudies, onStatusChange, onDelete, currentPage, to
                     categoryColor[study.category] || "bg-slate-500"
                   }`}
                 ></span>
-                <span className="truncate">{study.category}</span>
+                <span className="truncate uppercase tracking-wider">{study.category}</span>
               </div>
             </div>
 
@@ -173,7 +182,7 @@ const CaseStudyTable = ({ caseStudies, onStatusChange, onDelete, currentPage, to
             {/* Published Column */}
             <div className="w-full lg:w-auto flex justify-between lg:block border-t lg:border-none pt-2.5 lg:pt-0">
               <span className="text-[10px] uppercase font-bold text-[var(--color-paragraph)] opacity-60 lg:hidden">Published</span>
-              <div className="flex items-center gap-1.5 text-xs text-[var(--color-paragraph)] font-semibold pr-2">
+              <div className="flex items-center gap-1.5 text-xs text-[var(--color-paragraph)] font-semibold pr-2 uppercase tracking-wider">
                 <FiCalendar className="w-3.5 h-3.5 flex-shrink-0 opacity-60" />
                 <span>
                   {study.publicationDate
@@ -181,7 +190,7 @@ const CaseStudyTable = ({ caseStudies, onStatusChange, onDelete, currentPage, to
                         year: 'numeric',
                         month: 'short',
                         day: 'numeric'
-                      })
+                      }).toUpperCase()
                     : "—"}
                 </span>
               </div>
@@ -189,6 +198,13 @@ const CaseStudyTable = ({ caseStudies, onStatusChange, onDelete, currentPage, to
 
             {/* Desktop Actions Column */}
             <div className="hidden lg:flex justify-end gap-1.5 pr-2">
+              <button
+                title="View Case Study"
+                onClick={() => setSelectedCaseStudyForView(study)}
+                className="w-7 h-7 flex items-center justify-center transition-colors cursor-pointer border border-[var(--color-border)] bg-[var(--color-main-bg)] text-[var(--color-paragraph)] hover:bg-[var(--color-sub-bg)] rounded-[var(--radius-sm)]"
+              >
+                <FiEye size={13} />
+              </button>
               <button
                 title="Edit Case Study"
                 className="w-7 h-7 flex items-center justify-center transition-colors cursor-pointer border border-[var(--color-border)] bg-[var(--color-main-bg)] text-[var(--color-paragraph)] hover:bg-[var(--color-sub-bg)] rounded-[var(--radius-sm)]"
@@ -267,6 +283,87 @@ const CaseStudyTable = ({ caseStudies, onStatusChange, onDelete, currentPage, to
           </div>
         </div>
       )}
+      {/* View/Read Case Study Modal */}
+      {selectedCaseStudyForView &&
+        createPortal(
+          <div className="fixed inset-0 z-[99999] flex items-center justify-center bg-black/70 backdrop-blur-sm p-4">
+            <div className="w-full max-w-2xl border border-[var(--color-border)] bg-[var(--color-main-bg)] shadow-xl overflow-hidden flex flex-col max-h-[85vh]" style={{ borderRadius: 'var(--radius-sm)', fontFamily: 'var(--font-primary)' }}>
+              
+              {/* Header */}
+              <div className="flex items-center justify-between border-b border-[var(--color-border)] px-6 py-4 bg-white">
+                <div className="min-w-0 flex-1 pr-4 text-left">
+                  <span className="text-[10px] font-bold text-[var(--color-primary)] uppercase tracking-wider">
+                    {selectedCaseStudyForView.category}
+                  </span>
+                  <h2 className="text-md font-bold text-primary truncate block mt-0.5" style={{ margin: 0 }}>
+                    {selectedCaseStudyForView.title}
+                  </h2>
+                  <p className="text-[10px] text-[var(--color-paragraph)] opacity-60 mt-1">
+                    Author: <span className="font-semibold">{selectedCaseStudyForView.author}</span> ({selectedCaseStudyForView.authorRole}) | Published: {selectedCaseStudyForView.publicationDate 
+                      ? new Date(selectedCaseStudyForView.publicationDate).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' }).toUpperCase()
+                      : new Date(selectedCaseStudyForView.createdAt).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' }).toUpperCase()
+                    }
+                  </p>
+                </div>
+                <button
+                  onClick={() => setSelectedCaseStudyForView(null)}
+                  className="w-8 h-8 rounded-full bg-[var(--color-sub-bg)] hover:bg-red-500/20 hover:text-red-600 transition flex items-center justify-center text-paragraph opacity-60 hover:opacity-100 cursor-pointer text-xs shrink-0"
+                >
+                  ✕
+                </button>
+              </div>
+
+              {/* Content Area */}
+              <div className="p-6 overflow-y-auto space-y-5 text-left flex-1 bg-white">
+                {selectedCaseStudyForView.coverImage && (
+                  <img
+                    src={selectedCaseStudyForView.coverImage}
+                    alt={selectedCaseStudyForView.title}
+                    className="w-full h-48 object-cover border border-[var(--color-border)]"
+                    style={{ borderRadius: 'var(--radius-sm)' }}
+                  />
+                )}
+                
+                {/* Summary Section */}
+                {selectedCaseStudyForView.summary && (
+                  <div>
+                    <h3 className="text-xs font-bold text-[var(--color-primary)] uppercase tracking-wider mb-1.5">Executive Summary</h3>
+                    <p className="text-sm text-[var(--color-paragraph)] leading-relaxed whitespace-pre-wrap font-medium">{selectedCaseStudyForView.summary}</p>
+                  </div>
+                )}
+
+                {/* Challenges Section */}
+                {selectedCaseStudyForView.challenges && (
+                  <div>
+                    <h3 className="text-xs font-bold text-[var(--color-primary)] uppercase tracking-wider mb-1.5">Challenges & Strategy</h3>
+                    <p className="text-sm text-[var(--color-paragraph)] leading-relaxed whitespace-pre-wrap font-medium">{selectedCaseStudyForView.challenges}</p>
+                  </div>
+                )}
+
+                {/* Results Section */}
+                {selectedCaseStudyForView.results && (
+                  <div>
+                    <h3 className="text-xs font-bold text-[var(--color-primary)] uppercase tracking-wider mb-1.5">Results & Impact</h3>
+                    <p className="text-sm text-[var(--color-paragraph)] leading-relaxed whitespace-pre-wrap font-medium">{selectedCaseStudyForView.results}</p>
+                  </div>
+                )}
+              </div>
+
+              {/* Footer */}
+              <div className="border-t border-[var(--color-border)] px-6 py-3 flex justify-end bg-[var(--color-sub-bg)]/20">
+                <button
+                  onClick={() => setSelectedCaseStudyForView(null)}
+                  className="bg-white border border-[var(--color-primary)] text-[var(--color-primary)] hover:text-white hover:bg-[var(--color-primary)] px-5 py-2 rounded-[var(--radius-sm)] transition font-semibold cursor-pointer h-10 text-sm flex items-center justify-center"
+                >
+                  Close Reader
+                </button>
+              </div>
+
+            </div>
+          </div>,
+          document.body
+        )
+      }
     </div>
   );
 };

@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState, useEffect, useRef } from 'react';
 import {
   Box,
   Container,
@@ -20,7 +20,6 @@ import HomeWorkIcon from "@mui/icons-material/HomeWork";
 import SchoolIcon from "@mui/icons-material/School";
 import BeachAccessIcon from "@mui/icons-material/BeachAccess";
 import TrendingUpIcon from "@mui/icons-material/TrendingUp";
-import { useState } from "react";
 import CloudUploadOutlinedIcon from "@mui/icons-material/CloudUploadOutlined";
 import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
 import careerVideo from "../assets/career.mp4";
@@ -41,7 +40,32 @@ import {
   MenuItem,
   Select,
   InputAdornment,
+  Popover,
 } from "@mui/material";
+
+const countryCodes = [
+  { code: "+91", name: "India (+91)" },
+  { code: "+1", name: "United States (+1)" },
+  { code: "+44", name: "United Kingdom (+44)" },
+  { code: "+61", name: "Australia (+61)" },
+  { code: "+1", name: "Canada (+1)" },
+  { code: "+49", name: "Germany (+49)" },
+  { code: "+33", name: "France (+33)" },
+  { code: "+65", name: "Singapore (+65)" },
+  { code: "+971", name: "United Arab Emirates (+971)" },
+  { code: "+81", name: "Japan (+81)" },
+  { code: "+86", name: "China (+86)" },
+  { code: "+55", name: "Brazil (+55)" },
+  { code: "+27", name: "South Africa (+27)" },
+  { code: "+31", name: "Netherlands (+31)" },
+  { code: "+39", name: "Italy (+39)" },
+  { code: "+34", name: "Spain (+34)" },
+  { code: "+7", name: "Russia (+7)" },
+  { code: "+82", name: "South Korea (+82)" },
+  { code: "+92", name: "Pakistan (+92)" },
+  { code: "+880", name: "Bangladesh (+880)" },
+  { code: "+966", name: "Saudi Arabia (+966)" },
+];
 
 function Career() {
   const SHOW_HERO_ILLUSTRATION = true; // Set to false to easily revert and show the original centered text-only hero layout
@@ -105,6 +129,22 @@ function Career() {
 
   const [applyLoading, setApplyLoading] = useState(false);
   const [talentLoading, setTalentLoading] = useState(false);
+
+  const [applyAnchorEl, setApplyAnchorEl] = useState(null);
+  const [applySearchQuery, setApplySearchQuery] = useState("");
+
+  const [talentAnchorEl, setTalentAnchorEl] = useState(null);
+  const [talentSearchQuery, setTalentSearchQuery] = useState("");
+
+  const filteredApplyCountryCodes = countryCodes.filter(item => 
+    item.name.toLowerCase().includes(applySearchQuery.toLowerCase()) || 
+    item.code.includes(applySearchQuery)
+  );
+
+  const filteredTalentCountryCodes = countryCodes.filter(item => 
+    item.name.toLowerCase().includes(talentSearchQuery.toLowerCase()) || 
+    item.code.includes(talentSearchQuery)
+  );
 
   // Dynamic jobs states
   const [dynamicJobs, setDynamicJobs] = useState([]);
@@ -1780,7 +1820,7 @@ function Career() {
             background: "var(--color-main-bg)",
             border: "1px solid var(--color-border)",
             boxShadow: "0 25px 50px -12px rgba(0, 0, 0, 0.5)",
-            maxWidth: "480px",
+            maxWidth: "440px",
           },
         }}
       >
@@ -1794,51 +1834,7 @@ function Career() {
         </DialogTitle>
 
         <DialogContent sx={{ px: { xs: 2.5, sm: 4 }, pb: 1.5, pt: 0.5 }}>
-          {selectedJob.description && (
-            <Box
-              sx={{
-                p: 1.5,
-                mb: 2,
-                borderRadius: "3px",
-                background: "var(--color-sub-bg)",
-                border: "1px solid rgba(255, 255, 255, 0.08)",
-              }}
-            >
-              <Typography variant="subtitle2" sx={{ color: "var(--color-primary)", fontWeight: 600, mb: 0.5 }}>
-                Job Description:
-              </Typography>
-              <Typography
-                sx={{
-                  color: "var(--color-paragraph)",
-                  fontSize: "0.85rem",
-                  lineHeight: 1.5,
-                  display: "-webkit-box",
-                  WebkitLineClamp: isDescExpanded ? "none" : 3,
-                  WebkitBoxOrient: "vertical",
-                  overflow: "hidden",
-                }}
-              >
-                {selectedJob.description}
-              </Typography>
-              <Button
-                onClick={() => setIsDescExpanded(!isDescExpanded)}
-                sx={{
-                  textTransform: "none",
-                  color: "var(--color-primary)",
-                  p: 0,
-                  minWidth: "auto",
-                  fontWeight: 600,
-                  fontSize: "0.8rem",
-                  mt: 0.5,
-                  display: "inline-block",
-                  "&:hover": { background: "transparent", textDecoration: "underline" }
-                }}
-              >
-                {isDescExpanded ? "Read less" : "Read more"}
-              </Button>
-            </Box>
-          )}
-          <Stack spacing={1.5}>
+          <Stack spacing={2}>
             <TextField
               fullWidth
               size="small"
@@ -1861,72 +1857,140 @@ function Career() {
               helperText={applyErrors.email}
               sx={fieldStyle}
             />
-            <Stack spacing={0.5} sx={{ width: "100%", textAlign: "left" }}>
+
+            {/* Custom Searchable Country Selector Phone Field with MUI Popover */}
+            <Box sx={{ display: "flex", flexDirection: "column", gap: 0.5, width: "100%", textAlign: "left" }}>
               <Typography sx={{ color: "var(--color-paragraph)", fontWeight: 500, fontSize: "0.85rem", ml: 1 }}>
                 Mobile Number
               </Typography>
-              <Box sx={{ display: "flex", gap: 1.5, width: "100%" }}>
-                <Select
-                  size="small"
-                  value={applyCountryCode}
-                  onChange={(e) => setApplyCountryCode(e.target.value)}
-                  sx={{
-                    borderRadius: "3px",
-                    background: "var(--color-main-bg)",
-                    width: "90px",
-                    flexShrink: 0,
-                    color: "var(--color-paragraph)",
-                    "& .MuiOutlinedInput-notchedOutline": {
-                      borderColor: "var(--color-border)",
-                    },
-                    "&:hover .MuiOutlinedInput-notchedOutline": {
-                      borderColor: "var(--color-primary)",
-                    },
-                    "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
-                      borderColor: "var(--color-primary)",
-                    },
-                    "& .MuiSvgIcon-root": {
-                      color: "var(--color-paragraph)",
-                    }
-                  }}
-                >
-                  <MenuItem value="+91">+91</MenuItem>
-                  <MenuItem value="+1">+1</MenuItem>
-                  <MenuItem value="+44">+44</MenuItem>
-                  <MenuItem value="+971">+971</MenuItem>
-                  <MenuItem value="+65">+65</MenuItem>
-                  <MenuItem value="+61">+61</MenuItem>
-                  <MenuItem value="+49">+49</MenuItem>
-                </Select>
-                <TextField
-                  fullWidth
-                  size="small"
-                  placeholder="(555) 000-0000"
+              <div 
+                className={`flex items-center w-full bg-white rounded-[var(--radius-sm)] border transition-colors focus-within:ring-2 ${
+                  applyErrors.mobile 
+                    ? "border-[#EF4444] focus-within:ring-red-500/30" 
+                    : "border-gray-300 focus-within:ring-blue-500"
+                }`}
+                style={{ height: "38px" }}
+              >
+                <div className="relative shrink-0">
+                  <button
+                    type="button"
+                    onClick={(e) => {
+                      setApplyAnchorEl(e.currentTarget);
+                      setApplySearchQuery("");
+                    }}
+                    className="paragraph h-full flex items-center justify-between text-black pl-3 pr-1 py-1.5 bg-transparent focus:outline-none text-sm w-auto max-w-[64px]"
+                    style={{ border: "none", outline: "none", cursor: "pointer", display: "flex", alignItems: "center", height: "100%" }}
+                  >
+                    <span className="truncate">{applyCountryCode}</span>
+                    <span className="text-gray-500 shrink-0 ml-0.5" style={{ fontSize: "9px" }}>▼</span>
+                  </button>
+
+                  <Popover
+                    open={Boolean(applyAnchorEl)}
+                    anchorEl={applyAnchorEl}
+                    onClose={() => setApplyAnchorEl(null)}
+                    anchorOrigin={{
+                      vertical: 'bottom',
+                      horizontal: 'left',
+                    }}
+                    transformOrigin={{
+                      vertical: 'top',
+                      horizontal: 'left',
+                    }}
+                    PaperProps={{
+                      sx: {
+                        width: 250,
+                        maxHeight: 250,
+                        border: "1px solid var(--color-border)",
+                        boxShadow: "0 10px 25px rgba(0,0,0,0.15)",
+                        borderRadius: "3px",
+                        background: "var(--color-main-bg)",
+                        p: 1,
+                        display: "flex",
+                        flexDirection: "column",
+                      }
+                    }}
+                  >
+                    <Box sx={{ p: 0.5, borderBottom: "1px solid var(--color-border)", mb: 0.5 }}>
+                      <input
+                        type="text"
+                        placeholder="Search country..."
+                        value={applySearchQuery}
+                        onChange={(e) => setApplySearchQuery(e.target.value)}
+                        className="w-full bg-white text-black text-xs rounded-[var(--radius-sm)] px-2 py-1.5 border border-gray-300 focus:outline-none focus:ring-1 focus:ring-blue-500"
+                        style={{ border: "1px solid #D1D5DB" }}
+                      />
+                    </Box>
+                    <Box sx={{ overflowY: "auto", flex: 1 }}>
+                      {filteredApplyCountryCodes.length > 0 ? (
+                        filteredApplyCountryCodes.map((item) => (
+                          <Button
+                            key={`${item.name}-${item.code}`}
+                            onClick={() => {
+                              setApplyCountryCode(item.code);
+                              setApplyAnchorEl(null);
+                            }}
+                            sx={{
+                              width: "100%",
+                              display: "flex",
+                              justifyContent: "space-between",
+                              textTransform: "none",
+                              color: "var(--color-paragraph)",
+                              px: 1.5,
+                              py: 0.8,
+                              fontSize: "0.85rem",
+                              "&:hover": {
+                                background: "rgba(71, 100, 255, 0.08)",
+                              }
+                            }}
+                          >
+                            <span className="truncate mr-2" style={{ color: "black", textAlign: "left" }}>{item.name}</span>
+                            <span style={{ color: "#6B7280", fontFamily: "monospace" }}>{item.code}</span>
+                          </Button>
+                        ))
+                      ) : (
+                        <Typography sx={{ p: 1.5, fontSize: "0.75rem", color: "gray", textAlign: "center" }}>
+                          No results found
+                        </Typography>
+                      )}
+                    </Box>
+                  </Popover>
+                </div>
+
+                <input
+                  type="tel"
                   name="mobile"
                   value={applyForm.mobile}
                   onChange={handleApplyChange}
-                  error={!!applyErrors.mobile}
-                  helperText={applyErrors.mobile}
-                  sx={fieldStyle}
+                  placeholder=""
+                  className="paragraph min-w-0 flex-1 bg-transparent text-black placeholder-gray-500 pl-2 pr-4 py-1.5 focus:outline-none"
+                  style={{ border: "none", outline: "none", height: "100%", fontSize: "14px" }}
                 />
-              </Box>
-            </Stack>
+              </div>
+              {applyErrors.mobile && (
+                <Typography sx={{ color: "#EF4444", fontSize: "0.75rem", mt: 0.5, ml: 1 }}>
+                  {applyErrors.mobile}
+                </Typography>
+              )}
+            </Box>
+
             <Button
               component="label"
               sx={{
-                height: 90, borderRadius: "3px",
+                height: 70, borderRadius: "3px",
                 border: "2px dashed rgba(71,100,255,.4)",
                 background: "var(--color-sub-bg)",
-                display: "flex", flexDirection: "column", gap: 0.5,
+                display: "flex", flexDirection: "column", justifyContext: "center", gap: 0.2,
                 color: "var(--color-paragraph)", textTransform: "none",
+                py: 1,
                 "&:hover": { background: "rgba(71,100,255,.08)", borderColor: "var(--color-primary)" },
               }}
             >
-              <CloudUploadOutlinedIcon sx={{ fontSize: 28, color: "var(--color-primary)" }} />
-              <Typography fontWeight={600} fontSize="0.9rem">
+              <CloudUploadOutlinedIcon sx={{ fontSize: 24, color: "var(--color-primary)" }} />
+              <Typography fontWeight={600} fontSize="0.85rem">
                 {resumeFile ? resumeFile.name : "Upload Resume"}
               </Typography>
-              <Typography sx={{ fontSize: ".75rem", color: applyErrors.resume ? "#EF4444" : "#94A3B8" }}>
+              <Typography sx={{ fontSize: ".7rem", color: applyErrors.resume ? "#EF4444" : "#94A3B8" }}>
                 {applyErrors.resume || "PDF, DOC, DOCX"}
               </Typography>
               <input
@@ -1985,7 +2049,7 @@ function Career() {
             background: "var(--color-main-bg)",
             border: "1px solid var(--color-border)",
             boxShadow: "0 25px 50px -12px rgba(0, 0, 0, 0.5)",
-            maxWidth: "480px",
+            maxWidth: "440px",
           },
         }}
       >
@@ -2000,7 +2064,7 @@ function Career() {
         </DialogTitle>
 
         <DialogContent sx={{ px: { xs: 2.5, sm: 4 }, pb: 1.5, pt: 0.5 }}>
-          <Stack spacing={1.5}>
+          <Stack spacing={2}>
             <TextField
               fullWidth size="small" label="Full Name" name="fullName"
               value={talentForm.fullName} onChange={handleTalentChange}
@@ -2013,56 +2077,123 @@ function Career() {
               error={!!talentErrors.email} helperText={talentErrors.email}
               sx={fieldStyle}
             />
-            <Stack spacing={0.5} sx={{ width: "100%", textAlign: "left" }}>
+
+            {/* Custom Searchable Country Selector Phone Field with MUI Popover */}
+            <Box sx={{ display: "flex", flexDirection: "column", gap: 0.5, width: "100%", textAlign: "left" }}>
               <Typography sx={{ color: "var(--color-paragraph)", fontWeight: 500, fontSize: "0.85rem", ml: 1 }}>
                 Mobile Number
               </Typography>
-              <Box sx={{ display: "flex", gap: 1.5, width: "100%" }}>
-                <Select
-                  size="small"
-                  value={talentCountryCode}
-                  onChange={(e) => setTalentCountryCode(e.target.value)}
-                  sx={{
-                    borderRadius: "3px",
-                    background: "var(--color-main-bg)",
-                    width: "90px",
-                    flexShrink: 0,
-                    color: "var(--color-paragraph)",
-                    "& .MuiOutlinedInput-notchedOutline": {
-                      borderColor: "var(--color-border)",
-                    },
-                    "&:hover .MuiOutlinedInput-notchedOutline": {
-                      borderColor: "var(--color-primary)",
-                    },
-                    "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
-                      borderColor: "var(--color-primary)",
-                    },
-                    "& .MuiSvgIcon-root": {
-                      color: "var(--color-paragraph)",
-                    }
-                  }}
-                >
-                  <MenuItem value="+91">+91</MenuItem>
-                  <MenuItem value="+1">+1</MenuItem>
-                  <MenuItem value="+44">+44</MenuItem>
-                  <MenuItem value="+971">+971</MenuItem>
-                  <MenuItem value="+65">+65</MenuItem>
-                  <MenuItem value="+61">+61</MenuItem>
-                  <MenuItem value="+49">+49</MenuItem>
-                </Select>
-                <TextField
-                  fullWidth
-                  size="small"
-                  placeholder="(555) 000-0000"
+              <div 
+                className={`flex items-center w-full bg-white rounded-[var(--radius-sm)] border transition-colors focus-within:ring-2 ${
+                  talentErrors.mobile 
+                    ? "border-[#EF4444] focus-within:ring-red-500/30" 
+                    : "border-gray-300 focus-within:ring-blue-500"
+                }`}
+                style={{ height: "38px" }}
+              >
+                <div className="relative shrink-0">
+                  <button
+                    type="button"
+                    onClick={(e) => {
+                      setTalentAnchorEl(e.currentTarget);
+                      setTalentSearchQuery("");
+                    }}
+                    className="paragraph h-full flex items-center justify-between text-black pl-3 pr-1 py-1.5 bg-transparent focus:outline-none text-sm w-auto max-w-[64px]"
+                    style={{ border: "none", outline: "none", cursor: "pointer", display: "flex", alignItems: "center", height: "100%" }}
+                  >
+                    <span className="truncate">{talentCountryCode}</span>
+                    <span className="text-gray-500 shrink-0 ml-0.5" style={{ fontSize: "9px" }}>▼</span>
+                  </button>
+
+                  <Popover
+                    open={Boolean(talentAnchorEl)}
+                    anchorEl={talentAnchorEl}
+                    onClose={() => setTalentAnchorEl(null)}
+                    anchorOrigin={{
+                      vertical: 'bottom',
+                      horizontal: 'left',
+                    }}
+                    transformOrigin={{
+                      vertical: 'top',
+                      horizontal: 'left',
+                    }}
+                    PaperProps={{
+                      sx: {
+                        width: 250,
+                        maxHeight: 250,
+                        border: "1px solid var(--color-border)",
+                        boxShadow: "0 10px 25px rgba(0,0,0,0.15)",
+                        borderRadius: "3px",
+                        background: "var(--color-main-bg)",
+                        p: 1,
+                        display: "flex",
+                        flexDirection: "column",
+                      }
+                    }}
+                  >
+                    <Box sx={{ p: 0.5, borderBottom: "1px solid var(--color-border)", mb: 0.5 }}>
+                      <input
+                        type="text"
+                        placeholder="Search country..."
+                        value={talentSearchQuery}
+                        onChange={(e) => setTalentSearchQuery(e.target.value)}
+                        className="w-full bg-white text-black text-xs rounded-[var(--radius-sm)] px-2 py-1.5 border border-gray-300 focus:outline-none focus:ring-1 focus:ring-blue-500"
+                        style={{ border: "1px solid #D1D5DB" }}
+                      />
+                    </Box>
+                    <Box sx={{ overflowY: "auto", flex: 1 }}>
+                      {filteredTalentCountryCodes.length > 0 ? (
+                        filteredTalentCountryCodes.map((item) => (
+                          <Button
+                            key={`${item.name}-${item.code}`}
+                            onClick={() => {
+                              setTalentCountryCode(item.code);
+                              setTalentAnchorEl(null);
+                            }}
+                            sx={{
+                              width: "100%",
+                              display: "flex",
+                              justifyContent: "space-between",
+                              textTransform: "none",
+                              color: "var(--color-paragraph)",
+                              px: 1.5,
+                              py: 0.8,
+                              fontSize: "0.85rem",
+                              "&:hover": {
+                                background: "rgba(71, 100, 255, 0.08)",
+                              }
+                            }}
+                          >
+                            <span className="truncate mr-2" style={{ color: "black", textAlign: "left" }}>{item.name}</span>
+                            <span style={{ color: "#6B7280", fontFamily: "monospace" }}>{item.code}</span>
+                          </Button>
+                        ))
+                      ) : (
+                        <Typography sx={{ p: 1.5, fontSize: "0.75rem", color: "gray", textAlign: "center" }}>
+                          No results found
+                        </Typography>
+                      )}
+                    </Box>
+                  </Popover>
+                </div>
+
+                <input
+                  type="tel"
                   name="mobile"
                   value={talentForm.mobile}
                   onChange={handleTalentChange}
-                  error={!!talentErrors.mobile}
-                  helperText={talentErrors.mobile}
-                  sx={fieldStyle}
+                  placeholder=""
+                  className="paragraph min-w-0 flex-1 bg-transparent text-black placeholder-gray-500 pl-2 pr-4 py-1.5 focus:outline-none"
+                  style={{ border: "none", outline: "none", height: "100%", fontSize: "14px" }}
                 />
-              </Box>
-            </Stack>
+              </div>
+              {talentErrors.mobile && (
+                <Typography sx={{ color: "#EF4444", fontSize: "0.75rem", mt: 0.5, ml: 1 }}>
+                  {talentErrors.mobile}
+                </Typography>
+              )}
+            </Box>
+
             <TextField
               select fullWidth size="small" label="Category" name="category"
               value={talentForm.category} onChange={handleTalentChange}
@@ -2074,22 +2205,24 @@ function Career() {
               <MenuItem value="Business Consultant">Business Consultant</MenuItem>
               <MenuItem value="Other">Other</MenuItem>
             </TextField>
+
             <Button
               component="label"
               sx={{
-                height: 90, borderRadius: "3px",
+                height: 70, borderRadius: "3px",
                 border: "2px dashed rgba(71,100,255,.4)",
                 background: "var(--color-sub-bg)",
-                display: "flex", flexDirection: "column", gap: 0.5,
+                display: "flex", flexDirection: "column", justifyContext: "center", gap: 0.2,
                 color: "var(--color-paragraph)", textTransform: "none",
+                py: 1,
                 "&:hover": { background: "rgba(71,100,255,.08)", borderColor: "var(--color-primary)" },
               }}
             >
-              <CloudUploadOutlinedIcon sx={{ fontSize: 28, color: "var(--color-primary)" }} />
-              <Typography fontWeight={600} fontSize="0.9rem">
+              <CloudUploadOutlinedIcon sx={{ fontSize: 24, color: "var(--color-primary)" }} />
+              <Typography fontWeight={600} fontSize="0.85rem">
                 {talentFile ? talentFile.name : "Upload Resume"}
               </Typography>
-              <Typography sx={{ fontSize: ".75rem", color: talentErrors.resume ? "#EF4444" : "#94A3B8" }}>
+              <Typography sx={{ fontSize: ".7rem", color: talentErrors.resume ? "#EF4444" : "#94A3B8" }}>
                 {talentErrors.resume || "PDF, DOC, DOCX"}
               </Typography>
               <input
