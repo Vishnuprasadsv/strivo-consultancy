@@ -20,23 +20,9 @@ const PrivacyPolicy = () => {
 
             {/* Hero */}
 
-            <section className="pt-24 pb-16 px-6 bg-main">
+            <section className="pt-15 pb-16 px-6 bg-main">
 
-                <div className="max-w-6xl mx-auto mb-8 text-left">
-                    <Link
-                        to="/review"
-                        className="btn"
-                        style={{
-                            display: "inline-flex",
-                            width: "fit-content",
-                            borderRadius: "3px",
-                            textDecoration: "none",
-                        }}
-                    >
-                        Back to Review
-                    </Link>
-                </div>
-
+                
                 <motion.div
                     initial="hidden"
                     animate="visible"
@@ -52,8 +38,8 @@ const PrivacyPolicy = () => {
           py-2
           rounded-full
           bg-blue-600/10
-          border border-blue-500/20
-          text-blue-400
+          border border-[var(--color-primary)]
+          text-[var(--color-primary)]
           mb-6">
 
                         <PolicyIcon fontSize="small" />
@@ -103,16 +89,16 @@ const PrivacyPolicy = () => {
                         initial="hidden"
                         whileInView="visible"
                         viewport={{ once: true }}
-                        className=" card
+                        className=" card bg-main
             
             border
             border-gray-200
-            rounded-2xl
+            
             p-8">
 
                         <div className="flex items-center gap-3 mb-5">
 
-                            <SecurityIcon className="text-blue-500" />
+                            <SecurityIcon className="text-[var(--color-primary)]" />
 
                             <h2 className="sub-heading ">
 
@@ -157,16 +143,16 @@ const PrivacyPolicy = () => {
                         initial="hidden"
                         whileInView="visible"
                         viewport={{ once: true }}
-                        className="
+                        className=" bg-main
             card
             border
             border-gray-200
-            rounded-2xl
+            
             p-8">
 
                         <div className="flex items-center gap-3 mb-5">
 
-                            <StorageIcon className="text-blue-500" />
+                            <StorageIcon className="text-[var(--color-primary)]" />
 
                             <h2 className="sub-heading">
 
@@ -203,16 +189,16 @@ const PrivacyPolicy = () => {
                         initial="hidden"
                         whileInView="visible"
                         viewport={{ once: true }}
-                        className="
+                        className=" bg-main
             card
             border
             border-gray-200
-            rounded-2xl
+           
             p-8">
 
                         <div className="flex items-center gap-3 mb-5">
 
-                            <LockIcon className="text-blue-500" />
+                            <LockIcon className="text-[var(--color-primary)]" />
 
                             <h2 className="sub-heading">
 
@@ -247,11 +233,11 @@ const PrivacyPolicy = () => {
                         initial="hidden"
                         whileInView="visible"
                         viewport={{ once: true }}
-                        className="
+                        className=" bg-main
             card
             border
             border-gray-200
-            rounded-2xl
+            
             p-8"
                     >
 
@@ -269,9 +255,9 @@ const PrivacyPolicy = () => {
                             className="
       inline-block
       mt-5
-      text-blue-600
+      text-[var(--color-primary)]
       font-semibold
-      hover:text-blue-700
+      hover:text-var(--color-primary-hover)
       transition
     "
                         >
