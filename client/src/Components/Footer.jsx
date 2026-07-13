@@ -59,10 +59,23 @@ const Footer = () => {
         </div>
         <div className="flex flex-col gap-4">
           <h3 className="text-white font-[var(--font-bold)] text-base mb-1">Get in Touch</h3>
-          <Link to="/contact" className="text-[var(--color-main-paragraph)] hover:text-[var(--color-primary-hover)] transition-colors text-sm">Contact Us</Link>
-          <Link to="/review" className="text-[var(--color-main-paragraph)] hover:text-[var(--color-primary-hover)] transition-colors text-sm">Add Review</Link>
-          <Link to="/privacy-policy" className="text-[var(--color-main-paragraph)] hover:text-[var(--color-primary-hover)] transition-colors text-sm">Privacy Policy</Link>
-          <Link to="/terms-and-conditions" className="text-[var(--color-main-paragraph)] hover:text-[var(--color-primary-hover)] transition-colors text-sm">Terms & Conditions</Link>
+          <Link to="/contact" className="text-[var(--color-main-paragraph)] hover:text-[#C9C9C9] transition-colors text-sm">Contact Us</Link>
+          <Link to="/review" className="text-[var(--color-main-paragraph)] hover:text-[#C9C9C9] transition-colors text-sm">Add Review</Link>
+          <Link to="/privacy-policy" className="text-[var(--color-main-paragraph)] hover:text-[#C9C9C9] transition-colors text-sm">Privacy Policy</Link>
+          <Link to="/terms-and-conditions" className="text-[var(--color-main-paragraph)] hover:text-[#C9C9C9] transition-colors text-sm">Terms & Conditions</Link>
+        </div>
+      </div>
+
+      {/* Bottom Footer Section */}
+      <div className="max-w-[110rem] mx-auto w-full px-4 md:px-12 lg:px-[180px] mt-12 pt-8 border-t border-gray-500/30 flex flex-col md:flex-row items-center justify-between gap-4">
+        <div className="flex flex-col md:flex-row items-center gap-4 text-center md:text-left">
+          <Logo className="h-8 w-auto object-contain" style={{ color: logoColor }} />
+          <p className="text-[var(--color-main-paragraph)] text-sm">
+            © {new Date().getFullYear()} Strivo Consultancy. All rights reserved.
+          </p>
+        </div>
+        <div className="text-[var(--color-main-paragraph)] text-decoration-none text-sm text-center md:text-right">
+          Developed by: Interns at <a href="https://penoft.com/" target="_blank" rel="noopener noreferrer" className="text-white hover:text-[#C9C9C9] transition-colors text-base font-bold">Penoft Technologies</a> (PIP-04)
         </div>
       </div>
     </motion.footer>

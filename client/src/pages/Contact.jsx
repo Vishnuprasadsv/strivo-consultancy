@@ -299,7 +299,7 @@ const Contact = () => {
       </Box>
 
       {/* Wrapper for Sections 2+ */}
-      <div className="w-full flex-grow py-16 px-6 md:px-16 lg:px-[180px]">
+      <div className="w-full flex-grow py-16 px-4 md:px-12 lg:px-[180px]">
         <div className="max-w-[1440px] mx-auto space-y-20">
           
           {/* Section 2: Contact Info & Form */}
@@ -544,7 +544,7 @@ const Contact = () => {
       </div>
 
       {/* FAQ Accordion Section */}
-      <div className="w-full bg-sub py-20 px-6 md:px-16 lg:px-[180px]">
+      <div className="w-full bg-sub py-20 px-4 md:px-12 lg:px-[180px]">
         <div className="max-w-[1440px] mx-auto">
           <motion.section
             initial="hidden"

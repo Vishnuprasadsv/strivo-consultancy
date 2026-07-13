@@ -409,9 +409,9 @@ function Career() {
 
         <Container maxWidth="lg" sx={{ position: "relative", zIndex: 2 }}>
           {SHOW_HERO_ILLUSTRATION ? (
-            <Grid container spacing={{ xs: 4, md: 6 }} alignItems="center">
+            <Grid container spacing={{ xs: 4, md: 6 }} sx={{ alignItems: "center" }}>
               {/* Left Column - Text Content */}
-              <Grid item xs={12} md={7}>
+              <Grid size={{ xs: 12, md: 7 }}>
                 <MotionBox
                   initial={{ opacity: 0, x: -50 }}
                   animate={{ opacity: 1, x: 0 }}
@@ -442,7 +442,7 @@ function Career() {
                       fontFamily: "var(--font-primary)",
                       letterSpacing: "-0.5px",
                       mb: 2,
-                      textAlign: "left",
+                      textAlign: { xs: "center", md: "left" },
                       }}
                       >
                     Build The Future With Us
@@ -472,8 +472,10 @@ function Career() {
                     <Stack
                       direction={{ xs: "column", sm: "row" }}
                       spacing={2}
-                      justifyContent={{ xs: "center", md: "flex-start" }}
-                      alignItems="center"
+                      sx={{
+                        justifyContent: { xs: "center", md: "flex-start" },
+                        alignItems: "center"
+                      }}
                     >
                       <Button
                         variant="contained"
@@ -527,7 +529,7 @@ function Career() {
               </Grid>
 
               {/* Right Column - Team Illustration */}
-              <Grid item xs={12} md={5}>
+              <Grid size={{ xs: 12, md: 5 }}>
                 <MotionBox
                   initial={{ opacity: 0, x: 50 }}
                   animate={{ opacity: 1, x: 0 }}
@@ -620,8 +622,7 @@ function Career() {
                 <Stack
                   direction={{ xs: "column", sm: "row" }}
                   spacing={2}
-                  justifyContent="center"
-                  alignItems="center"
+                  sx={{ justifyContent: "center", alignItems: "center" }}
                 >
                   <Button
                     variant="contained"
@@ -952,7 +953,7 @@ function Career() {
           </Stack>
 
           {/* Tab Content Display */}
-          <Box sx={{ display: "flex", gap: { xs: 3, md: 8 }, alignItems: "center", width: "100%" }}>
+          <Box sx={{ display: "flex", flexDirection: { xs: "column", md: "row" }, gap: { xs: 3, md: 8 }, alignItems: "center", width: "100%" }}>
             {/* Left side: Media (approx 40% width) */}
             <Box sx={{ flex: 4 }}>
               {activeTab === 0 ? (
@@ -1559,9 +1560,9 @@ function Career() {
                             flexWrap: "wrap",
                             gap: 1.5,
                             "& .MuiChip-root": {
-                              color: "var(--color-paragraph)",
-                              background: "rgba(71,100,255,0.15)",
-                              border: "1px solid rgba(71,100,255,0.3)",
+                              color: "var(--color-primary)",
+                              background: "rgba(1, 42, 89, 0.08)",
+                              border: "1px solid rgba(1, 42, 89, 0.2)",
                               fontWeight: 500,
                               maxWidth: "100%",
                               height: "auto",

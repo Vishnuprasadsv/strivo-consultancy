@@ -77,10 +77,10 @@ const CaseStudies = () => {
             initial="hidden"
             animate="visible"
             variants={fadeUpVariants}
-            className="max-w-3xl"
+            className="w-full lg:mx-auto lg:text-center lg:flex lg:flex-col lg:items-center"
           >
-            <h1 className="text-4xl md:text-5xl lg:text-[54px] font-bold mb-6 leading-tight">
-              Proven Results for <br /> Industry Leaders
+            <h1 className="text-4xl md:text-5xl lg:text-[54px] font-bold mb-6 leading-tight w-full">
+              Proven Results for Industry Leaders
             </h1>
             <p className="text-lg text-gray-300 mb-10 max-w-2xl leading-relaxed">
               Explore how we partner with forward-thinking organizations to
@@ -88,7 +88,7 @@ const CaseStudies = () => {
               growth.
             </p>
 
-            <div className="flex flex-wrap gap-4">
+            <div className="flex flex-wrap gap-4 lg:justify-center">
               {categories.map((category) => (
                 <button
                   key={category}
@@ -235,7 +235,7 @@ const CaseStudies = () => {
       </section>
 
       {/* Global Impact */}
-      <section className="pb-12 md:pb-16 lg:pb-20 px-6 md:px-[180px] lg:px-[180px]">
+      <section className="pb-12 md:pb-16 lg:pb-20 px-4 md:px-12 lg:px-[180px]">
         <div className="max-w-7xl mx-auto">
           <motion.div
             className="bg-[var(--color-primary)] rounded-sm p-10 md:p-14 lg:p-16 text-center relative overflow-hidden shadow-2xl"

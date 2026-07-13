@@ -186,7 +186,7 @@ const Insight = () => {
         </div>
       </motion.section>
 
-      <div className="bg-main max-w-7xl mx-auto px-6 md:px-[180px] lg:px-[60px] py-16 md:py-24 space-y-24">
+      <div className="bg-main max-w-7xl mx-auto px-4 md:px-12 lg:px-[60px] py-16 md:py-24 space-y-24">
 
         {/* Section 2: Featured Article */}
         {featuredArticle && (

@@ -119,7 +119,7 @@ const Strategic = () => {
           initial="hidden"
           animate="visible"
           variants={fadeUpVariants}
-          className="max-w-[110rem] w-full mx-auto px-8 md:px-16 lg:px-[180px] py-10 text-white"
+          className="max-w-[110rem] w-full mx-auto px-4 md:px-12 lg:px-[180px] py-10 text-white"
           style={{
             filter: "drop-shadow(0px 8px 16px rgba(0, 0, 0, 0.2))"
           }}
@@ -146,7 +146,7 @@ const Strategic = () => {
       {/* ========================================================================= */}
       <div className="max-w-[1440px] mx-auto">
         {/* Adjusted padding to half */}
-        <div className="bg-sub py-6 md:py-12 px-6 md:px-16 lg:px-[180px]">
+        <div className="bg-sub py-6 md:py-12 px-4 md:px-12 lg:px-[180px]">
           <div className="max-w-[1440px] mx-auto">
             <motion.section
               initial="hidden"
@@ -202,7 +202,7 @@ const Strategic = () => {
       </div>
 
       {/* Section 2: Service Overview */}
-      <div className="max-w-[1440px] mx-auto px-6 md:px-16 lg:px-[180px]">
+      <div className="max-w-[1440px] mx-auto px-4 md:px-12 lg:px-[180px]">
         {/* Adjusted padding to half */}
         <motion.section
           initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.2 }} variants={fadeUpVariants}
@@ -244,7 +244,7 @@ const Strategic = () => {
       </div>
 
       {/* Section 7: CTA Banner */}
-      <div className="max-w-[1440px] mx-auto px-6 md:px-16 lg:px-[180px]">
+      <div className="max-w-[1440px] mx-auto px-4 md:px-12 lg:px-[180px]">
         {/* Adjusted padding to half */}
         {/* Want Expert Guidance */}
               <motion.div
@@ -267,7 +267,7 @@ const Strategic = () => {
       </div>
 
       {/* Section 3: Core Capabilities */}
-      <div className="max-w-[1440px] mx-auto px-6 md:px-16 lg:px-[180px]">
+      <div className="max-w-[1440px] mx-auto px-4 md:px-12 lg:px-[180px]">
         {/* Adjusted padding to half */}
         <motion.section
           initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.1 }} variants={fadeUpVariants}
@@ -310,7 +310,7 @@ const Strategic = () => {
       </div>
 
       {/* Section 4: The Acumen Strategic Framework */}
-      <div className="max-w-[1440px] mx-auto px-6 md:px-16 lg:px-[180px]">
+      <div className="max-w-[1440px] mx-auto px-4 md:px-12 lg:px-[180px]">
         {/* Adjusted padding to half */}
         <motion.section
           initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.1 }} variants={fadeUpVariants}
@@ -361,7 +361,7 @@ const Strategic = () => {
       </div>
       
       {/* Section 8: Final Conversion */}
-      <div className="max-w-[1440px] mx-auto px-6 md:px-16 lg:px-[180px]">
+      <div className="max-w-[1440px] mx-auto px-4 md:px-12 lg:px-[180px]">
         {/* Adjusted padding to half */}
         <motion.section
           initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.2 }} variants={fadeUpVariants}
@@ -509,7 +509,7 @@ const Strategic = () => {
             </Box>
       
       {/* Section 6: Strategic Excellence in Action */}
-      <div className="max-w-[1440px] mx-auto px-6 md:px-16 lg:px-[180px]">
+      <div className="max-w-[1440px] mx-auto px-4 md:px-12 lg:px-[180px]">
         {/* Adjusted padding to half */}
         <motion.section
           initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.1 }} variants={fadeUpVariants}

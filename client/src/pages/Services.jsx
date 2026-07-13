@@ -83,7 +83,7 @@ const Services = () => {
           initial="hidden"
           animate="visible"
           variants={fadeUpVariants}
-          className="max-w-[110rem] w-full mx-auto px-8 md:px-[180px] lg:px-[180px] py-16"
+          className="max-w-[110rem] w-full mx-auto px-4 md:px-12 lg:px-[180px] py-16"
           style={{
             filter: "drop-shadow(0px 8px 16px rgba(0, 0, 0, 0.6))"
           }}
@@ -160,9 +160,9 @@ const Services = () => {
 
                 <div
                   className="
- bg-[#edf0ff]
+ bg-[var(--color-sub-bg)]
  border
- border-[#e2e8f0]
+ border-[var(--color-primary)]
  card
  p-7
  h-full
@@ -173,7 +173,7 @@ const Services = () => {
  transition-all
  duration-500
  hover:-translate-y-2
- hover:border-blue-500
+ hover:border-[var(--color-primary)]
  hover:shadow-[0_20px_40px_rgba(47,107,255,0.15)]
  group
  "
@@ -188,7 +188,7 @@ const Services = () => {
       left-0
       h-[4px]
       w-full
-      bg-blue-600
+      bg-[var(--color-primary)]
       scale-x-0
       origin-left
       transition-transform

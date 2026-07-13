@@ -224,7 +224,7 @@ const Values = () => {
           initial="hidden"
           animate="visible"
           variants={fadeUpVariants}
-          className="max-w-[110rem] w-full mx-auto px-8 md:px-16 lg:px-[180px] py-10 text-white"
+          className="max-w-[110rem] w-full mx-auto px-4 md:px-12 lg:px-[180px] py-10 text-white"
           style={{
             filter: "drop-shadow(0px 8px 16px rgba(0, 0, 0, 0.2))"
           }}
@@ -254,7 +254,7 @@ const Values = () => {
 
       {/* SECTION 2: FEATURED BANNER */}
       <div className="max-w-[1440px] mx-auto">
-        <div className="bg-sub py-8 md:py-20 px-6 md:px-16 lg:px-[180px]">
+        <div className="bg-sub py-8 md:py-20 px-4 md:px-12 lg:px-[180px]">
           <div className="max-w-[1440px] mx-auto">
             <motion.section
               key={`featured-${normalizedType}`}
@@ -315,7 +315,7 @@ const Values = () => {
 
       {/* SECTION 3: PILLARS */}
       <div className="max-w-[1440px] mx-auto">
-        <div className="bg-[var(--color-sub-bg)] pb-10 px-6 md:px-16 lg:px-[180px]">
+        <div className="bg-[var(--color-sub-bg)] pb-10 px-4 md:px-12 lg:px-[180px]">
           <div className="max-w-[1440px] mx-auto">
             <motion.section
               key={`pillars-${normalizedType}`}
