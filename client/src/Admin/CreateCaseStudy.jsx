@@ -371,6 +371,7 @@ const CreateCaseStudy = () => {
                 name="publicationDate"
                 value={formData.publicationDate}
                 onChange={handleChange}
+                min={new Date().toLocaleDateString('en-CA')}
                 className="w-full bg-[var(--color-sub-bg)] hover:bg-white focus:bg-white border border-[var(--color-border)] rounded-[var(--radius-sm)] py-2.5 px-3 outline-none text-sm text-[var(--color-paragraph)] focus:border-[var(--color-primary)] transition-colors duration-200"
               />
               {errors.publicationDate && (
