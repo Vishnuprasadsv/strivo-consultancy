@@ -112,6 +112,15 @@ const CaseStudies = () => {
 
       {/* Case Studies List */}
       <section className="py-12 md:py-16 lg:py-20 max-w-7xl mx-auto px-6 md:px-[50px] lg:px-[50px]" ref={cardsRef}>
+        <div className="text-center max-w-3xl mx-auto mb-14">
+          <h2 className="sub-heading mb-4">
+            Active Case Studies
+          </h2>
+          <p className="paragraph">
+            Explore our latest projects and discover how we've helped leading organizations achieve their strategic goals through innovative solutions and dedicated partnerships.
+          </p>
+        </div>
+
         <motion.div
           initial="hidden"
           whileInView="visible"

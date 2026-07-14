@@ -492,7 +492,7 @@ function Career() {
                           fontSize: "var(--text-small)",
                           border: "1px solid transparent",
                           "&:hover": {
-                            background: "var(--color-sub-bg)",
+                            background: "#c4c4c4",
                             transform: "translateY(-2px)",
                           },
                         }}
@@ -1767,7 +1767,7 @@ function Career() {
                   fontSize: "0.95rem",
                   boxShadow: "var(--shadow-button)",
                   "&:hover": {
-                    background: "var(--color-sub-bg)",
+                    background: "#c4c4c4",
                     transform: "translateY(-2px)",
                     boxShadow: "var(--shadow-button)",
                   },
@@ -2177,7 +2177,6 @@ function Career() {
                     </Box>
                   </Popover>
                 </div>
-
                 <input
                   type="tel"
                   name="mobile"

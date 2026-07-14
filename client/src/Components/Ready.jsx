@@ -134,7 +134,7 @@ function Ready() {
                 Contact Us
               </button>
 
-              <p className="paragraph font-light text-[12.5px] md:text-[13px] mt-4 mb-9 max-w-[180px] md:max-w-none leading-relaxed">
+              <p className="paragraph mt-4 mb-9 max-w-[180px] md:max-w-none leading-relaxed">
                 Let's start a conversation about your goals.
               </p>
             </div>

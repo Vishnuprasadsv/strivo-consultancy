@@ -658,14 +658,14 @@ function Home() {
                         display: "inline-flex",
                         alignItems: "center",
                         gap: 1,
-                        boxShadow: "0 8px 20px rgba(71, 100, 255, 0.3)",
+                        // boxShadow: "0 8px 20px rgba(71, 100, 255, 0.3)",
                         color: "var(--color-primary)",
                         "& svg": {
-                          transition: "transform 0.4s ease",
+                          // transition: "transform 0.4s ease",
                         },
                         "&:hover": {
-                          background: "var(--color-sub-bg)",
-                          boxShadow: "0 12px 25px rgba(71, 100, 255, 0.4)",
+                          background: "#C4C4C4",
+                          // boxShadow: "0 12px 25px rgba(71, 100, 255, 0.4)",
                           color: "var(--color-primary)",
                           "& svg": {
                             transform: "translateX(5px)",
