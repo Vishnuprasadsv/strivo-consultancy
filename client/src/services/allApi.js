@@ -130,3 +130,7 @@ export const deleteApplicationAPI = async (id) => {
 export const deleteTalentSubmissionAPI = async (id) => {
   return await commonAPI("DELETE", `${SERVER_URL}/api/talent/submissions/${id}`, "", "");
 };
+
+export const sendOfferLetterAPI = async (id, subject, body) => {
+  return await commonAPI("POST", `${SERVER_URL}/api/career/applications/${id}/send-offer`, { subject, body }, "");
+};

@@ -132,16 +132,120 @@ const TalentPoolAdmin = () => {
     setErrors({});
   };
 
+  const [deleteConfirm, setDeleteConfirm] = useState({ isOpen: false, id: null });
+  const [openScheduleModal, setOpenScheduleModal] = useState(false);
+  const [schedulingTalent, setSchedulingTalent] = useState(null);
+  const [scheduleForm, setScheduleForm] = useState({ date: "", time: "", type: "Technical Round", mode: "Online" });
+  const [scheduleErrors, setScheduleErrors] = useState({});
+
   const handleDelete = (id) => {
-    if (window.confirm("Are you sure you want to delete this talent record?")) {
+    setDeleteConfirm({ isOpen: true, id });
+  };
+
+  const executeDelete = () => {
+    const id = deleteConfirm.id;
+    setTalent(prev => {
+      const updated = prev.filter(item => item.id !== id);
+      localStorage.setItem('talent', JSON.stringify(updated));
+      window.dispatchEvent(new Event('talentUpdated'));
+      return updated;
+    });
+    toast.success("Talent record deleted successfully.");
+    setDeleteConfirm({ isOpen: false, id: null });
+  };
+
+  const getStatusDetails = (status) => {
+    switch (status) {
+      case 'pending':
+        return { label: 'New', className: 'text-slate-700 font-medium text-xs' };
+      case 'reviewed':
+        return { label: 'Under Review', className: 'text-slate-700 font-medium text-xs' };
+      case 'referred':
+        return { label: 'Interview Scheduled', className: 'text-slate-700 font-medium text-xs' };
+      case 'not_fit':
+        return { label: 'Not Fit', className: 'text-slate-700 font-medium text-xs' };
+      default:
+        return { label: 'New', className: 'text-slate-700 font-medium text-xs' };
+    }
+  };
+
+  const handleTalentAction = (item, action) => {
+    if (action === 'under_review') {
       setTalent(prev => {
-        const updated = prev.filter(item => item.id !== id);
+        const updated = prev.map(t => t.id === item.id ? { ...t, status: 'reviewed' } : t);
         localStorage.setItem('talent', JSON.stringify(updated));
         window.dispatchEvent(new Event('talentUpdated'));
         return updated;
       });
-      toast.success("Talent record deleted successfully.");
+      toast.success(`Candidate status updated to: Under Review`);
+    } else if (action === 'not_fit') {
+      setTalent(prev => {
+        const updated = prev.map(t => t.id === item.id ? { ...t, status: 'not_fit' } : t);
+        localStorage.setItem('talent', JSON.stringify(updated));
+        window.dispatchEvent(new Event('talentUpdated'));
+        return updated;
+      });
+      toast.success(`Candidate status updated to: Not Fit`);
+    } else if (action === 'schedule_interview') {
+      setSchedulingTalent(item);
+      setScheduleForm({ date: "", time: "", type: "Technical Round", mode: "Online" });
+      setScheduleErrors({});
+      setOpenScheduleModal(true);
     }
+  };
+
+  const handleScheduleSubmit = (e) => {
+    e.preventDefault();
+    const err = {};
+    if (!scheduleForm.date) err.date = "Date is required";
+    if (!scheduleForm.time) err.time = "Time is required";
+    if (scheduleForm.date && scheduleForm.time) {
+      const selectedDateTime = new Date(`${scheduleForm.date}T${scheduleForm.time}`);
+      if (selectedDateTime < new Date()) {
+        err.date = "Interview date/time cannot be in the past";
+      }
+    }
+    if (Object.keys(err).length > 0) {
+      setScheduleErrors(err);
+      return;
+    }
+
+    const formattedDate = new Date(`${scheduleForm.date}T${scheduleForm.time}`).toLocaleDateString('en-US', {
+      day: 'numeric',
+      month: 'short',
+      year: 'numeric'
+    }) + " " + new Date(`${scheduleForm.date}T${scheduleForm.time}`).toLocaleTimeString('en-US', {
+      hour: '2-digit',
+      minute: '2-digit'
+    });
+
+    const newInterview = {
+      id: Date.now(),
+      name: schedulingTalent.name,
+      email: schedulingTalent.email,
+      position: schedulingTalent.role,
+      type: scheduleForm.type,
+      mode: scheduleForm.mode,
+      date: formattedDate,
+      scheduledAt: new Date(`${scheduleForm.date}T${scheduleForm.time}`).toISOString(),
+      status: 'Scheduled'
+    };
+
+    const storedInterviews = localStorage.getItem('interviews');
+    const currentInterviews = storedInterviews ? JSON.parse(storedInterviews) : [];
+    const updatedInterviews = [newInterview, ...currentInterviews];
+    localStorage.setItem('interviews', JSON.stringify(updatedInterviews));
+    window.dispatchEvent(new Event('interviewsUpdated'));
+
+    setTalent(prev => {
+      const updated = prev.map(t => t.id === schedulingTalent.id ? { ...t, status: 'referred' } : t);
+      localStorage.setItem('talent', JSON.stringify(updated));
+      window.dispatchEvent(new Event('talentUpdated'));
+      return updated;
+    });
+
+    toast.success("Interview scheduled successfully!");
+    setOpenScheduleModal(false);
   };
 
   const handleEmail = (email) => {
@@ -373,20 +477,24 @@ const TalentPoolAdmin = () => {
                   <th className="py-3 px-3 text-left text-xs font-normal uppercase tracking-wider text-primary">Current Role</th>
                   <th className="py-3 px-3 text-left text-xs font-normal uppercase tracking-wider text-primary">Added On</th>
                   <th className="py-3 px-3 text-left text-xs font-normal uppercase tracking-wider text-primary">Source</th>
-                  <th className="py-3 px-3 text-center text-xs font-normal uppercase tracking-wider text-primary">Actions</th>
                 </tr>
               </thead>
               <tbody>
                 {currentPagedData.length === 0 ? (
                   <tr>
-                    <td colSpan="6" className="text-center py-8 text-xs text-slate-500">No candidates found matching filters.</td>
+                    <td colSpan="5" className="text-center py-8 text-xs text-slate-500">No candidates found matching filters.</td>
                   </tr>
                 ) : (
                   currentPagedData.map((item) => (
                     <tr key={item.id} className="border-b border-[var(--color-border)] hover:bg-slate-50/30 transition-colors">
                       <td className="py-3.5 px-3">
                         <div>
-                          <p className="text-xs font-semibold text-black">{item.name}</p>
+                          <p
+                            onClick={() => { setSelectedTalent(item); setOpenDetailModal(true); }}
+                            className="text-xs font-semibold text-black hover:underline cursor-pointer inline-block"
+                          >
+                            {item.name}
+                          </p>
                           <p className="text-[10px] text-slate-500">{item.email}</p>
                         </div>
                       </td>
@@ -394,19 +502,6 @@ const TalentPoolAdmin = () => {
                       <td className="py-3.5 px-3 text-xs text-slate-700">{item.role}</td>
                       <td className="py-3.5 px-3 text-xs text-slate-700">{item.date}</td>
                       <td className="py-3.5 px-3 text-xs text-slate-700">{item.source}</td>
-                      <td className="py-3.5 px-3 text-center">
-                        <div className="flex items-center justify-center gap-1.5">
-                          <button
-                            onClick={() => { setSelectedTalent(item); setOpenDetailModal(true); }}
-                            className="w-7 h-7 flex items-center justify-center transition-colors cursor-pointer border border-[var(--color-border)] bg-[var(--color-main-bg)] text-slate-600 hover:text-slate-900"
-                            style={{ borderRadius: 'var(--radius-sm)' }}
-                            title="View Details"
-                          >
-                            <FiEye size={13} />
-                          </button>
-                          {/* View details button only */}
-                        </div>
-                      </td>
                     </tr>
                   ))
                 )}
@@ -423,7 +518,12 @@ const TalentPoolAdmin = () => {
                 <div key={item.id} className="border border-[var(--color-border)] rounded-[var(--radius-sm)] p-4 bg-slate-50/20 hover:bg-slate-50/40 transition-all flex flex-col gap-3">
                   <div className="flex justify-between items-start">
                     <div>
-                      <p className="text-xs font-semibold text-black">{item.name}</p>
+                      <p
+                        onClick={() => { setSelectedTalent(item); setOpenDetailModal(true); }}
+                        className="text-xs font-semibold text-black hover:underline cursor-pointer"
+                      >
+                        {item.name}
+                      </p>
                       <p className="text-[10px] text-slate-500">{item.email}</p>
                     </div>
                     <span className="px-2 py-0.5 rounded text-[10px] font-semibold bg-slate-100 border border-slate-200 text-slate-700">
@@ -434,16 +534,6 @@ const TalentPoolAdmin = () => {
                     <p><span className="font-semibold">Role:</span> {item.role}</p>
                     <p><span className="font-semibold">Skills:</span> {item.skills}</p>
                     <p><span className="font-semibold">Added On:</span> {item.date}</p>
-                  </div>
-                  <div className="flex items-center justify-end gap-2 mt-1 pt-2 border-t border-slate-100">
-                    <button
-                      onClick={() => { setSelectedTalent(item); setOpenDetailModal(true); }}
-                      className="text-xs text-slate-600 hover:text-slate-900 flex items-center gap-1 border border-slate-300 rounded px-2.5 py-1 bg-white cursor-pointer"
-                    >
-                      <FiEye size={12} />
-                      View
-                    </button>
-                    {/* View button only */}
                   </div>
                 </div>
               ))

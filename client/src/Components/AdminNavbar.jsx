@@ -6,7 +6,8 @@ import {
   getAdminStatsAPI,
   getAdminApplicationsAPI,
   getAdminInquiriesAPI,
-  getReviewsAPI
+  getReviewsAPI,
+  getJobsAPI
 } from '../services/allApi';
 import Logo from '../assets/strivo logo.svg?react';
 
@@ -126,7 +127,7 @@ const AdminNavbar = () => {
         }));
       }
 
-      // Appointments Pending Approval
+      // Appointments Pending Approval (Admin Notifications)
       let appointmentNotifications = [];
       try {
         const storedApps = localStorage.getItem('appointments');
@@ -143,13 +144,75 @@ const AdminNavbar = () => {
         console.error(err);
       }
 
-      // Combine notifications
-      const allNotifications = [
-        ...applicationNotifications,
-        ...inquiryNotifications,
-        ...reviewNotifications,
-        ...appointmentNotifications
-      ]
+      // Appointments Approved/Rejected by Admin (HR Notifications)
+      let appointmentStatusNotifications = [];
+      try {
+        const storedApps = localStorage.getItem('appointments');
+        if (storedApps) {
+          const list = JSON.parse(storedApps);
+          const recentStatusChanges = list.filter(a => 
+            (a.status === 'Approved' || a.status === 'Rejected') && 
+            a.updatedAt && (new Date() - new Date(a.updatedAt)) < 24 * 60 * 60 * 1000
+          );
+          appointmentStatusNotifications = recentStatusChanges.map(app => ({
+            id: `appt-status-${app.id}-${app.status}`,
+            type: "appointment",
+            text: `Appointment ${app.status === 'Approved' ? 'Approved' : 'Rejected'} by Admin: ${app.name}`,
+            time: new Date(app.updatedAt)
+          }));
+        }
+      } catch (err) {
+        console.error(err);
+      }
+
+      // Jobs Posted (HR Notifications)
+      let jobNotifications = [];
+      try {
+        const jobsRes = await getJobsAPI();
+        if (jobsRes.status === 200 && jobsRes.data?.success) {
+          const recentJobs = jobsRes.data.data.filter(
+            job => (new Date() - new Date(job.createdAt)) < 24 * 60 * 60 * 1000
+          );
+          jobNotifications = recentJobs.map(job => ({
+            id: `job-${job._id}`,
+            type: "job",
+            text: `New job posted: ${job.title} (${job.location})`,
+            time: new Date(job.createdAt)
+          }));
+        }
+      } catch (err) {
+        console.error(err);
+      }
+
+      // Retrieve the logged-in user role dynamically from localStorage to avoid race conditions
+      let currentRole = '';
+      try {
+        const storedUser = localStorage.getItem('adminUser');
+        if (storedUser) {
+          const parsed = JSON.parse(storedUser);
+          currentRole = parsed.role ? parsed.role.toLowerCase() : '';
+        }
+      } catch (roleErr) {
+        console.error("Error retrieving user role for notifications:", roleErr);
+      }
+
+      // Combine notifications and filter based on user role
+      let filteredNotifications = [];
+      if (currentRole === 'hr') {
+        filteredNotifications = [
+          ...applicationNotifications,
+          ...appointmentStatusNotifications,
+          ...jobNotifications
+        ];
+      } else {
+        filteredNotifications = [
+          ...inquiryNotifications,
+          ...reviewNotifications,
+          ...appointmentNotifications
+        ];
+      }
+
+      const allNotifications = filteredNotifications
         .sort((a, b) => b.time - a.time)
         .slice(0, 5);
 

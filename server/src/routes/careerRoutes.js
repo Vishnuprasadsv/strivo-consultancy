@@ -10,7 +10,8 @@ import {
   createJob,
   updateJob,
   deleteJob,
-  getDashboardStats
+  getDashboardStats,
+  sendOfferLetter
 } from '../controllers/careerController.js';
 import { protect, authorize } from '../middlewares/authMiddleware.js';
 
@@ -30,6 +31,7 @@ router.post("/apply", upload.single("resume"), applyJob);
 router.get("/applications", protect, authorize('Admin', 'Administrator', 'Hr'), getApplications);
 router.put("/applications/:id/status", protect, authorize('Admin', 'Administrator', 'Hr'), updateApplicationStatus);
 router.put("/applications/:id/refer", protect, authorize('Admin', 'Administrator', 'Hr'), referApplication);
+router.post("/applications/:id/send-offer", protect, authorize('Admin', 'Administrator', 'Hr'), sendOfferLetter);
 router.delete("/applications/:id", protect, authorize('Admin', 'Administrator', 'Hr'), deleteApplication);
 
 

@@ -239,21 +239,47 @@ const sendReferralEmail = async (application) => {
 export const updateApplicationStatus = async (req, res) => {
   try {
     const { id } = req.params;
-    const { status } = req.body; // pending, reviewed, accepted, rejected, referred
+    const { status } = req.body; // pending, reviewed, referred, interview_in_progress, interview_completed, awaiting_approval, appointed, rejected, not_fit
     
+    const currentApp = await CareerApplication.findById(id);
+    if (!currentApp) {
+      return res.status(404).json({ success: false, message: "Application not found" });
+    }
+
+    const currentStatus = currentApp.status || 'pending';
+    
+    // If setting to same status, allow it (no-op)
+    if (currentStatus === status) {
+      return res.status(200).json({ success: true, message: "Status updated successfully", data: currentApp });
+    }
+
+    const validTransitions = {
+      'pending': ['reviewed', 'referred', 'not_fit'],
+      'reviewed': ['referred', 'not_fit'],
+      'referred': ['interview_in_progress', 'rejected', 'not_fit'],
+      'interview_in_progress': ['interview_completed', 'awaiting_approval', 'rejected'],
+      'interview_completed': ['awaiting_approval', 'rejected'],
+      'awaiting_approval': ['appointed', 'rejected', 'delayed'],
+      'delayed': ['awaiting_approval', 'rejected'],
+      'appointed': [],
+      'rejected': [],
+      'not_fit': []
+    };
+
+    const allowed = validTransitions[currentStatus] || [];
+    if (!allowed.includes(status)) {
+      return res.status(400).json({ 
+        success: false, 
+        message: `Invalid status transition from '${currentStatus}' to '${status}'. Allowed transitions: ${allowed.join(', ') || 'None'}` 
+      });
+    }
+
     const application = await CareerApplication.findByIdAndUpdate(
       id,
       { status },
       { new: true }
     );
     
-    if (!application) {
-      return res.status(404).json({ success: false, message: "Application not found" });
-    }
-
- 
-
-
     if (status === 'referred') {
       await sendReferralEmail(application);
     }
@@ -411,6 +437,42 @@ export const getDashboardStats = async (req, res) => {
     });
   } catch (error) {
     console.error("Error in getDashboardStats:", error);
+    return res.status(500).json({ success: false, message: "Internal server error" });
+  }
+};
+
+
+export const sendOfferLetter = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { subject, body } = req.body;
+    
+    const application = await CareerApplication.findById(id);
+    if (!application) {
+      return res.status(404).json({ success: false, message: "Application not found" });
+    }
+    
+    const emailUser = process.env.EMAIL_USER || process.env.EMAIL;
+    const emailPass = process.env.EMAIL_PASS || process.env.EMAIL_PASSWORD;
+    
+    if (emailUser && emailPass) {
+      const mailOptions = {
+        from: emailUser,
+        to: application.email,
+        subject: subject || "Job Offer - Strivo Consultancy",
+        text: body || `Dear ${application.fullName},\n\nWelcome to Strivo Consultancy. We are pleased to offer you the position of ${application.appliedPosition}.\n\nBest regards,\nStrivo Consultancy`
+      };
+      await transporter.sendMail(mailOptions);
+    } else {
+      console.log("Email credentials not set. Skipping email send but updating status.");
+    }
+    
+    application.status = 'appointed';
+    await application.save();
+    
+    return res.status(200).json({ success: true, message: "Offer letter sent successfully & candidate status updated to Appointed" });
+  } catch (error) {
+    console.error("Error in sendOfferLetter:", error);
     return res.status(500).json({ success: false, message: "Internal server error" });
   }
 };
