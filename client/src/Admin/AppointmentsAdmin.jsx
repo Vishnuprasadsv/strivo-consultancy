@@ -5,6 +5,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { jsPDF } from 'jspdf';
 import 'jspdf-autotable';
 import { toast } from 'sonner';
+import { getAdminApplicationsAPI, updateApplicationStatusAPI, sendOfferLetterAPI } from '../services/allApi';
 import {
   Dialog,
   DialogTitle,
@@ -50,6 +51,31 @@ const AppointmentsAdmin = () => {
   });
 
   React.useEffect(() => {
+    const autoSyncAppointments = async () => {
+      const storedAppointments = localStorage.getItem('appointments');
+      if (!storedAppointments) return;
+      try {
+        const appointmentsList = JSON.parse(storedAppointments);
+        const appsRes = await getAdminApplicationsAPI();
+        if (appsRes.status === 200 && appsRes.data?.success) {
+          const apps = appsRes.data.data;
+          for (const appt of appointmentsList) {
+            const app = apps.find(a => a.email.toLowerCase() === appt.email.toLowerCase());
+            if (app) {
+              if (appt.status === 'Approved' && app.status !== 'appointed') {
+                await updateApplicationStatusAPI(app._id, 'appointed');
+              } else if (appt.status === 'Rejected' && app.status !== 'rejected') {
+                await updateApplicationStatusAPI(app._id, 'rejected');
+              }
+            }
+          }
+        }
+      } catch (err) {
+        console.error("Failed quietly to auto-sync appointments status with backend:", err);
+      }
+    };
+    autoSyncAppointments();
+
     const syncAppointments = () => {
       const stored = localStorage.getItem('appointments');
       if (stored) setAppointments(JSON.parse(stored));
@@ -77,6 +103,13 @@ const AppointmentsAdmin = () => {
 
   const [selectedApp, setSelectedApp] = useState(null);
   const [openDetailModal, setOpenDetailModal] = useState(false);
+  
+  const [openOfferModal, setOpenOfferModal] = useState(false);
+  const [offerEmail, setOfferEmail] = useState("");
+  const [offerSubject, setOfferSubject] = useState("");
+  const [offerBody, setOfferBody] = useState("");
+  const [sendingOffer, setSendingOffer] = useState(false);
+  const [offerAppRecord, setOfferAppRecord] = useState(null);
   
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 5;
@@ -148,14 +181,198 @@ const AppointmentsAdmin = () => {
     toast.success(`Appointment status updated to: ${newStatus}`);
   };
 
-  const handleSendToApproval = (id) => {
-    setAppointments(prev => {
-      const updated = prev.map(item => item.id === id ? { ...item, status: 'Pending Approval' } : item);
+  const handleSendToApproval = async (id) => {
+    try {
+      const stored = localStorage.getItem('appointments');
+      if (!stored) return;
+      const apps = JSON.parse(stored);
+      const appRecord = apps.find(a => a.id === id);
+      if (!appRecord) return;
+
+      const updated = apps.map(a => a.id === id ? { ...a, status: 'Pending Approval' } : a);
+      setAppointments(updated);
       localStorage.setItem('appointments', JSON.stringify(updated));
       window.dispatchEvent(new Event('appointmentsUpdated'));
-      return updated;
-    });
-    toast.success("Appointment sent to Admin Dashboard for approval!");
+
+      // Sync to interviews
+      const storedInts = localStorage.getItem('interviews');
+      if (storedInts) {
+        const ints = JSON.parse(storedInts);
+        const updatedInts = ints.map(i => i.email.toLowerCase() === appRecord.email.toLowerCase() ? { ...i, status: 'Pending Approval' } : i);
+        localStorage.setItem('interviews', JSON.stringify(updatedInts));
+        window.dispatchEvent(new Event('interviewsUpdated'));
+      }
+
+      // Update backend status to awaiting_approval
+      const appsRes = await getAdminApplicationsAPI();
+      if (appsRes.status === 200 && appsRes.data?.success) {
+        const targetApp = appsRes.data.data.find(a => a.email.toLowerCase() === appRecord.email.toLowerCase());
+        if (targetApp) {
+          await updateApplicationStatusAPI(targetApp._id, 'awaiting_approval');
+        }
+      }
+      toast.success("Appointment sent to Admin Dashboard for approval!");
+    } catch (err) {
+      console.error(err);
+      toast.error("Failed to send for approval.");
+    }
+  };
+
+  const handleMarkAsUnfit = async (id) => {
+    if (!window.confirm("Are you sure you want to mark this candidate as Unfit?")) return;
+    try {
+      const stored = localStorage.getItem('appointments');
+      if (!stored) return;
+      const apps = JSON.parse(stored);
+      const appRecord = apps.find(a => a.id === id);
+      if (!appRecord) return;
+
+      const updated = apps.map(a => a.id === id ? { ...a, status: 'Rejected' } : a);
+      setAppointments(updated);
+      localStorage.setItem('appointments', JSON.stringify(updated));
+      window.dispatchEvent(new Event('appointmentsUpdated'));
+
+      // Sync to interviews
+      const storedInts = localStorage.getItem('interviews');
+      if (storedInts) {
+        const ints = JSON.parse(storedInts);
+        const updatedInts = ints.map(i => i.email.toLowerCase() === appRecord.email.toLowerCase() ? { ...i, status: 'Rejected' } : i);
+        localStorage.setItem('interviews', JSON.stringify(updatedInts));
+        window.dispatchEvent(new Event('interviewsUpdated'));
+      }
+
+      // Update backend status to rejected
+      const appsRes = await getAdminApplicationsAPI();
+      if (appsRes.status === 200 && appsRes.data?.success) {
+        const targetApp = appsRes.data.data.find(a => a.email.toLowerCase() === appRecord.email.toLowerCase());
+        if (targetApp) {
+          await updateApplicationStatusAPI(targetApp._id, 'rejected');
+        }
+      }
+      toast.success("Candidate marked as Unfit.");
+    } catch (err) {
+      console.error(err);
+      toast.error("Failed to mark candidate as Unfit.");
+    }
+  };
+
+  const handleDelayAppointment = async (id) => {
+    try {
+      const stored = localStorage.getItem('appointments');
+      if (!stored) return;
+      const apps = JSON.parse(stored);
+      const appRecord = apps.find(a => a.id === id);
+      if (!appRecord) return;
+
+      const updated = apps.map(a => a.id === id ? { ...a, status: 'Delayed', updatedAt: new Date().toISOString() } : a);
+      setAppointments(updated);
+      localStorage.setItem('appointments', JSON.stringify(updated));
+      window.dispatchEvent(new Event('appointmentsUpdated'));
+
+      // Sync to interviews
+      const storedInts = localStorage.getItem('interviews');
+      if (storedInts) {
+        const ints = JSON.parse(storedInts);
+        const updatedInts = ints.map(i => i.email.toLowerCase() === appRecord.email.toLowerCase() ? { ...i, status: 'Delayed' } : i);
+        localStorage.setItem('interviews', JSON.stringify(updatedInts));
+        window.dispatchEvent(new Event('interviewsUpdated'));
+      }
+
+      // Update backend status to delayed
+      const appsRes = await getAdminApplicationsAPI();
+      if (appsRes.status === 200 && appsRes.data?.success) {
+        const targetApp = appsRes.data.data.find(a => a.email.toLowerCase() === appRecord.email.toLowerCase());
+        if (targetApp) {
+          await updateApplicationStatusAPI(targetApp._id, 'delayed');
+        }
+      }
+      toast.success("Appointment delayed successfully across all pages!");
+    } catch (err) {
+      console.error(err);
+      toast.error("Failed to delay appointment.");
+    }
+  };
+
+  const handleOpenOfferLetterModal = (item) => {
+    setOfferAppRecord(item);
+    setOfferEmail(item.email);
+    setOfferSubject(`Job Offer - Strivo Consultancy`);
+    setOfferBody(`Dear ${item.name},\n\nWelcome to Strivo Consultancy!\n\nWe are pleased to offer you the position of ${item.position}. We believe your skills and experience will be a valuable asset to our team.\n\nBest regards,\nStrivo Team`);
+    setOpenOfferModal(true);
+  };
+
+  const handleSendOfferLetter = async () => {
+    if (!offerSubject.trim() || !offerBody.trim()) {
+      toast.error("Subject and Body are required.");
+      return;
+    }
+    setSendingOffer(true);
+    try {
+      const appsRes = await getAdminApplicationsAPI();
+      if (appsRes.status === 200 && appsRes.data?.success) {
+        const targetApp = appsRes.data.data.find(a => a.email.toLowerCase() === offerEmail.toLowerCase());
+        if (targetApp) {
+          const response = await sendOfferLetterAPI(targetApp._id, offerSubject, offerBody);
+          if (response.status === 200) {
+            // Update local storage appointment status
+            const stored = localStorage.getItem('appointments');
+            if (stored) {
+              const apps = JSON.parse(stored);
+              const updated = apps.map(a => a.id === offerAppRecord.id ? { ...a, offerShared: true, status: 'Appointed' } : a);
+              setAppointments(updated);
+              localStorage.setItem('appointments', JSON.stringify(updated));
+              window.dispatchEvent(new Event('appointmentsUpdated'));
+            }
+
+            // Sync to interviews
+            const storedInts = localStorage.getItem('interviews');
+            if (storedInts) {
+              const ints = JSON.parse(storedInts);
+              const updatedInts = ints.map(i => i.email.toLowerCase() === offerEmail.toLowerCase() ? { ...i, status: 'Appointed' } : i);
+              localStorage.setItem('interviews', JSON.stringify(updatedInts));
+              window.dispatchEvent(new Event('interviewsUpdated'));
+            }
+
+            // Add to Talent Pool
+            const storedTalent = localStorage.getItem('talent');
+            const initialTalent = [
+              { id: 1, name: "Nandana P Nair", email: "nandana.p@email.com", skills: "React, Node.js, MongoDB", role: "Software Developer at TCS", date: "10 Jun 2026", source: "LinkedIn" },
+              { id: 2, name: "Gokul Krishna", email: "gokul.k@email.com", skills: "UI/UX, Figma, Adobe XD", role: "UI/UX Designer at Infopark", date: "08 Jun 2026", source: "Referral" },
+              { id: 3, name: "Harikrishnan M", email: "harikrishnan.m@email.com", skills: "AWS, Docker, Kubernetes", role: "DevOps Engineer at UST Global", date: "07 Jun 2026", source: "Naukri" },
+              { id: 4, name: "Lakshmi Priya", email: "lakshmi.p@email.com", skills: "Python, Django, SQL", role: "Backend Developer at Zoho", date: "05 Jun 2026", source: "LinkedIn" },
+              { id: 5, name: "Albin Antony", email: "albin.a@email.com", skills: "React Native, Firebase", role: "Mobile Developer at Accenture", date: "03 Jun 2026", source: "Company Website" }
+            ];
+            const talents = storedTalent ? JSON.parse(storedTalent) : initialTalent;
+            if (!talents.some(t => t.email.toLowerCase() === offerEmail.toLowerCase())) {
+              const newTalent = {
+                id: Date.now(),
+                name: offerAppRecord.name,
+                email: offerAppRecord.email,
+                skills: "React, CSS, HTML5",
+                role: offerAppRecord.position,
+                date: new Date().toLocaleDateString('en-US', { day: 'numeric', month: 'short', year: 'numeric' }),
+                source: "Appointment"
+              };
+              const updatedTalent = [newTalent, ...talents];
+              localStorage.setItem('talent', JSON.stringify(updatedTalent));
+              window.dispatchEvent(new Event('talentUpdated'));
+            }
+
+            toast.success("Offer letter sent successfully!");
+            setOpenOfferModal(false);
+          } else {
+            toast.error("Failed to send offer letter email.");
+          }
+        } else {
+          toast.error("Candidate application not found in database.");
+        }
+      }
+    } catch (err) {
+      console.error(err);
+      toast.error("Failed to send offer letter.");
+    } finally {
+      setSendingOffer(false);
+    }
   };
 
   const handleDelete = (id) => {
@@ -312,13 +529,7 @@ const AppointmentsAdmin = () => {
   const currentPagedData = filteredData.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
 
   const getStatusColor = (status) => {
-    switch (status) {
-      case 'Pending': return 'bg-yellow-100 text-yellow-800 border-yellow-200';
-      case 'Pending Approval': return 'bg-blue-100 text-blue-800 border-blue-200';
-      case 'Approved': return 'bg-emerald-100 text-emerald-800 border-emerald-200';
-      case 'Rejected': return 'bg-red-100 text-red-800 border-red-200';
-      default: return 'bg-gray-100 text-gray-800 border-gray-200';
-    }
+    return 'text-slate-700 font-medium text-xs';
   };
 
   return (
@@ -411,7 +622,12 @@ const AppointmentsAdmin = () => {
                     <tr key={item.id} className="border-b border-[var(--color-border)] hover:bg-slate-50/30 transition-colors">
                       <td className="py-3.5 px-3">
                         <div>
-                          <p className="text-xs font-semibold text-black">{item.name}</p>
+                          <p
+                            onClick={() => { setSelectedApp(item); setOpenDetailModal(true); }}
+                            className="text-xs font-semibold text-black hover:underline cursor-pointer inline-block"
+                          >
+                            {item.name}
+                          </p>
                           <p className="text-[10px] text-slate-500">{item.email}</p>
                         </div>
                       </td>
@@ -420,30 +636,45 @@ const AppointmentsAdmin = () => {
                       <td className="py-3.5 px-3 text-xs text-slate-700">{item.date}</td>
                       <td className="py-3.5 px-3 text-xs text-slate-700">{item.mode}</td>
                       <td className="py-3.5 px-3 text-center">
-                        <span className={`px-2.5 py-0.5 rounded text-[10px] font-semibold border ${getStatusColor(item.status)}`}>
+                        <span className="text-slate-700 font-medium text-xs">
                           {item.status}
                         </span>
                       </td>
                       <td className="py-3.5 px-3 text-center">
-                        <div className="flex items-center justify-center gap-1.5">
-                          {item.status === 'Pending' && (
-                            <button
-                              onClick={() => handleSendToApproval(item.id)}
-                              className="px-2.5 py-1 text-[10px] font-bold bg-blue-50 border border-blue-200 hover:bg-blue-100 text-blue-700 rounded-[var(--radius-sm)] transition cursor-pointer"
-                              title="Send to Approval"
-                            >
-                              Send to Approval
-                            </button>
-                          )}
-                          <button
-                            onClick={() => { setSelectedApp(item); setOpenDetailModal(true); }}
-                            className="w-7 h-7 flex items-center justify-center transition-colors cursor-pointer border border-[var(--color-border)] bg-[var(--color-main-bg)] text-slate-600 hover:text-slate-900"
-                            style={{ borderRadius: 'var(--radius-sm)' }}
-                            title="View Details"
+                        {item.status === 'Rejected' || item.status === 'Appointed' ? (
+                          <span className="text-slate-700 font-medium text-xs">
+                            {item.status === 'Appointed' ? 'Offered' : 'Unfit'}
+                          </span>
+                        ) : (
+                          <select
+                            value=""
+                            onChange={(e) => {
+                              const val = e.target.value;
+                              if (val === 'send_approval') handleSendToApproval(item.id);
+                              else if (val === 'unfit') handleMarkAsUnfit(item.id);
+                              else if (val === 'share_offer') handleOpenOfferLetterModal(item);
+                              else if (val === 'delay_appt') handleDelayAppointment(item.id);
+                            }}
+                            className="bg-white border border-gray-300 text-slate-700 rounded px-2 py-1 text-xs focus:outline-none cursor-pointer hover:bg-slate-50 w-32 font-medium"
                           >
-                            <FiEye size={13} />
-                          </button>
-                        </div>
+                            <option value="" disabled hidden>Action</option>
+                            {(item.status === 'Pending' || item.status === 'Delayed') && (
+                              <>
+                                <option value="send_approval">Send for Approval</option>
+                                <option value="unfit">Unfit</option>
+                              </>
+                            )}
+                            {item.status === 'Pending Approval' && (
+                              <option value="unfit">Unfit</option>
+                            )}
+                            {item.status === 'Approved' && !item.offerShared && (
+                              <>
+                                <option value="share_offer">Share Offer Letter</option>
+                                <option value="delay_appt">Delay Appointment</option>
+                              </>
+                            )}
+                          </select>
+                        )}
                       </td>
                     </tr>
                   ))
@@ -461,10 +692,15 @@ const AppointmentsAdmin = () => {
                 <div key={item.id} className="border border-[var(--color-border)] rounded-[var(--radius-sm)] p-4 bg-slate-50/20 hover:bg-slate-50/40 transition-all flex flex-col gap-3">
                   <div className="flex justify-between items-start">
                     <div>
-                      <p className="text-xs font-semibold text-black">{item.name}</p>
+                      <p
+                        onClick={() => { setSelectedApp(item); setOpenDetailModal(true); }}
+                        className="text-xs font-semibold text-black hover:underline cursor-pointer"
+                      >
+                        {item.name}
+                      </p>
                       <p className="text-[10px] text-slate-500">{item.email}</p>
                     </div>
-                    <span className={`px-2.5 py-0.5 rounded text-[10px] font-semibold border ${getStatusColor(item.status)}`}>
+                    <span className="text-slate-700 font-medium text-xs">
                       {item.status}
                     </span>
                   </div>
@@ -474,22 +710,41 @@ const AppointmentsAdmin = () => {
                     <p><span className="font-semibold">Time:</span> {item.date}</p>
                     <p><span className="font-semibold">Mode:</span> {item.mode}</p>
                   </div>
-                  <div className="flex items-center justify-end gap-2 mt-1 pt-2 border-t border-slate-100">
-                    {item.status === 'Pending' && (
-                      <button
-                        onClick={() => handleSendToApproval(item.id)}
-                        className="text-xs text-blue-600 hover:text-blue-800 flex items-center gap-1 border border-blue-200 rounded px-2.5 py-1 bg-blue-50 cursor-pointer font-bold"
+                  <div className="flex flex-wrap items-center justify-end gap-2 mt-1 pt-2 border-t border-slate-100">
+                    {item.status === 'Rejected' || item.status === 'Appointed' ? (
+                      <span className="text-slate-700 font-medium text-xs">
+                        {item.status === 'Appointed' ? 'Offered' : 'Unfit'}
+                      </span>
+                    ) : (
+                      <select
+                        value=""
+                        onChange={(e) => {
+                          const val = e.target.value;
+                          if (val === 'send_approval') handleSendToApproval(item.id);
+                          else if (val === 'unfit') handleMarkAsUnfit(item.id);
+                          else if (val === 'share_offer') handleOpenOfferLetterModal(item);
+                          else if (val === 'delay_appt') handleDelayAppointment(item.id);
+                        }}
+                        className="bg-white border border-gray-300 text-slate-700 rounded px-2 py-1 text-xs focus:outline-none cursor-pointer hover:bg-slate-50 w-32 font-medium"
                       >
-                        Send to Approval
-                      </button>
+                        <option value="" disabled hidden>Action</option>
+                        {(item.status === 'Pending' || item.status === 'Delayed') && (
+                          <>
+                            <option value="send_approval">Send for Approval</option>
+                            <option value="unfit">Unfit</option>
+                          </>
+                        )}
+                        {item.status === 'Pending Approval' && (
+                          <option value="unfit">Unfit</option>
+                        )}
+                        {item.status === 'Approved' && !item.offerShared && (
+                          <>
+                            <option value="share_offer">Share Offer Letter</option>
+                            <option value="delay_appt">Delay Appointment</option>
+                          </>
+                        )}
+                      </select>
                     )}
-                    <button
-                      onClick={() => { setSelectedApp(item); setOpenDetailModal(true); }}
-                      className="text-xs text-slate-600 hover:text-slate-900 flex items-center gap-1 border border-slate-300 rounded px-2.5 py-1 bg-white cursor-pointer"
-                    >
-                      <FiEye size={12} />
-                      View
-                    </button>
                   </div>
                 </div>
               ))
@@ -699,7 +954,7 @@ const AppointmentsAdmin = () => {
                 </div>
                 <div className="col-span-2">
                   <p className="text-[10px] text-slate-400 font-semibold uppercase">Approval Status</p>
-                  <span className={`px-2 py-0.5 rounded text-[10px] font-semibold inline-block mt-1 ${getStatusColor(selectedApp.status)}`}>
+                  <span className="text-slate-700 font-medium text-xs inline-block mt-1">
                     {selectedApp.status}
                   </span>
                 </div>
@@ -792,6 +1047,80 @@ const AppointmentsAdmin = () => {
             className="btn px-4 cursor-pointer border-none rounded-[var(--radius-sm)] text-xs font-semibold h-8"
           >
             Export
+          </button>
+        </DialogActions>
+      </Dialog>
+
+      {/* Share Offer Letter Modal */}
+      <Dialog
+        open={openOfferModal}
+        onClose={() => setOpenOfferModal(false)}
+        maxWidth="sm"
+        fullWidth
+        sx={{
+          "& .MuiDialog-container": { backgroundColor: "rgba(10,15,30,0.7)", backdropFilter: "blur(8px)" },
+          "& .MuiDialog-paper": { borderRadius: "3px", background: "var(--color-main-bg)", border: "1px solid var(--color-border)", boxShadow: "0 25px 50px -12px rgba(0, 0, 0, 0.5)", maxWidth: "550px" },
+        }}
+      >
+        <DialogTitle component="div" sx={{ pt: 3.5, pb: 1, px: 3, borderBottom: "1px solid var(--color-border)" }}>
+          <Typography fontWeight={700} sx={{ fontSize: "1.25rem" }}>Share Offer Letter</Typography>
+        </DialogTitle>
+        <DialogContent sx={{ px: 3, pb: 2.5, pt: 2.5 }}>
+          <Stack spacing={2.5}>
+            <div className="flex flex-col gap-1 text-left">
+              <label className="text-[10px] text-[var(--color-paragraph)] font-semibold uppercase opacity-75">Candidate Email</label>
+              <input
+                type="text"
+                value={offerEmail}
+                readOnly
+                className="w-full bg-slate-50 text-slate-500 rounded-[var(--radius-sm)] px-3 py-1.5 border border-gray-200 focus:outline-none text-xs h-9 cursor-not-allowed"
+              />
+            </div>
+            <div className="flex flex-col gap-1 text-left">
+              <label className="text-[10px] text-[var(--color-paragraph)] font-semibold uppercase opacity-75">Email Subject</label>
+              <input
+                type="text"
+                value={offerSubject}
+                onChange={(e) => setOfferSubject(e.target.value)}
+                className="w-full bg-white text-black rounded-[var(--radius-sm)] px-3 py-1.5 border border-gray-300 focus:outline-none focus:ring-1 focus:ring-[var(--color-primary)] text-xs h-9"
+                placeholder="Enter email subject..."
+              />
+            </div>
+            <div className="flex flex-col gap-1 text-left">
+              <label className="text-[10px] text-[var(--color-paragraph)] font-semibold uppercase opacity-75">Email Body</label>
+              <textarea
+                value={offerBody}
+                onChange={(e) => setOfferBody(e.target.value)}
+                rows={8}
+                className="w-full bg-white text-black rounded-[var(--radius-sm)] px-3 py-2 border border-gray-300 focus:outline-none focus:ring-1 focus:ring-[var(--color-primary)] text-xs resize-y"
+                placeholder="Enter email content..."
+              />
+            </div>
+          </Stack>
+        </DialogContent>
+        <DialogActions sx={{ px: 3, pb: 3.5, pt: 1, borderTop: "1px solid var(--color-border)", justifyContent: "flex-end", gap: 1.5 }}>
+          <Button
+            onClick={() => setOpenOfferModal(false)}
+            variant="outlined"
+            style={{
+              borderColor: 'var(--color-border)',
+              color: 'var(--color-paragraph)',
+              borderRadius: 'var(--radius-sm)',
+              textTransform: 'none',
+              fontWeight: 'var(--font-semibold)',
+              fontSize: 'var(--text-caption)',
+              height: '32px'
+            }}
+          >
+            Cancel
+          </Button>
+          <button
+            type="button"
+            disabled={sendingOffer}
+            onClick={handleSendOfferLetter}
+            className="btn px-4 cursor-pointer border-none rounded-[var(--radius-sm)] text-xs font-semibold h-8 disabled:opacity-50"
+          >
+            {sendingOffer ? "Sending..." : "Send Offer Letter"}
           </button>
         </DialogActions>
       </Dialog>

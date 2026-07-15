@@ -121,6 +121,28 @@ const Dashboard = () => {
     return latestDate.toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' });
   };
 
+  const getLastUpdatedAppsText = () => {
+    if (!appointments || appointments.length === 0) return 'N/A';
+    let latestDate = null;
+    appointments.forEach(item => {
+      let itemTime = null;
+      if (item.updatedAt) {
+        itemTime = new Date(item.updatedAt);
+      } else if (item.createdAt) {
+        itemTime = new Date(item.createdAt);
+      } else if (item.id && typeof item.id === 'number' && item.id > 1000000000) {
+        itemTime = new Date(item.id);
+      }
+      if (itemTime && !isNaN(itemTime.getTime())) {
+        if (!latestDate || itemTime > latestDate) {
+          latestDate = itemTime;
+        }
+      }
+    });
+    if (!latestDate) return 'N/A';
+    return latestDate.toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' }).toUpperCase();
+  };
+
   const getMotivationalMessage = (pendingCount) => {
     if (pendingCount === 0) {
       return {
@@ -781,51 +803,20 @@ const Dashboard = () => {
       const appRecord = apps.find(a => a.id === id);
       if (!appRecord) return;
 
-      const updatedApps = apps.map(a => a.id === id ? { ...a, status: 'Approved' } : a);
+      const updatedApps = apps.map(a => a.id === id ? { ...a, status: 'Approved', updatedAt: new Date().toISOString() } : a);
       localStorage.setItem('appointments', JSON.stringify(updatedApps));
       window.dispatchEvent(new Event('appointmentsUpdated'));
 
-      const storedTalent = localStorage.getItem('talent');
-      const initialTalent = [
-        { id: 1, name: "Nandana P Nair", email: "nandana.p@email.com", skills: "React, Node.js, MongoDB", role: "Software Developer at TCS", date: "10 Jun 2026", source: "LinkedIn" },
-        { id: 2, name: "Gokul Krishna", email: "gokul.k@email.com", skills: "UI/UX, Figma, Adobe XD", role: "UI/UX Designer at Infopark", date: "08 Jun 2026", source: "Referral" },
-        { id: 3, name: "Harikrishnan M", email: "harikrishnan.m@email.com", skills: "AWS, Docker, Kubernetes", role: "DevOps Engineer at UST Global", date: "07 Jun 2026", source: "Naukri" },
-        { id: 4, name: "Lakshmi Priya", email: "lakshmi.p@email.com", skills: "Python, Django, SQL", role: "Backend Developer at Zoho", date: "05 Jun 2026", source: "LinkedIn" },
-        { id: 5, name: "Albin Antony", email: "albin.a@email.com", skills: "React Native, Firebase", role: "Mobile Developer at Accenture", date: "03 Jun 2026", source: "Company Website" }
-      ];
-      const talents = storedTalent ? JSON.parse(storedTalent) : initialTalent;
-      
-      if (!talents.some(t => t.email === appRecord.email)) {
-        const newTalent = {
-          id: Date.now(),
-          name: appRecord.name,
-          email: appRecord.email,
-          skills: "React, CSS, HTML5",
-          role: appRecord.position,
-          date: new Date().toLocaleDateString('en-US', { day: 'numeric', month: 'short', year: 'numeric' }),
-          source: "Appointment"
-        };
-        const updatedTalent = [newTalent, ...talents];
-        localStorage.setItem('talent', JSON.stringify(updatedTalent));
-        window.dispatchEvent(new Event('talentUpdated'));
-      }
-
-      // Synchronize interview status to 'Appointed'
-      const storedInterviews = localStorage.getItem('interviews');
-      if (storedInterviews) {
-        const interviews = JSON.parse(storedInterviews);
-        const updatedInterviews = interviews.map(i => i.email.toLowerCase() === appRecord.email.toLowerCase() ? { ...i, status: 'Appointed' } : i);
-        localStorage.setItem('interviews', JSON.stringify(updatedInterviews));
+      // Sync to interviews
+      const storedInts = localStorage.getItem('interviews');
+      if (storedInts) {
+        const ints = JSON.parse(storedInts);
+        const updatedInts = ints.map(i => i.email.toLowerCase() === appRecord.email.toLowerCase() ? { ...i, status: 'Approved' } : i);
+        localStorage.setItem('interviews', JSON.stringify(updatedInts));
         window.dispatchEvent(new Event('interviewsUpdated'));
       }
 
-      // Update backend status to appointed
-      const candidateApp = applications.find(a => a.email.toLowerCase() === appRecord.email.toLowerCase());
-      if (candidateApp) {
-        await updateApplicationStatusAPI(candidateApp._id, 'appointed');
-      }
-
-      toast.success("Appointment request approved & candidate added to Talent Pool!");
+      toast.success("Appointment request approved by Admin!");
       fetchAppointments();
       fetchMetrics();
     } catch (error) {
@@ -842,12 +833,21 @@ const Dashboard = () => {
       const appRecord = apps.find(a => a.id === id);
       if (!appRecord) return;
 
-      const updatedApps = apps.map(a => a.id === id ? { ...a, status: 'Rejected' } : a);
+      const updatedApps = apps.map(a => a.id === id ? { ...a, status: 'Rejected', updatedAt: new Date().toISOString() } : a);
       localStorage.setItem('appointments', JSON.stringify(updatedApps));
       window.dispatchEvent(new Event('appointmentsUpdated'));
 
+      // Sync to interviews
+      const storedInts = localStorage.getItem('interviews');
+      if (storedInts) {
+        const ints = JSON.parse(storedInts);
+        const updatedInts = ints.map(i => i.email.toLowerCase() === appRecord.email.toLowerCase() ? { ...i, status: 'Rejected' } : i);
+        localStorage.setItem('interviews', JSON.stringify(updatedInts));
+        window.dispatchEvent(new Event('interviewsUpdated'));
+      }
+
       // Update backend status to rejected
-      const candidateApp = applications.find(a => a.email === appRecord.email);
+      const candidateApp = applications.find(a => a.email.toLowerCase() === appRecord.email.toLowerCase());
       if (candidateApp) {
         await updateApplicationStatusAPI(candidateApp._id, 'rejected');
       }
@@ -1255,9 +1255,9 @@ const Dashboard = () => {
                     {/* Applications Row */}
                     <tr className="border-b border-[var(--color-border)] last:border-0 hover:bg-[var(--color-sub-bg)] text-primary transition-all" style={{ fontSize: 'var(--text-caption)' }}>
                       <td className="py-2.5 px-3 font-bold text-left w-1/5">APPLICATIONS</td>
+                      <td className="py-2.5 px-3 font-medium text-center w-1/5">{appointments.length}</td>
                       <td className="py-2.5 px-3 font-medium text-center w-1/5">{appointments.filter(a => a.status === 'Pending Approval').length}</td>
-                      <td className="py-2.5 px-3 font-medium text-center w-1/5">{appointments.filter(a => a.status === 'Pending Approval').length}</td>
-                      <td className="py-2.5 px-3 font-medium text-center w-1/5 text-paragraph">NOT APPLICABLE</td>
+                      <td className="py-2.5 px-3 font-medium text-center w-1/5 text-paragraph">{getLastUpdatedAppsText()}</td>
                       <td className="py-2.5 px-3 text-center w-1/5">
                         <button
                           onClick={() => setShowAppointmentApprovalModal(true)}
@@ -1335,7 +1335,7 @@ const Dashboard = () => {
               <div className="block md:hidden space-y-3 flex-1 w-full">
                 {[
                   { name: 'INQUIRIES', total: inquiries.length, pending: pendingInquiriesCount, lastUpdated: getLastUpdatedText(inquiries).toUpperCase(), actionText: 'REVIEW', path: '/admin/inquiries', moduleKey: 'Inquiries' },
-                  { name: 'APPLICATIONS', total: appointments.filter(a => a.status === 'Pending Approval').length, pending: appointments.filter(a => a.status === 'Pending Approval').length, lastUpdated: 'NOT APPLICABLE', actionText: 'REVIEW', path: '/admin/career', moduleKey: 'Career' },
+                  { name: 'APPLICATIONS', total: appointments.length, pending: appointments.filter(a => a.status === 'Pending Approval').length, lastUpdated: getLastUpdatedAppsText(), actionText: 'REVIEW', path: '/admin/career', moduleKey: 'Career' },
                   { name: 'ARTICLES', total: articles.length, pending: draftArticlesCount, lastUpdated: getLastUpdatedText(articles).toUpperCase(), actionText: 'PUBLISH', path: '/admin/article', moduleKey: 'Articles' },
                   { name: 'CASE STUDIES', total: caseStudies.length, pending: pendingCaseStudiesCount, lastUpdated: getLastUpdatedText(caseStudies).toUpperCase(), actionText: 'APPROVE', path: '/admin/casestudies', moduleKey: 'Case Studies' },
                   { name: 'REVIEWS', total: reviews.length, pending: pendingReviewsCount, lastUpdated: getLastUpdatedText(reviews).toUpperCase(), actionText: 'MODERATE', path: '#', moduleKey: 'Reviews' },
@@ -2661,93 +2661,98 @@ const Dashboard = () => {
           sx={{
             "& .MuiDialog-container": {
               backgroundColor: "rgba(10,15,30,0.7)",
-              backdropFilter: "blur(8px)"
-            },
-            "& .MuiDialog-paper": {
-              borderRadius: "3px",
-              background: "var(--color-main-bg)",
-              border: "1px solid var(--color-border)",
-              boxShadow: "0 25px 50px -12px rgba(0, 0, 0, 0.5)",
-              p: 3
+              backdropFilter: "blur(8px)",
+              "& .MuiPaper-root": {
+                borderRadius: "var(--radius-sm)",
+                padding: "8px",
+                boxShadow: "var(--shadow-card)",
+                border: "1px solid var(--color-border)",
+                background: "var(--color-main-bg)"
+              }
             }
           }}
         >
-          <div className="flex justify-between items-center border-b border-[var(--color-border)] pb-3 mb-4">
-            <div>
-              <h2 className="text-lg font-bold text-primary" style={{ margin: 0 }}>
-                APPOINTMENTS PENDING APPROVAL
-              </h2>
-              <p className="text-xs text-[var(--color-paragraph)] opacity-60 mt-1" style={{ margin: 0 }}>
-                Review and approve appointments sent by HR
-              </p>
+          <DialogTitle style={{ borderBottom: '1px solid var(--color-border)', paddingBottom: '12px' }}>
+            <div className="flex justify-between items-center text-primary">
+              <div>
+                <h2 className="font-bold text-primary" style={{ fontSize: 'var(--text-caption)', margin: 0 }}>
+                  APPOINTMENTS PENDING APPROVAL
+                </h2>
+                <p className="text-[10px] text-[var(--color-paragraph)] opacity-60 mt-0.5 font-normal" style={{ margin: 0 }}>
+                  Review and approve appointments sent by HR
+                </p>
+              </div>
+              <button
+                onClick={() => setShowAppointmentApprovalModal(false)}
+                className="w-6 h-6 rounded-full bg-[var(--color-sub-bg)] hover:bg-red-500/20 hover:text-red-600 transition flex items-center justify-center text-paragraph opacity-60 hover:opacity-100 cursor-pointer"
+                style={{ fontSize: 'var(--text-caption)' }}
+              >
+                ✕
+              </button>
             </div>
-            <button
-              onClick={() => setShowAppointmentApprovalModal(false)}
-              className="w-8 h-8 rounded-full bg-[var(--color-sub-bg)] hover:bg-red-500/20 hover:text-red-600 transition flex items-center justify-center text-paragraph opacity-60 hover:opacity-100 cursor-pointer text-xs border border-transparent"
-            >
-              ✕
-            </button>
-          </div>
+          </DialogTitle>
 
-          <div className="space-y-4 max-h-[450px] overflow-y-auto pr-1">
-            {appointments.filter(a => a.status === 'Pending Approval').length === 0 ? (
-              <p className="text-center py-8 text-xs text-[var(--color-paragraph)] opacity-60">
-                No appointments pending approval.
-              </p>
-            ) : (
-              appointments.filter(a => a.status === 'Pending Approval').map((app) => {
-                const candidateApp = applications.find(a => a.email === app.email);
-                const resumeUrl = candidateApp ? candidateApp.resumeUrl : null;
+          <DialogContent style={{ paddingTop: '16px' }} className="max-h-[450px] overflow-y-auto pr-1">
+            <div className="space-y-4">
+              {appointments.filter(a => a.status === 'Pending Approval').length === 0 ? (
+                <p className="text-center py-8 text-xs text-[var(--color-paragraph)] opacity-60">
+                  No appointments pending approval.
+                </p>
+              ) : (
+                appointments.filter(a => a.status === 'Pending Approval').map((app) => {
+                  const candidateApp = applications.find(a => a.email === app.email);
+                  const resumeUrl = candidateApp ? candidateApp.resumeUrl : null;
 
-                return (
-                  <div key={app.id} className="border border-[var(--color-border)] rounded-[var(--radius-sm)] p-4 bg-[var(--color-sub-bg)]/20 hover:bg-[var(--color-sub-bg)]/40 transition-colors flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
-                    <div className="text-left">
-                      <p className="font-bold text-primary" style={{ margin: 0 }}>{app.name}</p>
-                      <p className="text-paragraph opacity-60 text-[10px]" style={{ margin: 0 }}>{app.email}</p>
-                      <div className="mt-2 text-xs text-[var(--color-paragraph)] opacity-90 space-y-0.5">
-                        <p><span className="font-semibold text-primary">Position:</span> {app.position}</p>
-                        <p><span className="font-semibold text-primary">Interviewer:</span> {app.interviewer}</p>
-                        <p><span className="font-semibold text-primary">Date & Time:</span> {app.date}</p>
-                        <p><span className="font-semibold text-primary">Mode:</span> {app.mode}</p>
+                  return (
+                    <div key={app.id} className="border border-[var(--color-border)] rounded-[var(--radius-sm)] p-4 bg-[var(--color-sub-bg)]/20 hover:bg-[var(--color-sub-bg)]/40 transition-colors flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
+                      <div className="text-left">
+                        <p className="font-bold text-primary" style={{ margin: 0 }}>{app.name}</p>
+                        <p className="text-paragraph opacity-60 text-[10px]" style={{ margin: 0 }}>{app.email}</p>
+                        <div className="mt-2 text-xs text-[var(--color-paragraph)] opacity-90 space-y-0.5">
+                          <p><span className="font-semibold text-primary">Position:</span> {app.position}</p>
+                          <p><span className="font-semibold text-primary">Interviewer:</span> {app.interviewer}</p>
+                          <p><span className="font-semibold text-primary">Date & Time:</span> {app.date}</p>
+                          <p><span className="font-semibold text-primary">Mode:</span> {app.mode}</p>
+                        </div>
+                        <div className="mt-3">
+                          {resumeUrl ? (
+                            <a
+                              href={resumeUrl}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="inline-flex items-center gap-1 px-2.5 py-1 bg-[var(--color-primary)]/10 hover:bg-[var(--color-primary)]/20 border border-[var(--color-primary)]/20 text-[var(--color-primary)] rounded-[var(--radius-sm)] transition-all font-bold text-[10px] no-underline cursor-pointer"
+                            >
+                              View Resume
+                            </a>
+                          ) : (
+                            <span className="text-[10px] text-slate-400">No Resume Uploaded</span>
+                          )}
+                        </div>
                       </div>
-                      <div className="mt-3">
-                        {resumeUrl ? (
-                          <a
-                            href={resumeUrl}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="inline-flex items-center gap-1 px-2.5 py-1 bg-[var(--color-primary)]/10 hover:bg-[var(--color-primary)]/20 border border-[var(--color-primary)]/20 text-[var(--color-primary)] rounded-[var(--radius-sm)] transition-all font-bold text-[10px] no-underline cursor-pointer"
-                          >
-                            View Resume
-                          </a>
-                        ) : (
-                          <span className="text-[10px] text-slate-400">No Resume Uploaded</span>
-                        )}
+                      <div className="flex gap-2 sm:self-center">
+                        <button
+                          type="button"
+                          onClick={() => handleApproveAppointment(app.id)}
+                          className="px-3.5 py-1.5 text-xs font-bold bg-green-50 border border-green-200 hover:bg-green-100 text-green-700 rounded-[var(--radius-sm)] transition cursor-pointer"
+                        >
+                          Approve
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => handleRejectAppointment(app.id)}
+                          className="px-3.5 py-1.5 text-xs font-bold bg-red-50 border border-red-200 hover:bg-red-100 text-red-700 rounded-[var(--radius-sm)] transition cursor-pointer"
+                        >
+                          Reject
+                        </button>
                       </div>
                     </div>
-                    <div className="flex gap-2 sm:self-center">
-                      <button
-                        type="button"
-                        onClick={() => handleApproveAppointment(app.id)}
-                        className="px-3.5 py-1.5 text-xs font-bold bg-green-50 border border-green-200 hover:bg-green-100 text-green-700 rounded-[var(--radius-sm)] transition cursor-pointer"
-                      >
-                        Approve
-                      </button>
-                      <button
-                        type="button"
-                        onClick={() => handleRejectAppointment(app.id)}
-                        className="px-3.5 py-1.5 text-xs font-bold bg-red-50 border border-red-200 hover:bg-red-100 text-red-700 rounded-[var(--radius-sm)] transition cursor-pointer"
-                      >
-                        Reject
-                      </button>
-                    </div>
-                  </div>
-                );
-              })
-            )}
-          </div>
+                  );
+                })
+              )}
+            </div>
+          </DialogContent>
 
-          <DialogActions style={{ borderTop: '1px solid var(--color-border)', paddingTop: '10px' }} className="flex justify-end pt-3">
+          <DialogActions style={{ borderTop: '1px solid var(--color-border)', paddingTop: '10px' }} className="flex justify-end gap-2.5">
             <Button
               onClick={() => setShowAppointmentApprovalModal(false)}
               variant="outlined"

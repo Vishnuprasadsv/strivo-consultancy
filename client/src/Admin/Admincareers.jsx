@@ -121,6 +121,52 @@ const CareerAdmin = () => {
     "& .MuiInputLabel-root": { color: "var(--color-paragraph)", opacity: 0.7 },
     "& .MuiInputLabel-root.Mui-focused": { color: "var(--color-primary)", opacity: 1 },
   };
+  const isCandidateAppointed = (email) => {
+    if (!email) return false;
+    const lowerEmail = email.toLowerCase();
+    
+    // Check local storage 'talent' list
+    try {
+      const storedTalent = localStorage.getItem('talent');
+      if (storedTalent) {
+        const talentList = JSON.parse(storedTalent);
+        if (talentList.some(t => t.email && t.email.toLowerCase() === lowerEmail)) {
+          return true;
+        }
+      }
+    } catch (e) {
+      console.error("Error reading talent from localStorage:", e);
+    }
+    
+    // Check local storage 'appointments' list (Approved status)
+    try {
+      const storedAppointments = localStorage.getItem('appointments');
+      if (storedAppointments) {
+        const appointmentList = JSON.parse(storedAppointments);
+        if (appointmentList.some(app => app.email && app.email.toLowerCase() === lowerEmail && app.status === 'Approved')) {
+          return true;
+        }
+      }
+    } catch (e) {
+      console.error("Error reading appointments from localStorage:", e);
+    }
+    
+    // Check local storage 'interviews' list (Appointed status)
+    try {
+      const storedInterviews = localStorage.getItem('interviews');
+      if (storedInterviews) {
+        const interviewsList = JSON.parse(storedInterviews);
+        if (interviewsList.some(i => i.email && i.email.toLowerCase() === lowerEmail && i.status === 'Appointed')) {
+          return true;
+        }
+      }
+    } catch (e) {
+      console.error("Error reading interviews from localStorage:", e);
+    }
+    
+    return false;
+  };
+
   // ella datem fetch chaiyya back end eenu
   const fetchData = async (silent = false) => {
     try {
@@ -136,8 +182,21 @@ const CareerAdmin = () => {
 
       if (statsRes.status === 200 && statsRes.data?.success) setStats(statsRes.data.data);
       if (jobsRes.status === 200 && jobsRes.data?.success) setJobs(jobsRes.data.data);
-      if (appsRes.status === 200 && appsRes.data?.success) setApplications(appsRes.data.data);
       if (talentRes.status === 200 && talentRes.data?.success) setTalentSubmissions(talentRes.data.data);
+
+      if (appsRes.status === 200 && appsRes.data?.success) {
+        const apps = appsRes.data.data;
+        const updatedApps = apps.map(app => {
+          if (app.status !== 'appointed' && isCandidateAppointed(app.email)) {
+            updateApplicationStatusAPI(app._id, 'appointed').catch(err => {
+              console.error(`Quietly failed to update status to appointed for ${app.email}:`, err);
+            });
+            return { ...app, status: 'appointed' };
+          }
+          return app;
+        });
+        setApplications(updatedApps);
+      }
 
       //    bell adikkan
       window.dispatchEvent(new Event('notificationUpdate'));
@@ -255,8 +314,11 @@ const CareerAdmin = () => {
     const err = {};
     if (!scheduleForm.date) err.date = "Date is required";
     if (!scheduleForm.time) err.time = "Time is required";
-    if (scheduleForm.date && scheduleForm.date < getTodayDateString()) {
-      err.date = "Date cannot be in the past";
+    if (scheduleForm.date && scheduleForm.time) {
+      const selectedDateTime = new Date(`${scheduleForm.date}T${scheduleForm.time}`);
+      if (selectedDateTime < new Date()) {
+        err.date = "Interview date/time cannot be in the past";
+      }
     }
     if (Object.keys(err).length > 0) {
       setScheduleErrors(err);
@@ -280,6 +342,7 @@ const CareerAdmin = () => {
       type: scheduleForm.type,
       mode: scheduleForm.mode,
       date: formattedDate,
+      scheduledAt: new Date(`${scheduleForm.date}T${scheduleForm.time}`).toISOString(),
       status: 'Scheduled'
     };
 
@@ -296,6 +359,11 @@ const CareerAdmin = () => {
     const updatedInterviews = [newInterview, ...currentInterviews];
     localStorage.setItem('interviews', JSON.stringify(updatedInterviews));
     window.dispatchEvent(new Event('interviewsUpdated'));
+
+    const scheduledDateTime = new Date(`${scheduleForm.date}T${scheduleForm.time}`);
+    if (scheduledDateTime > new Date()) {
+      toast.info("Interview scheduled for a future date. Actions in the Interviews tab will be locked until this time.");
+    }
 
     setOpenScheduleModal(false);
     await handleUpdateStatus(schedulingApp._id, 'referred');
@@ -468,18 +536,29 @@ const CareerAdmin = () => {
 
   const getStatusDetails = (status) => {
     switch (status) {
-      case 'referred':
-        return { label: 'Interview Scheduled', className: 'bg-purple-500/20 text-purple-400 border border-purple-500/30' };
-      case 'accepted':
-      case 'appointed':
-        return { label: 'Appointed', className: 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30' };
-      case 'rejected':
-        return { label: 'Rejected', className: 'bg-red-500/20 text-red-400 border border-red-500/30' };
-      case 'reviewed':
-        return { label: 'Under Review', className: 'bg-slate-100 text-slate-700 border border-slate-300/80' };
       case 'pending':
+        return { label: 'New', className: 'text-slate-700 font-medium text-xs' };
+      case 'reviewed':
+        return { label: 'Under Review', className: 'text-slate-700 font-medium text-xs' };
+      case 'referred':
+        return { label: 'Interview Scheduled', className: 'text-slate-700 font-medium text-xs' };
+      case 'interview_in_progress':
+        return { label: 'Interview In Progress', className: 'text-slate-700 font-medium text-xs' };
+      case 'interview_completed':
+        return { label: 'Interview Completed', className: 'text-slate-700 font-medium text-xs' };
+      case 'awaiting_approval':
+        return { label: 'Awaiting Approval', className: 'text-slate-700 font-medium text-xs' };
+      case 'appointed':
+        return { label: 'Appointed', className: 'text-slate-700 font-medium text-xs' };
+      case 'rejected':
+        return { label: 'Rejected', className: 'text-slate-700 font-medium text-xs' };
+      case 'not_fit':
+        return { label: 'Not Fit', className: 'text-slate-700 font-medium text-xs' };
+      case 'delayed':
+      case 'Delayed':
+        return { label: 'Delayed', className: 'text-slate-700 font-medium text-xs' };
       default:
-        return { label: 'New', className: 'bg-blue-500/20 text-blue-400 border border-blue-500/30' };
+        return { label: 'New', className: 'text-slate-700 font-medium text-xs' };
     }
   };
 
@@ -488,8 +567,16 @@ const CareerAdmin = () => {
     const counts = { pending: 0, reviewed: 0, accepted: 0, rejected: 0, referred: 0 };
     applications.forEach(app => {
       const s = app.status || 'pending';
-      if (counts[s] !== undefined) {
-        counts[s]++;
+      if (s === 'pending') {
+        counts.pending++;
+      } else if (s === 'reviewed') {
+        counts.reviewed++;
+      } else if (s === 'referred' || s === 'interview_in_progress' || s === 'interview_completed' || s === 'awaiting_approval') {
+        counts.referred++;
+      } else if (s === 'appointed' || s === 'accepted') {
+        counts.accepted++;
+      } else if (s === 'rejected' || s === 'not_fit') {
+        counts.rejected++;
       }
     });
     return counts;
@@ -903,7 +990,7 @@ const CareerAdmin = () => {
                             <td className="py-3 px-6 text-[var(--color-black)] w-[15%] text-center text-xs">{appliedDate}</td>
 
                             <td className="py-3 px-6 w-[20%] text-center">
-                              <span className={`px-2.5 py-1 rounded-full text-[10px] font-semibold whitespace-nowrap ${statusObj.className}`}>
+                              <span className="text-slate-700 font-medium text-xs whitespace-nowrap">
                                 {statusObj.label}
                               </span>
                             </td>
@@ -919,27 +1006,38 @@ const CareerAdmin = () => {
                                   <VisibilityIcon fontSize="small" style={{ fontSize: 16 }} />
                                 </button>
 
-                                <select
-                                  value=""
-                                  disabled={app.status === 'appointed'}
-                                  onChange={(e) => {
-                                    const val = e.target.value;
-                                    if (val === 'reviewed') {
-                                      handleUpdateStatus(app._id, 'reviewed');
-                                    } else if (val === 'schedule') {
-                                      handleOpenScheduleModal(app);
-                                    } else if (val === 'rejected') {
-                                      handleUpdateStatus(app._id, 'rejected');
-                                    }
-                                  }}
-                                  className="bg-white text-black rounded-[var(--radius-sm)] px-2 py-1 border border-gray-300 focus:outline-none focus:ring-1 focus:ring-[var(--color-primary)] text-xs h-7 cursor-pointer font-medium disabled:opacity-50 disabled:cursor-not-allowed"
-                                >
-                                  <option value="" disabled hidden>Action</option>
-                                  <option value="reviewed" disabled={app.status === 'reviewed'}>Move to Under Review</option>
-                                  <option value="schedule" disabled={app.status === 'referred'}>Schedule Interview</option>
-                                  <option value="rejected">Not Fit</option>
-                                </select>
-                              </div>
+                                 {(app.status === 'pending' || app.status === 'reviewed') && (
+                                   <select
+                                     value=""
+                                     onChange={(e) => {
+                                       const val = e.target.value;
+                                       if (val === 'reviewed') {
+                                         handleUpdateStatus(app._id, 'reviewed');
+                                       } else if (val === 'schedule') {
+                                         handleOpenScheduleModal(app);
+                                       } else if (val === 'not_fit') {
+                                         handleUpdateStatus(app._id, 'not_fit');
+                                       }
+                                     }}
+                                     className="bg-white text-black rounded-[var(--radius-sm)] px-2 py-1 border border-gray-300 focus:outline-none focus:ring-1 focus:ring-[var(--color-primary)] text-xs h-7 cursor-pointer font-medium disabled:opacity-50 disabled:cursor-not-allowed"
+                                   >
+                                     <option value="" disabled hidden>Action</option>
+                                     {app.status === 'pending' && (
+                                       <>
+                                         <option value="reviewed">Move to Under Review</option>
+                                         <option value="schedule">Schedule Interview</option>
+                                         <option value="not_fit">Mark as Not Fit</option>
+                                       </>
+                                     )}
+                                     {app.status === 'reviewed' && (
+                                       <>
+                                         <option value="schedule">Schedule Interview</option>
+                                         <option value="not_fit">Mark as Not Fit</option>
+                                       </>
+                                     )}
+                                   </select>
+                                 )}
+                               </div>
                             </td>
                           </tr>
                         );
@@ -971,7 +1069,7 @@ const CareerAdmin = () => {
                           </div>
 
                           <div>
-                            <span className={`px-3 py-1 rounded-full text-xs font-semibold ${statusObj.className}`}>
+                            <span className="text-slate-700 font-medium text-xs">
                               {statusObj.label}
                             </span>
                           </div>
@@ -998,27 +1096,38 @@ const CareerAdmin = () => {
                               <VisibilityIcon fontSize="small" />
                             </button>
 
-                             <select
-                              value=""
-                              disabled={app.status === 'appointed'}
-                              onChange={(e) => {
-                                const val = e.target.value;
-                                if (val === 'reviewed') {
-                                  handleUpdateStatus(app._id, 'reviewed');
-                                } else if (val === 'schedule') {
-                                  handleOpenScheduleModal(app);
-                                } else if (val === 'rejected') {
-                                  handleUpdateStatus(app._id, 'rejected');
-                                }
-                              }}
-                              className="bg-white text-black rounded-[var(--radius-sm)] px-3 py-1.5 border border-gray-300 focus:outline-none focus:ring-1 focus:ring-[var(--color-primary)] text-xs h-10 cursor-pointer font-semibold disabled:opacity-50 disabled:cursor-not-allowed"
-                            >
-                              <option value="" disabled hidden>Action</option>
-                              <option value="reviewed" disabled={app.status === 'reviewed'}>Move to Under Review</option>
-                              <option value="schedule" disabled={app.status === 'referred'}>Schedule Interview</option>
-                              <option value="rejected">Not Fit</option>
-                            </select>
-                          </div>
+                             {(app.status === 'pending' || app.status === 'reviewed') && (
+                               <select
+                                 value=""
+                                 onChange={(e) => {
+                                   const val = e.target.value;
+                                   if (val === 'reviewed') {
+                                     handleUpdateStatus(app._id, 'reviewed');
+                                   } else if (val === 'schedule') {
+                                     handleOpenScheduleModal(app);
+                                   } else if (val === 'not_fit') {
+                                     handleUpdateStatus(app._id, 'not_fit');
+                                   }
+                                 }}
+                                 className="bg-white text-black rounded-[var(--radius-sm)] px-3 py-1.5 border border-gray-300 focus:outline-none focus:ring-1 focus:ring-[var(--color-primary)] text-xs h-10 cursor-pointer font-semibold disabled:opacity-50 disabled:cursor-not-allowed"
+                               >
+                                 <option value="" disabled hidden>Action</option>
+                                 {app.status === 'pending' && (
+                                   <>
+                                     <option value="reviewed">Move to Under Review</option>
+                                     <option value="schedule">Schedule Interview</option>
+                                     <option value="not_fit">Mark as Not Fit</option>
+                                   </>
+                                 )}
+                                 {app.status === 'reviewed' && (
+                                   <>
+                                     <option value="schedule">Schedule Interview</option>
+                                     <option value="not_fit">Mark as Not Fit</option>
+                                   </>
+                                 )}
+                               </select>
+                             )}
+                           </div>
                         </div>
                       );
                     })}
@@ -1659,7 +1768,7 @@ const CareerAdmin = () => {
                   </div>
                   <div>
                     <span className="text-xs text-[var(--color-paragraph)] opacity-60 block">Current Status</span>
-                    <span className={`inline-block mt-1 px-3 py-1 rounded-full text-xs font-semibold ${getStatusDetails(selectedApp.status).className}`}>
+                    <span className="text-slate-700 font-medium text-xs inline-block mt-1">
                       {getStatusDetails(selectedApp.status).label}
                     </span>
                   </div>
@@ -2030,7 +2139,7 @@ const CareerAdmin = () => {
           <button
             type="button"
             onClick={() => setOpenScheduleModal(false)}
-            className="bg-white border border-[var(--color-border)] hover:bg-slate-50 text-[var(--color-paragraph)] px-4 py-1.5 rounded-[var(--radius-sm)] cursor-pointer text-xs font-semibold transition-colors h-9"
+            className="bg-[var(--color-sub-bg)] border border-[var(--color-border)] hover:bg-gray-200/60 text-[var(--color-paragraph)] px-4 py-1.5 rounded-[var(--radius-sm)] cursor-pointer text-xs font-semibold transition-colors h-9"
           >
             Cancel
           </button>
