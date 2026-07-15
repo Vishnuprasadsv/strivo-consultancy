@@ -18,6 +18,7 @@ const EditJob = () => {
     status: 'Active',
     description: ''
   });
+  const [formErrors, setFormErrors] = useState({});
 
   useEffect(() => {
     const fetchJobDetails = async () => {
@@ -55,26 +56,35 @@ const EditJob = () => {
       ...prev,
       [name]: value
     }));
+    if (formErrors[name]) {
+      setFormErrors(prev => ({
+        ...prev,
+        [name]: ''
+      }));
+    }
   };
 
   const handleSave = async (e) => {
     e.preventDefault();
+    const errors = {};
     if (!formData.title.trim()) {
-      toast.error("Job Title is required.");
-      return;
+      errors.title = "Job Title is required.";
     }
     if (!formData.department.trim()) {
-      toast.error("Department is required.");
-      return;
+      errors.department = "Department is required.";
     }
     if (!formData.location.trim()) {
-      toast.error("Location is required.");
-      return;
+      errors.location = "Location is required.";
     }
     if (!formData.description.trim()) {
-      toast.error("Job Description is required.");
+      errors.description = "Job Description is required.";
+    }
+
+    if (Object.keys(errors).length > 0) {
+      setFormErrors(errors);
       return;
     }
+    setFormErrors({});
 
     setSaving(true);
     try {
@@ -141,6 +151,7 @@ const EditJob = () => {
                   placeholder="e.g. Senior Software Engineer"
                   className="w-full bg-[var(--color-sub-bg)] border border-[var(--color-border)] rounded-[var(--radius-sm)] px-4 py-2.5 text-sm text-[var(--color-black)] focus:outline-none focus:border-[var(--color-primary)] hover:bg-white focus:bg-white transition-all duration-200"
                 />
+                {formErrors.title && <p className="text-red-500 text-[10px] mt-1" style={{ margin: 0 }}>{formErrors.title}</p>}
               </div>
 
               <div>
@@ -155,6 +166,7 @@ const EditJob = () => {
                   placeholder="e.g. Technology"
                   className="w-full bg-[var(--color-sub-bg)] border border-[var(--color-border)] rounded-[var(--radius-sm)] px-4 py-2.5 text-sm text-[var(--color-black)] focus:outline-none focus:border-[var(--color-primary)] hover:bg-white focus:bg-white transition-all duration-200"
                 />
+                {formErrors.department && <p className="text-red-500 text-[10px] mt-1" style={{ margin: 0 }}>{formErrors.department}</p>}
               </div>
             </div>
 
@@ -171,6 +183,7 @@ const EditJob = () => {
                   placeholder="e.g. Kochi, Kerala"
                   className="w-full bg-[var(--color-sub-bg)] border border-[var(--color-border)] rounded-[var(--radius-sm)] px-4 py-2.5 text-sm text-[var(--color-black)] focus:outline-none focus:border-[var(--color-primary)] hover:bg-white focus:bg-white transition-all duration-200"
                 />
+                {formErrors.location && <p className="text-red-500 text-[10px] mt-1" style={{ margin: 0 }}>{formErrors.location}</p>}
               </div>
 
               <div>
@@ -219,6 +232,7 @@ const EditJob = () => {
                 placeholder="Describe role responsibilities, required skills, experience level, and qualifications..."
                 className="w-full bg-[var(--color-sub-bg)] border border-[var(--color-border)] rounded-[var(--radius-sm)] px-4 py-2.5 text-sm text-[var(--color-black)] focus:outline-none focus:border-[var(--color-primary)] hover:bg-white focus:bg-white transition-all duration-200"
               />
+              {formErrors.description && <p className="text-red-500 text-[10px] mt-1" style={{ margin: 0 }}>{formErrors.description}</p>}
             </div>
             {/* Action Buttons inside the white box */}
             <div className="flex justify-end items-center gap-3 pt-4 border-t border-[var(--color-border)]/50 mt-2">

@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { FiSearch, FiCalendar, FiPlus, FiDownload, FiEye, FiTrash2, FiMoreVertical } from 'react-icons/fi';
 import { motion, AnimatePresence } from 'framer-motion';
 import { jsPDF } from 'jspdf';
-import 'jspdf-autotable';
+import autoTable from 'jspdf-autotable';
 import { toast } from 'sonner';
 import { getAdminApplicationsAPI, updateApplicationStatusAPI, sendOfferLetterAPI } from '../services/allApi';
 import {
@@ -51,6 +51,40 @@ const AppointmentsAdmin = () => {
   });
 
   React.useEffect(() => {
+    const syncAppointments = () => {
+      const stored = localStorage.getItem('appointments');
+      if (stored) {
+        let list = JSON.parse(stored);
+        let localUpdated = false;
+        try {
+          const storedTalent = localStorage.getItem('talent');
+          if (storedTalent) {
+            const talentList = JSON.parse(storedTalent);
+            const talentEmails = talentList.map(t => t.email ? t.email.toLowerCase() : '');
+            list = list.map(appt => {
+              if (appt.email && talentEmails.includes(appt.email.toLowerCase())) {
+                if (appt.status !== 'Appointed' || !appt.offerShared) {
+                  localUpdated = true;
+                  return { ...appt, status: 'Appointed', offerShared: true };
+                }
+              }
+              return appt;
+            });
+            if (localUpdated) {
+              localStorage.setItem('appointments', JSON.stringify(list));
+              window.dispatchEvent(new Event('appointmentsUpdated'));
+            }
+          }
+        } catch (e) {
+          console.error("Error syncing appointments with talent pool:", e);
+        }
+        setAppointments(list);
+      }
+    };
+
+    // Run sync on mount
+    syncAppointments();
+
     const autoSyncAppointments = async () => {
       const storedAppointments = localStorage.getItem('appointments');
       if (!storedAppointments) return;
@@ -76,15 +110,13 @@ const AppointmentsAdmin = () => {
     };
     autoSyncAppointments();
 
-    const syncAppointments = () => {
-      const stored = localStorage.getItem('appointments');
-      if (stored) setAppointments(JSON.parse(stored));
-    };
     window.addEventListener('storage', syncAppointments);
     window.addEventListener('appointmentsUpdated', syncAppointments);
+    window.addEventListener('talentUpdated', syncAppointments);
     return () => {
       window.removeEventListener('storage', syncAppointments);
       window.removeEventListener('appointmentsUpdated', syncAppointments);
+      window.removeEventListener('talentUpdated', syncAppointments);
     };
   }, []);
 
@@ -122,10 +154,14 @@ const AppointmentsAdmin = () => {
 
   const validateForm = () => {
     const err = {};
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!modalForm.name.trim()) err.name = "Candidate Name is required";
-    if (!modalForm.email.trim()) err.email = "Candidate Email is required";
+    if (!modalForm.email.trim()) {
+      err.email = "Candidate Email is required";
+    } else if (!emailRegex.test(modalForm.email.trim())) {
+      err.email = "Please enter a valid email address (e.g. name@example.com)";
+    }
     if (!modalForm.position.trim()) err.position = "Job Position is required";
-    if (!modalForm.interviewer.trim()) err.interviewer = "Interviewer Name is required";
     if (!modalForm.date) err.date = "Date is required";
     if (!modalForm.time) err.time = "Time is required";
     return err;
@@ -480,7 +516,7 @@ const AppointmentsAdmin = () => {
       item.status
     ]);
     
-    doc.autoTable({
+    autoTable(doc, {
       head: headers,
       body: data,
       startY: 85,
@@ -641,9 +677,9 @@ const AppointmentsAdmin = () => {
                         </span>
                       </td>
                       <td className="py-3.5 px-3 text-center">
-                        {item.status === 'Rejected' || item.status === 'Appointed' ? (
+                        {item.status === 'Rejected' || item.status === 'Appointed' || item.offerShared ? (
                           <span className="text-slate-700 font-medium text-xs">
-                            {item.status === 'Appointed' ? 'Offered' : 'Unfit'}
+                            {(item.status === 'Appointed' || item.offerShared) ? 'Offered' : 'Unfit'}
                           </span>
                         ) : (
                           <select
@@ -711,9 +747,9 @@ const AppointmentsAdmin = () => {
                     <p><span className="font-semibold">Mode:</span> {item.mode}</p>
                   </div>
                   <div className="flex flex-wrap items-center justify-end gap-2 mt-1 pt-2 border-t border-slate-100">
-                    {item.status === 'Rejected' || item.status === 'Appointed' ? (
+                    {item.status === 'Rejected' || item.status === 'Appointed' || item.offerShared ? (
                       <span className="text-slate-700 font-medium text-xs">
-                        {item.status === 'Appointed' ? 'Offered' : 'Unfit'}
+                        {(item.status === 'Appointed' || item.offerShared) ? 'Offered' : 'Unfit'}
                       </span>
                     ) : (
                       <select
@@ -838,19 +874,7 @@ const AppointmentsAdmin = () => {
                   <MenuItem value="DevOps Engineer">DevOps Engineer</MenuItem>
                 </TextField>
               </div>
-              <div>
-                <TextField
-                  select fullWidth size="small" label="Interviewer" name="interviewer"
-                  value={modalForm.interviewer} onChange={handleInputChange}
-                  error={!!errors.interviewer} helperText={errors.interviewer}
-                  sx={fieldStyle}
-                >
-                  <MenuItem value="Rohit Kumar">Rohit Kumar</MenuItem>
-                  <MenuItem value="Neha Sharma">Neha Sharma</MenuItem>
-                  <MenuItem value="Sanjay Patel">Sanjay Patel</MenuItem>
-                  <MenuItem value="Anita Joseph">Anita Joseph</MenuItem>
-                </TextField>
-              </div>
+
               <div className="grid grid-cols-2 gap-4">
                 <div className="flex flex-col gap-1 text-left">
                   <label className="text-[10px] text-[var(--color-paragraph)] font-semibold uppercase opacity-75">Date</label>
@@ -889,21 +913,13 @@ const AppointmentsAdmin = () => {
           </form>
         </DialogContent>
         <DialogActions sx={{ px: 3, pb: 3.5, pt: 1, justifyContent: "flex-end", gap: 1.5 }}>
-          <Button
+          <button
+            type="button"
             onClick={() => setOpenModal(false)}
-            variant="outlined"
-            style={{
-              borderColor: 'var(--color-border)',
-              color: 'var(--color-paragraph)',
-              borderRadius: 'var(--radius-sm)',
-              textTransform: 'none',
-              fontWeight: 'var(--font-semibold)',
-              fontSize: 'var(--text-caption)',
-              height: '32px'
-            }}
+            className="bg-[var(--color-sub-bg)] border border-[var(--color-border)] hover:border-[var(--color-primary)] hover:bg-[var(--color-primary)] hover:text-white text-[var(--color-paragraph)] px-4 py-1.5 rounded-[var(--radius-sm)] cursor-pointer text-xs font-semibold transition-colors h-8"
           >
             Cancel
-          </Button>
+          </button>
           <button
             type="button"
             onClick={handleCreateSubmit}
@@ -1026,25 +1042,17 @@ const AppointmentsAdmin = () => {
           </Stack>
         </DialogContent>
         <DialogActions sx={{ px: 3, pb: 3.5, pt: 1, borderTop: "1px solid var(--color-border)", justifyContent: "flex-end", gap: 1.5 }}>
-          <Button
+          <button
+            type="button"
             onClick={() => setOpenExportModal(false)}
-            variant="outlined"
-            style={{
-              borderColor: 'var(--color-border)',
-              color: 'var(--color-paragraph)',
-              borderRadius: 'var(--radius-sm)',
-              textTransform: 'none',
-              fontWeight: 'var(--font-semibold)',
-              fontSize: 'var(--text-caption)',
-              height: '32px'
-            }}
+            className="bg-[var(--color-sub-bg)] border border-[var(--color-border)] hover:border-[var(--color-primary)] hover:bg-[var(--color-primary)] hover:text-white text-[var(--color-paragraph)] px-4 py-1 rounded-[var(--radius-sm)] cursor-pointer text-xs font-semibold transition-colors h-8"
           >
             Cancel
-          </Button>
+          </button>
           <button
             type="button"
             onClick={handleExportSubmit}
-            className="btn px-4 cursor-pointer border-none rounded-[var(--radius-sm)] text-xs font-semibold h-8"
+            className="btn bg-[var(--color-primary)] hover:bg-[var(--color-primary-hover)] transition-colors px-4 cursor-pointer border-none rounded-[var(--radius-sm)] text-xs font-semibold h-8 text-white"
           >
             Export
           </button>

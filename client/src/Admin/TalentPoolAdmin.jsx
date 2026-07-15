@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { FiSearch, FiCalendar, FiPlus, FiDownload, FiEye, FiMail, FiTrash2, FiMoreVertical } from 'react-icons/fi';
 import { motion, AnimatePresence } from 'framer-motion';
 import { jsPDF } from 'jspdf';
-import 'jspdf-autotable';
+import autoTable from 'jspdf-autotable';
 import { toast } from 'sonner';
 import {
   Dialog,
@@ -345,7 +345,7 @@ const TalentPoolAdmin = () => {
       item.source
     ]);
     
-    doc.autoTable({
+    autoTable(doc, {
       head: headers,
       body: data,
       startY: 85,
@@ -770,25 +770,17 @@ const TalentPoolAdmin = () => {
           </Stack>
         </DialogContent>
         <DialogActions sx={{ px: 3, pb: 3.5, pt: 1, borderTop: "1px solid var(--color-border)", justifyContent: "flex-end", gap: 1.5 }}>
-          <Button
+          <button
+            type="button"
             onClick={() => setOpenExportModal(false)}
-            variant="outlined"
-            style={{
-              borderColor: 'var(--color-border)',
-              color: 'var(--color-paragraph)',
-              borderRadius: 'var(--radius-sm)',
-              textTransform: 'none',
-              fontWeight: 'var(--font-semibold)',
-              fontSize: 'var(--text-caption)',
-              height: '32px'
-            }}
+            className="bg-[var(--color-sub-bg)] border border-[var(--color-border)] hover:border-[var(--color-primary)] hover:bg-[var(--color-primary)] hover:text-white text-[var(--color-paragraph)] px-4 py-1 rounded-[var(--radius-sm)] cursor-pointer text-xs font-semibold transition-colors h-8"
           >
             Cancel
-          </Button>
+          </button>
           <button
             type="button"
             onClick={handleExportSubmit}
-            className="btn px-4 cursor-pointer border-none rounded-[var(--radius-sm)] text-xs font-semibold h-8"
+            className="btn bg-[var(--color-primary)] hover:bg-[var(--color-primary-hover)] transition-colors px-4 cursor-pointer border-none rounded-[var(--radius-sm)] text-xs font-semibold h-8 text-white"
           >
             Export
           </button>

@@ -212,16 +212,40 @@ const AdminNavbar = () => {
         ];
       }
 
+      // Filter out dismissed notifications
+      try {
+        const dismissed = JSON.parse(localStorage.getItem('dismissedNotifications') || '[]');
+        filteredNotifications = filteredNotifications.filter(n => !dismissed.includes(n.id));
+      } catch (err) {
+        console.error("Error filtering dismissed notifications:", err);
+      }
+
       const allNotifications = filteredNotifications
         .sort((a, b) => b.time - a.time)
         .slice(0, 5);
 
       setNotifications(allNotifications);
 
-      const unreadCount = allNotifications.filter(n => n.time > lastViewed).length;
+      const savedLastViewed = localStorage.getItem('adminNotificationsLastViewed');
+      const currentLastViewed = savedLastViewed ? new Date(savedLastViewed) : new Date(0);
+      const unreadCount = allNotifications.filter(n => n.time > currentLastViewed).length;
       setNotificationCount(unreadCount);
     } catch (err) {
       console.error("Failed to fetch notifications in navbar:", err);
+    }
+  };
+
+  const dismissNotification = (id) => {
+    try {
+      const dismissed = JSON.parse(localStorage.getItem('dismissedNotifications') || '[]');
+      if (!dismissed.includes(id)) {
+        dismissed.push(id);
+        localStorage.setItem('dismissedNotifications', JSON.stringify(dismissed));
+      }
+      setNotifications(prev => prev.filter(n => n.id !== id));
+      setNotificationCount(prev => Math.max(0, prev - 1));
+    } catch (err) {
+      console.error("Error dismissing notification:", err);
     }
   };
 
@@ -354,6 +378,7 @@ const AdminNavbar = () => {
                         key={n.id}
                         className="p-2 hover:bg-[var(--color-sub-bg)] rounded transition-colors cursor-pointer text-left"
                         onClick={() => {
+                          dismissNotification(n.id);
                           if (n.type === "career") {
                             navigate("/admin/career");
                           } else if (n.type === "inquiry") {

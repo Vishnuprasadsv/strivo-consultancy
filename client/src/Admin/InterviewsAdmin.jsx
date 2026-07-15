@@ -5,7 +5,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { toast } from 'sonner';
 import { getAdminApplicationsAPI, updateApplicationStatusAPI } from '../services/allApi';
 import { jsPDF } from 'jspdf';
-import 'jspdf-autotable';
+import autoTable from 'jspdf-autotable';
 import {
   Dialog,
   DialogTitle,
@@ -138,8 +138,13 @@ const InterviewsAdmin = () => {
 
   const validateForm = () => {
     const err = {};
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!modalForm.name.trim()) err.name = "Candidate Name is required";
-    if (!modalForm.email.trim()) err.email = "Candidate Email is required";
+    if (!modalForm.email.trim()) {
+      err.email = "Candidate Email is required";
+    } else if (!emailRegex.test(modalForm.email.trim())) {
+      err.email = "Please enter a valid email address (e.g. name@example.com)";
+    }
     if (!modalForm.position.trim()) err.position = "Job Position is required";
     if (!modalForm.type.trim()) err.type = "Interview Type is required";
     if (!modalForm.date) {
@@ -358,6 +363,8 @@ const InterviewsAdmin = () => {
 
   const handleExportSubmit = () => {
     const errs = {};
+    if (!exportForm.fromDate) errs.fromDate = "From Date is required";
+    if (!exportForm.toDate) errs.toDate = "To Date is required";
     if (exportForm.fromDate && exportForm.toDate && new Date(exportForm.fromDate) > new Date(exportForm.toDate)) {
       errs.toDate = "To Date cannot be before From Date";
     }
@@ -446,7 +453,7 @@ const InterviewsAdmin = () => {
       item.status === 'Rejected' ? 'Not Fit' : item.status
     ]);
     
-    doc.autoTable({
+    autoTable(doc, {
       startY: 55,
       head: tableHeaders,
       body: tableData,
@@ -522,7 +529,7 @@ const InterviewsAdmin = () => {
             </button>
             <button
               onClick={handleExport}
-              className="bg-white border border-[var(--color-border)] hover:bg-slate-50 text-slate-700 px-4 py-2 flex items-center justify-center gap-2 cursor-pointer h-9 text-xs font-semibold rounded-[var(--radius-sm)] transition-colors"
+              className="bg-white border border-[var(--color-border)] hover:border-[var(--color-primary)] hover:bg-[var(--color-primary)] hover:text-white text-slate-700 px-4 py-2 flex items-center justify-center gap-2 cursor-pointer h-9 text-xs font-semibold rounded-[var(--radius-sm)] transition-colors"
             >
               <FiDownload size={14} />
               Export
@@ -847,7 +854,7 @@ const InterviewsAdmin = () => {
           <button
             type="button"
             onClick={() => setOpenModal(false)}
-            className="bg-white border border-[var(--color-border)] hover:bg-slate-50 text-[var(--color-paragraph)] px-4 py-1.5 rounded-[var(--radius-sm)] cursor-pointer text-xs font-semibold transition-colors h-9"
+            className="bg-[var(--color-sub-bg)] border border-[var(--color-border)] hover:border-[var(--color-primary)] hover:bg-[var(--color-primary)] hover:text-white text-[var(--color-paragraph)] px-4 py-1.5 rounded-[var(--radius-sm)] cursor-pointer text-xs font-semibold transition-colors h-9"
           >
             Cancel
           </button>
@@ -1057,25 +1064,17 @@ const InterviewsAdmin = () => {
           </Stack>
         </DialogContent>
         <DialogActions sx={{ px: 3, pb: 3.5, pt: 1, borderTop: "1px solid var(--color-border)", justifyContent: "flex-end", gap: 1.5 }}>
-          <Button
+          <button
+            type="button"
             onClick={() => setOpenExportModal(false)}
-            variant="outlined"
-            style={{
-              borderColor: 'var(--color-border)',
-              color: 'var(--color-paragraph)',
-              borderRadius: 'var(--radius-sm)',
-              textTransform: 'none',
-              fontWeight: 'var(--font-semibold)',
-              fontSize: 'var(--text-caption)',
-              height: '32px'
-            }}
+            className="bg-[var(--color-sub-bg)] border border-[var(--color-border)] hover:border-[var(--color-primary)] hover:bg-[var(--color-primary)] hover:text-white text-[var(--color-paragraph)] px-4 py-1 rounded-[var(--radius-sm)] cursor-pointer text-xs font-semibold transition-colors h-8"
           >
             Cancel
-          </Button>
+          </button>
           <button
             type="button"
             onClick={handleExportSubmit}
-            className="btn px-4 cursor-pointer border-none rounded-[var(--radius-sm)] text-xs font-semibold h-8"
+            className="btn bg-[var(--color-primary)] hover:bg-[var(--color-primary-hover)] transition-colors px-4 cursor-pointer border-none rounded-[var(--radius-sm)] text-xs font-semibold h-8 text-white"
           >
             Export
           </button>
