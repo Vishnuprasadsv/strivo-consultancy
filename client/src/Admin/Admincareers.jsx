@@ -101,6 +101,12 @@ const CareerAdmin = () => {
   const [schedulingApp, setSchedulingApp] = useState(null);
   const [scheduleForm, setScheduleForm] = useState({ date: "", time: "", type: "Technical Round", mode: "Online" });
   const [scheduleErrors, setScheduleErrors] = useState({});
+  const [deleteConfirm, setDeleteConfirm] = useState({
+    isOpen: false,
+    title: "",
+    message: "",
+    onConfirm: null
+  });
 
   const getTodayDateString = () => {
     const d = new Date();
@@ -124,7 +130,7 @@ const CareerAdmin = () => {
   const isCandidateAppointed = (email) => {
     if (!email) return false;
     const lowerEmail = email.toLowerCase();
-    
+
     // Check local storage 'talent' list
     try {
       const storedTalent = localStorage.getItem('talent');
@@ -137,7 +143,7 @@ const CareerAdmin = () => {
     } catch (e) {
       console.error("Error reading talent from localStorage:", e);
     }
-    
+
     // Check local storage 'appointments' list (Approved status)
     try {
       const storedAppointments = localStorage.getItem('appointments');
@@ -150,7 +156,7 @@ const CareerAdmin = () => {
     } catch (e) {
       console.error("Error reading appointments from localStorage:", e);
     }
-    
+
     // Check local storage 'interviews' list (Appointed status)
     try {
       const storedInterviews = localStorage.getItem('interviews');
@@ -163,7 +169,7 @@ const CareerAdmin = () => {
     } catch (e) {
       console.error("Error reading interviews from localStorage:", e);
     }
-    
+
     return false;
   };
 
@@ -370,67 +376,91 @@ const CareerAdmin = () => {
     toast.success("Interview scheduled successfully and updated in Interviews tab!");
   };
 
-  const handleDeleteApplication = async (appId) => {
-    if (!window.confirm("Are you sure you want to delete this application?")) return;
-    try {
-      const response = await deleteApplicationAPI(appId);
-      if (response.status === 200 && response.data?.success) {
-        toast.success("Application deleted successfully");
-        setAppPage(1);
-        fetchData(true);
-      } else {
-        toast.error("Failed to delete application.");
+  const handleDeleteApplication = (appId) => {
+    setDeleteConfirm({
+      isOpen: true,
+      title: "Confirm Delete",
+      message: "Are you sure you want to delete this application?",
+      onConfirm: async () => {
+        try {
+          const response = await deleteApplicationAPI(appId);
+          if (response.status === 200 && response.data?.success) {
+            toast.success("Application deleted successfully");
+            setAppPage(1);
+            fetchData(true);
+          } else {
+            toast.error("Failed to delete application.");
+          }
+        } catch (error) {
+          console.error("Failed to delete application:", error);
+          toast.error("Failed to delete application.");
+        }
       }
-    } catch (error) {
-      console.error("Failed to delete application:", error);
-      toast.error("Failed to delete application.");
-    }
+    });
   };
 
-  const handleDeleteTalent = async (subId) => {
-    if (!window.confirm("Are you sure you want to delete this talent network submission?")) return;
-    try {
-      const response = await deleteTalentSubmissionAPI(subId);
-      if (response.status === 200 && response.data?.success) {
-        toast.success("Talent submission deleted successfully");
-        setTalentPage(1);
-        fetchData(true);
-      } else {
-        toast.error("Failed to delete talent submission.");
+  const handleDeleteTalent = (subId) => {
+    setDeleteConfirm({
+      isOpen: true,
+      title: "Confirm Delete",
+      message: "Are you sure you want to delete this talent network submission?",
+      onConfirm: async () => {
+        try {
+          const response = await deleteTalentSubmissionAPI(subId);
+          if (response.status === 200 && response.data?.success) {
+            toast.success("Talent submission deleted successfully");
+            setTalentPage(1);
+            fetchData(true);
+          } else {
+            toast.error("Failed to delete talent submission.");
+          }
+        } catch (error) {
+          console.error("Failed to delete talent submission:", error);
+          toast.error("Failed to delete talent submission.");
+        }
       }
-    } catch (error) {
-      console.error("Failed to delete talent submission:", error);
-      toast.error("Failed to delete talent submission.");
-    }
+    });
   };
 
-  const handleDeleteAllTalent = async () => {
-    if (!window.confirm("WARNING: Are you sure you want to delete ALL talent submissions? This action cannot be undone.")) return;
-    try {
-      const promises = talentSubmissions.map(sub => deleteTalentSubmissionAPI(sub._id));
-      await Promise.all(promises);
-      toast.success("All talent submissions deleted successfully");
-      setTalentPage(1);
-      fetchData(true);
-    } catch (error) {
-      console.error("Error deleting all talent submissions:", error);
-      toast.error("Failed to delete all talent submissions.");
-    }
+  const handleDeleteAllTalent = () => {
+    setDeleteConfirm({
+      isOpen: true,
+      title: "Confirm Delete All",
+      message: "WARNING: Are you sure you want to delete ALL talent submissions? This action cannot be undone.",
+      onConfirm: async () => {
+        try {
+          const promises = talentSubmissions.map(sub => deleteTalentSubmissionAPI(sub._id));
+          await Promise.all(promises);
+          toast.success("All talent submissions deleted successfully");
+          setTalentPage(1);
+          fetchData(true);
+        } catch (error) {
+          console.error("Error deleting all talent submissions:", error);
+          toast.error("Failed to delete all talent submissions.");
+        }
+      }
+    });
   };
 
   // delete chaiyyan
-  const handleDeleteJob = async (jobId) => {
-    if (!window.confirm("Are you sure you want to delete this job listing?")) return;
-    try {
-      const response = await deleteJobAPI(jobId);
-      if (response.status === 200 && response.data?.success) {
-        toast.success("Job deleted successfully");
-        fetchData();
+  const handleDeleteJob = (jobId) => {
+    setDeleteConfirm({
+      isOpen: true,
+      title: "Confirm Delete",
+      message: "Are you sure you want to delete this job listing?",
+      onConfirm: async () => {
+        try {
+          const response = await deleteJobAPI(jobId);
+          if (response.status === 200 && response.data?.success) {
+            toast.success("Job deleted successfully");
+            fetchData();
+          }
+        } catch (error) {
+          console.error("Failed to delete job:", error);
+          toast.error("Failed to delete job listing.");
+        }
       }
-    } catch (error) {
-      console.error("Failed to delete job:", error);
-      toast.error("Failed to delete job listing.");
-    }
+    });
   };
 
 
@@ -739,7 +769,7 @@ const CareerAdmin = () => {
 
   return (
     <div className="min-h-screen bg-sub flex flex-col" style={{ fontFamily: 'var(--font-primary)' }}>
-      
+
       {/* Top Header Section with bg-main spanning full-width */}
       <div className="bg-main pt-24 pb-6 border-b border-[var(--color-border)] px-8 md:px-16 lg:px-24">
         <div className="max-w-[98%] mx-auto">
@@ -753,68 +783,8 @@ const CareerAdmin = () => {
                 Manage job listings, candidate profiles, and talent network
               </p>
             </div>
-            
+
             <div className="flex flex-wrap items-center justify-center md:justify-end gap-3 w-full md:w-auto">
-              {/* Notifications Bell Button */}
-              <div className="relative">
-                <button
-                  onClick={() => {
-                    const nextShow = !showNotifDropdown;
-                    setShowNotifDropdown(nextShow);
-                    if (nextShow) {
-                      setClearedNotificationsTime(new Date());
-                      setNotifPage(1);
-                    }
-                  }}
-                  className="bg-white border border-[var(--color-primary)] text-[var(--color-primary)] hover:bg-[var(--color-primary)] hover:text-white p-1.5 rounded-[var(--radius-sm)] flex items-center justify-center transition cursor-pointer h-8 w-8 relative shrink-0 shadow-sm"
-                  title="Notifications"
-                >
-                  <NotificationsIcon style={{ fontSize: 16 }} />
-                  {recentNotifications.length > 0 && (
-                    <span className="absolute -top-1 -right-1 bg-red-500 text-white text-[8px] font-extrabold rounded-full h-4 w-4 flex items-center justify-center">
-                      {recentNotifications.length}
-                    </span>
-                  )}
-                </button>
-                
-                <AnimatePresence>
-                  {showNotifDropdown && (
-                    <>
-                      <div className="fixed inset-0 z-40" onClick={() => setShowNotifDropdown(false)} />
-                      <motion.div
-                        initial={{ opacity: 0, y: 10 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        exit={{ opacity: 0, y: 10 }}
-                        className="absolute right-0 mt-2 w-80 bg-white border border-[var(--color-border)] shadow-lg z-50 rounded-[var(--radius-sm)] overflow-hidden"
-                        style={{ fontFamily: 'var(--font-primary)' }}
-                      >
-                        <div className="flex justify-between items-center px-4 py-3 border-b border-[var(--color-border)] bg-[var(--color-sub-bg)]/20">
-                          <span className="text-xs font-bold text-[var(--color-black)]">Recent Alerts</span>
-                        </div>
-                        <div className="flex flex-col max-h-80 overflow-y-auto divide-y divide-[var(--color-border)]">
-                          {recentNotifications.length === 0 ? (
-                            <div className="py-6 text-center text-[var(--color-paragraph)] opacity-60 text-xs">
-                              No new notifications
-                            </div>
-                          ) : (
-                            recentNotifications.map((notif, index) => (
-                              <div key={index} className="flex items-start gap-2.5 p-3 hover:bg-[var(--color-sub-bg)]/30 transition-colors text-left">
-                                <span className={`w-2 h-2 rounded-full mt-1.5 shrink-0 ${notif.color}`}></span>
-                                <div className="min-w-0 flex-1">
-                                  <p className="text-xs text-[var(--color-paragraph)] leading-snug break-words" style={{ margin: 0 }}>
-                                    {notif.text}
-                                  </p>
-                                  <span className="text-[9px] text-[var(--color-paragraph)] opacity-50 block mt-1">{notif.time}</span>
-                                </div>
-                              </div>
-                            ))
-                          )}
-                        </div>
-                      </motion.div>
-                    </>
-                  )}
-                </AnimatePresence>
-              </div>
 
               {/* Analytics button */}
               <button
@@ -824,7 +794,7 @@ const CareerAdmin = () => {
                 <FiBarChart2 size={13} />
                 Analytics
               </button>
-              
+
               {/* Create New Job button */}
               <button
                 id="create-new-job-btn"
@@ -849,659 +819,656 @@ const CareerAdmin = () => {
           className="max-w-6xl mx-auto flex flex-col gap-6"
         >
 
-        {/* Tab Navigation Selector */}
-        <div className="flex flex-wrap gap-2 p-1 bg-white border border-[var(--color-border)] rounded-[var(--radius-sm)] mb-3 w-fit shadow-sm">
-          <button
-            onClick={() => {
-              setActiveSubTab('applications');
-              setAppPage(1);
-            }}
-            className={`px-4 py-1.5 text-xs font-bold transition-all rounded-[var(--radius-sm)] cursor-pointer border-none ${
-              activeSubTab === 'applications'
-                ? 'bg-[var(--color-primary)] text-white'
-                : 'text-[var(--color-paragraph)] hover:bg-[var(--color-sub-bg)] bg-transparent'
-            }`}
-          >
-            Applications
-          </button>
-          <button
-            onClick={async () => {
-              setActiveSubTab('talent');
-              setTalentPage(1);
-              setLoadingTalent(true);
-              try {
-                const res = await getTalentSubmissionsAPI();
-                if (res.status === 200 && res.data?.success) {
-                  setTalentSubmissions(res.data.data);
+          {/* Tab Navigation Selector */}
+          <div className="flex flex-wrap gap-2 p-1 bg-white border border-[var(--color-border)] rounded-[var(--radius-sm)] mb-3 w-fit shadow-sm">
+            <button
+              onClick={() => {
+                setActiveSubTab('applications');
+                setAppPage(1);
+              }}
+              className={`px-4 py-1.5 text-xs font-bold transition-all rounded-[var(--radius-sm)] cursor-pointer border-none ${activeSubTab === 'applications'
+                  ? 'bg-[var(--color-primary)] text-white'
+                  : 'text-[var(--color-paragraph)] hover:bg-[var(--color-sub-bg)] bg-transparent'
+                }`}
+            >
+              Applications
+            </button>
+            <button
+              onClick={async () => {
+                setActiveSubTab('talent');
+                setTalentPage(1);
+                setLoadingTalent(true);
+                try {
+                  const res = await getTalentSubmissionsAPI();
+                  if (res.status === 200 && res.data?.success) {
+                    setTalentSubmissions(res.data.data);
+                  }
+                } catch (e) {
+                  toast.error("Failed to fetch talent submissions.");
+                } finally {
+                  setLoadingTalent(false);
                 }
-              } catch (e) {
-                toast.error("Failed to fetch talent submissions.");
-              } finally {
-                setLoadingTalent(false);
-              }
-            }}
-            className={`px-4 py-1.5 text-xs font-bold transition-all rounded-[var(--radius-sm)] cursor-pointer border-none ${
-              activeSubTab === 'talent'
-                ? 'bg-[var(--color-primary)] text-white'
-                : 'text-[var(--color-paragraph)] hover:bg-[var(--color-sub-bg)] bg-transparent'
-            }`}
-          >
-            Talent Network
-          </button>
-          <button
-            onClick={() => {
-              setActiveSubTab('jobs');
-            }}
-            className={`px-4 py-1.5 text-xs font-bold transition-all rounded-[var(--radius-sm)] cursor-pointer border-none ${
-              activeSubTab === 'jobs'
-                ? 'bg-[var(--color-primary)] text-white'
-                : 'text-[var(--color-paragraph)] hover:bg-[var(--color-sub-bg)] bg-transparent'
-            }`}
-          >
-            Job Listings
-          </button>
-        </div>
+              }}
+              className={`px-4 py-1.5 text-xs font-bold transition-all rounded-[var(--radius-sm)] cursor-pointer border-none ${activeSubTab === 'talent'
+                  ? 'bg-[var(--color-primary)] text-white'
+                  : 'text-[var(--color-paragraph)] hover:bg-[var(--color-sub-bg)] bg-transparent'
+                }`}
+            >
+              Talent Network
+            </button>
+            <button
+              onClick={() => {
+                setActiveSubTab('jobs');
+              }}
+              className={`px-4 py-1.5 text-xs font-bold transition-all rounded-[var(--radius-sm)] cursor-pointer border-none ${activeSubTab === 'jobs'
+                  ? 'bg-[var(--color-primary)] text-white'
+                  : 'text-[var(--color-paragraph)] hover:bg-[var(--color-sub-bg)] bg-transparent'
+                }`}
+            >
+              Job Listings
+            </button>
+          </div>
 
-        <div className="w-full">
+          <div className="w-full">
 
 
-          <div className="w-full flex flex-col gap-6">
+            <div className="w-full flex flex-col gap-6">
 
 
-            {activeSubTab === 'applications' && (
-              <div className="card bg-white p-5 shadow-card relative overflow-hidden border border-[var(--color-border)] rounded-[var(--radius-sm)]">
-              <div className="flex flex-wrap justify-between items-center mb-5 gap-2">
-                <div className="flex items-center gap-3">
-                  <h2 className="text-primary" style={{ fontSize: 'var(--text-paragraph)', fontWeight: 'var(--font-bold)', margin: 0 }}>Recent Applications</h2>
-                  {activeFilter === 'pending' && (
-                    <span className="px-2.5 py-0.5 rounded-full text-[10px] font-semibold bg-amber-500/10 text-amber-600 border border-amber-500/20 animate-pulse">
-                      Pending Only
-                    </span>
-                  )}
-                </div>
+              {activeSubTab === 'applications' && (
+                <div className="card bg-white p-5 shadow-card relative overflow-hidden border border-[var(--color-border)] rounded-[var(--radius-sm)]">
+                  <div className="flex flex-wrap justify-between items-center mb-5 gap-2">
+                    <div className="flex items-center gap-3">
+                      <h2 className="text-primary" style={{ fontSize: 'var(--text-paragraph)', fontWeight: 'var(--font-bold)', margin: 0 }}>Recent Applications</h2>
+                      {activeFilter === 'pending' && (
+                        <span className="px-2.5 py-0.5 rounded-full text-[10px] font-semibold bg-amber-500/10 text-amber-600 border border-amber-500/20 animate-pulse">
+                          Pending Only
+                        </span>
+                      )}
+                    </div>
 
-                <div className="flex items-center gap-2">
-                  {activeFilter !== 'all' && (
-                    <button
-                      onClick={() => setActiveFilter('all')}
-                      className="px-3 py-1.5 border border-[var(--color-border)] hover:bg-[var(--color-sub-bg)] text-[var(--color-paragraph)] opacity-80 hover:opacity-100 rounded-[var(--radius-sm)] text-xs font-semibold transition-colors cursor-pointer"
-                    >
-                      Clear Filter
-                    </button>
-                  )}
-                  <button onClick={fetchData} className="px-4 py-1.5 border border-[var(--color-border)] hover:bg-[var(--color-sub-bg)] text-[var(--color-paragraph)] opacity-80 hover:opacity-100 rounded-[var(--radius-sm)] text-xs font-semibold transition-colors cursor-pointer">
-                    Refresh
-                  </button>
-                </div>
-              </div>
+                    <div className="flex items-center gap-2">
+                      {activeFilter !== 'all' && (
+                        <button
+                          onClick={() => setActiveFilter('all')}
+                          className="px-3 py-1.5 border border-[var(--color-border)] hover:bg-[var(--color-sub-bg)] text-[var(--color-paragraph)] opacity-80 hover:opacity-100 rounded-[var(--radius-sm)] text-xs font-semibold transition-colors cursor-pointer"
+                        >
+                          Clear Filter
+                        </button>
+                      )}
+                      <button onClick={fetchData} className="px-4 py-1.5 border border-[var(--color-border)] hover:bg-[var(--color-sub-bg)] text-[var(--color-paragraph)] opacity-80 hover:opacity-100 rounded-[var(--radius-sm)] text-xs font-semibold transition-colors cursor-pointer">
+                        Refresh
+                      </button>
+                    </div>
+                  </div>
 
-              {loading ? (
-                <div className="py-12 flex justify-center"><div className="w-8 h-8 border-4 border-blue-500 border-t-transparent rounded-full animate-spin"></div></div>
-              ) : filteredApplications.length === 0 ? (
-                <div className="py-12 text-center text-[var(--color-paragraph)] opacity-50 border border-[var(--color-border)] bg-[var(--color-sub-bg)] rounded-[var(--radius-sm)]">
-                  {activeFilter === 'pending' ? 'No pending applications left!' : 'No applications received yet.'}
-                </div>
-              ) : (
-                <div className="overflow-x-auto">
-                  {/* Table view for desktop / tablet */}
-                  <table className="w-full text-left border-collapse table-fixed hidden md:table">
-                    <thead>
-                      <tr className="border-b border-[var(--color-border)] text-primary text-xs font-normal uppercase tracking-wider">
-                        <th className="pb-3 px-6 font-normal w-[25%]" style={{ fontWeight: 'normal' }}>Candidate</th>
-                        <th className="pb-3 px-6 font-normal w-[20%]" style={{ fontWeight: 'normal' }}>Position</th>
-                        <th className="pb-3 px-6 font-normal w-[15%] text-center" style={{ fontWeight: 'normal' }}>Applied On</th>
-                        <th className="pb-3 px-6 font-normal w-[20%] text-center" style={{ fontWeight: 'normal' }}>Status</th>
-                        <th className="pb-3 px-6 font-normal text-center w-[20%]" style={{ fontWeight: 'normal' }}>Action</th>
-                      </tr>
-                    </thead>
-                    <tbody className="divide-y divide-[var(--color-border)] text-sm">
-                      {paginatedApplications.map((app) => {
-                        const statusObj = getStatusDetails(app.status);
-                        const appliedDate = new Date(app.createdAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+                  {loading ? (
+                    <div className="py-12 flex justify-center"><div className="w-8 h-8 border-4 border-blue-500 border-t-transparent rounded-full animate-spin"></div></div>
+                  ) : filteredApplications.length === 0 ? (
+                    <div className="py-12 text-center text-[var(--color-paragraph)] opacity-50 border border-[var(--color-border)] bg-[var(--color-sub-bg)] rounded-[var(--radius-sm)]">
+                      {activeFilter === 'pending' ? 'No pending applications left!' : 'No applications received yet.'}
+                    </div>
+                  ) : (
+                    <div className="overflow-x-auto">
+                      {/* Table view for desktop / tablet */}
+                      <table className="w-full text-left border-collapse table-fixed hidden md:table">
+                        <thead>
+                          <tr className="border-b border-[var(--color-border)] text-primary text-xs font-normal uppercase tracking-wider">
+                            <th className="pb-3 px-6 font-normal w-[25%]" style={{ fontWeight: 'normal' }}>Candidate</th>
+                            <th className="pb-3 px-6 font-normal w-[20%]" style={{ fontWeight: 'normal' }}>Position</th>
+                            <th className="pb-3 px-6 font-normal w-[15%] text-center" style={{ fontWeight: 'normal' }}>Applied On</th>
+                            <th className="pb-3 px-6 font-normal w-[20%] text-center" style={{ fontWeight: 'normal' }}>Status</th>
+                            <th className="pb-3 px-6 font-normal text-center w-[20%]" style={{ fontWeight: 'normal' }}>Action</th>
+                          </tr>
+                        </thead>
+                        <tbody className="divide-y divide-[var(--color-border)] text-sm">
+                          {paginatedApplications.map((app) => {
+                            const statusObj = getStatusDetails(app.status);
+                            const appliedDate = new Date(app.createdAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
 
-                        return (
-                          <tr key={app._id} className="hover:bg-[var(--color-sub-bg)]/40 transition-colors">
+                            return (
+                              <tr key={app._id} className="hover:bg-[var(--color-sub-bg)]/40 transition-colors">
 
-                            <td className="py-3 px-6 w-[25%] text-left">
-                              <div className="flex items-center gap-2">
-                                <div className="min-w-0">
-                                  <p style={{ fontSize: 'var(--text-small)', fontWeight: 'var(--font-semibold)', color: 'var(--color-black)', margin: 0 }} className="truncate">
-                                    {app.fullName}
-                                  </p>
-                                  <p style={{ fontSize: 'var(--text-caption)', color: 'var(--color-paragraph)', opacity: 0.7, margin: '1px 0 0 0' }} className="truncate">
-                                    {app.email}
-                                  </p>
+                                <td className="py-3 px-6 w-[25%] text-left">
+                                  <div className="flex items-center gap-2">
+                                    <div className="min-w-0">
+                                      <p style={{ fontSize: 'var(--text-small)', fontWeight: 'var(--font-semibold)', color: 'var(--color-black)', margin: 0 }} className="truncate">
+                                        {app.fullName}
+                                      </p>
+                                      <p style={{ fontSize: 'var(--text-caption)', color: 'var(--color-paragraph)', opacity: 0.7, margin: '1px 0 0 0' }} className="truncate">
+                                        {app.email}
+                                      </p>
 
-                                  <a
-                                    href={app.resumeUrl}
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                    className="hover:underline inline-flex items-center gap-1 mt-1 cursor-pointer"
-                                    style={{ fontSize: 'var(--text-caption)', fontWeight: 'var(--font-semibold)', color: 'var(--color-primary)' }}
-                                  >
-                                    <PictureAsPdfIcon style={{ fontSize: 13 }} /> View Resume
-                                  </a>
-                                </div>
+                                      <a
+                                        href={app.resumeUrl}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        className="hover:underline inline-flex items-center gap-1 mt-1 cursor-pointer"
+                                        style={{ fontSize: 'var(--text-caption)', fontWeight: 'var(--font-semibold)', color: 'var(--color-primary)' }}
+                                      >
+                                        <PictureAsPdfIcon style={{ fontSize: 13 }} /> View Resume
+                                      </a>
+                                    </div>
+                                  </div>
+                                </td>
+
+                                <td className="py-3 px-6 text-[var(--color-black)] w-[20%] text-left text-xs font-semibold">{app.appliedPosition}</td>
+
+                                <td className="py-3 px-6 text-[var(--color-black)] w-[15%] text-center text-xs">{appliedDate}</td>
+
+                                <td className="py-3 px-6 w-[20%] text-center">
+                                  <span className="text-slate-700 font-medium text-xs whitespace-nowrap">
+                                    {statusObj.label}
+                                  </span>
+                                </td>
+
+                                <td className="py-3 px-6 text-center w-[20%] whitespace-nowrap">
+                                  <div className="flex items-center justify-center gap-2">
+                                    <button
+                                      onClick={() => handleViewApplication(app)}
+                                      className="w-7 h-7 flex items-center justify-center transition-colors cursor-pointer border border-[var(--color-border)] bg-[var(--color-main-bg)] text-[var(--color-paragraph)] opacity-70 hover:opacity-100"
+                                      style={{ borderRadius: 'var(--radius-sm)' }}
+                                      title="View Details"
+                                    >
+                                      <VisibilityIcon fontSize="small" style={{ fontSize: 16 }} />
+                                    </button>
+
+                                    {(app.status === 'pending' || app.status === 'reviewed') && (
+                                      <select
+                                        value=""
+                                        onChange={(e) => {
+                                          const val = e.target.value;
+                                          if (val === 'reviewed') {
+                                            handleUpdateStatus(app._id, 'reviewed');
+                                          } else if (val === 'schedule') {
+                                            handleOpenScheduleModal(app);
+                                          } else if (val === 'not_fit') {
+                                            handleUpdateStatus(app._id, 'not_fit');
+                                          }
+                                        }}
+                                        className="bg-white text-black rounded-[var(--radius-sm)] px-2 py-1 border border-gray-300 focus:outline-none focus:ring-1 focus:ring-[var(--color-primary)] text-xs h-7 cursor-pointer font-medium disabled:opacity-50 disabled:cursor-not-allowed"
+                                      >
+                                        <option value="" disabled hidden>Action</option>
+                                        {app.status === 'pending' && (
+                                          <>
+                                            <option value="reviewed">Move to Under Review</option>
+                                            <option value="schedule">Schedule Interview</option>
+                                            <option value="not_fit">Mark as Not Fit</option>
+                                          </>
+                                        )}
+                                        {app.status === 'reviewed' && (
+                                          <>
+                                            <option value="schedule">Schedule Interview</option>
+                                            <option value="not_fit">Mark as Not Fit</option>
+                                          </>
+                                        )}
+                                      </select>
+                                    )}
+                                  </div>
+                                </td>
+                              </tr>
+                            );
+                          })}
+                        </tbody>
+                      </table>
+
+                      {/* Card view for mobile screens (text and buttons aligned to center) */}
+                      <div className="flex flex-col gap-4 md:hidden">
+                        {paginatedApplications.map((app) => {
+                          const statusObj = getStatusDetails(app.status);
+                          const appliedDate = new Date(app.createdAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+
+                          return (
+                            <div key={app._id} className="border border-[var(--color-border)] rounded-[var(--radius-sm)] p-5 bg-[var(--color-sub-bg)]/20 hover:bg-[var(--color-sub-bg)]/40 transition-colors flex flex-col items-center text-center gap-3">
+                              <div>
+                                <p style={{ fontSize: 'var(--text-paragraph)', fontWeight: 'var(--font-semibold)', color: 'var(--color-black)', margin: 0 }}>
+                                  {app.fullName}
+                                </p>
+                                <p style={{ fontSize: 'var(--text-small)', fontWeight: 'var(--font-medium)', color: 'var(--color-primary)', margin: '2px 0 0 0' }}>
+                                  {app.appliedPosition}
+                                </p>
+                                <p style={{ fontSize: 'var(--text-small)', color: 'var(--color-paragraph)', opacity: 0.8, margin: '2px 0 0 0' }}>
+                                  {app.email}
+                                </p>
+                                <p className="text-xs text-[var(--color-paragraph)] opacity-60 mt-1">
+                                  Applied: {appliedDate}
+                                </p>
                               </div>
-                            </td>
 
-                            <td className="py-3 px-6 text-[var(--color-black)] w-[20%] text-left text-xs font-semibold">{app.appliedPosition}</td>
+                              <div>
+                                <span className="text-slate-700 font-medium text-xs">
+                                  {statusObj.label}
+                                </span>
+                              </div>
 
-                            <td className="py-3 px-6 text-[var(--color-black)] w-[15%] text-center text-xs">{appliedDate}</td>
+                              <div className="flex items-center justify-center gap-1 mt-1">
+                                <a
+                                  href={app.resumeUrl}
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                  className="hover:underline inline-flex items-center gap-1 cursor-pointer bg-[var(--color-main-bg)] border border-[var(--color-border)] px-3 py-1.5 rounded-[var(--radius-sm)]"
+                                  style={{ fontSize: 'var(--text-small)', fontWeight: 'var(--font-semibold)', color: 'var(--color-primary)' }}
+                                >
+                                  <PictureAsPdfIcon style={{ fontSize: 14 }} /> View Resume
+                                </a>
+                              </div>
 
-                            <td className="py-3 px-6 w-[20%] text-center">
-                              <span className="text-slate-700 font-medium text-xs whitespace-nowrap">
-                                {statusObj.label}
-                              </span>
-                            </td>
-
-                            <td className="py-3 px-6 text-center w-[20%] whitespace-nowrap">
-                              <div className="flex items-center justify-center gap-2">
+                              <div className="flex flex-wrap items-center justify-center gap-2.5 mt-2">
                                 <button
                                   onClick={() => handleViewApplication(app)}
-                                  className="w-7 h-7 flex items-center justify-center transition-colors cursor-pointer border border-[var(--color-border)] bg-[var(--color-main-bg)] text-[var(--color-paragraph)] opacity-70 hover:opacity-100"
+                                  className="w-10 h-10 flex items-center justify-center transition-colors cursor-pointer border border-[var(--color-border)] bg-[var(--color-main-bg)] text-[var(--color-paragraph)] opacity-70 hover:opacity-100"
                                   style={{ borderRadius: 'var(--radius-sm)' }}
                                   title="View Details"
                                 >
-                                  <VisibilityIcon fontSize="small" style={{ fontSize: 16 }} />
+                                  <VisibilityIcon fontSize="small" />
                                 </button>
 
-                                 {(app.status === 'pending' || app.status === 'reviewed') && (
-                                   <select
-                                     value=""
-                                     onChange={(e) => {
-                                       const val = e.target.value;
-                                       if (val === 'reviewed') {
-                                         handleUpdateStatus(app._id, 'reviewed');
-                                       } else if (val === 'schedule') {
-                                         handleOpenScheduleModal(app);
-                                       } else if (val === 'not_fit') {
-                                         handleUpdateStatus(app._id, 'not_fit');
-                                       }
-                                     }}
-                                     className="bg-white text-black rounded-[var(--radius-sm)] px-2 py-1 border border-gray-300 focus:outline-none focus:ring-1 focus:ring-[var(--color-primary)] text-xs h-7 cursor-pointer font-medium disabled:opacity-50 disabled:cursor-not-allowed"
-                                   >
-                                     <option value="" disabled hidden>Action</option>
-                                     {app.status === 'pending' && (
-                                       <>
-                                         <option value="reviewed">Move to Under Review</option>
-                                         <option value="schedule">Schedule Interview</option>
-                                         <option value="not_fit">Mark as Not Fit</option>
-                                       </>
-                                     )}
-                                     {app.status === 'reviewed' && (
-                                       <>
-                                         <option value="schedule">Schedule Interview</option>
-                                         <option value="not_fit">Mark as Not Fit</option>
-                                       </>
-                                     )}
-                                   </select>
-                                 )}
-                               </div>
-                            </td>
-                          </tr>
-                        );
-                      })}
-                    </tbody>
-                  </table>
+                                {(app.status === 'pending' || app.status === 'reviewed') && (
+                                  <select
+                                    value=""
+                                    onChange={(e) => {
+                                      const val = e.target.value;
+                                      if (val === 'reviewed') {
+                                        handleUpdateStatus(app._id, 'reviewed');
+                                      } else if (val === 'schedule') {
+                                        handleOpenScheduleModal(app);
+                                      } else if (val === 'not_fit') {
+                                        handleUpdateStatus(app._id, 'not_fit');
+                                      }
+                                    }}
+                                    className="bg-white text-black rounded-[var(--radius-sm)] px-3 py-1.5 border border-gray-300 focus:outline-none focus:ring-1 focus:ring-[var(--color-primary)] text-xs h-10 cursor-pointer font-semibold disabled:opacity-50 disabled:cursor-not-allowed"
+                                  >
+                                    <option value="" disabled hidden>Action</option>
+                                    {app.status === 'pending' && (
+                                      <>
+                                        <option value="reviewed">Move to Under Review</option>
+                                        <option value="schedule">Schedule Interview</option>
+                                        <option value="not_fit">Mark as Not Fit</option>
+                                      </>
+                                    )}
+                                    {app.status === 'reviewed' && (
+                                      <>
+                                        <option value="schedule">Schedule Interview</option>
+                                        <option value="not_fit">Mark as Not Fit</option>
+                                      </>
+                                    )}
+                                  </select>
+                                )}
+                              </div>
+                            </div>
+                          );
+                        })}
+                      </div>
 
-                  {/* Card view for mobile screens (text and buttons aligned to center) */}
-                  <div className="flex flex-col gap-4 md:hidden">
-                    {paginatedApplications.map((app) => {
-                      const statusObj = getStatusDetails(app.status);
-                      const appliedDate = new Date(app.createdAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
-
-                      return (
-                        <div key={app._id} className="border border-[var(--color-border)] rounded-[var(--radius-sm)] p-5 bg-[var(--color-sub-bg)]/20 hover:bg-[var(--color-sub-bg)]/40 transition-colors flex flex-col items-center text-center gap-3">
-                          <div>
-                            <p style={{ fontSize: 'var(--text-paragraph)', fontWeight: 'var(--font-semibold)', color: 'var(--color-black)', margin: 0 }}>
-                              {app.fullName}
-                            </p>
-                            <p style={{ fontSize: 'var(--text-small)', fontWeight: 'var(--font-medium)', color: 'var(--color-primary)', margin: '2px 0 0 0' }}>
-                              {app.appliedPosition}
-                            </p>
-                            <p style={{ fontSize: 'var(--text-small)', color: 'var(--color-paragraph)', opacity: 0.8, margin: '2px 0 0 0' }}>
-                              {app.email}
-                            </p>
-                            <p className="text-xs text-[var(--color-paragraph)] opacity-60 mt-1">
-                              Applied: {appliedDate}
-                            </p>
-                          </div>
-
-                          <div>
-                            <span className="text-slate-700 font-medium text-xs">
-                              {statusObj.label}
-                            </span>
-                          </div>
-
-                          <div className="flex items-center justify-center gap-1 mt-1">
-                            <a
-                              href={app.resumeUrl}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              className="hover:underline inline-flex items-center gap-1 cursor-pointer bg-[var(--color-main-bg)] border border-[var(--color-border)] px-3 py-1.5 rounded-[var(--radius-sm)]"
-                              style={{ fontSize: 'var(--text-small)', fontWeight: 'var(--font-semibold)', color: 'var(--color-primary)' }}
-                            >
-                              <PictureAsPdfIcon style={{ fontSize: 14 }} /> View Resume
-                            </a>
-                          </div>
-
-                          <div className="flex flex-wrap items-center justify-center gap-2.5 mt-2">
-                            <button
-                              onClick={() => handleViewApplication(app)}
-                              className="w-10 h-10 flex items-center justify-center transition-colors cursor-pointer border border-[var(--color-border)] bg-[var(--color-main-bg)] text-[var(--color-paragraph)] opacity-70 hover:opacity-100"
-                              style={{ borderRadius: 'var(--radius-sm)' }}
-                              title="View Details"
-                            >
-                              <VisibilityIcon fontSize="small" />
-                            </button>
-
-                             {(app.status === 'pending' || app.status === 'reviewed') && (
-                               <select
-                                 value=""
-                                 onChange={(e) => {
-                                   const val = e.target.value;
-                                   if (val === 'reviewed') {
-                                     handleUpdateStatus(app._id, 'reviewed');
-                                   } else if (val === 'schedule') {
-                                     handleOpenScheduleModal(app);
-                                   } else if (val === 'not_fit') {
-                                     handleUpdateStatus(app._id, 'not_fit');
-                                   }
-                                 }}
-                                 className="bg-white text-black rounded-[var(--radius-sm)] px-3 py-1.5 border border-gray-300 focus:outline-none focus:ring-1 focus:ring-[var(--color-primary)] text-xs h-10 cursor-pointer font-semibold disabled:opacity-50 disabled:cursor-not-allowed"
-                               >
-                                 <option value="" disabled hidden>Action</option>
-                                 {app.status === 'pending' && (
-                                   <>
-                                     <option value="reviewed">Move to Under Review</option>
-                                     <option value="schedule">Schedule Interview</option>
-                                     <option value="not_fit">Mark as Not Fit</option>
-                                   </>
-                                 )}
-                                 {app.status === 'reviewed' && (
-                                   <>
-                                     <option value="schedule">Schedule Interview</option>
-                                     <option value="not_fit">Mark as Not Fit</option>
-                                   </>
-                                 )}
-                               </select>
-                             )}
-                           </div>
+                      {totalAppPages > 1 && (
+                        <div className="flex items-center justify-center gap-4 mt-6 pt-4 border-t border-[var(--color-border)]">
+                          <button
+                            disabled={currentAppPage === 1}
+                            onClick={() => setAppPage(p => Math.max(1, p - 1))}
+                            className="px-3 py-1.5 border border-[var(--color-border)] hover:bg-[var(--color-sub-bg)] text-[var(--color-paragraph)] text-xs rounded-[var(--radius-sm)] transition-all cursor-pointer font-semibold bg-transparent"
+                          >
+                            &lt;
+                          </button>
+                          <span className="text-xs text-[var(--color-paragraph)] opacity-60">
+                            Page {currentAppPage} of {totalAppPages}
+                          </span>
+                          <button
+                            disabled={currentAppPage === totalAppPages}
+                            onClick={() => setAppPage(p => Math.min(totalAppPages, p + 1))}
+                            className="px-3 py-1.5 border border-[var(--color-border)] hover:bg-[var(--color-sub-bg)] text-[var(--color-paragraph)] text-xs rounded-[var(--radius-sm)] transition-all cursor-pointer font-semibold bg-transparent"
+                          >
+                            &gt;
+                          </button>
                         </div>
-                      );
-                    })}
-                  </div>
-
-                  {totalAppPages > 1 && (
-                    <div className="flex items-center justify-center gap-4 mt-6 pt-4 border-t border-[var(--color-border)]">
-                      <button
-                        disabled={currentAppPage === 1}
-                        onClick={() => setAppPage(p => Math.max(1, p - 1))}
-                        className="px-3 py-1.5 border border-[var(--color-border)] hover:bg-[var(--color-sub-bg)] text-[var(--color-paragraph)] text-xs rounded-[var(--radius-sm)] transition-all cursor-pointer font-semibold bg-transparent"
-                      >
-                        &lt;
-                      </button>
-                      <span className="text-xs text-[var(--color-paragraph)] opacity-60">
-                        Page {currentAppPage} of {totalAppPages}
-                      </span>
-                      <button
-                        disabled={currentAppPage === totalAppPages}
-                        onClick={() => setAppPage(p => Math.min(totalAppPages, p + 1))}
-                        className="px-3 py-1.5 border border-[var(--color-border)] hover:bg-[var(--color-sub-bg)] text-[var(--color-paragraph)] text-xs rounded-[var(--radius-sm)] transition-all cursor-pointer font-semibold bg-transparent"
-                      >
-                        &gt;
-                      </button>
+                      )}
                     </div>
                   )}
                 </div>
               )}
-            </div>
-          )}
 
-          {/* Tab 2: Talent Network */}
-          {activeSubTab === 'talent' && (
-            <div className="card bg-white p-5 shadow-card relative overflow-hidden border border-[var(--color-border)] rounded-[var(--radius-sm)]">
-              <div className="flex flex-wrap justify-between items-center mb-5 gap-4">
-                <h2 className="text-primary" style={{ fontSize: 'var(--text-paragraph)', fontWeight: 'var(--font-bold)', margin: 0 }}>
-                  Talent Network Submissions
-                </h2>
-                <div className="flex flex-wrap items-center gap-2.5 w-full sm:w-auto">
-                  {/* Search Input */}
-                  <div className="flex items-center gap-2 bg-[var(--color-sub-bg)] border border-[var(--color-border)] rounded-[var(--radius-sm)] px-3 py-1.5 w-full sm:w-60">
-                    <FiSearch className="text-[var(--color-paragraph)] opacity-60" size={14} />
-                    <input
-                      type="text"
-                      value={talentSearch}
-                      onChange={(e) => { setTalentSearch(e.target.value); setTalentPage(1); }}
-                      placeholder="Search candidate or category..."
-                      className="bg-transparent border-none outline-none text-xs text-[var(--color-black)] w-full placeholder-[var(--color-paragraph)]/60"
-                      style={{ padding: 0, margin: 0, height: 'auto', lineHeight: 'normal' }}
-                    />
-                    {talentSearch && (
+              {/* Tab 2: Talent Network */}
+              {activeSubTab === 'talent' && (
+                <div className="card bg-white p-5 shadow-card relative overflow-hidden border border-[var(--color-border)] rounded-[var(--radius-sm)]">
+                  <div className="flex flex-wrap justify-between items-center mb-5 gap-4">
+                    <h2 className="text-primary" style={{ fontSize: 'var(--text-paragraph)', fontWeight: 'var(--font-bold)', margin: 0 }}>
+                      Talent Network Submissions
+                    </h2>
+                    <div className="flex flex-wrap items-center gap-2.5 w-full sm:w-auto">
+                      {/* Search Input */}
+                      <div className="flex items-center gap-2 bg-[var(--color-sub-bg)] border border-[var(--color-border)] rounded-[var(--radius-sm)] px-3 py-1.5 w-full sm:w-60">
+                        <FiSearch className="text-[var(--color-paragraph)] opacity-60" size={14} />
+                        <input
+                          type="text"
+                          value={talentSearch}
+                          onChange={(e) => { setTalentSearch(e.target.value); setTalentPage(1); }}
+                          placeholder="Search candidate or category..."
+                          className="bg-transparent border-none outline-none text-xs text-[var(--color-black)] w-full placeholder-[var(--color-paragraph)]/60"
+                          style={{ padding: 0, margin: 0, height: 'auto', lineHeight: 'normal' }}
+                        />
+                        {talentSearch && (
+                          <button
+                            type="button"
+                            onClick={() => setTalentSearch('')}
+                            className="bg-transparent border-none cursor-pointer p-0 text-[var(--color-paragraph)] hover:text-red-500 flex items-center justify-center shrink-0"
+                          >
+                            <CloseIcon style={{ fontSize: 14 }} />
+                          </button>
+                        )}
+                      </div>
+
                       <button
-                        type="button"
-                        onClick={() => setTalentSearch('')}
-                        className="bg-transparent border-none cursor-pointer p-0 text-[var(--color-paragraph)] hover:text-red-500 flex items-center justify-center shrink-0"
+                        onClick={async () => {
+                          setLoadingTalent(true);
+                          try {
+                            const res = await getTalentSubmissionsAPI();
+                            if (res.status === 200 && res.data?.success) {
+                              setTalentSubmissions(res.data.data);
+                              toast.success("Talent Network list reloaded");
+                            }
+                          } catch (e) {
+                            toast.error("Failed to refresh talent network.");
+                          } finally {
+                            setLoadingTalent(false);
+                          }
+                        }}
+                        className="w-8 h-8 rounded-full flex items-center justify-center border border-transparent bg-[var(--color-primary)] text-white hover:bg-[var(--color-primary-hover)] transition-all cursor-pointer shrink-0"
+                        title="Refresh List"
                       >
-                        <CloseIcon style={{ fontSize: 14 }} />
+                        <FiRefreshCw size={13} />
                       </button>
-                    )}
+
+                      <button
+                        onClick={handleDeleteAllTalent}
+                        className="w-8 h-8 rounded-full flex items-center justify-center border border-transparent bg-[var(--color-primary)] text-white hover:bg-[var(--color-primary-hover)] transition-all cursor-pointer shrink-0"
+                        title="Delete All Submissions"
+                      >
+                        <DeleteIcon fontSize="small" style={{ fontSize: 16 }} />
+                      </button>
+                    </div>
                   </div>
-                  
-                  <button
-                    onClick={async () => {
-                      setLoadingTalent(true);
-                      try {
-                        const res = await getTalentSubmissionsAPI();
-                        if (res.status === 200 && res.data?.success) {
-                          setTalentSubmissions(res.data.data);
-                          toast.success("Talent Network list reloaded");
-                        }
-                      } catch (e) {
-                        toast.error("Failed to refresh talent network.");
-                      } finally {
-                        setLoadingTalent(false);
-                      }
-                    }}
-                    className="w-8 h-8 rounded-full flex items-center justify-center border border-[var(--color-border)] bg-white text-[var(--color-paragraph)] hover:bg-[var(--color-sub-bg)] transition-all cursor-pointer shrink-0"
-                    title="Refresh List"
-                  >
-                    <FiRefreshCw size={13} />
-                  </button>
 
-                  <button
-                    onClick={handleDeleteAllTalent}
-                    className="w-8 h-8 rounded-full flex items-center justify-center border border-[var(--color-border)] bg-white text-[var(--color-paragraph)] hover:bg-[var(--color-sub-bg)] transition-all cursor-pointer shrink-0"
-                    title="Delete All Submissions"
-                  >
-                    <DeleteIcon fontSize="small" style={{ fontSize: 16 }} />
-                  </button>
-                </div>
-              </div>
+                  {loadingTalent ? (
+                    <div className="py-12 flex justify-center"><div className="w-8 h-8 border-4 border-emerald-500 border-t-transparent rounded-full animate-spin"></div></div>
+                  ) : talentSubmissions.length === 0 ? (
+                    <div className="py-12 text-center text-[var(--color-paragraph)] opacity-50 border border-[var(--color-border)] bg-[var(--color-sub-bg)] rounded-[var(--radius-sm)]">
+                      No resumes submitted to the Talent Network yet.
+                    </div>
+                  ) : (
+                    <>
+                      {/* Desktop View Table */}
+                      <div className="hidden md:block overflow-x-auto">
+                        <table className="w-full text-left border-collapse min-w-[750px]">
+                          <thead>
+                            <tr className="border-b border-[var(--color-border)] text-primary text-xs font-normal uppercase tracking-wider">
+                              <th className="pb-3 px-6 font-normal" style={{ fontWeight: 'normal' }}>Candidate</th>
+                              <th className="pb-3 px-6 font-normal" style={{ fontWeight: 'normal' }}>Mobile</th>
+                              <th className="pb-3 px-6 font-normal" style={{ fontWeight: 'normal' }}>Category</th>
+                              <th className="pb-3 px-6 font-normal" style={{ fontWeight: 'normal' }}>Submitted On</th>
+                              <th className="pb-3 px-6 font-normal text-center" style={{ fontWeight: 'normal' }}>Resume</th>
+                            </tr>
+                          </thead>
+                          <tbody className="divide-y divide-[var(--color-border)] text-sm">
+                            {paginatedTalent.map((sub) => {
+                              const initials = sub.fullName.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2);
+                              const submittedDate = new Date(sub.createdAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
 
-              {loadingTalent ? (
-                <div className="py-12 flex justify-center"><div className="w-8 h-8 border-4 border-emerald-500 border-t-transparent rounded-full animate-spin"></div></div>
-              ) : talentSubmissions.length === 0 ? (
-                <div className="py-12 text-center text-[var(--color-paragraph)] opacity-50 border border-[var(--color-border)] bg-[var(--color-sub-bg)] rounded-[var(--radius-sm)]">
-                  No resumes submitted to the Talent Network yet.
-                </div>
-              ) : (
-                <>
-                  {/* Desktop View Table */}
-                  <div className="hidden md:block overflow-x-auto">
-                    <table className="w-full text-left border-collapse min-w-[750px]">
-                      <thead>
-                        <tr className="border-b border-[var(--color-border)] text-primary text-xs font-normal uppercase tracking-wider">
-                          <th className="pb-3 px-6 font-normal" style={{ fontWeight: 'normal' }}>Candidate</th>
-                          <th className="pb-3 px-6 font-normal" style={{ fontWeight: 'normal' }}>Mobile</th>
-                          <th className="pb-3 px-6 font-normal" style={{ fontWeight: 'normal' }}>Category</th>
-                          <th className="pb-3 px-6 font-normal" style={{ fontWeight: 'normal' }}>Submitted On</th>
-                          <th className="pb-3 px-6 font-normal text-center" style={{ fontWeight: 'normal' }}>Resume</th>
-                        </tr>
-                      </thead>
-                      <tbody className="divide-y divide-[var(--color-border)] text-sm">
+                              return (
+                                <tr key={sub._id} className="hover:bg-[var(--color-sub-bg)]/40 transition-colors">
+                                  <td className="py-4 px-6">
+                                    <div className="flex items-center gap-3 text-left">
+                                      <div className="w-10 h-10 rounded-full bg-[var(--color-primary)]/10 border border-[var(--color-primary)]/20 text-[var(--color-primary)] flex items-center justify-center font-bold text-sm shrink-0">
+                                        {initials}
+                                      </div>
+                                      <div className="min-w-0">
+                                        <p className="font-bold text-[var(--color-black)] truncate" style={{ margin: 0 }}>{sub.fullName}</p>
+                                        <p className="text-xs text-[var(--color-black)] opacity-60 truncate mt-0.5" style={{ margin: 0 }}>{sub.email}</p>
+                                      </div>
+                                    </div>
+                                  </td>
+                                  <td className="py-4 px-6 text-[var(--color-black)]">{sub.mobile}</td>
+                                  <td className="py-4 px-6 text-[var(--color-black)] font-medium">{sub.category}</td>
+                                  <td className="py-4 px-6 text-[var(--color-black)] opacity-85">{submittedDate}</td>
+                                  <td className="py-4 px-6 text-center">
+                                    <div className="flex items-center justify-center gap-2">
+                                      <a
+                                        href={sub.resumeUrl}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        className="px-3 py-1.5 bg-[var(--color-primary)]/10 hover:bg-[var(--color-primary)]/20 border border-[var(--color-primary)]/20 text-[var(--color-primary)] rounded-[var(--radius-sm)] transition-all font-semibold text-xs inline-flex items-center gap-1 cursor-pointer no-underline"
+                                      >
+                                        <PictureAsPdfIcon style={{ fontSize: 13 }} /> View Resume
+                                      </a>
+                                      <button
+                                        onClick={() => handleDeleteTalent(sub._id)}
+                                        className="w-8 h-8 flex items-center justify-center transition-colors cursor-pointer border border-[var(--color-primary)] bg-[var(--color-primary)] hover:bg-[var(--color-primary-hover)] text-white rounded-[var(--radius-sm)]"
+                                        title="Delete Talent Submission"
+                                      >
+                                        <DeleteIcon fontSize="small" />
+                                      </button>
+                                    </div>
+                                  </td>
+                                </tr>
+                              );
+                            })}
+                          </tbody>
+                        </table>
+                      </div>
+
+                      {/* Mobile Card View */}
+                      <div className="block md:hidden space-y-4">
                         {paginatedTalent.map((sub) => {
                           const initials = sub.fullName.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2);
                           const submittedDate = new Date(sub.createdAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
 
                           return (
-                            <tr key={sub._id} className="hover:bg-[var(--color-sub-bg)]/40 transition-colors">
-                              <td className="py-4 px-6">
-                                <div className="flex items-center gap-3 text-left">
-                                  <div className="w-10 h-10 rounded-full bg-[var(--color-primary)]/10 border border-[var(--color-primary)]/20 text-[var(--color-primary)] flex items-center justify-center font-bold text-sm shrink-0">
-                                    {initials}
-                                  </div>
-                                  <div className="min-w-0">
-                                    <p className="font-bold text-[var(--color-black)] truncate" style={{ margin: 0 }}>{sub.fullName}</p>
-                                    <p className="text-xs text-[var(--color-black)] opacity-60 truncate mt-0.5" style={{ margin: 0 }}>{sub.email}</p>
-                                  </div>
+                            <div key={sub._id} className="border border-[var(--color-border)] rounded-[var(--radius-sm)] p-5 bg-white shadow-sm flex flex-col gap-3.5">
+                              <div className="flex items-center gap-3 text-left">
+                                <div className="w-10 h-10 rounded-full bg-[var(--color-primary)]/10 border border-[var(--color-primary)]/20 text-[var(--color-primary)] flex items-center justify-center font-bold text-sm shrink-0">
+                                  {initials}
                                 </div>
-                              </td>
-                              <td className="py-4 px-6 text-[var(--color-black)]">{sub.mobile}</td>
-                              <td className="py-4 px-6 text-[var(--color-black)] font-medium">{sub.category}</td>
-                              <td className="py-4 px-6 text-[var(--color-black)] opacity-85">{submittedDate}</td>
-                              <td className="py-4 px-6 text-center">
-                                <div className="flex items-center justify-center gap-2">
+                                <div className="min-w-0">
+                                  <h3 className="font-bold text-[var(--color-black)] text-sm leading-snug break-words" style={{ margin: 0 }}>
+                                    {sub.fullName}
+                                  </h3>
+                                  <p className="text-xs text-[var(--color-black)] opacity-85 mt-0.5 truncate" style={{ margin: 0 }}>
+                                    {sub.email}
+                                  </p>
+                                </div>
+                              </div>
+
+                              <div className="flex flex-col gap-1.5 text-xs text-left pt-2.5 border-t border-[var(--color-border)]/50">
+                                <div className="flex justify-between items-center">
+                                  <span className="text-[var(--color-black)] opacity-80 font-medium">Mobile</span>
+                                  <span className="font-semibold text-[var(--color-black)]">{sub.mobile}</span>
+                                </div>
+                                <div className="flex justify-between items-center">
+                                  <span className="text-[var(--color-black)] opacity-80 font-medium">Category</span>
+                                  <span className="font-semibold text-[var(--color-primary)]">{sub.category}</span>
+                                </div>
+                              </div>
+
+                              <div className="flex justify-between items-center pt-2.5 border-t border-[var(--color-border)]/50 text-xs">
+                                <span className="text-[var(--color-black)] opacity-60">
+                                  Submitted: {submittedDate}
+                                </span>
+
+                                <div className="flex items-center gap-2">
                                   <a
                                     href={sub.resumeUrl}
                                     target="_blank"
                                     rel="noopener noreferrer"
-                                    className="px-3 py-1.5 bg-[var(--color-primary)]/10 hover:bg-[var(--color-primary)]/20 border border-[var(--color-primary)]/20 text-[var(--color-primary)] rounded-[var(--radius-sm)] transition-all font-semibold text-xs inline-flex items-center gap-1 cursor-pointer no-underline"
+                                    className="px-2.5 py-1.5 bg-[var(--color-primary)]/10 hover:bg-[var(--color-primary)]/20 border border-[var(--color-primary)]/20 text-[var(--color-primary)] rounded-[var(--radius-sm)] transition-all font-semibold text-xs inline-flex items-center gap-1 cursor-pointer no-underline"
                                   >
                                     <PictureAsPdfIcon style={{ fontSize: 13 }} /> View Resume
                                   </a>
                                   <button
                                     onClick={() => handleDeleteTalent(sub._id)}
-                                    className="w-8 h-8 flex items-center justify-center transition-colors cursor-pointer border border-[var(--color-primary)] bg-[var(--color-primary)] hover:bg-[var(--color-primary-hover)] text-white rounded-[var(--radius-sm)]"
-                                    title="Delete Talent Submission"
+                                    className="px-2.5 py-1.5 flex items-center justify-center gap-1 transition-colors cursor-pointer border border-[var(--color-primary)] bg-[var(--color-primary)] hover:bg-[var(--color-primary-hover)] text-white text-xs font-semibold rounded-[var(--radius-sm)]"
                                   >
-                                    <DeleteIcon fontSize="small" />
+                                    <DeleteIcon style={{ fontSize: 13 }} /> Delete
                                   </button>
                                 </div>
-                              </td>
-                            </tr>
+                              </div>
+                            </div>
                           );
                         })}
-                      </tbody>
-                    </table>
-                  </div>
+                      </div>
 
-                  {/* Mobile Card View */}
-                  <div className="block md:hidden space-y-4">
-                    {paginatedTalent.map((sub) => {
-                      const initials = sub.fullName.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2);
-                      const submittedDate = new Date(sub.createdAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
-
-                      return (
-                        <div key={sub._id} className="border border-[var(--color-border)] rounded-[var(--radius-sm)] p-5 bg-white shadow-sm flex flex-col gap-3.5">
-                          <div className="flex items-center gap-3 text-left">
-                            <div className="w-10 h-10 rounded-full bg-[var(--color-primary)]/10 border border-[var(--color-primary)]/20 text-[var(--color-primary)] flex items-center justify-center font-bold text-sm shrink-0">
-                              {initials}
-                            </div>
-                            <div className="min-w-0">
-                              <h3 className="font-bold text-[var(--color-black)] text-sm leading-snug break-words" style={{ margin: 0 }}>
-                                {sub.fullName}
-                              </h3>
-                              <p className="text-xs text-[var(--color-black)] opacity-85 mt-0.5 truncate" style={{ margin: 0 }}>
-                                {sub.email}
-                              </p>
-                            </div>
-                          </div>
-
-                          <div className="flex flex-col gap-1.5 text-xs text-left pt-2.5 border-t border-[var(--color-border)]/50">
-                            <div className="flex justify-between items-center">
-                              <span className="text-[var(--color-black)] opacity-80 font-medium">Mobile</span>
-                              <span className="font-semibold text-[var(--color-black)]">{sub.mobile}</span>
-                            </div>
-                            <div className="flex justify-between items-center">
-                              <span className="text-[var(--color-black)] opacity-80 font-medium">Category</span>
-                              <span className="font-semibold text-[var(--color-primary)]">{sub.category}</span>
-                            </div>
-                          </div>
-
-                          <div className="flex justify-between items-center pt-2.5 border-t border-[var(--color-border)]/50 text-xs">
-                            <span className="text-[var(--color-black)] opacity-60">
-                              Submitted: {submittedDate}
-                            </span>
-
-                            <div className="flex items-center gap-2">
-                              <a
-                                href={sub.resumeUrl}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="px-2.5 py-1.5 bg-[var(--color-primary)]/10 hover:bg-[var(--color-primary)]/20 border border-[var(--color-primary)]/20 text-[var(--color-primary)] rounded-[var(--radius-sm)] transition-all font-semibold text-xs inline-flex items-center gap-1 cursor-pointer no-underline"
-                              >
-                                <PictureAsPdfIcon style={{ fontSize: 13 }} /> View Resume
-                              </a>
-                              <button
-                                onClick={() => handleDeleteTalent(sub._id)}
-                                className="px-2.5 py-1.5 flex items-center justify-center gap-1 transition-colors cursor-pointer border border-[var(--color-primary)] bg-[var(--color-primary)] hover:bg-[var(--color-primary-hover)] text-white text-xs font-semibold rounded-[var(--radius-sm)]"
-                              >
-                                <DeleteIcon style={{ fontSize: 13 }} /> Delete
-                              </button>
-                            </div>
-                          </div>
+                      {totalTalentPages > 1 && (
+                        <div className="flex items-center justify-center gap-4 mt-6 pt-4 border-t border-[var(--color-border)]">
+                          <button
+                            disabled={currentTalentPage === 1}
+                            onClick={() => setTalentPage(p => Math.max(1, p - 1))}
+                            className="px-3 py-1.5 border border-[var(--color-border)] hover:bg-[var(--color-sub-bg)] text-[var(--color-paragraph)] text-xs rounded-[var(--radius-sm)] transition-all cursor-pointer font-semibold bg-transparent"
+                          >
+                            &lt;
+                          </button>
+                          <span className="text-xs text-[var(--color-paragraph)] opacity-60">
+                            Page {currentTalentPage} of {totalTalentPages}
+                          </span>
+                          <button
+                            disabled={currentTalentPage === totalTalentPages}
+                            onClick={() => setTalentPage(p => Math.min(totalTalentPages, p + 1))}
+                            className="px-3 py-1.5 border border-[var(--color-border)] hover:bg-[var(--color-sub-bg)] text-[var(--color-paragraph)] text-xs rounded-[var(--radius-sm)] transition-all cursor-pointer font-semibold bg-transparent"
+                          >
+                            &gt;
+                          </button>
                         </div>
-                      );
-                    })}
+                      )}
+                    </>
+                  )}
+                </div>
+              )}
+
+
+              {activeSubTab === 'jobs' && (
+                <div id="active-job-listings-section" className="card bg-white p-5 shadow-card relative overflow-hidden scroll-mt-24 border border-[var(--color-border)] rounded-[var(--radius-sm)]">
+                  <div className="flex justify-between items-center mb-5 gap-2">
+                    <h2 className="text-primary" style={{ fontSize: 'var(--text-paragraph)', fontWeight: 'var(--font-bold)', margin: 0 }}>Active Job Listings</h2>
+                    <button
+                      onClick={() => navigate('/admin/create-job')}
+                      className="btn px-2.5 py-1.5 flex items-center justify-center gap-1 cursor-pointer border-none h-8 text-xs font-normal"
+                    >
+                      <AddIcon style={{ fontSize: 13 }} /> Create New Job
+                    </button>
                   </div>
 
-                  {totalTalentPages > 1 && (
-                    <div className="flex items-center justify-center gap-4 mt-6 pt-4 border-t border-[var(--color-border)]">
-                      <button
-                        disabled={currentTalentPage === 1}
-                        onClick={() => setTalentPage(p => Math.max(1, p - 1))}
-                        className="px-3 py-1.5 border border-[var(--color-border)] hover:bg-[var(--color-sub-bg)] text-[var(--color-paragraph)] text-xs rounded-[var(--radius-sm)] transition-all cursor-pointer font-semibold bg-transparent"
-                      >
-                        &lt;
-                      </button>
-                      <span className="text-xs text-[var(--color-paragraph)] opacity-60">
-                        Page {currentTalentPage} of {totalTalentPages}
-                      </span>
-                      <button
-                        disabled={currentTalentPage === totalTalentPages}
-                        onClick={() => setTalentPage(p => Math.min(totalTalentPages, p + 1))}
-                        className="px-3 py-1.5 border border-[var(--color-border)] hover:bg-[var(--color-sub-bg)] text-[var(--color-paragraph)] text-xs rounded-[var(--radius-sm)] transition-all cursor-pointer font-semibold bg-transparent"
-                      >
-                        &gt;
-                      </button>
+                  {loading ? (
+                    <div className="py-12 flex justify-center"><div className="w-8 h-8 border-4 border-blue-500 border-t-transparent rounded-full animate-spin"></div></div>
+                  ) : jobs.length === 0 ? (
+                    <div className="py-12 text-center text-[var(--color-paragraph)] opacity-50 border border-[var(--color-border)] bg-[var(--color-sub-bg)] rounded-[var(--radius-sm)]">
+                      No active job listings found. Click "Create New Job" to list one.
                     </div>
-                  )}
-                </>
-              )}
-            </div>
-          )}
+                  ) : (
+                    <>
+                      {/* Desktop View Table */}
+                      <div className="hidden md:block overflow-x-auto">
+                        <table className="w-full text-left border-collapse min-w-[750px]">
+                          <thead>
+                            <tr className="border-b border-[var(--color-border)] text-primary text-xs font-normal uppercase tracking-wider">
+                              <th className="pb-4 px-6 font-normal" style={{ fontWeight: 'normal' }}>Job Title</th>
+                              <th className="pb-4 px-6 font-normal" style={{ fontWeight: 'normal' }}>Department</th>
+                              <th className="pb-4 px-6 font-normal" style={{ fontWeight: 'normal' }}>Location</th>
+                              <th className="pb-4 px-6 font-normal text-center" style={{ fontWeight: 'normal' }}>Apps</th>
+                              <th className="pb-4 px-6 font-normal text-center" style={{ fontWeight: 'normal' }}>Status</th>
+                              <th className="pb-4 px-6 font-normal text-center" style={{ fontWeight: 'normal' }}>Actions</th>
+                            </tr>
+                          </thead>
+                          <tbody className="divide-y divide-[var(--color-border)] text-sm">
+                            {jobs.map((job) => {
+                              const appCountForJob = applications.filter(app => app.appliedPosition.toLowerCase().trim() === job.title.toLowerCase().trim()).length;
+                              return (
+                                <tr key={job._id} className="hover:bg-[var(--color-sub-bg)]/40 transition-colors">
+                                  <td className="py-4 px-6 font-semibold text-[var(--color-black)] text-sm truncate">{job.title}</td>
+                                  <td className="py-4 px-6 text-[var(--color-black)] text-xs truncate">{job.department}</td>
+                                  <td className="py-4 px-6 text-[var(--color-black)] text-xs truncate">{job.location}</td>
+                                  <td className="py-4 px-6 font-semibold text-[var(--color-primary)] text-center text-xs">{appCountForJob}</td>
+                                  <td className="py-4 px-6 text-center">
+                                    <span className={`px-2 py-0.5 rounded-full text-[10px] font-semibold ${job.status === 'Closed' ? 'bg-gray-100 text-gray-500 border border-gray-200' : 'bg-[var(--color-primary)]/10 text-[var(--color-primary)] border border-[var(--color-primary)]/20'
+                                      }`}>
+                                      {job.status || 'Active'}
+                                    </span>
+                                  </td>
+                                  <td className="py-4 px-6 text-center">
+                                    <div className="flex items-center justify-center gap-1.5">
+                                      <button
+                                        onClick={() => navigate(`/admin/edit-job/${job._id}`)}
+                                        className="w-7 h-7 flex items-center justify-center transition-colors cursor-pointer border border-[var(--color-border)] bg-[var(--color-main-bg)] text-[var(--color-paragraph)] opacity-70 hover:opacity-100"
+                                        style={{ borderRadius: 'var(--radius-sm)' }}
+                                        title="Edit Job"
+                                      >
+                                        <EditIcon fontSize="small" style={{ fontSize: 16 }} />
+                                      </button>
+                                      <button
+                                        onClick={() => handleDeleteJob(job._id)}
+                                        className="w-7 h-7 flex items-center justify-center transition-colors cursor-pointer border border-[var(--color-primary)] bg-[var(--color-primary)] hover:bg-[var(--color-primary-hover)] text-white"
+                                        style={{ borderRadius: 'var(--radius-sm)' }}
+                                        title="Delete Job"
+                                      >
+                                        <DeleteIcon fontSize="small" style={{ fontSize: 16 }} />
+                                      </button>
+                                    </div>
+                                  </td>
+                                </tr>
+                              );
+                            })}
+                          </tbody>
+                        </table>
+                      </div>
 
-
-            {activeSubTab === 'jobs' && (
-              <div id="active-job-listings-section" className="card bg-white p-5 shadow-card relative overflow-hidden scroll-mt-24 border border-[var(--color-border)] rounded-[var(--radius-sm)]">
-              <div className="flex justify-between items-center mb-5 gap-2">
-                <h2 className="text-primary" style={{ fontSize: 'var(--text-paragraph)', fontWeight: 'var(--font-bold)', margin: 0 }}>Active Job Listings</h2>
-                <button
-                  onClick={() => navigate('/admin/create-job')}
-                  className="btn px-2.5 py-1.5 flex items-center justify-center gap-1 cursor-pointer border-none h-8 text-xs font-normal"
-                >
-                  <AddIcon style={{ fontSize: 13 }} /> Create New Job
-                </button>
-              </div>
-
-              {loading ? (
-                <div className="py-12 flex justify-center"><div className="w-8 h-8 border-4 border-blue-500 border-t-transparent rounded-full animate-spin"></div></div>
-              ) : jobs.length === 0 ? (
-                <div className="py-12 text-center text-[var(--color-paragraph)] opacity-50 border border-[var(--color-border)] bg-[var(--color-sub-bg)] rounded-[var(--radius-sm)]">
-                  No active job listings found. Click "Create New Job" to list one.
-                </div>
-              ) : (
-                <>
-                  {/* Desktop View Table */}
-                  <div className="hidden md:block overflow-x-auto">
-                    <table className="w-full text-left border-collapse min-w-[750px]">
-                      <thead>
-                        <tr className="border-b border-[var(--color-border)] text-primary text-xs font-normal uppercase tracking-wider">
-                          <th className="pb-4 px-6 font-normal" style={{ fontWeight: 'normal' }}>Job Title</th>
-                          <th className="pb-4 px-6 font-normal" style={{ fontWeight: 'normal' }}>Department</th>
-                          <th className="pb-4 px-6 font-normal" style={{ fontWeight: 'normal' }}>Location</th>
-                          <th className="pb-4 px-6 font-normal text-center" style={{ fontWeight: 'normal' }}>Apps</th>
-                          <th className="pb-4 px-6 font-normal text-center" style={{ fontWeight: 'normal' }}>Status</th>
-                          <th className="pb-4 px-6 font-normal text-center" style={{ fontWeight: 'normal' }}>Actions</th>
-                        </tr>
-                      </thead>
-                      <tbody className="divide-y divide-[var(--color-border)] text-sm">
+                      {/* Mobile View Cards */}
+                      <div className="block md:hidden space-y-4">
                         {jobs.map((job) => {
                           const appCountForJob = applications.filter(app => app.appliedPosition.toLowerCase().trim() === job.title.toLowerCase().trim()).length;
                           return (
-                            <tr key={job._id} className="hover:bg-[var(--color-sub-bg)]/40 transition-colors">
-                              <td className="py-4 px-6 font-semibold text-[var(--color-black)] text-sm truncate">{job.title}</td>
-                              <td className="py-4 px-6 text-[var(--color-black)] text-xs truncate">{job.department}</td>
-                              <td className="py-4 px-6 text-[var(--color-black)] text-xs truncate">{job.location}</td>
-                              <td className="py-4 px-6 font-semibold text-[var(--color-primary)] text-center text-xs">{appCountForJob}</td>
-                              <td className="py-4 px-6 text-center">
-                                <span className={`px-2 py-0.5 rounded-full text-[10px] font-semibold ${job.status === 'Closed' ? 'bg-gray-100 text-gray-500 border border-gray-200' : 'bg-[var(--color-primary)]/10 text-[var(--color-primary)] border border-[var(--color-primary)]/20'
+                            <div key={job._id} className="border border-[var(--color-border)] rounded-[var(--radius-sm)] p-5 bg-white shadow-sm flex flex-col gap-3.5">
+                              <div className="flex justify-between items-start gap-2 text-left">
+                                <div>
+                                  <h3 className="font-bold text-[var(--color-black)] text-sm leading-snug break-words" style={{ margin: 0 }}>
+                                    {job.title}
+                                  </h3>
+                                  <p className="text-xs text-[var(--color-black)] opacity-85 mt-1" style={{ margin: 0 }}>
+                                    {job.department} • {job.location}
+                                  </p>
+                                </div>
+                                <span className={`px-2 py-0.5 rounded-full text-[10px] font-semibold shrink-0 ${job.status === 'Closed' ? 'bg-gray-100 text-gray-500 border border-gray-200' : 'bg-[var(--color-primary)]/10 text-[var(--color-primary)] border border-[var(--color-primary)]/20'
                                   }`}>
                                   {job.status || 'Active'}
                                 </span>
-                              </td>
-                              <td className="py-4 px-6 text-center">
-                                <div className="flex items-center justify-center gap-1.5">
+                              </div>
+
+                              <div className="flex justify-between items-center pt-2.5 border-t border-[var(--color-border)]/50 text-xs">
+                                <span className="text-[var(--color-black)] opacity-85">
+                                  Applications: <span className="font-semibold text-[var(--color-primary)]">{appCountForJob}</span>
+                                </span>
+
+                                <div className="flex items-center gap-2">
                                   <button
                                     onClick={() => navigate(`/admin/edit-job/${job._id}`)}
-                                    className="w-7 h-7 flex items-center justify-center transition-colors cursor-pointer border border-[var(--color-border)] bg-[var(--color-main-bg)] text-[var(--color-paragraph)] opacity-70 hover:opacity-100"
+                                    className="px-2.5 py-1.5 flex items-center justify-center gap-1.5 transition-colors cursor-pointer border border-[var(--color-border)] bg-[var(--color-main-bg)] text-[var(--color-black)] text-xs font-semibold"
                                     style={{ borderRadius: 'var(--radius-sm)' }}
-                                    title="Edit Job"
                                   >
-                                    <EditIcon fontSize="small" style={{ fontSize: 16 }} />
+                                    <EditIcon style={{ fontSize: 13 }} /> Edit
                                   </button>
                                   <button
                                     onClick={() => handleDeleteJob(job._id)}
-                                    className="w-7 h-7 flex items-center justify-center transition-colors cursor-pointer border border-[var(--color-primary)] bg-[var(--color-primary)] hover:bg-[var(--color-primary-hover)] text-white"
-                                    style={{ borderRadius: 'var(--radius-sm)' }}
-                                    title="Delete Job"
+                                    className="px-2.5 py-1.5 flex items-center justify-center gap-1.5 transition-colors cursor-pointer border border-[var(--color-primary)] bg-[var(--color-primary)] hover:bg-[var(--color-primary-hover)] text-white text-xs font-semibold rounded-[var(--radius-sm)]"
                                   >
-                                    <DeleteIcon fontSize="small" style={{ fontSize: 16 }} />
+                                    <DeleteIcon style={{ fontSize: 13 }} /> Delete
                                   </button>
                                 </div>
-                              </td>
-                            </tr>
+                              </div>
+                            </div>
                           );
                         })}
-                      </tbody>
-                    </table>
-                  </div>
-
-                  {/* Mobile View Cards */}
-                  <div className="block md:hidden space-y-4">
-                    {jobs.map((job) => {
-                      const appCountForJob = applications.filter(app => app.appliedPosition.toLowerCase().trim() === job.title.toLowerCase().trim()).length;
-                      return (
-                        <div key={job._id} className="border border-[var(--color-border)] rounded-[var(--radius-sm)] p-5 bg-white shadow-sm flex flex-col gap-3.5">
-                          <div className="flex justify-between items-start gap-2 text-left">
-                            <div>
-                              <h3 className="font-bold text-[var(--color-black)] text-sm leading-snug break-words" style={{ margin: 0 }}>
-                                {job.title}
-                              </h3>
-                              <p className="text-xs text-[var(--color-black)] opacity-85 mt-1" style={{ margin: 0 }}>
-                                {job.department} • {job.location}
-                              </p>
-                            </div>
-                            <span className={`px-2 py-0.5 rounded-full text-[10px] font-semibold shrink-0 ${job.status === 'Closed' ? 'bg-gray-100 text-gray-500 border border-gray-200' : 'bg-[var(--color-primary)]/10 text-[var(--color-primary)] border border-[var(--color-primary)]/20'
-                              }`}>
-                              {job.status || 'Active'}
-                            </span>
-                          </div>
-                          
-                          <div className="flex justify-between items-center pt-2.5 border-t border-[var(--color-border)]/50 text-xs">
-                            <span className="text-[var(--color-black)] opacity-85">
-                              Applications: <span className="font-semibold text-[var(--color-primary)]">{appCountForJob}</span>
-                            </span>
-                            
-                            <div className="flex items-center gap-2">
-                              <button
-                                onClick={() => navigate(`/admin/edit-job/${job._id}`)}
-                                className="px-2.5 py-1.5 flex items-center justify-center gap-1.5 transition-colors cursor-pointer border border-[var(--color-border)] bg-[var(--color-main-bg)] text-[var(--color-black)] text-xs font-semibold"
-                                style={{ borderRadius: 'var(--radius-sm)' }}
-                              >
-                                <EditIcon style={{ fontSize: 13 }} /> Edit
-                              </button>
-                              <button
-                                onClick={() => handleDeleteJob(job._id)}
-                                className="px-2.5 py-1.5 flex items-center justify-center gap-1.5 transition-colors cursor-pointer border border-[var(--color-primary)] bg-[var(--color-primary)] hover:bg-[var(--color-primary-hover)] text-white text-xs font-semibold rounded-[var(--radius-sm)]"
-                              >
-                                <DeleteIcon style={{ fontSize: 13 }} /> Delete
-                              </button>
-                            </div>
-                          </div>
-                        </div>
-                      );
-                    })}
-                  </div>
-                </>
+                      </div>
+                    </>
+                  )}
+                </div>
               )}
             </div>
-          )}
           </div>
-        </div>
-      </motion.div>
+        </motion.div>
       </div>
 
       <Dialog
@@ -2139,7 +2106,7 @@ const CareerAdmin = () => {
           <button
             type="button"
             onClick={() => setOpenScheduleModal(false)}
-            className="bg-[var(--color-sub-bg)] border border-[var(--color-border)] hover:bg-gray-200/60 text-[var(--color-paragraph)] px-4 py-1.5 rounded-[var(--radius-sm)] cursor-pointer text-xs font-semibold transition-colors h-9"
+            className="bg-[var(--color-sub-bg)] border border-[var(--color-border)] hover:border-[var(--color-primary)] hover:bg-[var(--color-primary)] hover:text-white text-[var(--color-paragraph)] px-4 py-1.5 rounded-[var(--radius-sm)] cursor-pointer text-xs font-semibold transition-colors h-9"
           >
             Cancel
           </button>
@@ -2149,6 +2116,48 @@ const CareerAdmin = () => {
             className="btn px-4 py-1.5 cursor-pointer border-none rounded-[var(--radius-sm)] text-xs font-semibold h-9"
           >
             Submit Schedule
+          </button>
+        </DialogActions>
+      </Dialog>
+
+      {/* Custom Delete Confirmation Dialog */}
+      <Dialog
+        open={deleteConfirm.isOpen}
+        onClose={() => setDeleteConfirm(prev => ({ ...prev, isOpen: false }))}
+        maxWidth="xs"
+        fullWidth
+        sx={{
+          "& .MuiDialog-container": { backgroundColor: "rgba(10,15,30,0.7)", backdropFilter: "blur(8px)" },
+          "& .MuiDialog-paper": { borderRadius: "3px", background: "var(--color-main-bg)", border: "1px solid var(--color-border)", boxShadow: "0 25px 50px -12px rgba(0, 0, 0, 0.5)", maxWidth: "400px" },
+        }}
+      >
+        <DialogTitle component="div" sx={{ pt: 3.5, pb: 1, px: 3 }}>
+          <h3 className="text-lg font-bold text-[var(--color-black)] mb-1" style={{ margin: 0 }}>{deleteConfirm.title}</h3>
+        </DialogTitle>
+        <DialogContent sx={{ px: 3, pb: 2.5, pt: 0.5 }}>
+          <p className="text-xs text-[var(--color-paragraph)] opacity-85 leading-normal" style={{ margin: 0 }}>
+            {deleteConfirm.message}
+          </p>
+        </DialogContent>
+        <DialogActions sx={{ px: 3, pb: 3.5, pt: 1, justifyContent: "flex-end", gap: 1.5 }}>
+          <button
+            type="button"
+            onClick={() => setDeleteConfirm(prev => ({ ...prev, isOpen: false }))}
+            className="bg-[var(--color-sub-bg)] border border-[var(--color-border)] hover:border-[var(--color-primary)] hover:bg-[var(--color-primary)] hover:text-white text-[var(--color-paragraph)] px-4 py-1.5 rounded-[var(--radius-sm)] cursor-pointer text-xs font-semibold transition-colors h-9"
+          >
+            Cancel
+          </button>
+          <button
+            type="button"
+            onClick={() => {
+              if (deleteConfirm.onConfirm) {
+                deleteConfirm.onConfirm();
+              }
+              setDeleteConfirm(prev => ({ ...prev, isOpen: false }));
+            }}
+            className="btn bg-[var(--color-primary)] hover:bg-[var(--color-primary-hover)] transition-colors px-4 cursor-pointer border-none rounded-[var(--radius-sm)] text-xs font-semibold h-9 text-white"
+          >
+            Delete
           </button>
         </DialogActions>
       </Dialog>

@@ -215,8 +215,13 @@ function Career() {
 
   const validateApply = () => {
     const errs = {};
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!applyForm.fullName.trim()) errs.fullName = "Required";
-    if (!applyForm.email.trim()) errs.email = "Required";
+    if (!applyForm.email.trim()) {
+      errs.email = "Required";
+    } else if (!emailRegex.test(applyForm.email.trim())) {
+      errs.email = "Please enter a valid email address (e.g. name@example.com)";
+    }
     if (!applyForm.mobile.trim()) errs.mobile = "Required";
     if (!resumeFile) errs.resume = "Please upload resume";
     return errs;
@@ -224,8 +229,13 @@ function Career() {
 
   const validateTalent = () => {
     const errs = {};
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!talentForm.fullName.trim()) errs.fullName = "Required";
-    if (!talentForm.email.trim()) errs.email = "Required";
+    if (!talentForm.email.trim()) {
+      errs.email = "Required";
+    } else if (!emailRegex.test(talentForm.email.trim())) {
+      errs.email = "Please enter a valid email address (e.g. name@example.com)";
+    }
     if (!talentForm.mobile.trim()) errs.mobile = "Required";
     if (!talentForm.category) errs.category = "Required";
     if (!talentFile) errs.resume = "Please upload resume";
@@ -290,6 +300,7 @@ function Career() {
       borderRadius: "3px",
       background: "var(--color-main-bg)",
       transition: "all 0.3s ease",
+      overflow: "visible",
 
       "& fieldset": {
         borderColor: "var(--color-border)",
@@ -320,6 +331,8 @@ function Career() {
 
     "& .MuiInputLabel-root": {
       color: "var(--color-paragraph)",
+      lineHeight: "1.4em",
+      overflow: "visible",
     },
 
     "& .MuiInputLabel-root.Mui-focused": {
@@ -1834,8 +1847,8 @@ function Career() {
           </Typography>
         </DialogTitle>
 
-        <DialogContent sx={{ px: { xs: 2.5, sm: 4 }, pb: 1.5, pt: 0.5 }}>
-          <Stack spacing={2}>
+        <DialogContent sx={{ px: { xs: 2.5, sm: 4 }, pb: 1.5, pt: 2.5 }}>
+          <Stack spacing={2} sx={{ mt: 1.5 }}>
             <TextField
               fullWidth
               size="small"
@@ -2013,7 +2026,13 @@ function Career() {
             margin: "0 !important"
           }
         }}>
-          <Button onClick={() => setOpenApplyModal(false)} sx={{ color: "var(--color-paragraph)", textTransform: "none" }}>Cancel</Button>
+          <button
+            type="button"
+            onClick={() => setOpenApplyModal(false)}
+            className="bg-[var(--color-sub-bg)] border border-[var(--color-border)] hover:border-[var(--color-primary)] hover:bg-[var(--color-primary)] hover:text-white text-[var(--color-paragraph)] px-4 py-1.5 rounded-[var(--radius-sm)] cursor-pointer text-xs font-semibold transition-colors h-[42px] min-w-[130px] w-full sm:w-auto"
+          >
+            Cancel
+          </button>
           <Button
             variant="contained"
             onClick={handleApplySubmit}
@@ -2055,17 +2074,14 @@ function Career() {
         }}
       >
         <DialogTitle component="div" sx={{ textAlign: "center", pt: 3.5, pb: 1, px: { xs: 2.5, sm: 4 } }}>
-          <Box sx={{ width: 50, height: 50, mx: "auto", mb: 1.5, borderRadius: "3px", background: "rgba(71,100,255,.12)", display: "flex", alignItems: "center", justifyContext: "center" }}>
-            <CloudUploadOutlinedIcon sx={{ fontSize: 26, color: "var(--color-primary)" }} />
-          </Box>
           <Typography fontWeight={700} sx={{ mb: 0.5, fontSize: { xs: "1.25rem", sm: "1.5rem" } }}>Join Our Talent Network</Typography>
           <Typography sx={{ color: "var(--color-paragraph)", maxWidth: "440px", mx: "auto", fontSize: { xs: "0.75rem", sm: "0.85rem" }, lineHeight: 1.5 }}>
             Submit your profile and we'll reach out when a suitable opportunity becomes available.
           </Typography>
         </DialogTitle>
 
-        <DialogContent sx={{ px: { xs: 2.5, sm: 4 }, pb: 1.5, pt: 0.5 }}>
-          <Stack spacing={2}>
+        <DialogContent sx={{ px: { xs: 2.5, sm: 4 }, pb: 1.5, pt: 2.5 }}>
+          <Stack spacing={2} sx={{ mt: 1.5 }}>
             <TextField
               fullWidth size="small" label="Full Name" name="fullName"
               value={talentForm.fullName} onChange={handleTalentChange}
@@ -2244,7 +2260,13 @@ function Career() {
             margin: "0 !important"
           }
         }}>
-          <Button onClick={() => setOpenResumeModal(false)} sx={{ color: "var(--color-paragraph)", textTransform: "none" }}>Cancel</Button>
+          <button
+            type="button"
+            onClick={() => setOpenResumeModal(false)}
+            className="bg-[var(--color-sub-bg)] border border-[var(--color-border)] hover:border-[var(--color-primary)] hover:bg-[var(--color-primary)] hover:text-white text-[var(--color-paragraph)] px-4 py-1.5 rounded-[var(--radius-sm)] cursor-pointer text-xs font-semibold transition-colors h-[42px] min-w-[130px] w-full sm:w-auto"
+          >
+            Cancel
+          </button>
           <Button
             variant="contained"
             onClick={handleTalentSubmit}
