@@ -582,17 +582,17 @@ const Digital = () => {
                 <span className="group-hover:translate-x-1 transition-transform">→</span>
               </Link>
             </div>
-            <div className="bg-[#111111] border border-[#222222] rounded-[var(--radius-sm)] p-8 flex flex-col items-center justify-center min-h-[400px] relative overflow-hidden">
-              <div className="absolute inset-0 bg-gradient-to-t from-[#111111] to-transparent z-10 pointer-events-none"></div>
+            <div className="bg-main  rounded-[var(--radius-sm)] p-8 flex flex-col items-center justify-center min-h-[400px] relative overflow-hidden">
+              <div className="absolute inset-0  z-10 pointer-events-none"></div>
               <div className="w-full h-full flex items-end justify-between gap-2 px-4 relative z-0 opacity-50">
-                <div className="w-1/6 bg-gradient-to-t from-blue-600/20 to-blue-600/5 h-[30%] rounded-t-sm"></div>
-                <div className="w-1/6 bg-gradient-to-t from-blue-600/30 to-blue-600/10 h-[45%] rounded-t-sm"></div>
-                <div className="w-1/6 bg-gradient-to-t from-blue-600/40 to-blue-600/15 h-[40%] rounded-t-sm"></div>
-                <div className="w-1/6 bg-[var(--color-primary)]/40 border border-blue-600 h-[65%] rounded-t-sm relative"></div>
-                <div className="w-1/6 bg-[var(--color-primary)] h-[85%] rounded-t-sm relative shadow-[0_0_20px_rgba(37,99,235,0.4)]"></div>
+                <div className="w-1/6 bg-gradient-to-t from-[var(--color-primary)] to-[var(--color-primary-hover)] h-[30%] rounded-t-sm"></div>
+                <div className="w-1/6 bg-gradient-to-t from-[var(--color-primary)] to-[var(--color-primary-hover)] h-[45%] rounded-t-sm"></div>
+                <div className="w-1/6 bg-gradient-to-t from-[var(--color-primary)] to-[var(--color-primary-hover)] h-[40%] rounded-t-sm"></div>
+                <div className="w-1/6 bg-gradient-to-t from-[var(--color-primary)] to-[var(--color-primary-hover)] h-[65%] rounded-t-sm "></div>
+                <div className="w-1/6 bg-gradient-to-t from-[var(--color-primary)] to-[var(--color-primary-hover)] h-[85%] rounded-t-sm  "></div>
               </div>
               <div className="absolute top-8 left-8 right-8 z-20">
-                <h4 className="text-sm font-medium text-white mb-1">+42% Efficiency Gain</h4>
+                <h4 className="text-sm font-medium paragraph mb-1">+42% Efficiency Gain</h4>
                 <p className="text-xs font-semibold text-gray-400">Over 36 Months</p>
               </div>
             </div>
