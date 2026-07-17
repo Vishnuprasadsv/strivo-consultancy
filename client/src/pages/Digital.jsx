@@ -161,6 +161,19 @@ const Digital = () => {
           initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.2 }} variants={fadeUpVariants}
           className="w-full bg-sub py-6 md:py-12"
         >
+          {/* Centered Section Header */}
+          <div className="flex flex-col items-center text-center mb-12 w-full">
+            <div className="flex items-center gap-3 mb-4">
+              <div className="w-10 h-10 rounded-full bg-[#111827] flex items-center justify-center border border-[#374151]">
+                <svg className="text-[var(--color-white)] w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+                </svg>
+              </div>
+              <span className="pre-heading uppercase tracking-widest text-sm font-medium">Service Overview</span>
+            </div>
+            <h2 className="sub-heading text-center">Digital Transformation Services</h2>
+          </div>
+
           <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
             <motion.div
               initial={{ opacity: 0, x: -50 }}
@@ -178,15 +191,6 @@ const Digital = () => {
             
             {/* Added flex layout centering for headers and text elements on mobile */}
             <div className="order-1 md:order-2 flex flex-col items-center text-center md:items-start md:text-left space-y-8">
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-full bg-[#111827] flex items-center justify-center border border-[#374151]">
-                  <svg className="text-[var(--color-white)] w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
-                  </svg>
-                </div>
-                <span className="pre-heading uppercase tracking-widest text-sm font-medium">Service Overview</span>
-              </div>
-              <h2 className="sub-heading">Digital Transformation Services</h2>
               <ul className="space-y-4 text-left w-full">
                 {[
                   { title: 'Enterprise Modernization', desc: 'Modernize legacy systems and processes with scalable digital foundations.' },

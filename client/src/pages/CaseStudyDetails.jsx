@@ -133,7 +133,7 @@ const CaseStudyDetails = () => {
                 >
                     <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
                         <div>
-                            <h1 className="main-heading leading-tight">
+                            <h1 className="main-heading ">
                                 {study.title}
                             </h1>
                             <div className="mt-5">
@@ -152,10 +152,6 @@ const CaseStudyDetails = () => {
                                     </span>
                                 </div>
                             </div>
-                            <p className="paragraph mt-6">
-                                {study.summary}
-                            </p>
-
                             <div className="mt-6 flex flex-wrap items-center gap-6 text-[15px] text-gray-600">
                                 {/* Date */}
                                 <div className="flex items-center gap-2">
@@ -197,6 +193,21 @@ const CaseStudyDetails = () => {
             {/* OTHER SECTIONS */}
             <div className="bg-sub w-full py-10 md:py-12">
                 <div className="max-w-[1440px] mx-auto px-4 md:px-12 lg:px-[180px] space-y-12 md:space-y-16">
+
+                    {/* EXECUTIVE SUMMARY */}
+                    <motion.section
+                        initial="hidden"
+                        whileInView="visible"
+                        viewport={{ once: true }}
+                        variants={fadeUp}
+                    >
+                        <h2 className="sub-heading mb-6 md:mb-8">
+                            Executive Summary
+                        </h2>
+                        <p className="paragraph mb-6">
+                            {study.summary}
+                        </p>
+                    </motion.section>
 
                     {/* BUSINESS CHALLENGE */}
                     <motion.section

@@ -124,7 +124,7 @@ const Vision = () => {
               className="grid grid-cols-1 lg:grid-cols-2 gap-0 lg:gap-8 items-stretch bg-white card overflow-hidden border border-black/5 shadow-[0_15px_35px_rgba(0,0,0,0.03)]"
             >
               <div className="p-6 sm:p-10 md:p-12 flex flex-col justify-center order-2 lg:order-1">
-                <span className="inline-block px-3 py-1 bg-blue-500/10 pre-heading uppercase tracking-wider rounded-md mb-6 w-max text-xs font-semibold">
+                <span className="inline-block px-3 py-1 bg-sub pre-heading uppercase tracking-wider rounded-md mb-6 w-max text-xs font-semibold">
                   Horizon Plan
                 </span>
                 <h2 className="sub-heading text-2xl md:text-3xl mb-4 font-bold">

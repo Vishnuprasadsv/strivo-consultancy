@@ -208,6 +208,17 @@ const Strategic = () => {
           initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.2 }} variants={fadeUpVariants}
           className="w-full bg-sub py-4 md:py-8"
         >
+          {/* Centered Section Header */}
+          <div className="flex flex-col items-center text-center mb-12 w-full">
+            <div className="flex items-center gap-3 mb-4">
+              <div className="w-10 h-10 rounded-full bg-[#111827] flex items-center justify-center border border-[#374151]">
+                <svg className="text-[var(--color-white)] w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path></svg>
+              </div>
+              <span className="pre-heading uppercase tracking-widest">Service Overview</span>
+            </div>
+            <h2 className="sub-heading text-center">The Foundation of Sustainable Growth</h2>
+          </div>
+
           <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
             {/* LEFT IMAGE CONTAINER */}
             <motion.div
@@ -280,13 +291,6 @@ const Strategic = () => {
             
             {/* Text Alignment Fixes for Mobile Viewports */}
             <div className="order-1 md:order-2 flex flex-col items-center md:items-start text-center md:text-left space-y-8 w-full">
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-full bg-[#111827] flex items-center justify-center border border-[#374151]">
-                  <svg className="text-[var(--color-white)] w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path></svg>
-                </div>
-                <span className="pre-heading uppercase tracking-widest">Service Overview</span>
-              </div>
-              <h2 className="sub-heading w-full text-center md:text-left">The Foundation of Sustainable Growth</h2>
               <ul className="space-y-4 text-left w-full">
                 {[
                   { title: "Vision alignment", desc: "Synchronize leadership intent with operational reality." },
