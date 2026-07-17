@@ -7,6 +7,7 @@ import CalendarTodayOutlinedIcon from "@mui/icons-material/CalendarTodayOutlined
 import PersonOutlineOutlinedIcon from "@mui/icons-material/PersonOutlineOutlined";
 import ScheduleOutlinedIcon from "@mui/icons-material/ScheduleOutlined";
 import StrategynSolution from "../assets/Strategy&Solution.jpg";
+import { FiArrowLeft } from 'react-icons/fi';
 
 const fadeUp = {
     hidden: { opacity: 0, y: 40 },
@@ -116,11 +117,11 @@ const CaseStudyDetails = () => {
                     <Link
                         to="/casestudies"
                         className="text-[var(--color-primary)] hover:text-[var(--color-primary-hover)]
-                        transition-colors flex items-center border border-[var(--color-primary)]
+                        transition-colors flex items-center gap-2 border border-[var(--color-primary)]
                         rounded-md px-4 py-1.5 text-sm font-medium
                         hover:border-[var(--color-primary-hover)] cursor-pointer"
                     >
-                        ← Back to Case Studies
+                        <FiArrowLeft size={16} /> Back to Case Studies
                     </Link>
                 </motion.div>
 

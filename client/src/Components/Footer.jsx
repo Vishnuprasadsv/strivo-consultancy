@@ -58,9 +58,9 @@ const Footer = () => {
     >
       <div className="max-w-[110rem] mx-auto w-full px-4 md:px-12 lg:px-[180px] grid grid-cols-2 md:grid-cols-3 gap-12 md:gap-8 lg:gap-12">
         {/* Column 1: Headquarters & Social Media */}
-        <div className="col-span-2 md:col-span-1 flex flex-col gap-4 text-[var(--color-main-paragraph)]">
+        <div className="col-span-2 md:col-span-1 flex flex-col gap-3 text-[var(--color-main-paragraph)]">
           <h3 className="text-white font-[var(--font-bold)] text-base mb-1">Headquarters</h3>
-          <div className="flex flex-col gap-3 text-sm text-[var(--color-main-paragraph)]">
+          <div className="flex flex-col gap-2 text-sm text-[var(--color-main-paragraph)]">
             <div className="flex items-start gap-2">
               <LocationOnIcon fontSize="small" className="text-gray-300 mt-0.5 shrink-0" />
               <span className="text-gray-300 leading-relaxed">
@@ -82,7 +82,7 @@ const Footer = () => {
             </div>
           </div>
           
-          <div className="flex gap-3 mt-2 flex-wrap">
+          <div className="flex gap-3 flex-wrap">
             <a
               href="https://linkedin.com/company/strivo-consultancy"
               target="_blank"

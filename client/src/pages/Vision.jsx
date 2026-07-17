@@ -8,6 +8,7 @@ import strategyHero from "../assets/strategy-hero.jpg";
 import aboutUsImg from "../assets/aboutus.jpg";
 import servicesHero from "../assets/services-hero.jpg";
 import leaderImg from "../assets/leader1.jpg";
+import { FiArrowLeft } from 'react-icons/fi';
 
 // MATCHED EXACTLY WITH VALUES & MISSION PAGES
 const fadeUpVariants = {
@@ -97,7 +98,7 @@ const Vision = () => {
               onClick={() => navigate("/about")} 
               className="text-white/80 hover:text-white transition-colors flex items-center gap-2 mb-6 text-sm font-medium cursor-pointer bg-white/10 hover:bg-white/20 rounded-md px-4 py-1.5 border border-white/20"
             >
-              ← Back to About Us
+              <FiArrowLeft size={16} /> Back to About Us
             </button>
 
             <h1 className="main-heading text-white leading-tight mb-4 text-3xl md:text-4xl lg:text-5xl">

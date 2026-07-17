@@ -14,6 +14,7 @@ import {
 } from "@mui/icons-material";
 import precisionProcess from '../assets/precisionProcess.jpg'
 import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
+import { FiArrowLeft } from 'react-icons/fi';
 
 const fadeUpVariants = {
   hidden: { opacity: 0, y: 30 },
@@ -130,7 +131,7 @@ const Operations = () => {
               onClick={() => navigate("/services")} 
               className="text-white/80 hover:text-white transition-colors flex items-center gap-2 mb-6 text-sm font-medium cursor-pointer bg-white/10 hover:bg-white/20 rounded-md px-4 py-1.5 border border-white/20"
             >
-              ← Back to Services
+              <FiArrowLeft size={16} /> Back to Services
             </button>
             <h1 className="main-heading text-white leading-tight mb-4 text-3xl md:text-4xl lg:text-5xl w-full text-center md:text-left">
               Operations Optimization
