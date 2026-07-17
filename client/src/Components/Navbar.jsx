@@ -65,7 +65,9 @@ const Navbar = () => {
       variants={itemVariants}
       className="flex-shrink-0"
     >
-      <Logo className="h-10 xl:h-12 text-[var(--color-primary)]" />
+      <Link to="/" className="flex items-center">
+        <Logo className="h-10 xl:h-12 text-[var(--color-primary)]" />
+      </Link>
     </motion.div>
 
     {/* Navigation */}
@@ -131,7 +133,9 @@ const Navbar = () => {
       >
         <motion.div variants={itemVariants} className="flex items-center gap-2">
           {/* <img src={logo} alt="Strivo Logo" className="h-8 w-auto" /> */}
-          <Logo className="h-8 sm:h-10 md:h-10 lg:h-12 w-auto text-[var(--color-primary)]" />
+          <Link to="/" className="flex items-center">
+            <Logo className="h-8 sm:h-10 md:h-10 lg:h-12 w-auto text-[var(--color-primary)]" />
+          </Link>
         </motion.div>
         <motion.button
           variants={itemVariants}

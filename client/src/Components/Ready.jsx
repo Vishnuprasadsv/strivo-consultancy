@@ -14,6 +14,14 @@ function Ready() {
 
   if (pathname === '/careerstrivo') return null;
 
+  const handleContactClick = () => {
+    if (pathname === '/contact') {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    } else {
+      navigate('/contact');
+    }
+  };
+
   return (
     <div className="w-full bg-[var(--color-main-bg)]">
       <div className="max-w-[960px] md:max-w-full mx-auto py-6 md:py-8 px-4 sm:px-6 md:px-12 lg:px-20">
@@ -128,7 +136,7 @@ function Ready() {
             {/* CTA */}
             <div className="flex flex-col items-center mt-2 md:mt-4">
               <button
-                onClick={() => navigate("/contact")}
+                onClick={handleContactClick}
                 className="btn gap-3 px-8"
               >
                 Contact Us

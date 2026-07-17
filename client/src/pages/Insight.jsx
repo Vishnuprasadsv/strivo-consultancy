@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Link, useNavigate } from 'react-router-dom';
 import { Dialog, DialogContent, Typography, Button, Box } from '@mui/material';
-
+import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
 // Import API services
 import { getArticlesAPI, subscribeEmailAPI } from '../services/allApi';
 import { toast } from 'sonner';
@@ -211,11 +211,17 @@ const Insight = () => {
                 </span>
                 <Link
                   to={`/article/${featuredArticle._id || featuredArticle.id}`}
-                  className="text-blue-500 font-medium flex items-center hover:text-black transition-colors group cursor-pointer"
-                >
-                  Read Article
-                  <span className="ml-1 group-hover:translate-x-1 transition-transform">→</span>
-                </Link>
+                  className="inline-flex items-center gap-2 text-[var(--color-primary)] text-sm font-medium hover:text-[var(--color-primary-hover)] transition-colors group"
+              >
+                Read Article
+                <ArrowForwardIcon
+                  sx={{
+                    fontSize: 18,
+                    transition: "transform 0.3s ease",
+                  }}
+                  className="group-hover:translate-x-1"
+                />
+              </Link>
 
               </div>
             </div>
@@ -226,7 +232,7 @@ const Insight = () => {
     h-72 md:h-96 lg:h-full
     min-h-[280px] lg:min-h-[400px]
     overflow-hidden
-    rounded-t-xl lg:rounded-t-none lg:rounded-r-[var(--radius-sm)]
+     lg:rounded-t-none lg:rounded-r-[var(--radius-sm)]
   "
             >
               <img
@@ -265,20 +271,21 @@ const Insight = () => {
         >
           <div className="flex flex-col md:flex-row md:items-end justify-between mb-8 gap-6">
             <h2 className="sub-heading ">All Articles</h2>
-            <div className="flex flex-wrap gap-3">
-              {categories.map((cat) => (
-                <button
-                  key={cat}
-                  onClick={() => handleCategoryChange(cat)}
-                  className={`px-4 py-2 rounded-full text-sm transition-all duration-300 hover:scale-105 cursor-pointer ${selectedCategory === cat
-                    ? 'bg-(--color-primary) text-white'
-                    : 'bg-slate-800 text-white hover:bg-(--color-primary)'
-                    }`}
-                >
-                  {cat}
-                </button>
-              ))}
-            </div>
+            <div className="flex flex-wrap justify-center lg:justify-start gap-3">
+  {categories.map((cat) => (
+    <button
+      key={cat}
+      onClick={() => handleCategoryChange(cat)}
+      className={`px-4 py-2 rounded-full text-sm transition-all duration-300 hover:scale-105 whitespace-nowrap ${
+        selectedCategory === cat
+          ? "bg-[var(--color-primary)] text-white"
+          : "bg-slate-800 text-white hover:bg-[var(--color-primary)]"
+      }`}
+    >
+      {cat}
+    </button>
+  ))}
+</div>
           </div>
 
           {currentArticles.length === 0 ? (
@@ -339,23 +346,17 @@ const Insight = () => {
                             onClick={(e) => {
                               e.stopPropagation();
                             }}
-                            className="inline-flex items-center gap-2 text-sm font-semibold text-(--color-sub-heading) hover:text-blue-300 group/btn transition-colors"
-                          >
-                            Read Article
-                            <svg
-                              className="w-4 h-4 transform group-hover/btn:translate-x-1.5 transition-transform duration-300"
-                              fill="none"
-                              stroke="currentColor"
-                              viewBox="0 0 24 24"
-                            >
-                              <path
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                strokeWidth={2.5}
-                                d="M14 5l7 7m0 0l-7 7m7-7H3"
-                              />
-                            </svg>
-                          </Link>
+                             className="inline-flex items-center gap-2 text-[var(--color-primary)] text-sm font-medium hover:text-[var(--color-primary-hover)] transition-colors group"
+              >
+                Read Article
+                <ArrowForwardIcon
+                  sx={{
+                    fontSize: 18,
+                    transition: "transform 0.3s ease",
+                  }}
+                  className="group-hover:translate-x-1"
+                />
+              </Link>
                         </div>
                       </div>
                     </motion.article>
@@ -437,48 +438,55 @@ transition"
           )}
         </motion.section>
 
-        {/* Section 4: Newsletter Banner */}
         <motion.section
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true, amount: 0.2 }}
-          variants={fadeUpVariants}
-          className="bg-sub rounded-[--radius-sm] p-8 md:p-12 flex flex-col lg:flex-row items-center justify-between gap-8"
-        >
-          <div className="max-w-xl">
-            <h3 className="text-2xl sub-heading mb-2">Stay Updated With Our Latest Insights</h3>
-            <p className="paragraph">Get weekly deep-dives and strategic guides delivered straight to your inbox. No spam, just high-value signal.</p>
-          </div>
-          <form
-            onSubmit={handleNewsletterSubscribe}
-            className="
-    flex
-    flex-col
-    sm:flex-row
-    items-center
-    gap-3
-    w-full
-    lg:w-auto
-  "
-          >
-            <input
-              type="email"
-              required
-              value={newsletterEmail}
-              onChange={(e) => setNewsletterEmail(e.target.value)}
-              placeholder="Enter your work email"
-              className=" bg-main input  text-black placeholder-black/60 px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 w-full md:w-72"
-            />
-            <button
-              type="submit"
-              disabled={submittingNewsletter}
-              className="btn disabled:bg-blue-500/50 px-6 py-2 whitespace-nowrap transition-colors cursor-pointer"
-            >
-              {submittingNewsletter ? "Subscribing..." : "Subscribe"}
-            </button>
-          </form>
-        </motion.section>
+  initial="hidden"
+  whileInView="visible"
+  viewport={{ once: true, amount: 0.2 }}
+  variants={fadeUpVariants}
+  className="card bg-sub p-8 md:p-12"
+>
+  <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-10">
+    
+    {/* Left */}
+    <div className="max-w-2xl">
+      <span className="pre-heading">
+        NEWSLETTER
+      </span>
 
+      <h2 className="sub-heading mt-2 mb-4">
+        Stay Updated With Our Latest Insights
+      </h2>
+
+      <p className="paragraph">
+        Receive strategic insights, industry trends, case studies, and expert
+        perspectives directly in your inbox.
+      </p>
+    </div>
+
+    {/* Right */}
+    <form
+      onSubmit={handleNewsletterSubscribe}
+      className="flex flex-col sm:flex-row gap-3 w-full lg:w-auto"
+    >
+      <input
+        type="email"
+        required
+        value={newsletterEmail}
+        onChange={(e) => setNewsletterEmail(e.target.value)}
+        placeholder="Enter your email"
+        className="input w-full sm:w-[320px] h-[42px]"
+      />
+
+      <button
+        type="submit"
+        disabled={submittingNewsletter}
+        className="btn h-[42px] min-w-[150px]"
+      >
+        {submittingNewsletter ? "Subscribing..." : "Subscribe"}
+      </button>
+    </form>
+  </div>
+</motion.section>
       </div>
 
       <Dialog

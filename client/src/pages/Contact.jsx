@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import { motion } from 'framer-motion';
 import contactImg from '../assets/contact_page.png';
 import axios from "axios";
-import { toast } from 'react-toastify';
+import { toast } from 'sonner';
 // MUI components
 import Accordion from '@mui/material/Accordion';
 import AccordionSummary from '@mui/material/AccordionSummary';
@@ -15,6 +15,13 @@ import EmailIcon from '@mui/icons-material/Email';
 import AccessTimeIcon from '@mui/icons-material/AccessTime';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import SendIcon from '@mui/icons-material/Send';
+import ShareIcon from '@mui/icons-material/Share';
+import LinkedInIcon from '@mui/icons-material/LinkedIn';
+import FacebookIcon from '@mui/icons-material/Facebook';
+import TwitterIcon from '@mui/icons-material/Twitter';
+import InstagramIcon from '@mui/icons-material/Instagram';
+import XIcon from '@mui/icons-material/X';
+import YouTubeIcon from '@mui/icons-material/YouTube';
 import { Link } from "react-router-dom";
 
 const fadeUpVariants = {
@@ -63,10 +70,16 @@ const Contact = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const dropdownRef = useRef(null);
 
+  const [isServiceDropdownOpen, setIsServiceDropdownOpen] = useState(false);
+  const serviceDropdownRef = useRef(null);
+
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
         setIsDropdownOpen(false);
+      }
+      if (serviceDropdownRef.current && !serviceDropdownRef.current.contains(event.target)) {
+        setIsServiceDropdownOpen(false);
       }
     };
     document.addEventListener("mousedown", handleClickOutside);
@@ -310,7 +323,7 @@ const Contact = () => {
             variants={fadeUpVariants}
             className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:items-stretch"
           >
-            {/* Left Column: Info Cards & Map container */}
+            {/* Left Column: Info Cards */}
             <div className="flex flex-col gap-4 w-full h-full justify-between">
               <div className="bg-[var(--color-sub-bg)] p-6 rounded-[var(--radius-sm)] flex items-start gap-4 border border-gray-200">
                 <div className="text-[var(--color-primary)] mt-1"><LocationOnIcon /></div>
@@ -340,15 +353,60 @@ const Contact = () => {
                   <p className="paragraph text-gray-700 text-sm leading-relaxed">Monday - Friday: 8:00 AM - 6:00 PM (PST)<br />Weekend support available for enterprise clients.</p>
                 </div>
               </div>
-              
-              {/* Map container */}
-              <div className="bg-[var(--color-sub-bg)] rounded-[var(--radius-sm)] border border-gray-200 overflow-hidden min-h-[240px] flex-grow w-full">
-                <iframe
-                  src="https://www.google.com/maps?q=Kochi,Kerala&output=embed"
-                  className="w-full h-full border-0"
-                  loading="lazy"
-                  title="Office Location Map"
-                />
+
+              {/* Connect with Us Card */}
+              <div className="bg-[var(--color-sub-bg)] p-6 rounded-[var(--radius-sm)] flex items-start gap-4 border border-gray-200">
+                <div className="text-[var(--color-primary)] mt-1"><ShareIcon /></div>
+                <div>
+                  <h3 className="text-lg font-semibold text-black mb-2">Connect With Us</h3>
+                  <div className="flex gap-4 mt-2">
+                    <a
+                      href="https://linkedin.com/company/strivo-consultancy"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="w-10 h-10 rounded-full bg-[var(--color-primary)] flex items-center justify-center text-white hover:bg-[var(--color-primary-hover)] transition-all duration-300 transform hover:-translate-y-1 shadow-md"
+                      aria-label="LinkedIn"
+                    >
+                      <LinkedInIcon fontSize="small" />
+                    </a>
+                    <a
+                      href="https://facebook.com/strivo-consultancy"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="w-10 h-10 rounded-full bg-[var(--color-primary)] flex items-center justify-center text-white hover:bg-[var(--color-primary-hover)] transition-all duration-300 transform hover:-translate-y-1 shadow-md"
+                      aria-label="Facebook"
+                    >
+                      <FacebookIcon fontSize="small" />
+                    </a>
+                    <a
+                      href="https://twitter.com/strivo_consult"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="w-10 h-10 rounded-full bg-[var(--color-primary)] flex items-center justify-center text-white hover:bg-[var(--color-primary-hover)] transition-all duration-300 transform hover:-translate-y-1 shadow-md"
+                      aria-label="Twitter/X"
+                    >
+                      <XIcon fontSize="small" />
+                    </a>
+                    <a
+                      href="https://instagram.com/strivo_consultancy"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="w-10 h-10 rounded-full bg-[var(--color-primary)] flex items-center justify-center text-white hover:bg-[var(--color-primary-hover)] transition-all duration-300 transform hover:-translate-y-1 shadow-md"
+                      aria-label="Instagram"
+                    >
+                      <InstagramIcon fontSize="small" />
+                    </a>
+                    <a
+                      href="https://youtube.com/@strivo-consultancy"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="w-10 h-10 rounded-full bg-[var(--color-primary)] flex items-center justify-center text-white hover:bg-[var(--color-primary-hover)] transition-all duration-300 transform hover:-translate-y-1 shadow-md"
+                      aria-label="YouTube"
+                    >
+                      <YouTubeIcon fontSize="small" />
+                    </a>
+                  </div>
+                </div>
               </div>
             </div>
             
@@ -366,7 +424,7 @@ const Contact = () => {
                         value={formData.fullName}
                         onChange={handleChange}
                         placeholder="Jane Doe"
-                        className={`paragraph w-full bg-white text-black placeholder-gray-500 rounded-[var(--radius-sm)] px-4 py-3 border focus:outline-none focus:ring-2 transition-colors ${errors.fullName ? "border-red-500 focus:ring-red-500/30" : "border-gray-300 focus:ring-blue-500"}`}
+                        className={`paragraph w-full bg-white text-black placeholder-gray-500 rounded-[var(--radius-sm)] px-4 py-3 border transition-all duration-300 focus:outline-none focus:ring-2 ${errors.fullName ? "border-red-500 focus:ring-red-500/20 focus:border-red-500" : "border-[var(--color-border)] focus:ring-[var(--color-primary)]/20 focus:border-[var(--color-primary)]"}`}
                       />
                       {errors.fullName && <span className="text-xs text-red-400 mt-0.5">{errors.fullName}</span>}
                     </div>
@@ -378,7 +436,7 @@ const Contact = () => {
                         value={formData.company}
                         onChange={handleChange}
                         placeholder="Acme Corp"
-                        className={`paragraph w-full bg-white text-black placeholder-gray-500 rounded-[var(--radius-sm)] px-4 py-3 border focus:outline-none focus:ring-2 transition-colors ${errors.company ? "border-red-500 focus:ring-red-500/30" : "border-gray-300 focus:ring-blue-500"}`}
+                        className={`paragraph w-full bg-white text-black placeholder-gray-500 rounded-[var(--radius-sm)] px-4 py-3 border transition-all duration-300 focus:outline-none focus:ring-2 ${errors.company ? "border-red-500 focus:ring-red-500/20 focus:border-red-500" : "border-[var(--color-border)] focus:ring-[var(--color-primary)]/20 focus:border-[var(--color-primary)]"}`}
                       />
                       {errors.company && <span className="text-xs text-red-400 mt-0.5">{errors.company}</span>}
                     </div>
@@ -393,7 +451,7 @@ const Contact = () => {
                         value={formData.email}
                         onChange={handleChange}
                         placeholder="jane@acme.com"
-                        className={`paragraph w-full bg-white text-black placeholder-gray-500 rounded-[var(--radius-sm)] px-4 py-3 border focus:outline-none focus:ring-2 transition-colors ${errors.email ? "border-red-500 focus:ring-red-500/30" : "border-gray-300 focus:ring-blue-500"}`}
+                        className={`paragraph w-full bg-white text-black placeholder-gray-500 rounded-[var(--radius-sm)] px-4 py-3 border transition-all duration-300 focus:outline-none focus:ring-2 ${errors.email ? "border-red-500 focus:ring-red-500/20 focus:border-red-500" : "border-[var(--color-border)] focus:ring-[var(--color-primary)]/20 focus:border-[var(--color-primary)]"}`}
                       />
                       {errors.email && <span className="text-xs text-red-400 mt-0.5">{errors.email}</span>}
                     </div>
@@ -402,10 +460,10 @@ const Contact = () => {
                     <div className="flex flex-col gap-2">
                       <label className="paragraph text-sm text-black font-medium">Phone Number</label>
                       <div 
-                        className={`flex items-center w-full bg-white rounded-[var(--radius-sm)] border transition-colors focus-within:ring-2 ${
+                        className={`flex items-center w-full bg-white rounded-[var(--radius-sm)] border transition-all duration-300 focus-within:ring-2 ${
                           errors.phone 
-                            ? "border-red-500 focus-within:ring-red-500/30" 
-                            : "border-gray-300 focus-within:ring-blue-500"
+                            ? "border-red-500 focus-within:ring-red-500/20 focus-within:border-red-500" 
+                            : "border-[var(--color-border)] focus-within:ring-[var(--color-primary)]/20 focus-within:border-[var(--color-primary)]"
                         }`}
                       >
                         {/* Country Code Dropdown Container (Minimized layout width) */}
@@ -416,25 +474,26 @@ const Contact = () => {
                               setIsDropdownOpen(!isDropdownOpen);
                               setSearchQuery("");
                             }}
-                            className="paragraph h-full flex items-center justify-between text-black pl-3 pr-1 py-3 bg-transparent focus:outline-none text-sm w-auto max-w-[64px]"
+                            className="paragraph h-full flex items-center justify-between text-black pl-3 pr-2 py-3 bg-transparent hover:bg-gray-50 focus:outline-none text-sm w-auto min-w-[70px] transition-colors border-r border-[var(--color-border)]"
+                            style={{ borderRight: "1px solid var(--color-border)", outline: "none", cursor: "pointer", display: "flex", alignItems: "center" }}
                           >
-                            <span className="truncate">{formData.countryCode}</span>
-                            <ExpandMoreIcon fontSize="small" className="text-gray-500 shrink-0 ml-0.5" />
+                            <span className="truncate font-medium">{formData.countryCode}</span>
+                            <ExpandMoreIcon fontSize="small" className="text-gray-400 shrink-0 ml-1" />
                           </button>
 
                           {/* Dropdown Options List */}
                           {isDropdownOpen && (
-                            <div className="absolute left-0 mt-1 w-64 bg-white border border-gray-300 rounded-[var(--radius-sm)] shadow-xl z-50 overflow-hidden paragraph">
-                              <div className="p-2 border-b border-gray-200 bg-white">
+                            <div className="absolute left-0 top-full mt-1.5 w-64 bg-white border border-[var(--color-border)] rounded-[var(--radius-sm)] shadow-lg z-50 overflow-hidden paragraph animate-fadeIn">
+                              <div className="p-2 border-b border-[var(--color-border)] bg-gray-50">
                                 <input
                                   type="text"
                                   placeholder="Search country..."
                                   value={searchQuery}
                                   onChange={(e) => setSearchQuery(e.target.value)}
-                                  className="w-full bg-white text-black text-xs rounded-[var(--radius-sm)] px-2 py-1.5 border border-gray-300 focus:outline-none focus:ring-1 focus:ring-blue-500"
-                                operational />
+                                  className="w-full bg-white text-black text-xs rounded-[var(--radius-sm)] px-3 py-2 border border-[var(--color-border)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]/20 focus:border-[var(--color-primary)] transition-all placeholder-gray-400"
+                                />
                               </div>
-                              <div className="max-h-48 overflow-y-auto">
+                              <div className="max-h-48 overflow-y-auto scrollbar-show">
                                 {filteredCountryCodes.length > 0 ? (
                                   filteredCountryCodes.map((item) => (
                                     <button
@@ -444,14 +503,14 @@ const Contact = () => {
                                         setFormData((prev) => ({ ...prev, countryCode: item.code }));
                                         setIsDropdownOpen(false);
                                       }}
-                                      className="w-full text-left px-3 py-2 text-sm text-black hover:bg-gray-100 transition-colors flex justify-between items-center"
+                                      className="w-full text-left px-4 py-2.5 text-sm text-black hover:bg-[var(--color-primary)] hover:text-white transition-colors flex justify-between items-center group cursor-pointer"
                                     >
-                                      <span className="truncate mr-2">{item.name}</span>
-                                      <span className="text-gray-500 font-mono text-xs shrink-0">{item.code}</span>
+                                      <span className="truncate mr-2 font-medium">{item.name}</span>
+                                      <span className="text-gray-400 font-mono text-xs shrink-0 group-hover:text-blue-100/90 transition-colors">{item.code}</span>
                                     </button>
                                   ))
                                 ) : (
-                                  <div className="p-3 text-xs text-gray-500 text-center">No results found</div>
+                                  <div className="p-3 text-xs text-gray-400 text-center">No results found</div>
                                 )}
                               </div>
                             </div>
@@ -474,22 +533,47 @@ const Contact = () => {
 
                   <div className="flex flex-col gap-2">
                     <label className="paragraph text-sm text-black font-medium">Service Interest</label>
-                    <div className="relative">
-                      <select
-                        name="service"
-                        value={formData.service}
-                        onChange={handleChange}
-                        className={`paragraph w-full bg-white text-black rounded-[var(--radius-sm)] px-4 py-3 pr-12 border border-gray-300 focus:outline-none focus:ring-2 appearance-none transition-colors ${errors.service ? "border-red-500 focus:ring-red-500/30" : "border-gray-300 focus:ring-blue-500"}`}
+                    <div className="relative" ref={serviceDropdownRef}>
+                      <button
+                        type="button"
+                        onClick={() => setIsServiceDropdownOpen(!isServiceDropdownOpen)}
+                        className={`paragraph w-full bg-white rounded-[var(--radius-sm)] px-4 py-3 border text-left transition-all duration-300 focus:outline-none focus:ring-2 flex justify-between items-center ${errors.service ? "border-red-500 focus:ring-red-500/20 focus:border-red-500" : "border-[var(--color-border)] focus:ring-[var(--color-primary)]/20 focus:border-[var(--color-primary)]"}`}
+                        style={{ outline: "none", cursor: "pointer" }}
                       >
-                        <option value="">Select a specialized service...</option>
-                        <option value="Strategy">Strategy</option>
-                        <option value="Operations">Operations</option>
-                        <option value="Digital Transformation">Digital Transformation</option>
-                        <option value="Change Management">Change Management</option>
-                      </select>
-                      <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 text-black">
-                        <ExpandMoreIcon />
-                      </div>
+                        <span className={formData.service ? "text-black font-medium" : "text-gray-500"}>
+                          {formData.service || "Select a specialized service..."}
+                        </span>
+                        <ExpandMoreIcon className={`text-gray-400 transition-transform duration-300 ${isServiceDropdownOpen ? "rotate-180" : ""}`} />
+                      </button>
+
+                      {/* Service Dropdown Options List */}
+                      {isServiceDropdownOpen && (
+                        <div className="absolute left-0 top-full mt-1.5 w-full bg-white border border-[var(--color-border)] rounded-[var(--radius-sm)] shadow-lg z-50 overflow-hidden paragraph animate-fadeIn">
+                          <div className="max-h-56 overflow-y-auto scrollbar-show">
+                            {[
+                              { value: "Strategy", label: "Strategy" },
+                              { value: "Operations", label: "Operations" },
+                              { value: "Digital Transformation", label: "Digital Transformation" },
+                              { value: "Change Management", label: "Change Management" }
+                            ].map((item) => (
+                              <button
+                                key={item.value}
+                                type="button"
+                                onClick={() => {
+                                  setFormData((prev) => ({ ...prev, service: item.value }));
+                                  setIsServiceDropdownOpen(false);
+                                  if (errors.service) {
+                                    setErrors((prev) => ({ ...prev, service: "" }));
+                                  }
+                                }}
+                                className={`w-full text-left px-4 py-3 text-sm text-black transition-colors flex justify-between items-center cursor-pointer ${formData.service === item.value ? "bg-[var(--color-sub-bg)] font-semibold text-[var(--color-primary)]" : "hover:bg-[var(--color-primary)] hover:text-white"}`}
+                              >
+                                <span>{item.label}</span>
+                              </button>
+                            ))}
+                          </div>
+                        </div>
+                      )}
                     </div>
                     {errors.service && <span className="text-xs text-red-400 mt-0.5">{errors.service}</span>}
                   </div>
@@ -502,7 +586,7 @@ const Contact = () => {
                       onChange={handleChange}
                       placeholder="Tell us about your project requirements and timelines..."
                       rows={5}
-                      className={`paragraph w-full min-h-[120px] bg-white text-black placeholder-gray-500 rounded-[var(--radius-sm)] px-4 py-3 border border-gray-300 resize-none focus:outline-none focus:ring-2 transition-colors ${errors.message ? "border-red-500 focus:ring-red-500/30" : "border-gray-300 focus:ring-blue-500"}`}
+                      className={`paragraph w-full min-h-[120px] bg-white text-black placeholder-gray-500 rounded-[var(--radius-sm)] px-4 py-3 border resize-none transition-all duration-300 focus:outline-none focus:ring-2 ${errors.message ? "border-red-500 focus:ring-red-500/20 focus:border-red-500" : "border-[var(--color-border)] focus:ring-[var(--color-primary)]/20 focus:border-[var(--color-primary)]"}`}
                     />
                     {errors.message && <span className="text-xs text-red-400 mt-0.5">{errors.message}</span>}
                   </div>
@@ -538,6 +622,25 @@ const Contact = () => {
                   </motion.button>
                 </form>
               </div>
+            </div>
+          </motion.section>
+
+          {/* Section 3: Visit Our Office Map */}
+          <motion.section
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, amount: 0.1 }}
+            variants={fadeUpVariants}
+            className="w-full flex flex-col items-center"
+          >
+            <h2 className="sub-heading text-2xl md:text-3xl text-center mb-8 font-bold">Visit Our Office</h2>
+            <div className="w-full bg-[var(--color-sub-bg)] rounded-[var(--radius-sm)] border border-gray-200 overflow-hidden h-[300px] md:h-[480px] shadow-sm">
+              <iframe
+                src="https://maps.google.com/maps?q=TechPark%20Tower,%20Infopark%20Expressway,%20Kakkanad,%20Kochi,%20Kerala%20682042&t=&z=16&ie=UTF8&iwloc=&output=embed"
+                className="w-full h-full border-0"
+                loading="lazy"
+                title="Office Location Map"
+              />
             </div>
           </motion.section>
         </div>

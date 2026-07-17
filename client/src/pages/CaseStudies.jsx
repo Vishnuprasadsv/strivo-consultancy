@@ -88,24 +88,35 @@ const CaseStudies = () => {
               growth.
             </p>
 
-            <div className="flex flex-wrap gap-4 lg:justify-center">
-              {categories.map((category) => (
-                <button
-                  key={category}
-                  onClick={() => {
-                    setSelectedCategory(category);
-                    setCurrentPage(1);
-                  }}
-                  className={`px-6 py-2 rounded-sm text-sm font-medium transition-all duration-300 ${
-                    selectedCategory === category
-                      ? "bg-white text-[var(--color-primary)] shadow-md"
-                      : "bg-transparent border border-white/40 text-white hover:bg-white/10 hover:border-white/60"
-                  }`}
-                >
-                  {category}
-                </button>
-              ))}
-            </div>
+           <div className="flex flex-wrap justify-center lg:justify-center gap-3 md:gap-4">
+  {categories.map((category) => (
+    <button
+      key={category}
+      onClick={() => {
+        setSelectedCategory(category);
+        setCurrentPage(1);
+      }}
+      className={`
+        w-full sm:w-auto
+        px-4 sm:px-5 lg:px-6
+        py-2.5
+        rounded-sm
+        text-sm
+        font-medium
+        transition-all
+        duration-300
+        whitespace-nowrap
+        ${
+          selectedCategory === category
+            ? "bg-white text-[var(--color-primary)] shadow-md"
+            : "bg-transparent border border-white/40 text-white hover:bg-white/10 hover:border-white/60"
+        }
+      `}
+    >
+      {category}
+    </button>
+  ))}
+</div>
           </motion.div>
         </div>
       </section>
@@ -276,19 +287,27 @@ const CaseStudies = () => {
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
                   transition={{ duration: 0.5, delay: index * 0.15 }}
-                  className="flex items-center justify-center lg:justify-center gap-5"
+                  className="
+flex
+flex-col sm:flex-row
+items-center
+sm:items-center
+text-center sm:text-left
+justify-center
+gap-4
+"
                 >
                   <div className="w-[60px] h-[60px] shrink-0 rounded-sm border border-white/20 flex items-center justify-center bg-white/5 backdrop-blur-sm shadow-inner">
                     {item.icon}
                   </div>
-                  <div className="text-left">
-                    <h3 className="text-[32px] leading-none font-bold text-white mb-1.5">
-                      {item.value}
-                    </h3>
-                    <p className="text-[11px] font-semibold tracking-wider text-gray-300 uppercase">
-                      {item.label}
-                    </p>
-                  </div>
+                  <div className="text-center sm:text-left">
+  <h3 className="text-[28px] sm:text-[32px] leading-none font-bold text-white mb-2">
+    {item.value}
+  </h3>
+  <p className="text-[11px] font-semibold tracking-wider text-gray-300 uppercase">
+    {item.label}
+  </p>
+</div>
                 </motion.div>
               ))}
             </div>

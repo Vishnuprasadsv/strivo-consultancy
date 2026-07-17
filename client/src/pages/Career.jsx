@@ -42,6 +42,7 @@ import {
   InputAdornment,
   Popover,
 } from "@mui/material";
+import { useLayoutEffect } from "react";
 
 const countryCodes = [
   { code: "+91", name: "India (+91)" },
@@ -68,8 +69,12 @@ const countryCodes = [
 ];
 
 function Career() {
+  
   const SHOW_HERO_ILLUSTRATION = true; // Set to false to easily revert and show the original centered text-only hero layout
-
+  const descRefs = useRef({});
+  const staticDescRefs = useRef({});
+const [showStaticReadMore, setShowStaticReadMore] = useState({});
+const [showReadMore, setShowReadMore] = useState({});
   const [activeTab, setActiveTab] = useState(0);
 
   const lifeAtStrivoTabs = [
@@ -162,7 +167,39 @@ function Career() {
       console.error("Failed to load dynamic jobs:", error);
     }
   };
+  useLayoutEffect(() => {
+  const result = {};
 
+  Object.keys(staticDescRefs.current).forEach((key) => {
+    const el = staticDescRefs.current[key];
+
+    if (el) {
+      result[key] = el.scrollHeight > el.clientHeight + 1;
+    }
+  });
+
+  setShowStaticReadMore(result);
+}, [expandedJobs]);
+  useLayoutEffect(() => {
+  const checkOverflow = () => {
+    const result = {};
+
+    dynamicJobs.forEach((job) => {
+      const el = descRefs.current[job._id];
+
+      if (el) {
+        // Keep showing the button while expanded
+        result[job._id] =
+          expandedJobs[job._id] ||
+          el.scrollHeight > el.clientHeight + 1;
+      }
+    });
+
+    setShowReadMore(result);
+  };
+
+  requestAnimationFrame(checkOverflow);
+}, [dynamicJobs, expandedJobs]);
   React.useEffect(() => {
     fetchDynamicJobs();
   }, []);
@@ -383,6 +420,7 @@ function Career() {
       desc: "Clear advancement pathways supported by mentoring and leadership programs.",
     },
   ];
+
   return (
     <div>
 
@@ -1121,6 +1159,7 @@ function Career() {
               >
                 <Box sx={{ maxWidth: "750px", width: "100%", minWidth: 0 }}>
                   <Typography
+  ref={(el) => (staticDescRefs.current.frontend = el)}
                     sx={{
                       color: "var(--color-black)",
                       fontSize: "1.35rem",
@@ -1135,7 +1174,7 @@ function Career() {
                     sx={{
                       color: "var(--color-paragraph)",
                       lineHeight: 1.8,
-                      mb: expandedJobs["frontend"] ? 1.5 : 0.5,
+                      mb: showStaticReadMore.frontend ? (expandedJobs["frontend"] ? 1.5 : 0.5) : 2.5,
                       display: "-webkit-box",
                       WebkitLineClamp: expandedJobs["frontend"] ? "none" : 3,
                       WebkitBoxOrient: "vertical",
@@ -1149,7 +1188,8 @@ function Career() {
                     and collaborate with C-suite executives to formulate growth strategies,
                     improve business processes, and drive organizational transformation.
                   </Typography>
-                  <Button
+                  {showStaticReadMore.frontend && (
+<Button
                     onClick={() => toggleExpandJob("frontend")}
                     sx={{
                       textTransform: "none",
@@ -1165,6 +1205,7 @@ function Career() {
                   >
                     {expandedJobs["frontend"] ? "Read less" : "Read more"}
                   </Button>
+)}
 
                   <Box
                     sx={{
@@ -1253,7 +1294,7 @@ function Career() {
                 }}
               >
                 <Box sx={{ maxWidth: "750px", width: "100%", minWidth: 0 }}>
-                  <Typography
+                  <Typography ref={(el) => (staticDescRefs.current.uiux = el)}
                     sx={{
                       color: "var(--color-black)",
                       fontSize: "1.35rem",
@@ -1268,7 +1309,7 @@ function Career() {
                     sx={{
                       color: "var(--color-paragraph)",
                       lineHeight: 1.8,
-                      mb: expandedJobs["uiux"] ? 1.5 : 0.5,
+                      mb: showStaticReadMore.uiux ? (expandedJobs["uiux"] ? 1.5 : 0.5) : 2.5,
                       display: "-webkit-box",
                       WebkitLineClamp: expandedJobs["uiux"] ? "none" : 3,
                       WebkitBoxOrient: "vertical",
@@ -1282,7 +1323,8 @@ function Career() {
                     and optimize supply chain/business operations to enhance efficiency,
                     reduce costs, and accelerate overall business performance.
                   </Typography>
-                  <Button
+                  {showStaticReadMore.uiux && (
+   <Button 
                     onClick={() => toggleExpandJob("uiux")}
                     sx={{
                       textTransform: "none",
@@ -1297,7 +1339,8 @@ function Career() {
                     }}
                   >
                     {expandedJobs["uiux"] ? "Read less" : "Read more"}
-                  </Button>
+                 </Button>
+)}
 
                   <Box
                     sx={{
@@ -1385,7 +1428,7 @@ function Career() {
                 }}
               >
                 <Box sx={{ maxWidth: "750px", width: "100%", minWidth: 0 }}>
-                  <Typography
+                  <Typography ref={(el) => (staticDescRefs.current.consultant = el)}
                     sx={{
                       color: "var(--color-black)",
                       fontSize: "1.35rem",
@@ -1400,7 +1443,7 @@ function Career() {
                     sx={{
                       color: "var(--color-paragraph)",
                       lineHeight: 1.8,
-                      mb: expandedJobs["consultant"] ? 1.5 : 0.5,
+                      mb: showStaticReadMore.consultant ? (expandedJobs["consultant"] ? 1.5 : 0.5) : 2.5,
                       display: "-webkit-box",
                       WebkitLineClamp: expandedJobs["consultant"] ? "none" : 3,
                       WebkitBoxOrient: "vertical",
@@ -1415,7 +1458,8 @@ function Career() {
                     deliver strategic solutions that drive measurable
                     outcomes and transformation.
                   </Typography>
-                  <Button
+                  {showStaticReadMore.consultant && (
+   <Button
                     onClick={() => toggleExpandJob("consultant")}
                     sx={{
                       textTransform: "none",
@@ -1430,7 +1474,8 @@ function Career() {
                     }}
                   >
                     {expandedJobs["consultant"] ? "Read less" : "Read more"}
-                  </Button>
+                 </Button>
+)}
 
                   <Box
                     sx={{
@@ -1492,7 +1537,13 @@ function Career() {
             {dynamicJobs.length > 0 && (
               <Box sx={{ mt: 3 }}>
 
-                {dynamicJobs.slice((currentPage - 1) * jobsPerPage, currentPage * jobsPerPage).map((job) => (
+                {dynamicJobs
+  .slice((currentPage - 1) * jobsPerPage, currentPage * jobsPerPage)
+  .map((job) => {
+
+
+
+    return (
                   <MotionBox key={job._id} whileHover={{ y: -5 }} sx={{ mb: 3 }}>
                     <Box
                       sx={{
@@ -1534,41 +1585,52 @@ function Career() {
                           {job.title}
                         </Typography>
 
-                        <Typography
-                          sx={{
-                            color: "var(--color-paragraph)",
-                            lineHeight: 1.8,
-                            mb: expandedJobs[job._id] ? 1.5 : 0.5,
-                            display: "-webkit-box",
-                            WebkitLineClamp: expandedJobs[job._id] ? "none" : 3,
-                            WebkitBoxOrient: "vertical",
-                            overflow: "hidden",
-                            textAlign: "justify",
-                            textJustify: "inter-word",
-                            hyphens: "auto",
-                          }}
-                        >
-                          {job.description}
-                        </Typography>
-                        <Button
-                          onClick={() => toggleExpandJob(job._id)}
-                          sx={{
-                            textTransform: "none",
-                            color: "var(--color-primary)",
-                            p: 0,
-                            minWidth: "auto",
-                            fontWeight: 600,
-                            fontSize: "0.85rem",
-                            mb: 2.5,
-                            display: "inline-block",
-                            "&:hover": { background: "transparent", textDecoration: "underline" }
-                          }}
-                        >
-                          {expandedJobs[job._id] ? "Read less" : "Read more"}
-                        </Button>
+                      <Typography
+  ref={(el) => (descRefs.current[job._id] = el)}
+  sx={{
+    color: "var(--color-paragraph)",
+    lineHeight: 1.8,
+    display: "-webkit-box",
+    WebkitBoxOrient: "vertical",
+    WebkitLineClamp: expandedJobs[job._id] ? "unset" : 3,
+    overflow: "hidden",
 
+    minHeight: expandedJobs[job._id] ? "auto" : "86px", // height of 3 lines
+    mb: (showReadMore[job._id] || expandedJobs[job._id]) ? 1.5 : 2.5,
+  }}
+>
+  {job.description}
+</Typography>
+{(showReadMore[job._id] || expandedJobs[job._id]) && (
+  <Box
+    sx={{
+      minHeight: "32px",
+      display: "flex",
+      alignItems: "center",
+      mb: 2,
+    }}
+  >
+    <Button
+      onClick={() => toggleExpandJob(job._id)}
+      sx={{
+        p: 0,
+        minWidth: 0,
+        textTransform: "none",
+        fontWeight: 600,
+        fontSize: "0.85rem",
+        color: "var(--color-primary)",
+        "&:hover": {
+          background: "transparent",
+          textDecoration: "underline",
+        },
+      }}
+    >
+      {expandedJobs[job._id] ? "Read less" : "Read more"}
+    </Button>
+  </Box>
+)}
                         <Box
-                          sx={{
+                          sx={{ 
                             display: "flex",
                             flexWrap: "wrap",
                             gap: 1.5,
@@ -1621,7 +1683,8 @@ function Career() {
                       </Button>
                     </Box>
                   </MotionBox>
-                ))}
+                  );
+  })}
 
                 {dynamicJobs.length > jobsPerPage && (
                   <Box sx={{ display: "flex", justifyContent: "center", alignItems: "center", gap: 2, mt: 5 }}>

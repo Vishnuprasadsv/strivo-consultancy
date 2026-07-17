@@ -2,8 +2,6 @@ import React, { Suspense, lazy, useEffect, useState } from 'react';
 import { BrowserRouter, Routes, Route, useLocation, Navigate, Outlet } from 'react-router-dom';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import { Toaster } from 'sonner';
-import { ToastContainer } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
 import { motion, AnimatePresence } from 'framer-motion';
 import { FiArrowUp } from 'react-icons/fi';
 import axios from 'axios';
@@ -275,8 +273,7 @@ const App = () => {
     <BrowserRouter>
       <DynamicThemeProvider>
         <ScrollToTop />
-        <Toaster position="top-center" theme="dark" />
-        <ToastContainer position="top-center" autoClose={3500} hideProgressBar style={{ zIndex: 999999 }} />
+       <Toaster position="top-center" theme="dark" />
         <AppLayout />
       </DynamicThemeProvider>
     </BrowserRouter>
