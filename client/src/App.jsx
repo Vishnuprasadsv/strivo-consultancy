@@ -12,6 +12,7 @@ import AdminNavbar from './Components/AdminNavbar';
 import Footer from './Components/Footer';
 import Ready from './Components/Ready';
 import LoadingIndicator from './Components/LoadingIndicator';
+import ErrorBoundary from './Components/ErrorBoundary';
 
 import Review from './pages/Review';
 import Career from './pages/Career';
@@ -37,6 +38,7 @@ const Vision = lazy(() => import('./pages/Vision'));
 const Values = lazy(() => import('./pages/Values'));
 const PrivacyPolicy = lazy(() => import('./pages/PrivacyPolicy'));
 const TermsAndConditions = lazy(() => import('./pages/TermsAndConditions'));
+const NotFound = lazy(() => import('./pages/NotFound'));
 
 // Admin Pages
 const Login = lazy(() => import('./Admin/Login'));
@@ -216,7 +218,7 @@ const AppLayout = () => {
             <Route path="/review" element={<Review />} />
 
             {/* Admin Public Auth Routes */}
-            <Route path="/admin" element={<Login />} />
+            <Route path="/admin" element={<Navigate to="/admin/login" replace />} />
             <Route path="/admin/login" element={<Login />} />
             <Route path="/admin/register" element={<Register />} />
             <Route path="/admin/forgot-password" element={<ForgotPassword />} />
@@ -244,6 +246,9 @@ const AppLayout = () => {
               <Route path="/admin/create-article" element={<CreateArticle />} />
               <Route path="/admin/edit-article/:id" element={<EditArticle />} />
             </Route>
+            
+            {/* Fallback 404 Not Found Page */}
+            <Route path="*" element={<NotFound />} />
           </Routes>
         </Suspense>
       </main>
@@ -274,10 +279,12 @@ const App = () => {
   return (
     <BrowserRouter>
       <DynamicThemeProvider>
-        <ScrollToTop />
-        <Toaster position="top-center" theme="dark" />
-        <ToastContainer position="top-center" autoClose={3500} hideProgressBar style={{ zIndex: 999999 }} />
-        <AppLayout />
+        <ErrorBoundary>
+          <ScrollToTop />
+          <Toaster position="top-center" theme="dark" />
+          <ToastContainer position="top-center" autoClose={3500} hideProgressBar style={{ zIndex: 999999 }} />
+          <AppLayout />
+        </ErrorBoundary>
       </DynamicThemeProvider>
     </BrowserRouter>
   );

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { useNavigate, Link } from 'react-router-dom';
 import { toast } from 'sonner';
@@ -15,6 +15,25 @@ const Login = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [errors, setErrors] = useState({});
   const navigate = useNavigate();
+
+  useEffect(() => {
+    const token = localStorage.getItem('adminToken');
+    const userStr = localStorage.getItem('adminUser');
+    if (token && userStr) {
+      try {
+        const user = JSON.parse(userStr);
+        const role = user.role ? user.role.toLowerCase() : '';
+        if (role === 'hr') {
+          navigate('/admin/career', { replace: true });
+        } else {
+          navigate('/admin/dashboard', { replace: true });
+        }
+      } catch (err) {
+        localStorage.removeItem('adminToken');
+        localStorage.removeItem('adminUser');
+      }
+    }
+  }, [navigate]);
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -177,12 +196,19 @@ const Login = () => {
           </div>
         </form>
 
-        <div className="text-center mt-3">
+        <div className="text-center mt-3 flex flex-col gap-2">
           <Link
             to="/admin/register"
             className="hover:underline transition-colors block text-center text-xs font-bold uppercase tracking-wider text-[var(--color-primary)]"
           >
             Create an Account
+          </Link>
+          <div className="border-t border-[var(--color-border)] my-1"></div>
+          <Link
+            to="/"
+            className="hover:underline transition-colors block text-center text-xs font-bold uppercase tracking-wider text-[var(--color-paragraph)] opacity-80 flex items-center justify-center gap-1.5"
+          >
+            <span>←</span> Back to Website
           </Link>
         </div>
       </motion.div>

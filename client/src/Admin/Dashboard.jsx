@@ -122,7 +122,7 @@ const Dashboard = () => {
   };
 
   const getLastUpdatedAppsText = () => {
-    if (!appointments || appointments.length === 0) return 'N/A';
+    if (!appointments || appointments.length === 0) return 'NO APPLICATIONS';
     let latestDate = null;
     appointments.forEach(item => {
       let itemTime = null;
@@ -139,7 +139,7 @@ const Dashboard = () => {
         }
       }
     });
-    if (!latestDate) return 'N/A';
+    if (!latestDate) return 'NO APPLICATIONS';
     return latestDate.toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' }).toUpperCase();
   };
 
@@ -991,22 +991,32 @@ const Dashboard = () => {
 
   const isTodayTask = (dateStr) => {
     if (!dateStr) return false;
-    const d = new Date(dateStr);
-    const { start, end } = getTodayRange();
-    return d >= start && d <= end;
+    const now = new Date();
+    const taskDate = new Date(dateStr);
+    
+    return (
+      taskDate.getFullYear() === now.getFullYear() &&
+      taskDate.getMonth() === now.getMonth() &&
+      taskDate.getDate() === now.getDate()
+    );
   };
 
-  const todayInquiriesCount = inquiries.filter(inq => inq.status === 'New' && isTodayTask(inq.createdAt)).length;
-  const pendingInquiriesCount = inquiries.filter(inq => inq.status === 'New' && !isTodayTask(inq.createdAt)).length;
+  const getTaskDate = (item) => {
+    if (!item) return null;
+    return item.createdAt || item.updatedAt || (typeof item.id === 'number' && item.id > 1000000000 ? item.id : null);
+  };
 
-  const todayAppsCount = applications.filter(app => app.status === 'pending' && isTodayTask(app.createdAt)).length;
-  const pendingAppsCount = applications.filter(app => app.status === 'pending' && !isTodayTask(app.createdAt)).length;
+  const todayInquiriesCount = inquiries.filter(inq => inq.status === 'New' && isTodayTask(getTaskDate(inq))).length;
+  const pendingInquiriesCount = inquiries.filter(inq => inq.status === 'New' && !isTodayTask(getTaskDate(inq))).length;
 
-  const todayCaseStudiesCount = caseStudies.filter(cs => cs.status === 'Draft' && isTodayTask(cs.createdAt)).length;
-  const pendingCaseStudiesCount = caseStudies.filter(cs => cs.status === 'Draft' && !isTodayTask(cs.createdAt)).length;
+  const todayAppsCount = appointments.filter(a => a.status === 'Pending' && isTodayTask(getTaskDate(a))).length;
+  const pendingAppsCount = appointments.filter(a => a.status === 'Pending' && !isTodayTask(getTaskDate(a))).length;
 
-  const todayReviewsCount = reviews.filter(r => (r.status || 'Pending') === 'Pending' && isTodayTask(r.createdAt)).length;
-  const pendingReviewsCount = reviews.filter(r => (r.status || 'Pending') === 'Pending' && !isTodayTask(r.createdAt)).length;
+  const todayCaseStudiesCount = caseStudies.filter(cs => cs.status === 'Draft' && isTodayTask(getTaskDate(cs))).length;
+  const pendingCaseStudiesCount = caseStudies.filter(cs => cs.status === 'Draft' && !isTodayTask(getTaskDate(cs))).length;
+
+  const todayReviewsCount = reviews.filter(r => (r.status || 'Pending') === 'Pending' && isTodayTask(getTaskDate(r))).length;
+  const pendingReviewsCount = reviews.filter(r => (r.status || 'Pending') === 'Pending' && !isTodayTask(getTaskDate(r))).length;
 
   const draftStoriesCount = 0; // Success stories are always published and do not have draft/pending moderation states
   const draftArticlesCount = articles.filter(art => art.status === 'Draft').length;
@@ -1025,7 +1035,7 @@ const Dashboard = () => {
       text: `Review ${todayAppsCount} Applications`,
       isCompleted: todayAppsCount === 0,
       pendingCount: todayAppsCount,
-      successMsg: "Superb! 🌟 All today's career applications reviewed!",
+      successMsg: "Superb! 🌟 All today's applications approved!",
       failMsg: `You are doing great! ${todayAppsCount} more today's applications to complete, all the best!`
     },
     {
@@ -1060,7 +1070,7 @@ const Dashboard = () => {
       text: `Review ${pendingAppsCount} Older Applications`,
       isCompleted: pendingAppsCount === 0,
       pendingCount: pendingAppsCount,
-      successMsg: "Superb! 🌟 All older career applications reviewed!",
+      successMsg: "Superb! 🌟 All older applications approved!",
       failMsg: `You are doing great! ${pendingAppsCount} older pending applications to complete, all the best!`
     },
     {
@@ -1210,7 +1220,7 @@ const Dashboard = () => {
             <div className="card bg-white p-4 flex flex-col justify-between items-center text-center hover:border-[var(--color-primary)]/40 hover:shadow-md transition-all duration-300">
               <div>
                 <h3 className="card-title-custom" style={{ margin: 0 }}>New Applications</h3>
-                <p className="stats-number" style={{ margin: '3px 0 0 0', lineHeight: 1.1 }}>{metrics.newApplications}</p>
+                <p className="stats-number" style={{ margin: '3px 0 0 0', lineHeight: 1.1 }}>{appointments.filter(a => a.status === 'Pending').length}</p>
               </div>
               <div className="text-red-500 font-semibold mt-2.5" style={{ fontSize: 'var(--text-caption)' }}>
                 ▼ 100% this week
@@ -1256,7 +1266,7 @@ const Dashboard = () => {
                     <tr className="border-b border-[var(--color-border)] last:border-0 hover:bg-[var(--color-sub-bg)] text-primary transition-all" style={{ fontSize: 'var(--text-caption)' }}>
                       <td className="py-2.5 px-3 font-bold text-left w-1/5">APPLICATIONS</td>
                       <td className="py-2.5 px-3 font-medium text-center w-1/5">{appointments.length}</td>
-                      <td className="py-2.5 px-3 font-medium text-center w-1/5">{appointments.filter(a => a.status === 'Pending Approval').length}</td>
+                      <td className="py-2.5 px-3 font-medium text-center w-1/5">{appointments.filter(a => a.status === 'Pending').length}</td>
                       <td className="py-2.5 px-3 font-medium text-center w-1/5 text-paragraph">{getLastUpdatedAppsText()}</td>
                       <td className="py-2.5 px-3 text-center w-1/5">
                         <button
@@ -1335,7 +1345,7 @@ const Dashboard = () => {
               <div className="block md:hidden space-y-3 flex-1 w-full">
                 {[
                   { name: 'INQUIRIES', total: inquiries.length, pending: pendingInquiriesCount, lastUpdated: getLastUpdatedText(inquiries).toUpperCase(), actionText: 'REVIEW', path: '/admin/inquiries', moduleKey: 'Inquiries' },
-                  { name: 'APPLICATIONS', total: appointments.length, pending: appointments.filter(a => a.status === 'Pending Approval').length, lastUpdated: getLastUpdatedAppsText(), actionText: 'REVIEW', path: '/admin/career', moduleKey: 'Career' },
+                  { name: 'APPLICATIONS', total: appointments.length, pending: appointments.filter(a => a.status === 'Pending').length, lastUpdated: getLastUpdatedAppsText(), actionText: 'REVIEW', path: '', moduleKey: 'Career' },
                   { name: 'ARTICLES', total: articles.length, pending: draftArticlesCount, lastUpdated: getLastUpdatedText(articles).toUpperCase(), actionText: 'PUBLISH', path: '/admin/article', moduleKey: 'Articles' },
                   { name: 'CASE STUDIES', total: caseStudies.length, pending: pendingCaseStudiesCount, lastUpdated: getLastUpdatedText(caseStudies).toUpperCase(), actionText: 'APPROVE', path: '/admin/casestudies', moduleKey: 'Case Studies' },
                   { name: 'REVIEWS', total: reviews.length, pending: pendingReviewsCount, lastUpdated: getLastUpdatedText(reviews).toUpperCase(), actionText: 'MODERATE', path: '#', moduleKey: 'Reviews' },
@@ -1388,32 +1398,33 @@ const Dashboard = () => {
                 {/* Sub-section 1: Today's Tasks */}
                 <div className="mb-4">
                   <div className="flex justify-between items-center mb-2 select-none">
-                    <span className="text-[10px] text-gray-400 font-bold uppercase tracking-wider">TODAY'S TASKS</span>
+                    <span className="text-[10px] text-black font-bold uppercase tracking-wider">TODAY'S TASKS</span>
                     <span className="bg-blue-50 text-blue-700 px-2 py-0.5 rounded-full font-bold text-[9px] uppercase tracking-wider">
                       {tasksList.filter(t => !t.isCompleted).length} PENDING
                     </span>
                   </div>
                   <div className="flex flex-col gap-1.5 mt-1">
-                    {tasksList.map((task) => (
-                      <div
-                        key={`today-${task.id}`}
-                        onClick={() => handleTaskClick(task)}
-                        className="flex items-center justify-between p-1.5 px-2.5 hover:bg-[var(--color-sub-bg)] rounded-[var(--radius-sm)] cursor-pointer transition-all border border-[var(--color-border)]/40 hover:border-blue-500/20"
-                      >
-                        <span className="font-semibold text-paragraph" style={{ fontSize: 'var(--text-caption)' }}>
-                          {task.text}
-                        </span>
-                        <button
-                          className="focus:outline-none cursor-pointer border-none bg-transparent flex items-center justify-center shrink-0"
-                        >
-                          {task.isCompleted ? (
-                            <span className="text-green-600 font-bold" style={{ fontSize: 'var(--text-caption)' }}>☑</span>
-                          ) : (
-                            <span className="text-paragraph opacity-40 font-bold" style={{ fontSize: 'var(--text-caption)' }}>☐</span>
-                          )}
-                        </button>
-                      </div>
-                    ))}
+                    <table className="w-full text-left border-collapse cursor-default select-none pointer-events-none">
+                      <tbody>
+                        {tasksList.map((task) => (
+                          <tr 
+                            key={`today-${task.id}`}
+                            className="border-b border-[var(--color-border)]/30 last:border-0"
+                          >
+                            <td className="py-2 px-1 text-left font-semibold text-paragraph" style={{ fontSize: 'var(--text-caption)', verticalAlign: 'middle' }}>
+                              {task.text}
+                            </td>
+                            <td className="py-2 px-1 text-right shrink-0" style={{ width: '40px', verticalAlign: 'middle' }}>
+                              {task.isCompleted ? (
+                                <span className="text-green-600 font-bold" style={{ fontSize: 'var(--text-caption)' }}>☑</span>
+                              ) : (
+                                <span className="text-paragraph opacity-40 font-bold" style={{ fontSize: 'var(--text-caption)' }}>☐</span>
+                              )}
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
                   </div>
                 </div>
 
@@ -1423,7 +1434,7 @@ const Dashboard = () => {
                     onClick={() => setIsPendingExpanded(!isPendingExpanded)}
                     className="flex justify-between items-center mb-2 select-none cursor-pointer p-1 rounded hover:bg-[var(--color-sub-bg)]/40 transition-all"
                   >
-                    <span className="text-[10px] text-gray-400 font-bold uppercase tracking-wider flex items-center gap-1.5">
+                    <span className="text-[10px] text-black font-bold uppercase tracking-wider flex items-center gap-1.5">
                       PENDING SECTION
                       <span className="transition-transform duration-200 inline-block text-[8px]" style={{ transform: isPendingExpanded ? 'rotate(90deg)' : 'rotate(0deg)' }}>
                         ▶
@@ -1436,26 +1447,27 @@ const Dashboard = () => {
                   
                   {isPendingExpanded && (
                     <div className="flex flex-col gap-1.5 mt-1 border-l-2 border-amber-200/50 pl-2 ml-1">
-                      {pendingTasksList.map((task) => (
-                        <div
-                          key={`pending-${task.id}`}
-                          onClick={() => handleTaskClick(task)}
-                          className="flex items-center justify-between p-1.5 px-2.5 hover:bg-[var(--color-sub-bg)] rounded-[var(--radius-sm)] cursor-pointer transition-all border border-[var(--color-border)]/40 hover:border-blue-500/20"
-                        >
-                          <span className="font-semibold text-paragraph" style={{ fontSize: 'var(--text-caption)' }}>
-                            {task.text}
-                          </span>
-                          <button
-                            className="focus:outline-none cursor-pointer border-none bg-transparent flex items-center justify-center shrink-0"
-                          >
-                            {task.isCompleted ? (
-                              <span className="text-green-600 font-bold" style={{ fontSize: 'var(--text-caption)' }}>☑</span>
-                            ) : (
-                              <span className="text-paragraph opacity-40 font-bold" style={{ fontSize: 'var(--text-caption)' }}>☐</span>
-                            )}
-                          </button>
-                        </div>
-                      ))}
+                      <table className="w-full text-left border-collapse cursor-default select-none pointer-events-none">
+                        <tbody>
+                          {pendingTasksList.map((task) => (
+                            <tr 
+                              key={`pending-${task.id}`}
+                              className="border-b border-[var(--color-border)]/30 last:border-0"
+                            >
+                              <td className="py-2 px-1 text-left font-semibold text-paragraph" style={{ fontSize: 'var(--text-caption)', verticalAlign: 'middle' }}>
+                                {task.text}
+                              </td>
+                              <td className="py-2 px-1 text-right shrink-0" style={{ width: '40px', verticalAlign: 'middle' }}>
+                                {task.isCompleted ? (
+                                  <span className="text-green-600 font-bold" style={{ fontSize: 'var(--text-caption)' }}>☑</span>
+                                ) : (
+                                  <span className="text-paragraph opacity-40 font-bold" style={{ fontSize: 'var(--text-caption)' }}>☐</span>
+                                )}
+                              </td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
                     </div>
                   )}
                 </div>
@@ -2675,81 +2687,71 @@ const Dashboard = () => {
           <DialogTitle style={{ borderBottom: '1px solid var(--color-border)', paddingBottom: '12px' }}>
             <div className="flex justify-between items-center text-primary">
               <div>
-                <h2 className="font-bold text-primary" style={{ fontSize: 'var(--text-caption)', margin: 0 }}>
+                <h2 className="font-bold text-black" style={{ fontSize: 'var(--text-caption)', margin: 0 }}>
                   APPOINTMENTS PENDING APPROVAL
                 </h2>
                 <p className="text-[10px] text-[var(--color-paragraph)] opacity-60 mt-0.5 font-normal" style={{ margin: 0 }}>
                   Review and approve appointments sent by HR
                 </p>
               </div>
-              <button
-                onClick={() => setShowAppointmentApprovalModal(false)}
-                className="w-6 h-6 rounded-full bg-[var(--color-sub-bg)] hover:bg-red-500/20 hover:text-red-600 transition flex items-center justify-center text-paragraph opacity-60 hover:opacity-100 cursor-pointer"
-                style={{ fontSize: 'var(--text-caption)' }}
-              >
-                ✕
-              </button>
             </div>
           </DialogTitle>
 
           <DialogContent style={{ paddingTop: '16px' }} className="max-h-[450px] overflow-y-auto pr-1">
-            <div className="space-y-4">
-              {appointments.filter(a => a.status === 'Pending Approval').length === 0 ? (
-                <p className="text-center py-8 text-xs text-[var(--color-paragraph)] opacity-60">
-                  No appointments pending approval.
-                </p>
+            <table className="w-full text-left border-collapse" style={{ fontSize: 'var(--text-caption)' }}>
+              <thead>
+                <tr className="border-b border-[var(--color-border)]">
+                  <th className="py-2 font-bold text-black">Candidate</th>
+                  <th className="py-2 font-bold text-black">Details</th>
+                  <th className="py-2 font-bold text-black">Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+              {appointments.filter(a => a.status === 'Pending').length === 0 ? (
+                <tr>
+                  <td colSpan="3" className="py-8 text-center text-[var(--color-paragraph)] opacity-60">
+                    No appointments pending approval.
+                  </td>
+                </tr>
               ) : (
-                appointments.filter(a => a.status === 'Pending Approval').map((app) => {
+                appointments.filter(a => a.status === 'Pending').map((app) => {
                   const candidateApp = applications.find(a => a.email === app.email);
                   const resumeUrl = candidateApp ? candidateApp.resumeUrl : null;
 
                   return (
-                    <div key={app.id} className="border border-[var(--color-border)] rounded-[var(--radius-sm)] p-4 bg-[var(--color-sub-bg)]/20 hover:bg-[var(--color-sub-bg)]/40 transition-colors flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
-                      <div className="text-left">
+                    <tr key={app.id} className="border-b border-[var(--color-border)]">
+                      <td className="py-3">
                         <p className="font-bold text-primary" style={{ margin: 0 }}>{app.name}</p>
                         <p className="text-paragraph opacity-60 text-[10px]" style={{ margin: 0 }}>{app.email}</p>
-                        <div className="mt-2 text-xs text-[var(--color-paragraph)] opacity-90 space-y-0.5">
-                          <p><span className="font-semibold text-primary">Position:</span> {app.position}</p>
-                          <p><span className="font-semibold text-primary">Interviewer:</span> {app.interviewer}</p>
-                          <p><span className="font-semibold text-primary">Date & Time:</span> {app.date}</p>
-                          <p><span className="font-semibold text-primary">Mode:</span> {app.mode}</p>
+                      </td>
+                      <td className="py-3 text-[var(--color-paragraph)] opacity-90">
+                        <p style={{ margin: 0 }}><span className="font-semibold text-primary">Pos:</span> {app.position}</p>
+                        <p style={{ margin: 0 }}><span className="font-semibold text-primary">Date:</span> {app.date}</p>
+                      </td>
+                      <td className="py-3">
+                        <div className="flex gap-2">
+                          <button
+                            type="button"
+                            onClick={() => handleApproveAppointment(app.id)}
+                            className="px-2 py-1 text-[10px] font-bold bg-green-50 border border-green-200 hover:bg-green-100 text-green-700 rounded-[var(--radius-sm)] transition"
+                          >
+                            Approve
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => handleRejectAppointment(app.id)}
+                            className="px-2 py-1 text-[10px] font-bold bg-red-50 border border-red-200 hover:bg-red-100 text-red-700 rounded-[var(--radius-sm)] transition"
+                          >
+                            Reject
+                          </button>
                         </div>
-                        <div className="mt-3">
-                          {resumeUrl ? (
-                            <a
-                              href={resumeUrl}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              className="inline-flex items-center gap-1 px-2.5 py-1 bg-[var(--color-primary)]/10 hover:bg-[var(--color-primary)]/20 border border-[var(--color-primary)]/20 text-[var(--color-primary)] rounded-[var(--radius-sm)] transition-all font-bold text-[10px] no-underline cursor-pointer"
-                            >
-                              View Resume
-                            </a>
-                          ) : (
-                            <span className="text-[10px] text-slate-400">No Resume Uploaded</span>
-                          )}
-                        </div>
-                      </div>
-                      <div className="flex gap-2 sm:self-center">
-                        <button
-                          type="button"
-                          onClick={() => handleApproveAppointment(app.id)}
-                          className="px-3.5 py-1.5 text-xs font-bold bg-green-50 border border-green-200 hover:bg-green-100 text-green-700 rounded-[var(--radius-sm)] transition cursor-pointer"
-                        >
-                          Approve
-                        </button>
-                        <button
-                          type="button"
-                          onClick={() => handleRejectAppointment(app.id)}
-                          className="px-3.5 py-1.5 text-xs font-bold bg-red-50 border border-red-200 hover:bg-red-100 text-red-700 rounded-[var(--radius-sm)] transition cursor-pointer"
-                        >
-                          Reject
-                        </button>
-                      </div>
-                    </div>
+                      </td>
+                    </tr>
                   );
                 })
               )}
-            </div>
+              </tbody>
+            </table>
           </DialogContent>
 
           <DialogActions style={{ borderTop: '1px solid var(--color-border)', paddingTop: '10px' }} className="flex justify-end gap-2.5">
@@ -2757,8 +2759,8 @@ const Dashboard = () => {
               onClick={() => setShowAppointmentApprovalModal(false)}
               variant="outlined"
               style={{
-                borderColor: 'var(--color-border)',
-                color: 'var(--color-paragraph)',
+                borderColor: 'var(--color-primary)',
+                color: 'var(--color-primary)',
                 borderRadius: 'var(--radius-sm)',
                 textTransform: 'none',
                 fontWeight: 'var(--font-semibold)',

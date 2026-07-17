@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { FiBell, FiChevronDown, FiMenu, FiX, FiUser, FiLogOut } from 'react-icons/fi';
+import { FiBell, FiChevronDown, FiMenu, FiX, FiUser, FiLogOut, FiGlobe } from 'react-icons/fi';
 import {
   getAdminStatsAPI,
   getAdminApplicationsAPI,
@@ -344,6 +344,14 @@ const AdminNavbar = () => {
               </Link>
             );
           })}
+          
+          {/* View Website Link */}
+          <Link
+            to="/"
+            className="h-full flex items-center px-1 text-xs font-[var(--font-bold)] uppercase tracking-wider text-[var(--color-primary)] hover:text-[var(--color-primary-hover)] transition-all duration-200 cursor-pointer"
+          >
+            View Website
+          </Link>
         </div>
 
         {/* Right: Actions */}
@@ -435,6 +443,14 @@ const AdminNavbar = () => {
                   <FiUser size={14} />
                   View Profile
                 </Link>
+                <Link
+                  to="/"
+                  onClick={() => setShowProfileDropdown(false)}
+                  className="flex items-center gap-2 px-4 py-2 text-xs font-semibold text-[var(--color-paragraph)] hover:bg-[var(--color-sub-bg)] transition-colors"
+                >
+                  <FiGlobe size={14} />
+                  View Website
+                </Link>
                 <button
                   onClick={() => {
                     setShowProfileDropdown(false);
@@ -510,6 +526,15 @@ const AdminNavbar = () => {
                     </Link>
                   );
                 })}
+                
+                <Link
+                  to="/"
+                  onClick={() => setIsMobileMenuOpen(false)}
+                  className="text-xs font-[var(--font-bold)] uppercase tracking-wider text-[var(--color-primary)] hover:text-[var(--color-primary-hover)] transition-colors py-1.5 flex items-center gap-2 mt-2"
+                >
+                  <FiGlobe size={14} />
+                  View Website
+                </Link>
               </div>
 
               {/* Bottom user profile section */}

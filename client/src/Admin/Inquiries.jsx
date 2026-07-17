@@ -81,6 +81,69 @@ const Inquiries = () => {
     const [showConfirmModal, setShowConfirmModal] = useState(false);
     const [confirmModalAction, setConfirmModalAction] = useState(null); // "delete" | "delete_all"
     const [deleteTargetId, setDeleteTargetId] = useState(null);
+    const [showNotesModal, setShowNotesModal] = useState(false);
+
+    const applyFormat = (type) => {
+        const textarea = document.getElementById("proposal-textarea");
+        if (!textarea) return;
+
+        const start = textarea.selectionStart;
+        const end = textarea.selectionEnd;
+        const text = textarea.value;
+        const selectedText = text.substring(start, end);
+
+        let formattedText = "";
+        let newCursorPos = start;
+
+        switch (type) {
+            case "bold":
+                formattedText = `**${selectedText || "bold text"}**`;
+                newCursorPos = start + (selectedText ? formattedText.length : 2);
+                break;
+            case "italic":
+                formattedText = `*${selectedText || "italic text"}*`;
+                newCursorPos = start + (selectedText ? formattedText.length : 1);
+                break;
+            case "underline":
+                formattedText = `<u>${selectedText || "underlined text"}</u>`;
+                newCursorPos = start + (selectedText ? formattedText.length : 3);
+                break;
+            case "list":
+                formattedText = `\n- ${selectedText || "list item"}`;
+                newCursorPos = start + formattedText.length;
+                break;
+            case "link":
+                formattedText = `[${selectedText || "link text"}](https://example.com)`;
+                newCursorPos = start + 1;
+                break;
+            default:
+                return;
+        }
+
+        const newContent = text.substring(0, start) + formattedText + text.substring(end);
+        setProposalContent(newContent);
+
+        setTimeout(() => {
+            textarea.focus();
+            textarea.setSelectionRange(start, newCursorPos);
+        }, 0);
+    };
+
+    const handleFileChange = (e) => {
+        const files = Array.from(e.target.files);
+        const mapped = files.map(file => ({
+            name: file.name,
+            size: (file.size / (1024 * 1024)).toFixed(2) + ' MB',
+            raw: file
+        }));
+        setProposalAttachments(prev => [...prev, ...mapped]);
+        toast.success("Files attached successfully!");
+    };
+
+    const handleDeleteAttachment = (indexToRemove) => {
+        setProposalAttachments(prev => prev.filter((_, idx) => idx !== indexToRemove));
+        toast.success("Attachment removed");
+    };
 
     useEffect(() => {
         fetchInquiries();
@@ -101,7 +164,47 @@ const Inquiries = () => {
                         return [newInq, ...prev];
                     });
                     setSelected(currSelected => currSelected ? currSelected : newInq);
-                    toast.success(`New inquiry received from ${newInq.fullName}`);
+                    toast.custom((t) => (
+                        <div className="bg-[#012959] text-white p-4 rounded-[var(--radius-sm)] shadow-2xl border border-blue-500/20 max-w-sm w-full flex flex-col gap-2.5 text-left font-primary font-normal">
+                            <div className="flex justify-between items-start font-normal">
+                                <div>
+                                    <span className="text-[10px] text-blue-200 font-bold uppercase tracking-wider block mb-0.5">Real-time Notification</span>
+                                    <h4 className="font-bold text-sm leading-tight text-white" style={{ margin: 0 }}>New inquiry received from {newInq.fullName}</h4>
+                                    <p className="text-xs text-blue-100 opacity-80 mt-1" style={{ margin: 0 }}>Service: {newInq.service}</p>
+                                </div>
+                                <button 
+                                    onClick={() => toast.dismiss(t)}
+                                    className="text-white hover:text-blue-200 bg-transparent border-0 cursor-pointer text-xs p-0.5 font-bold focus:outline-none"
+                                >
+                                    ✕
+                                </button>
+                            </div>
+                            <div className="flex gap-2 justify-end border-t border-blue-800 pt-2.5 font-normal">
+                                <button 
+                                    onClick={() => {
+                                        toast.dismiss(t);
+                                        handleDelete(newInq._id);
+                                    }}
+                                    className="bg-red-600 hover:bg-red-700 text-white text-[10px] font-bold py-1 px-3 rounded-[var(--radius-sm)] border-none cursor-pointer flex items-center gap-1 transition"
+                                >
+                                    <FiTrash2 size={11} /> Delete
+                                </button>
+                                <button 
+                                    onClick={() => {
+                                        toast.dismiss(t);
+                                        setSelected(newInq);
+                                        setActiveView("inquiries");
+                                    }}
+                                    className="bg-blue-600 hover:bg-blue-700 text-white text-[10px] font-bold py-1 px-3 rounded-[var(--radius-sm)] border-none cursor-pointer transition"
+                                >
+                                    View
+                                </button>
+                            </div>
+                        </div>
+                    ), {
+                        duration: 10000,
+                        position: "top-center"
+                    });
                 } else if (parsed.type === "update_inquiry") {
                     const updatedInq = parsed.data;
                     setInquiries(prev => prev.map(inq => inq._id === updatedInq._id ? updatedInq : inq));
@@ -501,7 +604,9 @@ Strivo Consultancy Team`);
 
         // Handle Action
         if (action === 'preview') {
-            window.open(doc.output('bloburl'), '_blank');
+            const blob = doc.output('blob');
+            const blobURL = URL.createObjectURL(blob);
+            window.open(blobURL, '_blank');
             toast.success("Generating preview of proposal PDF...");
         } else {
             doc.save(`Proposal_${(selected.fullName || 'Client').replace(/\s+/g, '_')}.pdf`);
@@ -813,7 +918,11 @@ Strivo Consultancy Team`);
                                     </div>
                                 ))}
                             </div>
-                            <button className="text-[11px] text-[var(--color-primary)] font-[var(--font-normal)] mt-3 block hover:underline w-full text-center bg-transparent border-0" style={{ fontWeight: 'normal' }}>
+                            <button 
+                                onClick={() => setShowNotesModal(true)}
+                                className="text-[11px] text-[var(--color-primary)] font-[var(--font-normal)] mt-3 block hover:underline w-full text-center bg-transparent border-0 cursor-pointer" 
+                                style={{ fontWeight: 'normal' }}
+                            >
                                 View All Notes
                             </button>
                         </div>
@@ -841,14 +950,15 @@ Strivo Consultancy Team`);
                             </label>
                             {/* Rich toolbar mock */}
                             <div className="flex items-center gap-1 border border-[var(--color-border)] border-b-0 px-2 py-1.5 bg-gray-55 rounded-t-[var(--radius-sm)] flex-wrap text-xs text-gray-550">
-                                <button className="font-normal px-1.5 py-0.5 hover:bg-gray-200 rounded border-0 bg-transparent cursor-pointer">B</button>
-                                <button className="italic px-1.5 py-0.5 hover:bg-gray-200 rounded border-0 bg-transparent cursor-pointer">I</button>
-                                <button className="underline px-1.5 py-0.5 hover:bg-gray-200 rounded border-0 bg-transparent cursor-pointer">U</button>
+                                <button type="button" onMouseDown={(e) => e.preventDefault()} onClick={() => applyFormat('bold')} className="font-bold px-1.5 py-0.5 hover:bg-gray-200 rounded border-0 bg-transparent cursor-pointer">B</button>
+                                <button type="button" onMouseDown={(e) => e.preventDefault()} onClick={() => applyFormat('italic')} className="italic px-1.5 py-0.5 hover:bg-gray-200 rounded border-0 bg-transparent cursor-pointer">I</button>
+                                <button type="button" onMouseDown={(e) => e.preventDefault()} onClick={() => applyFormat('underline')} className="underline px-1.5 py-0.5 hover:bg-gray-200 rounded border-0 bg-transparent cursor-pointer">U</button>
                                 <span className="text-gray-300 mx-1">|</span>
-                                <button className="px-1.5 py-0.5 hover:bg-gray-200 rounded border-0 bg-transparent cursor-pointer">List</button>
-                                <button className="px-1.5 py-0.5 hover:bg-gray-200 rounded border-0 bg-transparent cursor-pointer">Link</button>
+                                <button type="button" onMouseDown={(e) => e.preventDefault()} onClick={() => applyFormat('list')} className="px-1.5 py-0.5 hover:bg-gray-200 rounded border-0 bg-transparent cursor-pointer">List</button>
+                                <button type="button" onMouseDown={(e) => e.preventDefault()} onClick={() => applyFormat('link')} className="px-1.5 py-0.5 hover:bg-gray-200 rounded border-0 bg-transparent cursor-pointer">Link</button>
                             </div>
                             <textarea
+                                id="proposal-textarea"
                                 value={proposalContent}
                                 rows={10}
                                 onChange={(e) => setProposalContent(e.target.value)}
@@ -890,7 +1000,17 @@ Strivo Consultancy Team`);
                             <label className="text-[11px] font-[var(--font-normal)] text-[var(--color-black)] uppercase" style={{ fontWeight: 'normal' }}>
                                 Attachments
                             </label>
-                            <div className="border border-dashed border-gray-300 rounded-[var(--radius-sm)] p-4 flex flex-col items-center justify-center gap-1 bg-gray-50/50 hover:bg-gray-55 transition cursor-pointer">
+                            <input
+                                type="file"
+                                id="proposal-file-input"
+                                multiple
+                                onChange={handleFileChange}
+                                className="hidden"
+                            />
+                            <div 
+                                onClick={() => document.getElementById('proposal-file-input')?.click()}
+                                className="border border-dashed border-gray-300 rounded-[var(--radius-sm)] p-4 flex flex-col items-center justify-center gap-1 bg-gray-50/50 hover:bg-gray-55 transition cursor-pointer"
+                            >
                                 <FiDownload className="text-gray-400 text-lg mb-1" />
                                 <span className="text-[11px] text-[var(--color-primary)] font-semibold">Drag & drop files here</span>
                                 <span className="text-[9px] text-gray-400">or click to browse (Max. 10MB)</span>
@@ -910,7 +1030,11 @@ Strivo Consultancy Team`);
                                                 <span className="font-semibold truncate text-[var(--color-black)]">{file.name}</span>
                                                 <span className="text-[9px] text-gray-400">({file.size})</span>
                                             </div>
-                                            <button className="text-red-550 hover:text-red-770 bg-transparent shrink-0 border-0">
+                                            <button 
+                                                type="button"
+                                                onClick={() => handleDeleteAttachment(idx)}
+                                                className="text-red-550 hover:text-red-770 bg-transparent shrink-0 border-0 cursor-pointer"
+                                            >
                                                 <FiTrash2 size={13} />
                                             </button>
                                         </div>
@@ -1857,6 +1981,40 @@ Strivo Consultancy Team`);
                             <button
                                 onClick={() => setShowAnalyticsModal(false)}
                                 className="border border-[var(--color-primary)] text-[var(--color-primary)] bg-transparent hover:bg-[var(--color-primary)] hover:text-white transition font-semibold cursor-pointer rounded-[var(--radius-sm)] text-xs flex items-center justify-center border-solid h-9 px-6"
+                                style={{ fontWeight: 'normal' }}
+                            >
+                                Close
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
+
+            {/* View Notes Modal */}
+            {showNotesModal && (
+                <div className="fixed inset-0 z-[999999] flex items-center justify-center bg-black/50 backdrop-blur-xs p-4">
+                    <div className="absolute inset-0" onClick={() => setShowNotesModal(false)} />
+                    <div className="relative bg-white p-6 rounded-[var(--radius-sm)] shadow-xl max-w-lg w-full border border-[var(--color-border)] text-left font-primary font-normal z-10">
+                        <h3 className="text-[var(--color-primary)] font-bold text-lg mb-4">Inquiry Notes</h3>
+                        <div className="space-y-3 max-h-[300px] overflow-y-auto pr-1">
+                            {proposalNotes.length === 0 ? (
+                                <p className="text-gray-400 text-xs py-4 text-center">No notes found for this inquiry.</p>
+                            ) : (
+                                proposalNotes.map((note, idx) => (
+                                    <div key={idx} className="bg-gray-55 p-3 rounded-[var(--radius-sm)] border border-gray-200 text-xs">
+                                        <p className="text-[var(--color-paragraph)] leading-normal">{note.text}</p>
+                                        <div className="mt-2 flex justify-between items-center text-[10px] text-gray-400 font-medium">
+                                            <span>{note.author}</span>
+                                            <span>{note.time}</span>
+                                        </div>
+                                    </div>
+                                ))
+                            )}
+                        </div>
+                        <div className="flex justify-end gap-3 mt-6 pt-4 border-t border-[var(--color-border)] font-normal">
+                            <button
+                                onClick={() => setShowNotesModal(false)}
+                                className="bg-[var(--color-primary)] text-white hover:bg-[var(--color-primary)]/90 transition font-normal cursor-pointer rounded-[var(--radius-sm)] text-xs flex items-center justify-center border-none h-8 px-4"
                                 style={{ fontWeight: 'normal' }}
                             >
                                 Close

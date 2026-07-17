@@ -1,0 +1,594 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Strivo Consultancy — Complete Project Documentation</title>
+  <style>
+
+    body { font-family: Calibri, Arial, sans-serif; font-size: 11pt; line-height: 1.5; color: #333333; max-width: 900px; margin: 40px auto; padding: 0 20px; }
+    h1 { font-family: 'Calibri Light', Calibri, sans-serif; font-size: 20pt; color: #012959; border-bottom: 2px solid #012959; padding-bottom: 6px; margin-top: 35px; margin-bottom: 15px; page-break-before: always; }
+    h1.no-break { page-break-before: avoid !important; }
+    h2 { font-family: Calibri, sans-serif; font-size: 15pt; color: #012959; margin-top: 25px; border-bottom: 1px solid #ccc; padding-bottom: 4px; margin-bottom: 12px; }
+    h3 { font-family: Calibri, sans-serif; font-size: 12pt; color: #111111; font-weight: bold; margin-top: 20px; margin-bottom: 8px; }
+    p { margin: 8px 0 12px 0; }
+    table { border-collapse: collapse; width: 100%; margin: 15px 0 25px 0; font-size: 10pt; font-family: Calibri, sans-serif; }
+    th { background-color: #012959; color: #ffffff; font-weight: bold; padding: 8px 10px; text-align: left; border: 1px solid #012959; }
+    td { padding: 7px 10px; border: 1px solid #cccccc; vertical-align: top; }
+    tr:nth-child(even) td { background-color: #f5f7fa; }
+    .meta-table td { border: none; background: none; padding: 4px 10px 4px 0; font-size: 10.5pt; }
+    .meta-table { margin-bottom: 20px; width: 100%; }
+    pre { font-family: Consolas, 'Courier New', monospace; font-size: 9.5pt; color: #012959; background-color: #f0f4f8; border: 1px solid #b0c4de; padding: 15px; border-radius: 4px; line-height: 1.35; white-space: pre; margin: 15px 0; }
+    code { font-family: Consolas, 'Courier New', monospace; font-size: 10pt; color: #012959; background-color: #f0f4f8; padding: 1px 4px; border-radius: 3px; }
+    ul, ol { margin: 8px 0 12px 24px; padding-left: 0; }
+    li { margin-bottom: 5px; }
+    hr { border: 0; border-top: 1px solid #ccc; margin: 30px 0; }
+    
+  </style>
+</head>
+<body>
+<div style="text-align: center; margin-bottom: 40px; padding: 20px; border-bottom: 3px double #012959;">
+  <h1 class="no-break" style="font-size: 26pt; color: #012959; margin-bottom: 10px; font-weight: bold; border-bottom: none; page-break-before: avoid;">Strivo Consultancy</h1>
+  <p style="font-size: 14pt; color: #555; font-style: italic; margin-top: 0; margin-bottom: 25px;">Complete Project Documentation — Technical & Functional Specifications</p>
+  <table class="meta-table" style="width: 50%; margin: 20px auto; text-align: left;">
+    <tr><td style="font-weight: bold; color: #012959; width: 35%;">Author:</td><td>Penoft Technologies Team</td></tr>
+    <tr><td style="font-weight: bold; color: #012959;">Client:</td><td>Strivo Consulting Corp</td></tr>
+    <tr><td style="font-weight: bold; color: #012959;">Format:</td><td>Microsoft Word Ready (.html)</td></tr>
+    <tr><td style="font-weight: bold; color: #012959;">Version:</td><td>1.2.0</td></tr>
+    <tr><td style="font-weight: bold; color: #012959;">Last Updated:</td><td>July 17, 2026</td></tr>
+  </table>
+</div>
+<p>Strivo Consultancy is an enterprise-grade, full-stack web application engineered to manage and streamline corporate consultancy operations, client engagement, talent acquisition, and content management.</p>
+<hr>
+<h1 class="no-break">1. System Architecture, Tech Stack & Deployment</h1>
+<p>The application follows a decoupled client-server architecture using a RESTful API pattern communicating over JSON.</p>
+<h2>Deployment & Hosting (Vercel)</h2>
+<p>Both the client and server codebases are fully deployed and hosted on Vercel:</p>
+<ul>
+  <li>  <strong>Frontend (Client)</strong>: Deployed as a high-performance static web application with edge-routing support.</li>
+  <li>  <strong>Backend (Server)</strong>: Deployed using <strong>Vercel Serverless Functions</strong>. The <code>vercel.json</code> configuration file at the server root directs incoming <code>/api/*</code> endpoints to the Node.js/Express server initializer (<code>src/server.js</code>), running them on demand.</li>
+  <li>  <strong>Cloud Data Stores (Database)</strong>: MongoDB hosted globally via MongoDB Atlas clusters.</li>
+  <li>  <strong>Cloud Data Stores (Media Storage)</strong>: Cloudinary holds static media assets, including candidates' resumes, CVs, and blog images.</li>
+</ul>
+<h2>Tech Stack Details</h2>
+<h3>Frontend (Client)</h3>
+<ul>
+  <li>  <strong>Core Library</strong>: React 19</li>
+  <li>  <strong>Build Tool</strong>: Vite (configured with lazy-loaded code-splitting for performance optimization)</li>
+  <li>  <strong>Styling</strong>: Tailwind CSS v4, Material UI (MUI v5 with Emotion engine)</li>
+  <li>  <strong>Routing</strong>: React Router DOM (v6) for declarative routing and dynamic path parameters</li>
+  <li>  <strong>Animations</strong>: Framer Motion, OGL, React CountUp</li>
+  <li>  <strong>Data Visualization</strong>: Recharts (for dynamic admin graphs and combined reports)</li>
+  <li>  <strong>Notification Engine</strong>: Sonner & React-Toastify</li>
+  <li>  <strong>Client State & HTTP</strong>: Axios (with custom request/response interceptors for automatic JWT propagation)</li>
+</ul>
+<h3>Backend (Server)</h3>
+<ul>
+  <li>  <strong>Runtime Environment</strong>: Node.js</li>
+  <li>  <strong>Web Framework</strong>: Express.js (v5)</li>
+  <li>  <strong>Database</strong>: MongoDB with Mongoose ODM (Object Document Mapper)</li>
+  <li>  <strong>Security & Hashing</strong>: JSON Web Token (JWT) for stateless session handling, BcryptJS for cryptography/password hashing</li>
+  <li>  <strong>File Management</strong>: Multer (in-memory buffers) and Cloudinary API (storage integration)</li>
+  <li>  <strong>Email Engine</strong>: Nodemailer (configured with secure SMTP TLS)</li>
+  <li>  <strong>Resume Parsing</strong>: PDF-Parse (for PDF extraction) and Mammoth (for raw DOCX XML extraction)</li>
+</ul>
+<hr>
+<h1>2. Core Modules (Frontend & Backend)</h1>
+<h2>Frontend (Client) Modules</h2>
+<p>The frontend is divided into five main modules:</p>
+<ol>
+  <li><strong>Auth & Route Protection Module</strong>: Handles local storage of authentication states (<code>adminToken</code>, <code>adminUser</code>), configures custom HTTP-only request interceptors inside Axios to auto-inject Bearer tokens, and wraps restricted routes inside <code>ProtectedRoute.jsx</code>.</li>
+  <li><strong>Routing & App Shell Module</strong>: Manages URL state mappings and dynamic routes in <code>App.jsx</code>, sets up global lazy-loaded route boundaries, and handles page scroll behaviors (<code>ScrollToTop</code>).</li>
+  <li><strong>UI/UX Components Module</strong>: Shared reusable UI elements under <code>src/Components/</code> such as <code>Navbar.jsx</code>, <code>AdminNavbar.jsx</code>, <code>Footer.jsx</code>, <code>SEO.jsx</code>, <code>LoadingIndicator.jsx</code>, <code>ErrorBoundary.jsx</code>, <code>Ready.jsx</code>, and dynamic dashboard elements (<code>CaseStudyFilters.jsx</code>, <code>CaseStudyTable.jsx</code>, <code>CaseStudyStats.jsx</code>).</li>
+  <li><strong>API Services Module</strong>: Located in <code>src/services/</code> and contains outbound network communication helpers (<code>allApi.js</code> for CRUD operations, <code>commonApi.js</code> for generic HTTP requests, and <code>cookieHelper.js</code> / <code>serverUrl.js</code> for configuration).</li>
+  <li><strong>Page Modules</strong>: Page directories holding UI page files for both Client-Facing and Administrative Views.</li>
+</ol>
+<h2>Backend (Server) Modules</h2>
+<p>The backend is composed of six logical modules:</p>
+<ol>
+  <li><strong>Database Connection & Config Module (<code>src/config/</code>)</strong>: Includes <code>db.js</code> (Mongoose connection to Atlas), <code>cloudinary.js</code> (Cloudinary API wrappers), and <code>mail.js</code> (Nodemailer SMTP transport protocols).</li>
+  <li><strong>Security & Auth Middleware Module (<code>src/middlewares/</code>)</strong>: Houses <code>authMiddleware.js</code> which decodes incoming JWTs, matches user role claims, and enforces Role-Based Access Control (RBAC).</li>
+  <li><strong>API Routing Module (<code>src/routes/</code>)</strong>: Maps incoming HTTP methods (GET, POST, PUT, DELETE) directly to respective controllers (e.g., <code>adminRoutes.js</code>, <code>careerRoutes.js</code>, <code>caseStudyRoutes.js</code>).</li>
+  <li><strong>Controllers Module (<code>src/controllers/</code>)</strong>: Executes core business logic, orchestrates data validation, and structures standard JSON response payloads.</li>
+  <li><strong>Data Schemas & Persistence Models Module (<code>src/models/</code>)</strong>: Declares Mongoose schemas representing database collections (e.g., <code>Admin.js</code>, <code>CareerApplication.js</code>, <code>CaseStudy.js</code>).</li>
+  <li><strong>Utility & Processing Parsers Module (<code>src/utils/</code>)</strong>: Includes <code>resumeParser.js</code> to convert pdf/docx buffers into plain text and apply custom keyword filters.</li>
+</ol>
+<hr>
+<h1>3. Directory Structure</h1>
+<h2>A. Frontend Directory Layout</h2>
+<pre>client/
+├── public/                 # Static public assets
+└── src/                    # Source Code
+    ├── Admin/              # Administrative & HR Portal Views (19 files)
+    │   ├── Login.jsx              # Admin/HR portal entrance login verification
+    │   ├── Register.jsx           # Account creation with role selector
+    │   ├── ForgotPassword.jsx     # Sends OTP email for credential recovery
+    │   ├── ResetPassword.jsx      # Updates password via validated OTP
+    │   ├── Profile.jsx            # Account edits & Bcrypt password modification
+    │   ├── Dashboard.jsx          # Admin dashboard, tasks checklists, and reviews approval
+    │   ├── Inquiries.jsx          # Manage client inquiries, email, and proposal actions
+    │   ├── CaseStudies.jsx        # Admin case studies table list
+    │   ├── CreateCaseStudy.jsx    # Create case study form (future date draft triggers)
+    │   ├── EditCaseStudy.jsx      # Edit case study form
+    │   ├── ArticlesAdmin.jsx      # Admin blog posts table list
+    │   ├── CreateArticle.jsx      # Create blog form (enforces future date draft)
+    │   ├── EditArticle.jsx        # Edit article details / replace cover photos
+    │   ├── Admincareers.jsx       # Job vacancies sub-tabs and resume parser match list
+    │   ├── InterviewsAdmin.jsx    # Interview schedulers and Nodemailer calendar invites
+    │   ├── AppointmentsAdmin.jsx  # Track and schedule consulting appointments
+    │   ├── TalentPoolAdmin.jsx    # General database indexing candidates
+    │   ├── CreateJob.jsx          # Add vacancy positions form
+    │   └── EditJob.jsx            # Modify active vacancies form
+    │
+    ├── pages/              # Public Facing Pages (20 views)
+    │   ├── Home.jsx               # Landing page with services highlights, reviews slider
+    │   ├── About.jsx              # Company history, milestone timeline, executive bios
+    │   ├── Contact.jsx            # Inquiry submissions form (integrates contact API)
+    │   ├── Insight.jsx            # Insights blog list feed
+    │   ├── Article.jsx            # Detailed article reading layout
+    │   ├── CaseStudies.jsx        # Grid displaying success stories with category filters
+    │   ├── CaseStudyDetails.jsx   # Detailed viewer displaying individual case study
+    │   ├── Services.jsx           # Catalog directory of consultancy services
+    │   ├── Strategic.jsx          # Strategy growth and advisory landing page
+    │   ├── Operations.jsx         # Operational supply chain audits landing page
+    │   ├── Digital.jsx            # Digital transformation consulting landing page
+    │   ├── Change.jsx             # Restructuring advisory landing page
+    │   ├── Mission.jsx            # Layout highlighting company core missions
+    │   ├── Vision.jsx             # Layout outlining company visions
+    │   ├── Values.jsx             # Principle explainers (integrity, client-first, etc.)
+    │   ├── Career.jsx             # Job postings board and resume submittals form
+    │   ├── PrivacyPolicy.jsx      # Legal privacy rules notice
+    │   ├── TermsAndConditions.jsx # Standard usage terms and conditions
+    │   ├── Review.jsx             # Testimonial submission form
+    │   └── NotFound.jsx           # Fallback wildcard 404 page
+    │
+    ├── Components/         # Shared UI Components
+    │   ├── Navbar.jsx             # Public header navigation panel
+    │   ├── AdminNavbar.jsx        # Administrative side/top nav headers
+    │   ├── Footer.jsx             # General bottom links bar
+    │   ├── SEO.jsx                # Dynamically sets page meta titles and SEO tags
+    │   ├── ErrorBoundary.jsx      # Catches rendering crashes and displays indicators
+    │   ├── LoadingIndicator.jsx   # Global lazy load spinners
+    │   └── Ready.jsx              # Bottom CTA prompt block
+    │
+    ├── services/           # Network Communication Services
+    │   ├── allApi.js              # Maps individual CRUD endpoints to Axios calls
+    │   ├── commonApi.js           # Generic HTTP executor
+    │   ├── cookieHelper.js        # Helper to set/get HTTP session cookies
+    │   └── serverUrl.js           # Houses development/production URL mapping configs
+    │
+    ├── App.jsx             # React routing configurations & shell Layout
+    └── main.jsx            # Mounting node entry point</pre>
+<h2>B. Backend Directory Layout & Persistence Models</h2>
+<pre>server/
+└── src/                    # Source Code
+    ├── config/             # DB connection, Cloudinary, Mail configurations
+    │   ├── db.js                  # Sets up connection configurations with MongoDB Atlas
+    │   ├── cloudinary.js          # Sets up keys for file buffers storage on Cloudinary
+    │   └── mail.js                # TLS SMTP transporter configs for Nodemailer email relays
+    │
+    ├── middlewares/        # Middlewares
+    │   └── authMiddleware.js      # Verifies JWT session token and authorizes roles (RBAC)
+    │
+    ├── routes/             # REST Route mappings
+    │   ├── adminRoutes.js         # Mappings for Login, Register, Profile, and OTP reset
+    │   ├── articleRoutes.js       # Article CRUD routes
+    │   ├── careerRoutes.js        # Applications submission and jobs CRUD
+    │   ├── caseStudyRoutes.js     # Case study CRUD routes
+    │   ├── inquiryRoutes.js       # Inquiry queries list and email/proposal actions
+    │   ├── reviewRoutes.js        # Testimonials submit, review approval/deletions
+    │   ├── successStoryRoutes.js  # Success stories controllers link
+    │   └── talentRoutes.js        # Talent pool search directory
+    │
+    ├── controllers/        # Controllers executing business logic
+    │   ├── adminController.js     # Authenticates admins/HR, encrypts credentials, validates OTP
+    │   ├── articleController.js   # Stores and updates article data, deletes records
+    │   ├── careerController.js    # Job vacancies and applicant resume tracking
+    │   ├── caseStudyController.js # Manages case study metrics updates
+    │   ├── inquiryController.js   # Handles SMTP email drafts and proposal conversions
+    │   ├── reviewController.js    # Review approval setters and analytics triggers
+    │   ├── successStoryController.js # Saves success stories content
+    │   └── talentController.js    # Manages historic talent profile queries
+    │
+    ├── models/             # Mongoose DB schemas representing database collections
+    │   ├── Admin.js               # Admin/HR credentials schema (with password Bcrypt hash)
+    │   ├── Article.js             # Insights blog schema (title, status, date, cover URL)
+    │   ├── CareerApplication.js   # Job applications schema (CV Cloudinary path, parsed skills)
+    │   ├── CaseStudy.js           # Case studies metrics and data schema
+    │   ├── Job.js                 # Job description details and expiry date schema
+    │   ├── Review.js              # Feedback testimonials and rating schema
+    │   ├── Subscriber.js          # Newsletter subscriptions schema
+    │   ├── SuccessStory.js        # Success stories layout schema
+    │   ├── TalentSubmission.js    # General candidates database schema
+    │   └── inquiryModel.js        # Contact inquiry, employee assigned, follow-up schemas
+    │
+    ├── utils/              # Utilities
+    │   └── resumeParser.js        # CV parser text extractor (mammoth, pdf-parse)
+    │
+    └── server.js           # Server initialize entry point</pre>
+<hr>
+<hr>
+<h1>4. Application Pages & Routing</h1>
+<h2>Public / Client-Facing Subsystem (20 Pages)</h2>
+<p>These pages are located in <code>/client/src/pages/</code> and handle general visitors.</p>
+<ul>
+  <li>  <strong>Home (<code>/</code>)</strong> | File: <code>Home.jsx</code></li>
+  <li>  <em>Functionality</em>: Serves as the primary entry point for corporate visitors to establish branding.</li>
+  <li>  <em>What is displayed</em>:</li>
+  <li>  Hero header section with animated tagline animations.</li>
+  <li>  Live statistics ticker component counting system metrics (M&A transactions, projects scale, satisfaction thresholds).</li>
+  <li>  Practice specialties cards linking directly to consultation options.</li>
+  <li>  Approved client reviews carousel component displaying positive stars testimonials.</li>
+  <li>  Call-to-Action (CTA) footer section.</li>
+  <li>  <strong>About Us (<code>/about</code>)</strong> | File: <code>About.jsx</code></li>
+  <li>  <em>Functionality</em>: Introduces corporate milestones and advisory team capabilities.</li>
+  <li>  <em>What is displayed</em>:</li>
+  <li>  Interactive timeline mapping the historical growth track of Strivo Consultancy.</li>
+  <li>  Detailed executive card grids introducing directors, managing partners, and strategic consultants.</li>
+  <li>  <strong>Contact Us (<code>/contact</code>)</strong> | File: <code>Contact.jsx</code></li>
+  <li>  <em>Functionality</em>: Captures inbound business consultation inquiries.</li>
+  <li>  <em>What is displayed</em>:</li>
+  <li>  Corporate contact email addresses, phone lines, and physical office location layouts.</li>
+  <li>  Interactive inquiry form capturing full name, email, phone, corporate title, practice choice, and text requirements. Submitting posts a request payload to <code>POST /api/inquiries</code>.</li>
+  <li>  <strong>Insights Portal (<code>/insights</code>)</strong> | File: <code>Insight.jsx</code></li>
+  <li>  <em>Functionality</em>: Displays published thought leadership articles.</li>
+  <li>  <em>What is displayed</em>:</li>
+  <li>  Grid list displaying article overview cards (cover image, title, categories, publication date).</li>
+  <li>  Category filtering toolbar buttons to dynamically filter list articles.</li>
+  <li>  <strong>Article Details (<code>/article/:id</code>)</strong> | File: <code>Article.jsx</code></li>
+  <li>  <em>Functionality</em>: Renders the full content of a selected insights article.</li>
+  <li>  <em>What is displayed</em>:</li>
+  <li>  Detailed viewer showcasing full article text (supporting markdown structure layout), author credits metadata, and publication date stamp.</li>
+  <li>  <strong>Case Studies (<code>/casestudies</code>)</strong> | File: <code>CaseStudies.jsx</code></li>
+  <li>  <em>Functionality</em>: Catalog directory displaying client project success cases.</li>
+  <li>  <em>What is displayed</em>:</li>
+  <li>  Interactive catalog of case study cards filterable by category (Strategic, Digital, etc.). Each card displays core performance growth metrics (e.g. "98% delivery").</li>
+  <li>  <strong>Case Study Details (<code>/case-study-details/:id</code>)</strong> | File: <code>CaseStudyDetails.jsx</code></li>
+  <li>  <em>Functionality</em>: Displays comprehensive outcomes of a selected success story.</li>
+  <li>  <em>What is displayed</em>:</li>
+  <li>  Detailed study outlining the client situation, operational diagnostic methods, strategies applied, and a final achievements grid.</li>
+  <li>  <strong>Services Landing (<code>/services</code>)</strong> | File: <code>Services.jsx</code></li>
+  <li>  <em>Functionality</em>: Explains the overall consultation practices directory catalog.</li>
+  <li>  <em>What is displayed</em>:</li>
+  <li>  Practice overview cards linking to the strategic, operations, digital, and change management detail layouts.</li>
+  <li>  <strong>Strategic Consulting (<code>/strategic</code>)</strong> | File: <code>Strategic.jsx</code></li>
+  <li>  <em>Functionality</em>: Practice details explaining strategy design and growth advisory.</li>
+  <li>  <em>What is displayed</em>:</li>
+  <li>  Growth frameworks descriptions, market entrance roadmap grids, and strategy practice contacts.</li>
+  <li>  <strong>Operations Consulting (<code>/operations</code>)</strong> | File: <code>Operations.jsx</code></li>
+  <li>  <em>Functionality</em>: Practice details detailing operational diagnostics.</li>
+  <li>  <em>What is displayed</em>:</li>
+  <li>  Supply chain audits protocols, diagnostic restructuring checklists, and operational KPI trackers.</li>
+  <li>  <strong>Digital Consulting (<code>/digital</code>)</strong> | File: <code>Digital.jsx</code></li>
+  <li>  <em>Functionality</em>: Practice details outlining legacy modernization.</li>
+  <li>  <em>What is displayed</em>:</li>
+  <li>  Digital transformation checklists, migration architectures descriptions, and technical stacks advisory models.</li>
+  <li>  <strong>Change Management (<code>/change</code>)</strong> | File: <code>Change.jsx</code></li>
+  <li>  <em>Functionality</em>: Practice details describing organizational agility.</li>
+  <li>  <em>What is displayed</em>:</li>
+  <li>  Business restructure phases roadmaps, organizational transition frameworks, and agility checklist grids.</li>
+  <li>  <strong>Mission (<code>/mission</code>)</strong> | File: <code>Mission.jsx</code></li>
+  <li>  <em>Functionality</em>: Highlights the company's core values.</li>
+  <li>  <em>What is displayed</em>:</li>
+  <li>  Text statements highlighting corporate mission statements and CSR priorities.</li>
+  <li>  <strong>Vision (<code>/vision</code>)</strong> | File: <code>Vision.jsx</code></li>
+  <li>  <em>Functionality</em>: Highlights the company's long-term targets.</li>
+  <li>  <em>What is displayed</em>:</li>
+  <li>  Future milestones layouts outlining Strivo's goals for the coming decade.</li>
+  <li>  <strong>Values (<code>/values/:valueType</code>)</strong> | File: <code>Values.jsx</code></li>
+  <li>  <em>Functionality</em>: Explains core corporate principles (integrity, client-first, innovation, impact).</li>
+  <li>  <em>What is displayed</em>:</li>
+  <li>  Text layouts defining values and rules matching candidate behaviors.</li>
+  <li>  <strong>Careers (<code>/careerstrivo</code>)</strong> | File: <code>Career.jsx</code></li>
+  <li>  <em>Functionality</em>: Job vacancies directory and application form.</li>
+  <li>  <em>What is displayed</em>:</li>
+  <li>  Interactive vacancy card list displaying description, department, job type, and location.</li>
+  <li>  Detailed view panel of selected jobs.</li>
+  <li>  CV application form supporting file uploads (PDF/DOCX) which uploads to Cloudinary and parses matching scores.</li>
+  <li>  <strong>Privacy Policy (<code>/privacy-policy</code>)</strong> | File: <code>PrivacyPolicy.jsx</code></li>
+  <li>  <em>Functionality</em>: Legal compliance data notices.</li>
+  <li>  <em>What is displayed</em>:</li>
+  <li>  Compliance disclosures mapping data collection guidelines.</li>
+  <li>  <strong>Terms and Conditions (<code>/terms-and-conditions</code>)</strong> | File: <code>TermsAndConditions.jsx</code></li>
+  <li>  <em>Functionality</em>: Website usage regulations guidelines.</li>
+  <li>  <em>What is displayed</em>:</li>
+  <li>  Standard operational rules and compliance blocks.</li>
+  <li>  <strong>Reviews & Testimonials (<code>/review</code>)</strong> | File: <code>Review.jsx</code></li>
+  <li>  <em>Functionality</em>: Collects and presents verified client reviews.</li>
+  <li>  <em>What is displayed</em>:</li>
+  <li>  List grid of approved client reviews.</li>
+  <li>  Interactive rating feedback collector (stars inputs, user review fields). Saves reviews with <code>approved: false</code>.</li>
+  <li>  <strong>Not Found Page (<code>*</code>)</strong> | File: <code>NotFound.jsx</code></li>
+  <li>  <em>Functionality</em>: Wildcard route fallback page.</li>
+  <li>  <em>What is displayed</em>:</li>
+  <li>  404 error indicators and quick navigation return redirect buttons.</li>
+</ul>
+<h2>Administrative Management Subsystem (Total 19 Views)</h2>
+<p>The administrative portal workspace contains a total of 19 views, structured into three access tiers: Anonymous Authentication, Admin-Only Management, and HR Management.</p>
+<h3>Public Authentication Subsystem (4 Views)</h3>
+<p>These views are located under <code>/client/src/Admin/</code> and do not require prior login to allow entrance or setup:</p>
+<ul>
+  <li>  <strong>Admin Login (<code>/admin/login</code>)</strong> | File: <code>Login.jsx</code></li>
+  <li>  <em>Functionality</em>: Validates administrator and HR credentials to issue JWT tokens.</li>
+  <li>  <em>What is displayed</em>: Username/email and password fields with regex verification, and a submit button.</li>
+  <li>  <strong>Admin Registration (<code>/admin/register</code>)</strong> | File: <code>Register.jsx</code></li>
+  <li>  <em>Functionality</em>: Creates new staff accounts with specific role assignments.</li>
+  <li>  <em>What is displayed</em>: Staff profile fields, a secure password policy checker, and a role dropdown (Admin vs. HR).</li>
+  <li>  <strong>Forgot Password (<code>/admin/forgot-password</code>)</strong> | File: <code>ForgotPassword.jsx</code></li>
+  <li>  <em>Functionality</em>: Dispatches password reset codes.</li>
+  <li>  <em>What is displayed</em>: Email submission field linked to the Nodemailer SMTP relay.</li>
+  <li>  <strong>Reset Password (<code>/admin/reset-password</code>)</strong> | File: <code>ResetPassword.jsx</code></li>
+  <li>  <em>Functionality</em>: Verifies OTP and commits password changes.</li>
+  <li>  <em>What is displayed</em>: 6-digit verification code input and strength-compliant new password fields.</li>
+</ul>
+<h3>Administrative Portal Subsystem (Admin-Only) (8 Views)</h3>
+<p>These views are accessible <strong>only</strong> to users with the <code>Admin</code> role. Attempts by the <code>HR</code> role to access these routes are blocked by <code>ProtectedRoute.jsx</code> and redirected to <code>/admin/career</code>.</p>
+<ul>
+  <li>  <strong>System Dashboard (<code>/admin/dashboard</code>)</strong> | File: <code>Dashboard.jsx</code></li>
+  <li>  <em>Functionality</em>: Analytics control center displaying metrics graphs and unapproved review moderate lists.</li>
+  <li>  <em>What is displayed</em>:</li>
+  <li>  Live scorecard cards tracking inquiries, reviews, active jobs, and server connectivity latency.</li>
+  <li>  Interactive Recharts area and bar graphs filterable by duration (Last 7 Days, Last 30 Days, All-Time).</li>
+  <li>  Today's task checklist trackers showing progress status meters.</li>
+  <li>  Unmoderated client reviews list table with Approve and Delete buttons.</li>
+  <li>  <strong>Inquiries Board (<code>/admin/inquiries</code>)</strong> | File: <code>Inquiries.jsx</code></li>
+  <li>  <em>Functionality</em>: Manages and replies to contact submissions.</li>
+  <li>  <em>What is displayed</em>:</li>
+  <li>  Tabbed overview grids filtering active inquiries (All, Proposals, Follow-ups, Assigned, Closed).</li>
+  <li>  Inquiry actions dropdown menu triggers (Reply by email, Convert to proposal editor, Assign team representative, Schedule follow-up, Close).</li>
+  <li>  <strong>Case Studies Board (<code>/admin/casestudies</code>)</strong> | File: <code>CaseStudies.jsx</code></li>
+  <li>  <em>Functionality</em>: List and action panel for case studies.</li>
+  <li>  <em>What is displayed</em>:</li>
+  <li>  Case studies table showing status (Published vs. Draft), metrics, cover image details, and edit/delete actions.</li>
+  <li>  <strong>Create Case Study (<code>/admin/create-case-study</code>)</strong> | File: <code>CreateCaseStudy.jsx</code></li>
+  <li>  <em>Functionality</em>: Interactive constructor form to add success stories.</li>
+  <li>  <em>What is displayed</em>:</li>
+  <li>  Form fields (title, category, summary, metrics) and Cloudinary image upload selectors. Future date pickers toggle draft status.</li>
+  <li>  <strong>Edit Case Study (<code>/admin/edit-case-study/:id</code>)</strong> | File: <code>EditCaseStudy.jsx</code></li>
+  <li>  <em>Functionality</em>: Modifies existing success stories metadata.</li>
+  <li>  <em>What is displayed</em>:</li>
+  <li>  Pre-filled case study metadata fields, upload selectors to replace cover graphics, and update submit triggers.</li>
+  <li>  <strong>Articles Board (<code>/admin/article</code>)</strong> | File: <code>ArticlesAdmin.jsx</code></li>
+  <li>  <em>Functionality</em>: List and actions panel for insights blog posts.</li>
+  <li>  <em>What is displayed</em>:</li>
+  <li>  Blog posts table showing publication state (Published vs. Draft), categories, cover images, and edit/delete actions.</li>
+  <li>  <strong>Create Article (<code>/admin/create-article</code>)</strong> | File: <code>CreateArticle.jsx</code></li>
+  <li>  <em>Functionality</em>: Editor to write and publish insights.</li>
+  <li>  <em>What is displayed</em>:</li>
+  <li>  Article fields (title, category, tags, body content) and Cloudinary CDN covers upload slots. Future dates restrict to draft status.</li>
+  <li>  <strong>Edit Article (<code>/admin/edit-article/:id</code>)</strong> | File: <code>EditArticle.jsx</code></li>
+  <li>  <em>Functionality</em>: Updates existing blog details.</li>
+  <li>  <em>What is displayed</em>:</li>
+  <li>  Pre-filled blog editor, image replacement components, and update submit triggers.</li>
+</ul>
+<h2>HR Management Subsystem (7 Views)</h2>
+<p>These views are accessible to both <code>HR</code> and <code>Admin</code> roles. They are dedicated to recruitment, candidate tracking, scheduling, and staff profile operations.</p>
+<ul>
+  <li>  <strong>Profile Dashboard (<code>/admin/profile</code>)</strong> | File: <code>Profile.jsx</code></li>
+  <li>  <em>Functionality</em>: View and edit active session user profiles.</li>
+  <li>  <em>What is displayed</em>:</li>
+  <li>  Active profile fields (username, email, role).</li>
+  <li>  Credential edit fields and old password validation check prompts before updating.</li>
+  <li>  <strong>Applications Manager (<code>/admin/career</code>)</strong> | File: <code>Admincareers.jsx</code></li>
+  <li>  <em>Functionality</em>: Coordinates recruitment applicants screening.</li>
+  <li>  <em>What is displayed</em>:</li>
+  <li>  Applications grid showing matching score metrics badges, resume download triggers, and vacancy department choices.</li>
+  <li>  Recruiter operations panel to cycle candidate status flags.</li>
+  <li>  <strong>Interviews Scheduler (<code>/admin/interviews</code>)</strong> | File: <code>InterviewsAdmin.jsx</code></li>
+  <li>  <em>Functionality</em>: Interfaces scheduled candidate interviews.</li>
+  <li>  <em>What is displayed</em>:</li>
+  <li>  Interview schedules list with calendar dates, scheduling forms, and outcomes trackers.</li>
+  <li>  Nodemailer dynamic SMTP trigger button to send invites.</li>
+  <li>  <strong>Consultation Scheduler (<code>/admin/appointments</code>)</strong> | File: <code>AppointmentsAdmin.jsx</code></li>
+  <li>  <em>Functionality</em>: Logs and coordinates corporate booking schedule timings.</li>
+  <li>  <em>What is displayed</em>:</li>
+  <li>  Calendar and list of consultation appointments, scheduling fields, and active representative assignments.</li>
+  <li>  <strong>Talent Pool Manager (<code>/admin/talent-pool</code>)</strong> | File: <code>TalentPoolAdmin.jsx</code></li>
+  <li>  <em>Functionality</em>: Searchable database indexing general candidates history.</li>
+  <li>  <em>What is displayed</em>:</li>
+  <li>  Search filters matching skills list, Match score ranges, and submission timelines.</li>
+  <li>  <strong>Create Job (<code>/admin/create-job</code>)</strong> | File: <code>CreateJob.jsx</code></li>
+  <li>  <em>Functionality</em>: Form interface to publish new job vacancies.</li>
+  <li>  <em>What is displayed</em>:</li>
+  <li>  Fields: job title, department selector, type (Full-Time, Remote), descriptions, location, skills tags, and expiry date.</li>
+  <li>  <strong>Edit Job (<code>/admin/edit-job/:id</code>)</strong> | File: <code>EditJob.jsx</code></li>
+  <li>  <em>Functionality</em>: Form to update details or deactivate active jobs.</li>
+  <li>  <em>What is displayed</em>:</li>
+  <li>  Pre-filled job specification fields, toggle switches to deactivate listings, and update submit buttons.</li>
+</ul>
+<hr>
+<h1>5. Administrative Portal: Detailed Specifications (Admin Role)</h1>
+<h2>A. Central Analytics Dashboard (<code>Dashboard.jsx</code>)</h2>
+<ul>
+  <li>  <strong>Objective</strong>: Serves as the primary operational tracking command center, keeping all system jobs, client feedbacks, pending moderation pipelines, and business metrics under control.</li>
+  <li>  <strong>KPI Scorecard Tracker</strong>: Renders live indicator cards counting core system entries and incorporates a real-time server connectivity checker to alert administrators of server latency.</li>
+  <li>  <strong>Business Analytics & Date Filtering</strong>: Integrates interactive Recharts (Area, Bar, and Line charts) with dropdown duration filters (All-Time, Last 30 Days, Last 7 Days).</li>
+  <li>  <strong>Dossier Printing & Exporting</strong>: Implements a Dossier Print Engine that opens a clean layout view of the analytics grid and runs <code>window.print()</code> dynamically for offline tracking.</li>
+  <li>  <strong>Today's & Pending Task Allocations</strong>: Tracks moderation tasks created "Today" versus "Older" pending items. Alerts the admin based on pending task counts.</li>
+  <li>  <strong>Actionables Card</strong>: Aggregates counts of items needing attention (e.g., Draft Articles). Clicking an item opens the Actionable Details Modal for quick-approvals.</li>
+  <li>  <strong>Client Review Moderation</strong>: Reviews submitted are saved as unapproved. Admins can click Approve (triggers <code>PUT /api/reviews/:id</code>) to display them on the Home page, or Delete to purge the feedback.</li>
+</ul>
+<h2>B. Customer Inquiries Board (<code>Inquiries.jsx</code>)</h2>
+<ul>
+  <li>  <strong>Objective</strong>: Manages customer inquiries submitted via <code>/contact</code>.</li>
+  <li>  <strong>Detailed Inquiry Modal</strong>: Displays sender info and query message.</li>
+  <li>  <strong>Backend Response Action Flow</strong>: Admins can execute one of five actions directly from the dropdown:</li>
+  <li>  <em>Reply by Email</em>: Edit email copy and send to the client (transitions status to Responded).</li>
+  <li>  <em>Convert to Proposal</em>: Opens an overlay to specify Subject, Budget, Timeline, and attach files before generating a PDF (transitions status to Proposals).</li>
+  <li>  <em>Assign to Team</em>: Select a team member (Vishnu, Namitha, Najma) and email the client with representative details (transitions status to Responded).</li>
+  <li>  <em>Schedule Follow-up</em>: Select a date to set <code>nextFollowUp</code> and email scheduling details to the client.</li>
+  <li>  <em>Mark as Closed</em>: Marks status as Closed and emails a closure notification.</li>
+  <li>  <strong>Dossier Printing</strong>: Compiles selected client metadata into a printable document view using <code>@media print</code> CSS overrides.</li>
+  <li>  <strong>Inquiries Overview Cards</strong>: Tabbed views filter entries. Renders an interactive card grid tracking overall action details and status badges.</li>
+</ul>
+<h2>C. Articles & Insights CRUD Management</h2>
+<ul>
+  <li>  <strong>Objective</strong>: Manages the published corporate blog posts and market insights via <code>ArticlesAdmin.jsx</code>, <code>CreateArticle.jsx</code>, and <code>EditArticle.jsx</code>.</li>
+  <li>  <strong>Content Editor</strong>: Form supporting text content, titles, categories, tags, and cover image. Uploads cover images directly to Cloudinary CDN.</li>
+  <li>  <strong>Publishing Validation</strong>: The date picker restricts selection to today or future dates. If a future date is selected, the system automatically saves it as a Draft to withhold it from the public feed until the release date.</li>
+  <li>  <strong>Actions</strong>: Draft, publish, edit (body copy, titles, images), and delete articles.</li>
+</ul>
+<h2>D. Case Studies CRUD Management</h2>
+<ul>
+  <li>  <strong>Objective</strong>: Create and display success stories via <code>CaseStudies.jsx</code>, <code>CreateCaseStudy.jsx</code>, and <code>EditCaseStudy.jsx</code>.</li>
+  <li>  <strong>Data Fields</strong>: Title, industry category, statistical metrics, client summary, and cover layout.</li>
+  <li>  <strong>Future Dates Rule</strong>: Future publishing dates automatically save the case study as a draft and prompt a custom success message.</li>
+  <li>  <strong>Actions</strong>: Create, edit metadata, upload graphics, and delete.</li>
+</ul>
+<hr>
+<h1>6. HR Portal: Detailed Specifications (HR & Shared Roles)</h1>
+<h2>A. Job Vacancies Constructor (<code>CreateJob.jsx</code> / <code>EditJob.jsx</code>)</h2>
+<ul>
+  <li>  <strong>Objective</strong>: HR form to post and edit active vacancies on <code>/careerstrivo</code>.</li>
+  <li>  <strong>Data Inputs</strong>: Job title, description, department, required skills, location, job type, and expiry date.</li>
+</ul>
+<h2>B. Recruitment Applications Manager (<code>Admincareers.jsx</code>)</h2>
+<ul>
+  <li>  <strong>Objective</strong>: Direct management of candidates applying for job vacancies.</li>
+  <li>  <strong>Interface Layout</strong>: Organizes into three sub-tabs: applications (active queue), talent (searchable directory), and jobs (vacancy management).</li>
+  <li>  <strong>Parsed Match Indicator</strong>: Displays the candidate profile along with matching score indicators calculated by the backend <code>resumeParser.js</code> script.</li>
+  <li>  <strong>Recruitment Workflows</strong>: HR can cycle candidates through six strict statuses: new, referred, reviewed, accepted, appointed, and rejected. Moving a status to referred automatically syncs with the Interviews Board.</li>
+  <li>  <strong>Download Resume</strong>: Direct links pointing to Cloudinary storage paths to download candidate CVs.</li>
+</ul>
+<h2>C. Talent Pool Indexer (<code>TalentPoolAdmin.jsx</code>)</h2>
+<ul>
+  <li>  <strong>Objective</strong>: General index cataloging historical applicant CVs and candidate profiles. Search box includes filter tags based on skills, match scores, or date ranges.</li>
+</ul>
+<h2>D. Interviews Admin Panel (<code>InterviewsAdmin.jsx</code>)</h2>
+<ul>
+  <li>  <strong>Objective</strong>: Tracks scheduled candidate interviews and handles invitations. Forms allow setting dates/times, triggering Nodemailer calendar invites, and transitioning interview states.</li>
+</ul>
+<h2>E. Appointments & Consultations Board (<code>AppointmentsAdmin.jsx</code>)</h2>
+<ul>
+  <li>  <strong>Objective</strong>: Manages client consultations and corporate bookings using a calendar/list layout of requests.</li>
+</ul>
+<h2>F. Profile & Credentials Editor (<code>Profile.jsx</code>)</h2>
+<ul>
+  <li>  <strong>Objective</strong>: Profile settings and password security management. Requires verifying the hashed old password before updating. Enforces strict length, casing, numeric, and symbol rules.</li>
+</ul>
+<hr>
+<h1>7. Core Features & Business Logic</h1>
+<h2>A. Authentication & Session Security</h2>
+<ul>
+  <li>  <strong>Credential Verification</strong>: Multi-field registration/login matching against usernames or emails case-insensitively using regex filters.</li>
+  <li>  <strong>Password Policies</strong>: Strict regex enforcement (minimum 8 characters, 1 uppercase, 1 lowercase, 1 number, and 1 special symbol).</li>
+  <li>  <strong>Stateless Sessions</strong>: JWT tokens are issued and saved in HTTP cookie buffers and LocalStorage. An Axios interceptor automatically appends the token as a Bearer header.</li>
+  <li>  <strong>Password Recovery</strong>: OTP-based reset mechanism generating a 6-digit numeric OTP (hashed with a 5-minute expiration) sent via Nodemailer, followed by a temporary 10-minute JWT token for resets.</li>
+</ul>
+<h2>B. Resume Parser Utility (<code>resumeParser.js</code>)</h2>
+<ul>
+  <li>  Extracts text dynamically using <code>pdf-parse</code> for PDF files and <code>mammoth</code> for DOCX XML buffers. Runs extracted text against predefined keyword filters to score candidate legitimacy before database insertion.</li>
+</ul>
+<hr>
+<h1>8. Role-Based Access Control (RBAC)</h1>
+<p>Strivo implements strict role separation between Admin (Administrator) and HR (Human Resources) roles.</p>
+<ul>
+  <li>  <strong>Client-Side Guard Rails (<code>ProtectedRoute.jsx</code>)</strong>: Wraps administrative routes, reading the active session token and user profile object.</li>
+  <li>  <strong>Client-Side HR Boundaries</strong>: Blocked from accessing the global Admin Dashboard, client inquiries, case studies, or articles. Attempted access redirects them to <code>/admin/career</code>.</li>
+  <li>  <strong>Client-Side Admin Boundaries</strong>: Complete, unrestricted navigation access across all panels.</li>
+  <li>  <strong>Server-Side Authentication (<code>protect</code> middleware)</strong>: Verifies the integrity of the JWT from HTTP-only request cookies, falling back to headers or query parameters. Retrieves user profile fields while keeping passwords secret.</li>
+  <li>  <strong>Server-Side Authorization (<code>authorize</code> middleware)</strong>: Accepts role permissions as an array. Ensures that requests originating from unauthorized roles return a 403 Forbidden response block.</li>
+</ul>
+<hr>
+<h1>9. Business Workflows & Data Flows (Mermaid Diagrams)</h1>
+<h2>A. Client Inquiry & Administrative Actions Pipeline</h2>
+<pre>   [ Client Browser (Contact.jsx) ]
+                  │
+                  ▼  Submit Inquiry Form (POST /api/inquiries)
+       [ MongoDB: inquiries ]
+                  │
+                  ▼  Fetch list on mount (GET /api/inquiries)
+    [ Admin Inquiries Page (Inquiries.jsx) ]
+                  │
+                  ▼  Perform Actions
+          ┌───────┼───────────────┬────────────────────────┐
+          │       │               │                        │
+          ▼       ▼               ▼                        ▼
+      [ Draft ] [ Reply ]    [ Assign ]          [ Convert to Proposal ]
+       (Save)   (SMTP)    (Vishnu/Namitha/Najma)    (Generate PDF)</pre>
+<h2>B. Client Review Verification & Approval Cycle</h2>
+<pre>  [ Client Browser (Review.jsx) ]
+                 │
+                 ▼  Submit Testimonial (POST /api/reviews)
+       [ MongoDB: reviews ]  ◄── (approved: false)
+                 │
+                 ▼  Load unapproved reviews (GET /api/reviews)
+     [ Admin Dashboard (Dashboard.jsx) ]
+                 │
+                 ▼  Verification Action
+         ┌───────┴───────┐
+         │               │
+         ▼ Yes           ▼ No
+  [ Set approved: true ]  [ Delete review ]
+         │               (Purge from DB)
+         ▼
+  [ Update MongoDB ]
+         │
+         ▼  Fetch approved reviews
+  [ Public Testimonials Slider (Home.jsx) ]</pre>
+<h2>C. Talent Acquisition, Resume Parsing, & HR Management</h2>
+<pre>   [ Candidate Browser (Career.jsx) ]
+                  │
+                  ▼  Submit Job Application & CV (POST /api/careers/apply)
+         [ Express Backend Server ]
+          ┌───────┴───────┐
+          │               ▼
+          │         [ Cloudinary Storage ] ── (Upload CV Buffer)
+          ▼
+   [ resumeParser.js ]
+          │
+          ▼  (pdf-parse / mammoth)
+   [ Extract Raw Text ]
+          │
+          ▼  (Scan skill keywords)
+   [ Score Match Score ]
+          │
+          ▼  (Save profile details)
+   [ MongoDB: careerapplications ]
+          │
+          ▼  (Fetch list)
+   [ HR Careers Page (Admincareers.jsx) ]
+          │
+          ▼  Perform Operations
+     ┌────┼───────────────────────┐
+     ▼    ▼                       ▼
+  [ CV ] [ Schedule Interview ]  [ Send Job Offer ]
+ (Download) (InterviewsAdmin.jsx) (SMTP Nodemailer)</pre>
+<h2>D. HR vs. Admin Role Differentiation & Access Control</h2>
+<pre>             [ Logged-in User Account ]
+                         │
+                         ▼  Check JWT & Role
+            [ RouteGuard (ProtectedRoute.jsx) ]
+                         │
+             ┌───────────┴───────────┐
+             ▼ Role: HR              ▼ Role: Admin / Administrator
+       [ HR Dashboard Portal ]   [ Full Admin Portal ]
+             │                       │
+             │                       ├──────────────────────┐
+             ▼                       ▼                      ▼
+    ┌─────────────────┐     ┌─────────────────┐    ┌─────────────────┐
+    │  HR Shared      │     │  Admin-Only     │    │  HR Shared      │
+    │  Views          │     │  Views          │    │  Views          │
+    ├─────────────────┤     ├─────────────────┤    ├─────────────────┤
+    │ - Careers       │     │ - Dashboard     │    │ - Careers       │
+    │ - Interviews    │     │ - Inquiries     │    │ - Interviews    │
+    │ - Appointments  │     │ - Case Studies  │    │ - Appointments  │
+    │ - Talent Pool   │     │ - Articles      │    │ - Talent Pool   │
+    │ - Jobs Creator  │     └─────────────────┘    │ - Jobs Creator  │
+    └─────────────────┘                            └─────────────────┘</pre>
+<hr>
+<h1>10. Conclusion & Future Roadmap</h1>
+<p>Strivo Consultancy delivers a robust, enterprise-ready digital workspace that streamlines client onboarding, recruitment pipelines, and administrative content moderation.</p>
+<h2>Key Achievements</h2>
+<ul>
+  <li>  <strong>Consolidated Operations</strong>: Replaces disparate channels (spreadsheets, emails, manual files) with a single, role-gated platform where HR and administrators work in sync.</li>
+  <li>  <strong>Enterprise-Grade Security</strong>: Protects sensitive organizational data and candidate credentials through Bcrypt hashing, secure JWT state management, and strict backend RBAC rules.</li>
+  <li>  <strong>Actionable Business Intelligence</strong>: Renders real-time KPIs and interactive charts, allowing administrators to make data-driven staffing and operational decisions.</li>
+</ul>
+<h2>Future Development Scope</h2>
+<ol>
+  <li><strong>AI-Powered Resume Matcher</strong>: Implement NLP classifiers or LLM APIs to match candidate skills with active job descriptions, ranking candidates automatically.</li>
+  <li><strong>Real-Time Notifications</strong>: Add WebSocket or push notification alerts for new client inquiries, interview scheduling conflicts, or new applications.</li>
+  <li><strong>Client Collaboration Hub</strong>: Create a client dashboard where external stakeholders can track consultation timelines, view proposal budgets, and exchange project files.</li>
+</ol>
+</body>
+</html>
