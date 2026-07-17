@@ -239,7 +239,7 @@ const CaseStudyDetails = () => {
                                 ].map((item, index) => (
                                     <div
                                         key={index}
-                                        className="bg-main rounded-xl p-5 border border-gray-200 hover:border-[var(--color-primary)] transition-all duration-300 hover:shadow-lg"
+                                        className="bg-main card p-5 border border-gray-200 hover:border-[var(--color-primary)] transition-all duration-300 hover:shadow-lg"
                                     >
                                         <div className="flex items-start gap-3">
                                             <div className="w-8 h-8 rounded-full bg-[var(--color-primary)]/10 flex items-center justify-center shrink-0">
@@ -262,7 +262,7 @@ const CaseStudyDetails = () => {
                                 variants={fadeUp}
                                 className="relative"
                             >
-                                <div className="overflow-hidden rounded-2xl shadow-xl border border-gray-200">
+                                <div className="overflow-hidden rounded-[var(--radius-sm)] shadow-xl border border-gray-200">
                                     <img
                                         src={StrategynSolution}
                                         alt="Strategy"

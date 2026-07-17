@@ -120,7 +120,7 @@ const Vision = () => {
               whileInView="visible"
               viewport={{ once: true, amount: 0.2 }}
               variants={fadeUpVariants}
-              className="grid grid-cols-1 lg:grid-cols-2 gap-0 lg:gap-8 items-stretch bg-white rounded-xl overflow-hidden border border-black/5 shadow-[0_15px_35px_rgba(0,0,0,0.03)]"
+              className="grid grid-cols-1 lg:grid-cols-2 gap-0 lg:gap-8 items-stretch bg-white card overflow-hidden border border-black/5 shadow-[0_15px_35px_rgba(0,0,0,0.03)]"
             >
               <div className="p-6 sm:p-10 md:p-12 flex flex-col justify-center order-2 lg:order-1">
                 <span className="inline-block px-3 py-1 bg-blue-500/10 pre-heading uppercase tracking-wider rounded-md mb-6 w-max text-xs font-semibold">
@@ -159,13 +159,27 @@ const Vision = () => {
                 </div>
               </div>
               
-              <div className="h-64 sm:h-80 lg:h-auto min-h-[250px] relative w-full overflow-hidden order-1 lg:order-2">
+              <div className="relative
+    order-1 lg:order-2
+    h-72 md:h-96 lg:h-full
+    min-h-[280px] lg:min-h-[400px]
+    overflow-hidden
+     lg:rounded-t-none lg:rounded-r-[var(--radius-sm)]">
                 <img
                   src={servicesHero}
                   alt="Our Vision Strategy"
                   className="absolute inset-0 w-full h-full object-cover"
                 />
-                <div className="absolute inset-0 bg-gradient-to-r from-white to-transparent lg:w-1/4"></div>
+                <div className="
+    hidden lg:block
+    absolute inset-y-0 left-0
+    w-40
+    bg-gradient-to-r
+    from-[var(--color-sub-bg)]
+    via-[var(--color-sub-bg)]/45
+    to-transparent
+    z-10
+  "></div>
               </div>
             </motion.section>
           </div>

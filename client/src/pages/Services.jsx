@@ -264,59 +264,82 @@ const Services = () => {
             </p>
           </div>
 
-          {services.map((service, index) => (
-            <motion.div
-              key={index}
-              id={`service-${index}`}
-              style={{
-                scrollMarginTop: "100px",
-                backgroundColor: "var(--color-main-bg)",
-                color: "var(--color-pure-black)",
-                border: "1px solid rgba(5, 0, 0, 0.135)",
-                borderRadius: "3px",
-              }}
-              initial={{ opacity: 0, y: 60 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, amount: 0.2 }}
-              transition={{
-                duration: 0.7,
-                delay: index * 0.15,
-              }}
-              ref={(el) => (detailRefs.current[index] = el)}
-              className="grid lg:grid-cols-2 gap-8 border rounded-xl p-8 mb-8"
-            >
-              <div>
-                <h3 className="sub-heading">
-                  {service.title}
-                </h3>
+         {services.map((service, index) => (
+  <motion.div
+    key={index}
+    id={`service-${index}`}
+    style={{
+      scrollMarginTop: "100px",
+      backgroundColor: "var(--color-main-bg)",
+      color: "var(--color-pure-black)",
+      border: "1px solid rgba(5, 0, 0, 0.135)",
+      borderRadius: "3px",
+    }}
+    initial={{ opacity: 0, y: 60 }}
+    whileInView={{ opacity: 1, y: 0 }}
+    viewport={{ once: true, amount: 0.2 }}
+    transition={{
+      duration: 0.7,
+      delay: index * 0.15,
+    }}
+    ref={(el) => (detailRefs.current[index] = el)}
+    className="grid lg:grid-cols-2 gap-6 p-8 mb-8"
+  >
 
-                <p className="paragraph">
-                  {service.description}
-                </p>
+    {/* Image */}
+    <div
+      style={{ borderRadius: "8px" }}
+      className="order-1 lg:order-2 bg-white flex items-center justify-center h-[220px] sm:h-[280px]"
+    >
+      <img
+        src={service.image}
+        alt="Strategic Service Overview"
+        className="w-full h-full object-fill opacity-90 drop-shadow-[0_0_30px_rgba(37,99,235,0.2)]"
+      />
+    </div>
 
-                <ul className="space-y-3 paragraph">
-                  <li>✔ Comprehensive assessment and diagnostics</li>
-                  <li>✔ Customized implementation roadmap</li>
-                  <li>✔ Ongoing support and optimization</li>
-                  <li>✔ Measurable KPIs and success metrics</li>
-                </ul>
+    {/* Content */}
+    <div className="order-2 lg:order-1">
+      <h3 className="sub-heading">
+        {service.title}
+      </h3>
 
-                <Link
-                  to={service.link}
-                  className="btn h-[40px] w-[140px] mt-6"
-                >
-                  Learn More
-                </Link>
-              </div>
+      <p className="paragraph mt-4">
+        {service.description}
+      </p>
 
-              <div
-                style={{ borderRadius: "8px" }}
-                className="bg-white flex flex-col items-center justify-center h-[280px]"
-              >
-                <img alt="Strategic Service Overview" className="w-full h-full object-fill opacity-90 drop-shadow-[0_0_30px_rgba(37,99,235,0.2)]" src={service.image} />
-              </div>
-            </motion.div>
-          ))}
+     <ul className="mt-6 space-y-4 paragraph">
+  <li className="flex items-start gap-3">
+    <span className="text-[var(--color-primary)] font-bold">✔</span>
+    <span>Comprehensive assessment and diagnostics</span>
+  </li>
+
+  <li className="flex items-start gap-3">
+    <span className="text-[var(--color-primary)] font-bold">✔</span>
+    <span>Customized implementation roadmap</span>
+  </li>
+
+  <li className="flex items-start gap-3">
+    <span className="text-[var(--color-primary)] font-bold">✔</span>
+    <span>Ongoing support and optimization</span>
+  </li>
+
+  <li className="flex items-start gap-3">
+    <span className="text-[var(--color-primary)] font-bold">✔</span>
+    <span>Measurable KPIs and success metrics</span>
+  </li>
+</ul>
+
+      <Link
+        to={service.link}
+        className="btn h-[40px] w-[140px] mt-6"
+      >
+        Learn More
+      </Link>
+    </div>
+
+  </motion.div>
+))}
         </section>
       </div>
     </div>

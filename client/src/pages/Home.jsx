@@ -477,6 +477,16 @@ function Home() {
   const [loadingStories, setLoadingStories] = useState(true);
   const [selectedTestimonial, setSelectedTestimonial] = useState(null);
 
+  useEffect(() => {
+    if (swiperRef.current && swiperRef.current.autoplay) {
+      if (selectedTestimonial) {
+        swiperRef.current.autoplay.stop();
+      } else {
+        swiperRef.current.autoplay.start();
+      }
+    }
+  }, [selectedTestimonial]);
+
 
   useEffect(() => {
     const fetchStories = async () => {
@@ -527,9 +537,10 @@ function Home() {
         id="hero-section"
         sx={{
           position: "relative",
-          minHeight: "700px",
-          py: { xs: 6, lg: 0 },
-          px: { xs: 0, lg: "180px" },
+          minHeight: { xs: "auto", md: "700px" },
+          pt: { xs: 8, lg: 0 },
+          pb: { xs: "300px", sm: "380px", md: 8, lg: 0 },
+          px: { xs: 2, sm: 4, md: 6, lg: 12, xl: "180px" },
           display: "flex",
           alignItems: "center",
           overflow: "hidden",
@@ -540,10 +551,11 @@ function Home() {
           sx={{
             position: "absolute",
             inset: 0,
-            display: { xs: "none", md: "block" },
+            display: "block",
             backgroundImage: `url(${newHero})`,
-            backgroundSize: "cover",
-            backgroundPosition: "center",
+            backgroundSize: { xs: "contain", md: "cover" },
+            backgroundPosition: { xs: "bottom center", md: "center" },
+            backgroundRepeat: "no-repeat",
             opacity: 0.8,
             zIndex: 0,
           }}
@@ -749,7 +761,7 @@ function Home() {
         sx={{
           backgroundColor: "var(--color-main-bg)",
           py: { xs: 6, md: 8 },
-          px: { xs: 2, lg: "155px" },
+          px: { xs: 2, sm: 4, md: 6, lg: 12, xl: "155px" },
         }}
       >
         {/* TRUSTED BY SECTION */}
@@ -794,15 +806,11 @@ function Home() {
             <Box
               sx={{
                 display: "flex",
-                flexWrap: "nowrap",
-                justifyContent: { xs: "flex-start", lg: "center" },
+                flexWrap: "wrap",
+                justifyContent: "center",
                 alignItems: "center",
-                gap: { xs: 3, md: 4 },
+                gap: { xs: 3, sm: 4, md: 5, lg: 6 },
                 mb: 8,
-                overflowX: "auto",
-                "&::-webkit-scrollbar": { display: "none" },
-                msOverflowStyle: "none",
-                scrollbarWidth: "none",
                 width: "100%",
                 py: 1,
               }}
@@ -813,25 +821,23 @@ function Home() {
                   sx={{
                     display: "flex",
                     alignItems: "center",
-                    gap: 1,
+                    gap: 1.5,
                     color: "var(--color-paragraph)",
                     transition: "all 0.3s ease",
                     cursor: "pointer",
                     "&:hover": {
                       color: "var(--color-primary)",
                     },
-                    borderRight: index !== companyLogos.length - 1 ? "1px solid rgba(0,0,0,0.1)" : "none",
-                    pr: index !== companyLogos.length - 1 ? { xs: 3, md: 4 } : 0,
                     flexShrink: 0,
                   }}
                 >
-                  <Box sx={{ display: "flex", alignItems: "center", color: "inherit", "& svg": { width: 18, height: 18 } }}>
+                  <Box sx={{ display: "flex", alignItems: "center", color: "inherit", "& svg": { width: { xs: 16, md: 20 }, height: { xs: 16, md: 20 } } }}>
                     {company.svg}
                   </Box>
                   <Typography
                     sx={{
                       fontWeight: 800,
-                      fontSize: "1.2rem",
+                      fontSize: { xs: "0.95rem", md: "1.2rem" },
                       letterSpacing: "0.5px",
                       color: "inherit",
                     }}
@@ -943,7 +949,7 @@ function Home() {
         sx={{
           backgroundColor: "var(--color-sub-bg)",
           py: { xs: 6, md: 8 },
-          px: { xs: 0, lg: "180px" },
+          px: { xs: 2, sm: 4, md: 6, lg: 12, xl: "180px" },
         }}
       >
         <Container maxWidth="lg">
@@ -1003,8 +1009,9 @@ function Home() {
               sx={{
                 display: "grid",
                 gridTemplateColumns: {
-                  xs: "repeat(2,1fr)",
-                  lg: "repeat(4,1fr)",
+                  xs: "1fr",
+                  sm: "repeat(2, 1fr)",
+                  lg: "repeat(4, 1fr)",
                 },
                 gap: { xs: 2, sm: 4 },
               }}
@@ -1054,20 +1061,7 @@ function Home() {
                   >
                     {/* Glow */}
 
-                    <Box
-                      sx={{
-                        position: "absolute",
-                        width: "180px",
-                        height: "170px",
-                        borderRadius: "10%",
-                        background:
-                          "radial-gradient(circle, var(--color-primary), transparent)",
-                        top: "-70px",
-                        right: "-70px",
-                        pointerEvents: "none",
-                        opacity: 0.3,
-                      }}
-                    />
+                    
 
                     {/* Icon */}
 
@@ -1124,7 +1118,7 @@ function Home() {
         sx={{
           backgroundColor: "var(--color-main-bg)",
           py: { xs: 6, md: 8 },
-          px: { xs: 0, lg: "180px" },
+          px: { xs: 2, sm: 4, md: 6, lg: 12, xl: "180px" },
           position: "relative",
           overflow: "hidden",
         }}
@@ -1377,7 +1371,7 @@ function Home() {
         sx={{
           backgroundColor: "var(--color-sub-bg)",
           py: { xs: 6, md: 8 },
-          px: { xs: 0, lg: "180px" },
+          px: { xs: 2, sm: 4, md: 6, lg: 12, xl: "180px" },
           overflow: "hidden",
           position: "relative"
         }}
@@ -1438,29 +1432,34 @@ function Home() {
                 onClick={() => swiperRef.current?.slidePrev()}
                 sx={{
                   position: "absolute",
-                  left: { xs: "-10px", md: "-40px" },
-                  top: "50%",
+                  left: { xs: "0px", md: "-40px" },
+                  top: "calc(50% - 24px)",
                   transform: "translateY(-50%)",
                   zIndex: 10,
-                  width: 44,
-                  height: 44,
+                  width: { xs: 32, md: 44 },
+                  height: { xs: 32, md: 44 },
                   borderRadius: "50%",
                   background: "var(--color-primary)",
                   border: "1px solid rgba(255, 255, 255, 0.15)",
-                  display: { xs: "none", md: "flex" },
+                  display: "flex",
                   alignItems: "center",
                   justifyContent: "center",
                   cursor: "pointer",
                   color: "#ffffff",
-                  fontSize: "1.2rem",
                   transition: "all 0.3s ease",
                   "&:hover": {
                     background: "var(--color-primary-hover)",
                     borderColor: "#3b82f6",
                   },
+                  "& svg": {
+                    width: { xs: 16, md: 20 },
+                    height: { xs: 16, md: 20 },
+                  }
                 }}
               >
-                ←
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ display: 'block' }}>
+                  <path d="M15 19l-7-7 7-7" />
+                </svg>
               </Box>
 
               {/* Custom Navigation - Right Arrow */}
@@ -1468,29 +1467,34 @@ function Home() {
                 onClick={() => swiperRef.current?.slideNext()}
                 sx={{
                   position: "absolute",
-                  right: { xs: "-10px", md: "-40px" },
-                  top: "50%",
+                  right: { xs: "0px", md: "-40px" },
+                  top: "calc(50% - 24px)",
                   transform: "translateY(-50%)",
                   zIndex: 10,
-                  width: 44,
-                  height: 44,
+                  width: { xs: 32, md: 44 },
+                  height: { xs: 32, md: 44 },
                   borderRadius: "50%",
                   background: "var(--color-primary)",
                   border: "1px solid rgba(255, 255, 255, 0.15)",
-                  display: { xs: "none", md: "flex" },
+                  display: "flex",
                   alignItems: "center",
                   justifyContent: "center",
                   cursor: "pointer",
                   color: "#ffffff",
-                  fontSize: "1.2rem",
                   transition: "all 0.3s ease",
                   "&:hover": {
                     background: "var(--color-primary-hover)",
                     borderColor: "#3b82f6",
                   },
+                  "& svg": {
+                    width: { xs: 16, md: 20 },
+                    height: { xs: 16, md: 20 },
+                  }
                 }}
               >
-                →
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ display: 'block' }}>
+                  <path d="M9 5l7 7-7 7" />
+                </svg>
               </Box>
 
               <Swiper
@@ -1524,10 +1528,10 @@ function Home() {
                 }}
                 breakpoints={{
                   0: {
-                    slidesPerView: 2,
-                    spaceBetween: 12,
+                    slidesPerView: 1,
+                    spaceBetween: 16,
                   },
-                  768: {
+                  640: {
                     slidesPerView: 2,
                     spaceBetween: 20,
                   },
@@ -1546,6 +1550,22 @@ function Home() {
                     {({ isActive }) => (
                       <Box
                         onClick={() => setSelectedTestimonial(item)}
+                        onMouseEnter={() => {
+                          swiperRef.current?.autoplay?.stop();
+                        }}
+                        onMouseLeave={() => {
+                          if (!selectedTestimonial) {
+                            swiperRef.current?.autoplay?.start();
+                          }
+                        }}
+                        onTouchStart={() => {
+                          swiperRef.current?.autoplay?.stop();
+                        }}
+                        onTouchEnd={() => {
+                          if (!selectedTestimonial) {
+                            swiperRef.current?.autoplay?.start();
+                          }
+                        }}
                         sx={{
                           height: "100%",
                           display: "flex",
@@ -1724,22 +1744,36 @@ function Home() {
         {selectedTestimonial && (
           <Box sx={{ position: "relative" }}>
             <Typography
-              onClick={() => setSelectedTestimonial(null)}
-              sx={{
-                position: "absolute",
-                top: -5,
-                right: -5,
-                cursor: "pointer",
-                fontSize: "1.6rem",
-                color: "var(--color-primary)",
-                fontWeight: 500,
-                lineHeight: 1,
-                transition: "color 0.2s",
-                "&:hover": { color: "#000" }
-              }}
-            >
-              ×
-            </Typography>
+  onClick={() => setSelectedTestimonial(null)}
+  sx={{
+    position: "absolute",
+    top: -5,
+    right: -5,
+
+    width: 36,
+    height: 36,
+
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+
+    cursor: "pointer",
+    fontSize: "1.8rem",
+    fontWeight: 500,
+    lineHeight: 1,
+
+    color: "var(--color-primary)",
+    borderRadius: "50%",
+    transition: "all 0.2s ease",
+
+    "&:hover": {
+      backgroundColor: "var(--color-primary)",
+      color: "#fff",
+    },
+  }}
+>
+  ×
+</Typography>
 
             <Typography
               sx={{
