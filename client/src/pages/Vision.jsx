@@ -8,6 +8,7 @@ import strategyHero from "../assets/strategy-hero.jpg";
 import aboutUsImg from "../assets/aboutus.jpg";
 import servicesHero from "../assets/services-hero.jpg";
 import leaderImg from "../assets/leader1.jpg";
+import { FiArrowLeft } from 'react-icons/fi';
 
 // MATCHED EXACTLY WITH VALUES & MISSION PAGES
 const fadeUpVariants = {
@@ -97,7 +98,7 @@ const Vision = () => {
               onClick={() => navigate("/about")} 
               className="text-white/80 hover:text-white transition-colors flex items-center gap-2 mb-6 text-sm font-medium cursor-pointer bg-white/10 hover:bg-white/20 rounded-md px-4 py-1.5 border border-white/20"
             >
-              ← Back to About Us
+              <FiArrowLeft size={16} /> Back to About Us
             </button>
 
             <h1 className="main-heading text-white leading-tight mb-4 text-3xl md:text-4xl lg:text-5xl">
@@ -123,7 +124,7 @@ const Vision = () => {
               className="grid grid-cols-1 lg:grid-cols-2 gap-0 lg:gap-8 items-stretch bg-white card overflow-hidden border border-black/5 shadow-[0_15px_35px_rgba(0,0,0,0.03)]"
             >
               <div className="p-6 sm:p-10 md:p-12 flex flex-col justify-center order-2 lg:order-1">
-                <span className="inline-block px-3 py-1 bg-blue-500/10 pre-heading uppercase tracking-wider rounded-md mb-6 w-max text-xs font-semibold">
+                <span className="inline-block px-3 py-1 bg-sub pre-heading uppercase tracking-wider rounded-md mb-6 w-max text-xs font-semibold">
                   Horizon Plan
                 </span>
                 <h2 className="sub-heading text-2xl md:text-3xl mb-4 font-bold">

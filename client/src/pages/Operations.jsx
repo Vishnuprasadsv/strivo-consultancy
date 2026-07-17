@@ -14,6 +14,7 @@ import {
 } from "@mui/icons-material";
 import precisionProcess from '../assets/precisionProcess.jpg'
 import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
+import { FiArrowLeft } from 'react-icons/fi';
 
 const fadeUpVariants = {
   hidden: { opacity: 0, y: 30 },
@@ -130,7 +131,7 @@ const Operations = () => {
               onClick={() => navigate("/services")} 
               className="text-white/80 hover:text-white transition-colors flex items-center gap-2 mb-6 text-sm font-medium cursor-pointer bg-white/10 hover:bg-white/20 rounded-md px-4 py-1.5 border border-white/20"
             >
-              ← Back to Services
+              <FiArrowLeft size={16} /> Back to Services
             </button>
             <h1 className="main-heading text-white leading-tight mb-4 text-3xl md:text-4xl lg:text-5xl w-full text-center md:text-left">
               Operations Optimization
@@ -208,6 +209,20 @@ const Operations = () => {
           initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.2 }} variants={fadeUpVariants}
           className="w-full bg-sub py-6 md:py-12"
         >
+          {/* Centered Section Header */}
+          <div className="flex flex-col items-center text-center mb-12 w-full">
+            <div className="flex items-center gap-3 mb-4">
+              <div className="w-10 h-10 rounded-full bg-[#111827] flex items-center justify-center border border-[#374151]">
+                <svg className="text-[var(--color-white)] w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                </svg>
+              </div>
+              <span className="pre-heading uppercase tracking-widest">Service Overview</span>
+            </div>
+            <h2 className="sub-heading text-center">Precision in Every Process</h2>
+          </div>
+
           <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
             {/* RIGHT IMAGE */}
             <motion.div
@@ -280,16 +295,6 @@ const Operations = () => {
                                     
             {/* Centered on mobile via flex items-center md:items-start text-center md:text-left */}
             <div className="order-1 md:order-2 flex flex-col items-center md:items-start text-center md:text-left space-y-8">
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-full bg-[#111827] flex items-center justify-center border border-[#374151]">
-                  <svg className="text-[var(--color-white)] w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                  </svg>
-                </div>
-                <span className="pre-heading uppercase tracking-widest">Service Overview</span>
-              </div>
-              <h2 className="sub-heading w-full text-center md:text-left">Precision in Every Process</h2>
               <ul className="space-y-4 text-left w-full">
                 {[
                   { title: 'Process efficiency enhancement', desc: 'Identify and eliminate bottlenecks across your operations.' },

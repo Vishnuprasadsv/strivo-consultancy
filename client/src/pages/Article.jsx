@@ -6,6 +6,7 @@ import { getArticlesAPI, subscribeEmailAPI } from '../services/allApi';
 import { toast } from 'sonner';
 import LoadingIndicator from '../Components/LoadingIndicator';
 import CalendarTodayOutlinedIcon from "@mui/icons-material/CalendarTodayOutlined";
+import { FiArrowLeft } from 'react-icons/fi';
 
 const fadeUpVariants = {
   hidden: { opacity: 0, y: 30 },
@@ -160,11 +161,11 @@ const Article = () => {
             <Link
               to="/insights"
               className="text-[var(--color-primary)] hover:text-[var(--color-primary-hover)]
-              transition-colors flex items-center border border-[var(--color-primary)]
+              transition-colors flex items-center gap-2 border border-[var(--color-primary)]
               rounded-md px-4 py-1.5 text-sm font-medium
               hover:border-[var(--color-primary-hover)] cursor-pointer"
             >
-              ← Back to Insights
+              <FiArrowLeft size={16} /> Back to Insights
             </Link>
           </motion.div>
           <div className="grid lg:grid-cols-2 gap-12 items-center mt-6">
